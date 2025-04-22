@@ -1,112 +1,75 @@
-# 🧬 GeneForgeLang: A Semantic Language for Protein Design
+# 🧬 GeneForgeLang: Symbolic-to-Sequence Protein Design Toolkit
 
-**GeneForgeLang** is a symbolic, human-readable, and machine-optimizable language to express biological design intentions across DNA, RNA, and protein space. This repository demonstrates how to:
-
-- 🧠 Translate symbolic phrases into protein sequences using ProtGPT2
-- 🔁 Translate generated proteins back into GeneForgeLang phrases
-- ⚙️ Use AI-assisted generation and rule-based interpretation together
+GeneForgeLang is a symbolic language and toolset for generative biology. It connects high-level biological design intentions to low-level amino acid sequences via AI, rules, and natural language.
 
 ---
 
-## 📁 Project Structure
+## 🚀 Features
 
-| File                              | Description |
-|-----------------------------------|-------------|
-| `generar_desde_frase.py`          | Generates a protein from a fixed GeneForgeLang phrase. |
-| `generar_desde_frase_input.py`    | Generates a protein from a user-specified phrase (command-line). |
-| `generar_desde_frase_json.py`     | Same as above, but reads phrase logic from `semillas.json`. |
-| `semillas.json`                   | Dictionary of symbolic phrase patterns and protein seeds. |
-| `translate_to_geneforgelang.py`   | Reverse translator: interprets a protein sequence and generates a GeneForgeLang phrase. |
-
----
-
-## ▶️ Usage
-
-### 🔹 Forward Translation (GeneForgeLang → Protein)
-
-Run:
-
-```bash
-python generar_desde_frase_json.py "^p:Dom(Kin)'-Mot(NLS)*P@147=Localize(Membrane)"
-```
-
-Output:
-
-```
-🧪 Semilla generada desde la frase: MKKK
-🧬 Proteína generada:
-MKKKAAKRRKKKPPRELPAAAGG...
-```
-
-### 🔹 Reverse Translation (Protein → GeneForgeLang)
-
-Run:
-
-```bash
-python translate_to_geneforgelang.py MKKKGETSTKEEEKQHEIKEEEKKEVVKKEVVKKEEGEKEKEKEKEKEKEKE
-```
-
-Output:
-
-```
-🔍 GeneForgeLang:
-^p:Dom(Kin)-Mot(NLS)-Mot(PEST)
-```
+| Module                      | Description |
+|----------------------------|-------------|
+| 🧠 Phrase → Protein         | Generate realistic protein sequences from symbolic phrases |
+| 🧪 Protein → Phrase         | Infer functional motifs from amino acid sequences |
+| 📖 Phrase → Description     | Translate symbolic design into scientific English |
+| 🧬 Mutate Protein           | Generate variants of proteins from the same symbolic seed |
+| 📦 Export to FASTA          | Download generated proteins for downstream use |
+| 📊 Analyze Protein          | Visualize amino acid composition as bar plot |
+| 📚 Symbolic Language        | GeneForgeLang syntax allows structured protein definitions |
 
 ---
 
-## 🔬 How It Works
+## 🧪 Example
 
-### 🧠 GeneForgeLang phrases
-
-Are symbolic representations like:
+### Input Phrase:
 
 ```
 ^p:Dom(Kin)-Mot(NLS)*AcK@147=Localize(Nucleus)
 ```
 
-Which express:
-- The molecule and its structural layer (`^p:` = tertiary protein)
-- Functional domains and motifs (`Dom(Kin)`, `Mot(NLS)`)
-- Modifications (`*AcK@147`)
-- Expected effect or destination (`=Localize(Nucleus)`)
-
-### 🧪 Protein Generation
-
-These phrases are converted to seed fragments (`MKKK`, `MPRRR`, etc.) and completed using **ProtGPT2**, a protein language model hosted on Hugging Face.
-
-### 🔁 Reverse Interpretation
-
-The tool analyzes patterns like:
-- Poly-K or MKKK → `Dom(Kin)`
-- PRKR, PKKKRKV → `Mot(NLS)`
-- High E/D content → `Mot(PEST)`
-- Specific motifs like `QAK` → `*AcK@X`
-
-And reconstructs a symbolic design phrase.
+### Output:
+- Seed: `MKKK`
+- Generated protein: realistic sequence (via ProtGPT2)
+- Properties: length, charge, MW
+- Description: *“This protein contains a kinase domain, a nuclear localization signal, and lysine acetylation at a specific position.”*
+- Export: `.fasta` format
+- Graph: bar plot of amino acid composition
 
 ---
 
-## 🔐 License
+## ▶️ How to Use
 
-MIT License © 2025 Fundación de Neurociencias  
-Contributions welcome under open standards.
+1. Clone this repo
+2. Install dependencies:
+```bash
+pip install gradio transformers torch matplotlib
+```
+
+3. Launch the interface:
+```bash
+python app_gradio_full_graph.py
+```
+
+4. Navigate to:
+```
+http://127.0.0.1:7860
+```
 
 ---
 
-## 🤝 Contribute
+## 📁 Repository Structure
 
-1. Fork this repository
-2. Add new phrase-to-seed mappings in `semillas.json`
-3. Propose new detection rules in `translate_to_geneforgelang.py`
-4. Submit a pull request
+| File                          | Description |
+|------------------------------|-------------|
+| `app_gradio_full_graph.py`   | Main UI app with all functionality |
+| `semillas.json`              | Phrase-to-seed dictionary |
+| `translate_to_geneforgelang.py` | Reverse translator |
+| `README.md`                  | This file |
 
 ---
 
-## 📣 Stay tuned
+## 🧠 Developed by
 
-This is part of the **GeneForge Project**, a generative open-source AI toolkit for protein, RNA, and DNA design.
+Fundación de Neurociencias  
+Licensed under the MIT License
 
-Explore:
-- [GeneForgeLang grammar](https://github.com/Fundacion-de-Neurociencias/geneforge-lang)
-- [Spaces (coming soon)](https://huggingface.co/spaces)
+Join us in shaping symbolic bio-AI.
