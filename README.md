@@ -1,6 +1,23 @@
-# 🧬 GeneForgeLang: Symbolic-to-Sequence Protein Design Toolkit
+---
+title: GeneForgeLang
+emoji: 🧬
+colorFrom: indigo
+colorTo: blue
+sdk: gradio
+sdk_version: "3.50.2"
+app_file: app.py
+pinned: true
+---
 
-GeneForgeLang is a symbolic language and toolset for generative biology. It connects high-level biological design intentions to low-level amino acid sequences via AI, rules, and natural language.
+# 🧬 GeneForgeLang: Symbolic-to-Sequence & Cross-Modality Biomolecular Design Toolkit
+
+**GeneForgeLang** is a symbolic, generative language that allows scientists to design and interpret DNA, RNA, and protein sequences with unified syntax and AI support.
+
+This toolkit enables:
+- Generation of realistic proteins from symbolic design
+- Translation of symbolic phrases across DNA ↔ RNA ↔ Protein
+- Structured, human-readable and AI-trainable syntax
+- Semantic equivalence across molecular layers
 
 ---
 
@@ -9,67 +26,56 @@ GeneForgeLang is a symbolic language and toolset for generative biology. It conn
 | Module                      | Description |
 |----------------------------|-------------|
 | 🧠 Phrase → Protein         | Generate realistic protein sequences from symbolic phrases |
-| 🧪 Protein → Phrase         | Infer functional motifs from amino acid sequences |
-| 📖 Phrase → Description     | Translate symbolic design into scientific English |
-| 🧬 Mutate Protein           | Generate variants of proteins from the same symbolic seed |
-| 📦 Export to FASTA          | Download generated proteins for downstream use |
-| 📊 Analyze Protein          | Visualize amino acid composition as bar plot |
-| 📚 Symbolic Language        | GeneForgeLang syntax allows structured protein definitions |
+| 🔁 Transcode Across Molecules | Translate GeneForgeLang phrases between DNA, RNA, and Protein |
+| 📚 Universal Grammar        | One structure to rule them all: motifs, domains, PTMs, splicing |
+| 🧬 Compact Notation         | Prefixes, accents, and structural markers for efficiency |
+| 🧠 AI-Ready Output          | Compatible with transformer-based models like ProtGPT2 |
 
 ---
 
-## 🧪 Example
+## 🧪 Example Input Phrases
 
-### Input Phrase:
-^p:Dom(Kin)-Mot(NLS)*AcK@147=Localize(Nucleus)
+### DNA → RNA
 
-yaml
-Copiar
-Editar
+```
+~d:Prom[TATA]-Exon1-Intr1-Exon2
+↓
+:r:Cap5'-Ex1-Ex2-UTR3'
+```
 
-### Output:
-- Seed: `MKKK`
-- Generated protein: realistic sequence (via ProtGPT2)
-- Properties: length, charge, MW
-- Description: *“This protein contains a kinase domain, a nuclear localization signal, and lysine acetylation at a specific position.”*
-- Export: `.fasta` format
-- Graph: bar plot of amino acid composition
+### RNA → Protein
+
+```
+:r:Ex1-Ex2
+↓
+^p:Dom(Kin)-Mot(NLS)
+```
 
 ---
 
 ## ▶️ How to Use
 
-1. Clone this repo
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-Launch the interface:
+1. Launch this app on Hugging Face or locally
+2. Choose your input phrase and source/target modality
+3. Get your translated output or generated protein
 
-bash
-Copiar
-Editar
-python app.py
-Navigate to:
+---
 
-cpp
-Copiar
-Editar
-http://127.0.0.1:7860
-📁 Repository Structure
+## 📁 Files
 
-File	Description
-app.py	Main UI app with all functionality
-semillas.json	Phrase-to-seed dictionary
-translate_to_geneforgelang.py	Reverse translator
-README.md	This file
-requirements.txt	Python dependencies
-🧠 Developed by
-Fundación de Neurociencias
-Licensed under the MIT License
+| File                  | Description |
+|-----------------------|-------------|
+| `app.py`              | Full Gradio app (all tabs) |
+| `semillas.json`       | Seed dictionary |
+| `transcoder.py`       | Script for DNA/RNA/protein conversion |
+| `requirements.txt`    | Python dependencies |
+| `README.md`           | This file |
+
+---
+
+## 🧠 Developed by
+
+**Fundación de Neurociencias**  
+MIT License
 
 Join us in shaping symbolic bio-AI.
-
-yaml
-Copiar
-Editar
-
