@@ -1,3 +1,7 @@
+
+markdown
+Copiar
+Editar
 ---
 title: GeneForgeLang
 emoji: 🧬
@@ -37,45 +41,50 @@ This toolkit enables:
 
 ### DNA → RNA
 
-```
-~d:Prom[TATA]-Exon1-Intr1-Exon2
-↓
-:r:Cap5'-Ex1-Ex2-UTR3'
-```
+~d:Prom-Exon1-Intr1-Exon2 ↓ :r:Cap5'-Ex1-Ex2-UTR3'
+
+shell
+Copiar
+Editar
 
 ### RNA → Protein
 
-```
-:r:Ex1-Ex2
-↓
-^p:Dom(Kin)-Mot(NLS)
-```
+:r:Ex1-Ex2 ↓ ^p:Dom(Kin)-Mot(NLS)
+
+yaml
+Copiar
+Editar
 
 ---
 
 ## ▶️ How to Use
 
-1. Launch this app on Hugging Face or locally
-2. Choose your input phrase and source/target modality
-3. Get your translated output or generated protein
+1. Clone this repo
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+Launch the interface:
 
----
+bash
+Copiar
+Editar
+python app.py
+Navigate to:
 
-## 📁 Files
+cpp
+Copiar
+Editar
+http://127.0.0.1:7860
+📁 Files
 
-| File                  | Description |
-|-----------------------|-------------|
-| `app.py`              | Full Gradio app (all tabs) |
-| `semillas.json`       | Seed dictionary |
-| `transcoder.py`       | Script for DNA/RNA/protein conversion |
-| `requirements.txt`    | Python dependencies |
-| `README.md`           | This file |
-
----
-
-## 🧠 Developed by
-
-**Fundación de Neurociencias**  
+File	Description
+app.py	Full Gradio app (all tabs)
+semillas.json	Seed dictionary
+transcoder.py	Script for DNA/RNA/protein conversion
+requirements.txt	Python dependencies
+README.md	This file
+🧠 Developed by
+Fundación de Neurociencias
 MIT License
 
 Join us in shaping symbolic bio-AI.
