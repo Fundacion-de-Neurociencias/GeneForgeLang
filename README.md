@@ -1,18 +1,3 @@
-
-markdown
-Copiar
-Editar
----
-title: GeneForgeLang
-emoji: 🧬
-colorFrom: indigo
-colorTo: blue
-sdk: gradio
-sdk_version: "3.50.2"
-app_file: app.py
-pinned: true
----
-
 # 🧬 GeneForgeLang: Symbolic-to-Sequence & Cross-Modality Biomolecular Design Toolkit
 
 **GeneForgeLang** is a symbolic, generative language that allows scientists to design and interpret DNA, RNA, and protein sequences with unified syntax and AI support.
