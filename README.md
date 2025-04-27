@@ -50,15 +50,8 @@ Editar
 pip install -r requirements.txt
 Launch the interface:
 
-bash
-Copiar
-Editar
 python app.py
 Navigate to:
-
-cpp
-Copiar
-Editar
 http://127.0.0.1:7860
 📁 Files
 
