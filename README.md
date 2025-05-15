@@ -36,9 +36,25 @@ Editar
 
 :r:Ex1-Ex2 ↓ ^p:Dom(Kin)-Mot(NLS)
 
-yaml
-Copiar
-Editar
+🧪 Enhancer Design Example: ARE Activation
+We include a new example notebook that demonstrates the design of a synthetic enhancer targeting the antioxidant response element (ARE) pathway.
+
+📂 examples/enhancer_ARE_example.ipynb
+
+This example shows how to:
+
+Define an enhancer targeting the NFE2L2 (NRF2) pathway
+
+Use the GeneForge enhancer generator to create regulatory DNA fragments
+
+Specify desired transcription factors like MAFG, NFE2L2, ATF4
+
+Simulate output and logic constraints
+
+Example YAML input (GeneForgeLang):
+
+<pre><code>enhancer: name: "ARE_Synthetic_Enhancer" target_gene: "NQO1" cell_type: "hepatocyte" species: "Homo sapiens" factors: - NFE2L2 - MAFG - ATF4 goal: "activate" model: "GeneForgeEnhancerGen-v1" </code></pre>
+This is a showcase of how GeneForgeLang can describe and execute genetic programming logic with natural and regulatory semantics.
 
 ---
 
