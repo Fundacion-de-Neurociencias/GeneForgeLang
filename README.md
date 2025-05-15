@@ -28,9 +28,6 @@ This toolkit enables:
 
 ~d:Prom-Exon1-Intr1-Exon2 ↓ :r:Cap5'-Ex1-Ex2-UTR3'
 
-shell
-Copiar
-Editar
 
 ### RNA → Protein
 
