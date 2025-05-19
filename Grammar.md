@@ -113,7 +113,11 @@ Every GeneForgeLang sentence starts with a prefix that encodes both:
 ```text
 *p:p53:p63↔LZ
 ```
-
+### 5.4 BNF Grammar
+<phrase> ::= <prefix><module_list>
+<prefix> ::= "~d:" | ":r:" | "^p:" | "*p:" | "!p:"
+<module_list> ::= <module> | <module> "-" <module_list>
+<module> ::= "Dom(" <text> ")" | "Mot(" <text> ")" | ...
 ---
 
 ## **6. Integration with AI Models**
@@ -134,6 +138,8 @@ GeneForgeLang is designed to:
 - **Variant simulation and codon optimization**
 - **Human–AI co-design interfaces for synthetic biology**
 - **Semantic annotation for omics pipelines**
+
+
 
 ---
 
