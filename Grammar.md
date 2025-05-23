@@ -97,6 +97,19 @@ Each GFL phrase starts with a **molecular prefix** combining:
 | `EDIT:Prime(INS:CTT@27)`  | Prime editing: insert CTT at pos 27 |
 | `EDIT:ARCUS(DEL:codon12)` | ARCUS editing to delete codon 12    |
 
+"editors": {
+  "ABE": "Adenine Base Editor",
+  "CBE": "Cytosine Base Editor",
+  "Prime": "Prime Editor",
+  "Cas9": "Cas9 Endonuclease"
+},
+"delivery": {
+  "NP_mRNA": "Nanoparticle-delivered mRNA",
+  "AAV": "Adeno-Associated Virus",
+  "LNP": "Lipid Nanoparticle"
+}
+
+
 ### 4.3 Structured Metadata for Edits
 
 | Example                                               | Meaning                            |
