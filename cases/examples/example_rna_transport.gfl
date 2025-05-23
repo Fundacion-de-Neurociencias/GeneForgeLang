@@ -1,0 +1,20 @@
+therapy:
+  id: "stanford_rna_neuron"
+  title: "Spatial RNA Repair in Neurons via CRISPR-TO"
+  format: "GFLv1.1"
+  source: "Qi et al., Nature, May 2025"
+  symbolic_plan: |
+    :r:[RNA:NRXN1]
+    EDIT:RNA_Transport(NRXN1→neurite_tip){method=CRISPR-TO, carrier=Cas13}
+    EFFECT(↑neurite_growth@24h){magnitude=50%}
+    HYPOTHESIS: if localized(RNA=NRXN1) then repair(synapse)
+    SIMULATE: {EDIT:RNA_Transport(NRXN1→neurite_tip), OUTCOME=Regrowth(neurite)}
+  authors:
+    - Stanley Qi
+    - Fundación de Neurociencias
+  keywords:
+    - CRISPR-TO
+    - RNA localization
+    - neurite regeneration
+    - Cas13
+    - symbolic design
