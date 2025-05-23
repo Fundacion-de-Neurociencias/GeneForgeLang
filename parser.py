@@ -1,7 +1,6 @@
 import re
 import json
 
-# Cargar gramática desde archivo JSON
 with open("geneforge_grammar.json", "r", encoding="utf-8") as f:
     grammar = json.load(f)
 
@@ -19,7 +18,13 @@ regex_edit = re.compile(r"EDIT:(Base|Prime|ARCUS)\(([^)]+)\)(\{[^}]+\})?")
 regex_dose = re.compile(r"DOSE\((\d+)\):EDIT:(Base|Prime|ARCUS)\(([^)]+)\)(\{[^}]+\})?")
 regex_deliv = re.compile(r"DELIV\(([^@)]+)@([^\)]+)\)")
 regex_conditional = re.compile(r"if\s+(.+?)\s+then\s+(.+)")
-
+regex_effect = re.compile(r"EFFECT\(([^)]+)\)")
+regex_hypothesis = re.compile(r"HYPOTHESIS:\s*(.+)")
+regex_simulate = re.compile(r"SIMULATE:\s*\{(.+?)\}")
+regex_time = re.compile(r"TIME\(([^)]+)\):(.+)")
+regex_pathway = re.compile(r"PATHWAY:\s*(.+)")
+regex_macro = re.compile(r"MACRO:([A-Za-z_0-9]+)=\{(.+?)\}")
+regex_use = re.compile(r"USE:([A-Za-z_0-9]+)")
 
 def parse_metadata_block(block):
     metadata = {}
@@ -29,7 +34,6 @@ def parse_metadata_block(block):
             key, val = pair.strip().split("=")
             metadata[key.strip()] = val.strip()
     return metadata
-
 
 def parse_geneforge_line(line):
     output = {
@@ -46,6 +50,13 @@ def parse_geneforge_line(line):
         "delivery": None,
         "logic": [],
         "conditionals": [],
+        "effects": [],
+        "hypotheses": [],
+        "simulations": [],
+        "timed_events": [],
+        "pathways": [],
+        "macros": [],
+        "macro_calls": [],
         "errors": []
     }
 
@@ -99,11 +110,17 @@ def parse_geneforge_line(line):
     for condition, action in regex_conditional.findall(content):
         output["conditionals"].append({"if": condition.strip(), "then": action.strip()})
 
+    output["effects"] = regex_effect.findall(content)
+    output["hypotheses"] = regex_hypothesis.findall(content)
+    output["simulations"] = regex_simulate.findall(content)
+    output["pathways"] = regex_pathway.findall(content)
+    output["macros"] = [{"name": name, "body": body} for name, body in regex_macro.findall(content)]
+    output["macro_calls"] = regex_use.findall(content)
+    output["timed_events"] = [{"time": time, "event": evt.strip()} for time, evt in regex_time.findall(content)]
+
     output["valid"] = True
     return output
 
-
-# CLI mode
 if __name__ == "__main__":
     import sys
     if len(sys.argv) > 1:
