@@ -11,9 +11,25 @@ regex_modules = re.compile(r"(Dom|Mot|TF|Ctrl|PTM)\(([^)]+)\)")
 regex_logic_block = re.compile(r"Ctrl\{([^}]+)\}")
 regex_ptm = re.compile(r"([A-Z])\*([A-Za-z]+)@(\d+)")
 regex_compact_ptm = re.compile(r"\*([A-Za-z]+)([A-Z])@(\d+)")
-regex_mut = re.compile(r"\[MUT:([A-Z])>([A-Z])@(\d+)]")
+regex_mut_prov = re.compile(r"\[MUT:(PAT|MAT|SOM|GER):([A-Z])>([A-Z])@(\d+)]")
+regex_mut_simple = re.compile(r"\[MUT:([A-Z])>([A-Z])@(\d+)]")
 regex_del = re.compile(r"\[DEL:(\d+)-(\d+)]")
 regex_ins = re.compile(r"\[INS:([A-Z]+)@(\d+)]")
+regex_edit = re.compile(r"EDIT:(Base|Prime|ARCUS)\(([^)]+)\)(\{[^}]+\})?")
+regex_dose = re.compile(r"DOSE\((\d+)\):EDIT:(Base|Prime|ARCUS)\(([^)]+)\)(\{[^}]+\})?")
+regex_deliv = re.compile(r"DELIV\(([^@)]+)@([^\)]+)\)")
+regex_conditional = re.compile(r"if\s+(.+?)\s+then\s+(.+)")
+
+
+def parse_metadata_block(block):
+    metadata = {}
+    block = block.strip("{} ")
+    for pair in block.split(","):
+        if "=" in pair:
+            key, val = pair.strip().split("=")
+            metadata[key.strip()] = val.strip()
+    return metadata
+
 
 def parse_geneforge_line(line):
     output = {
@@ -25,65 +41,69 @@ def parse_geneforge_line(line):
         "mutations": [],
         "insertions": [],
         "deletions": [],
+        "edits": [],
+        "doses": [],
+        "delivery": None,
         "logic": [],
+        "conditionals": [],
         "errors": []
     }
 
-    # Verificar prefijo estructural
     prefix_match = regex_prefix.match(line)
     if not prefix_match:
-        output["errors"].append("❌ Prefijo estructural/molécula no válido.")
+        output["errors"].append("❌ Invalid structural/molecule prefix.")
         return output
 
     structure_symbol, molecule_code = prefix_match.groups()
-    output["structure"] = grammar["structures"].get(structure_symbol, "❓ Desconocido")
-    output["molecule"] = grammar["molecules"].get(molecule_code, "❓ Desconocido")
+    output["structure"] = grammar["structures"].get(structure_symbol, "❓ Unknown")
+    output["molecule"] = grammar["molecules"].get(molecule_code, "❓ Unknown")
     content = line[len(prefix_match.group(0)):]
 
-    # Módulos funcionales
-    modules_found = regex_modules.findall(content)
-    output["modules"] = [{"type": m, "value": v} for m, v in modules_found]
+    output["modules"] = [{"type": m, "value": v} for m, v in regex_modules.findall(content)]
+    output["logic"] = regex_logic_block.findall(content)
 
-    # Bloques lógicos Ctrl{...}
-    logic_blocks = regex_logic_block.findall(content)
-    output["logic"] = logic_blocks
+    for aa, mod, pos in regex_ptm.findall(content):
+        output["ptms"].append({"notation": "ProForma", "residue": aa, "modification": mod, "position": int(pos)})
+    for mod, aa, pos in regex_compact_ptm.findall(content):
+        output["ptms"].append({"notation": "GFL", "residue": aa, "modification": mod, "position": int(pos)})
 
-    # PTMs estilo ProForma
-    ptms1 = regex_ptm.findall(content)
-    for aa, mod, pos in ptms1:
-        output["ptms"].append({
-            "notation": "ProForma",
-            "residue": aa,
-            "modification": mod,
-            "position": int(pos)
+    for origin, f, t, pos in regex_mut_prov.findall(content):
+        output["mutations"].append({"origin": origin, "from": f, "to": t, "position": int(pos)})
+    for f, t, pos in regex_mut_simple.findall(content):
+        output["mutations"].append({"from": f, "to": t, "position": int(pos)})
+
+    output["insertions"] = [{"sequence": s, "position": int(pos)} for s, pos in regex_ins.findall(content)]
+    output["deletions"] = [{"start": int(a), "end": int(b)} for a, b in regex_del.findall(content)]
+
+    for kind, op, meta in regex_edit.findall(content):
+        output["edits"].append({
+            "type": kind,
+            "operation": op,
+            "metadata": parse_metadata_block(meta) if meta else {}
         })
 
-    # PTMs compactas estilo GeneForgeLang
-    ptms2 = regex_compact_ptm.findall(content)
-    for mod, aa, pos in ptms2:
-        output["ptms"].append({
-            "notation": "GeneForgeLang",
-            "residue": aa,
-            "modification": mod,
-            "position": int(pos)
+    for n, kind, op, meta in regex_dose.findall(content):
+        output["doses"].append({
+            "number": int(n),
+            "edit": {
+                "type": kind,
+                "operation": op,
+                "metadata": parse_metadata_block(meta) if meta else {}
+            }
         })
 
-    # Mutaciones
-    mutations = regex_mut.findall(content)
-    output["mutations"] = [{"from": f, "to": t, "position": int(pos)} for f, t, pos in mutations]
+    delivery = regex_deliv.search(content)
+    if delivery:
+        output["delivery"] = {"vector": delivery.group(1), "route": delivery.group(2)}
 
-    # Inserciones
-    insertions = regex_ins.findall(content)
-    output["insertions"] = [{"sequence": s, "position": int(pos)} for s, pos in insertions]
-
-    # Deleciones
-    deletions = regex_del.findall(content)
-    output["deletions"] = [{"start": int(a), "end": int(b)} for a, b in deletions]
+    for condition, action in regex_conditional.findall(content):
+        output["conditionals"].append({"if": condition.strip(), "then": action.strip()})
 
     output["valid"] = True
     return output
 
-# Modo CLI
+
+# CLI mode
 if __name__ == "__main__":
     import sys
     if len(sys.argv) > 1:
@@ -91,4 +111,4 @@ if __name__ == "__main__":
         result = parse_geneforge_line(line)
         print(json.dumps(result, indent=2, ensure_ascii=False))
     else:
-        print("⚠️  Introduce una frase GFL como argumento.")
+        print("⚠️  Please provide a GFL line as input.")
