@@ -118,6 +118,9 @@ Each module is a unit of information: domain, mutation, logic, edit, etc.
 <payload> ::= <source> "→" <target> | <mutation> | <edit_event>
 
 ```
+<effect_expr> ::= "EFFECT(" <symbol> <outcome> [ "@" <time> ] ")"
+<symbol> ::= "↑" | "↓" | "→" | ...
+<outcome> ::= <function> | <phenotype>
 
 ---
 
