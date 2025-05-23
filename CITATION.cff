@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+title: GeneForgeLang: A Symbolic Language for Rational Bio-Design and Clinical Genomic Engineering
+authors:
+  - family-names: Menéndez González
+    given-names: Manuel
+    affiliation: Fundación de Neurociencias
+    orcid: https://orcid.org/0000-0000-0000-0000
+    email: contacto@fundaciondeneurociencias.org
+license: MIT
+message: "If you use GeneForgeLang, please cite this whitepaper."
+repository-code: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang
+url: https://doi.org/10.5281/zenodo.15493559
+doi: 10.5281/zenodo.15493559
+version: 1.1
+keywords:
+  - gene editing
+  - symbolic biology
+  - molecular design
+  - cross-modality modeling
+  - synthetic biology
+date-released: 2025-05-23
