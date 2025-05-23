@@ -10,23 +10,23 @@ Built on inspirations from GenoCAD, Eugene, ProForma, and SBOL, GFL introduces *
 
 Each GFL phrase starts with a **molecular prefix** combining:
 
-* Molecular modality: `d` (DNA), `r` (RNA), `p` (protein)
-* Structural abstraction:
+- Molecular modality: `d` (DNA), `r` (RNA), `p` (protein)
+- Structural abstraction:
 
 | Symbol | Level      | Description                                   |
-| ------ | ---------- | --------------------------------------------- |
+|--------|------------|-----------------------------------------------|
 | `~`    | Linear     | Raw sequence, coding or non-coding            |
 | `:`    | Secondary  | Structural motifs (stem-loops, alpha helices) |
 | `^`    | Tertiary   | Folded domains, 3D configuration              |
 | `*`    | Quaternary | Complex/multimeric interaction                |
 | `!`    | Unknown    | Ambiguous/unspecified structure               |
 
-### Examples
+**Examples:**
 
-* `~d:` = Linear DNA
-* `^p:` = Folded protein
-* `:r:` = RNA stem-loop
-* `*p:` = Multimeric protein complex
+- `~d:` = Linear DNA  
+- `^p:` = Folded protein  
+- `:r:` = RNA stem-loop  
+- `*p:` = Multimeric protein complex  
 
 ---
 
@@ -35,7 +35,7 @@ Each GFL phrase starts with a **molecular prefix** combining:
 ### 2.1 Symbols and Modifiers
 
 | Symbol | Function                                 | Origin        |
-| ------ | ---------------------------------------- | ------------- |
+|--------|------------------------------------------|---------------|
 | `*`    | Post-translational modification          | ProForma      |
 | `'`    | High conservation or emphasis            | GeneForgeLang |
 | `^`    | Epigenetic state (e.g. methylation)      | GeneForgeLang |
@@ -55,7 +55,7 @@ Each GFL phrase starts with a **molecular prefix** combining:
 ### 3.1 Sequence-Level Units
 
 | Token    | Description              |
-| -------- | ------------------------ |
+|----------|--------------------------|
 | `[EX]`   | Exon                     |
 | `[IN]`   | Intron                   |
 | `[UTR5]` | 5' Untranslated Region   |
@@ -66,7 +66,7 @@ Each GFL phrase starts with a **molecular prefix** combining:
 ### 3.2 Functional and Regulatory Elements
 
 | Expression      | Meaning                           |
-| --------------- | --------------------------------- |
+|-----------------|-----------------------------------|
 | `Dom(Kin)`      | Kinase domain                     |
 | `Mot(NLS)`      | Nuclear localization signal       |
 | `Mot(PEST)`     | Degradation motif                 |
@@ -80,42 +80,46 @@ Each GFL phrase starts with a **molecular prefix** combining:
 ### 4.1 Mutation Encoding with Provenance
 
 | Syntax                | Meaning                    |
-| --------------------- | -------------------------- |
-| `[MUT:PAT:A>G@Q335X]` | Paternal point mutation    |
-| `[MUT:MAT:E>T@714X]`  | Maternal point mutation    |
-| `[MUT:SOM:del@exon4]` | Somatic deletion in exon 4 |
+|------------------------|---------------------------|
+| `[MUT:PAT:A>G@Q335X]`  | Paternal point mutation    |
+| `[MUT:MAT:E>T@714X]`   | Maternal point mutation    |
+| `[MUT:SOM:del@exon4]`  | Somatic deletion in exon 4 |
 
 **Provenance types**: `PAT`, `MAT`, `SOM`, `GER`
-
----
 
 ### 4.2 Genome Editing Operations
 
 | Expression                | Description                         |
-| ------------------------- | ----------------------------------- |
+|---------------------------|-------------------------------------|
 | `EDIT:Base(A→G@Q335X)`    | Base editing at codon Q335X         |
 | `EDIT:Prime(INS:CTT@27)`  | Prime editing: insert CTT at pos 27 |
 | `EDIT:ARCUS(DEL:codon12)` | ARCUS editing to delete codon 12    |
 
-"editors": {
+**Supported editors**:
+```json
+{
   "ABE": "Adenine Base Editor",
   "CBE": "Cytosine Base Editor",
   "Prime": "Prime Editor",
   "Cas9": "Cas9 Endonuclease"
-},
-"delivery": {
+}
+```
+
+**Supported delivery types**:
+```json
+{
   "NP_mRNA": "Nanoparticle-delivered mRNA",
   "AAV": "Adeno-Associated Virus",
   "LNP": "Lipid Nanoparticle"
 }
-
+```
 
 ### 4.3 Structured Metadata for Edits
 
-| Example                                               | Meaning                            |
-| ----------------------------------------------------- | ---------------------------------- |
-| `EDIT:Base(G→A@Q335X){efficacy=partial, cells=liver}` | Partial editing in liver cells     |
-| `EDIT:Base(A→T@123){rate=low, target=CPS1}`           | Slow editing targeted to CPS1 gene |
+| Example                                               | Meaning                             |
+|--------------------------------------------------------|-------------------------------------|
+| `EDIT:Base(G→A@Q335X){efficacy=partial, cells=liver}` | Partial editing in liver cells      |
+| `EDIT:Base(A→T@123){rate=low, target=CPS1}`           | Slow editing targeted to CPS1 gene  |
 
 ---
 
@@ -124,7 +128,7 @@ Each GFL phrase starts with a **molecular prefix** combining:
 ### 5.1 Delivery and Administration
 
 | Syntax               | Meaning                                  |
-| -------------------- | ---------------------------------------- |
+|----------------------|------------------------------------------|
 | `DELIV(mRNA+LNP@IV)` | mRNA + lipid nanoparticle via IV         |
 | `DELIV(AAV9@IT)`     | AAV serotype 9 via intrathecal injection |
 
@@ -168,7 +172,11 @@ DOSE(1):EDIT:Base(STOP→Q@335)
 <phrase> ::= <prefix> <module_list>
 <prefix> ::= "~d:" | ":r:" | "^p:" | "*p:" | "!p:"
 <module_list> ::= <module> | <module> "-" <module_list>
-<module> ::= "Dom(" <text> ")" | "Mot(" <text> ")" | "EDIT:" <edit_expr> | "MUT:" <mut_expr> | ...
+<module> ::= "Dom(" <text> ")" 
+           | "Mot(" <text> ")" 
+           | "EDIT:" <edit_expr> 
+           | "MUT:" <mut_expr> 
+           | ...
 ```
 
 ---
@@ -177,27 +185,24 @@ DOSE(1):EDIT:Base(STOP→Q@335)
 
 GeneForgeLang serves as:
 
-* **Symbolic input/output layer** for LLMs (e.g., GeneForge Transformer, ProtGPT)
-* **Generative prompt template** for editing or simulating variants
-* **Interoperable exporter** to FASTA, GenBank, SBOL, ProForma
-* **Anchor for reverse-engineering molecular edits from phenotype descriptions**
+- **Symbolic input/output layer** for LLMs (e.g., GeneForge Transformer, ProtGPT)
+- **Generative prompt template** for editing or simulating variants
+- **Interoperable exporter** to FASTA, GenBank, SBOL, ProForma
+- **Anchor for reverse-engineering molecular edits from phenotype descriptions**
 
 ---
 
 ## **9. Applications**
 
-* **Gene therapy design** with variant targeting logic
-* **Protein modeling** with motifs and functional tags
-* **Human-AI codevelopment** of synthetic pathways
-* **Phenotype ↔ Genotype simulations**
-* **Clinical annotation pipelines for precision medicine**
+- **Gene therapy design** with variant targeting logic  
+- **Protein modeling** with motifs and functional tags  
+- **Human-AI codevelopment** of synthetic pathways  
+- **Phenotype ↔ Genotype simulations**  
+- **Clinical annotation pipelines for precision medicine**
 
 ---
 
 ## **Version**
 
-Grammar Spec **v1.0 (Release)**
-© 2025 Fundación de Neurociencias — MIT License
-Changes introduced after CRISPR 2.0 base editing case by Eric Topol.
-
----
+**Grammar Spec v1.0 (Release)**  
+© 2025 Fundación de Neurociencias — MIT License  
