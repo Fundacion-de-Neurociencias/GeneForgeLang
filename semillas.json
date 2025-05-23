@@ -1,12 +1,36 @@
 {
-  "Dom(Kin)": "MKKK",
-  "Mot(NLS)": "MPRRR",
-  "Mot(PEST)": "MDGQL",
-  "TF(GATA1)": "MKTFG",
-  "*AcK": "MKQAK",
-  "*Ac": "MKQAK",
-  "*P": "MKRP",
-  "*Phos": "MKRP",
-  "Localize(Nucleus)": "MPKRK",
-  "Localize(Membrane)": "MAIFL"
+  "examples": [
+    {
+      "id": "CPS1_KJ",
+      "description": "CPS1 in vivo base editing in infant with urea cycle disorder",
+      "input": "~d:[TATA]ATGCTGAC[MUT:PAT:A>G@1001]",
+      "edit": "EDIT:Base(A→G@1001){efficacy=partial, cells=hepatocyte}",
+      "delivery": "DELIV(mRNA+LNP@IV)",
+      "doses": [
+        "DOSE(1):EDIT:Base(A→G@1001)",
+        "DOSE(2):EDIT:Base(A→G@1001)"
+      ],
+      "timing": [
+        "TIME(0d):DELIV(mRNA@IV)",
+        "TIME(21d):EDIT:Base(A→G@1001)"
+      ],
+      "effect": "EFFECT(restore function=urea cycle)",
+      "hypothesis": "HYPOTHESIS: if MUT(Q335X) → Loss(CPS1)",
+      "simulate": "SIMULATE: {EDIT:Base(A→G@1001), OUTCOME:↓ammonia}",
+      "macro": "MACRO:EDIT_CPS1 = {DELIV(mRNA+LNP@IV)-EDIT:Base(A→G@1001){target=CPS1}}",
+      "use": "USE:EDIT_CPS1"
+    },
+    {
+      "id": "OTC_pathway",
+      "description": "Urea cycle pathway involving OTC",
+      "input": "PATHWAY: ARG + NH3 → CPS1 → Carbamoyl-P → OTC → Citrulline",
+      "effect": "EFFECT(normalize urea production)"
+    },
+    {
+      "id": "Gene_MacroTest",
+      "description": "Test reusable macro for editing",
+      "macro": "MACRO:FIX_MUT = {EDIT:Base(G→A@42){cells=liver}-DELIV(LNP@IV)}",
+      "use": "USE:FIX_MUT"
+    }
+  ]
 }
