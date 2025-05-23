@@ -10,7 +10,7 @@ This document defines the **syntactic rules** of GeneForgeLang—the symbolic la
 - `"..."` denotes a **literal symbol**.
 - `|` indicates alternatives.
 - `[...]` denotes optional elements.
-- `{...}` indicates structured metadata or repetition.
+- `{...}` indicates metadata or key-value structures.
 - `(...)` groups sub-elements.
 
 ---
@@ -35,8 +35,6 @@ This document defines the **syntactic rules** of GeneForgeLang—the symbolic la
 - `:r:` → structured RNA  
 - `^p:` → folded protein  
 - `*p:` → multimeric protein  
-- `!d:` → unknown DNA  
-- `^r:` → tertiary RNA
 
 ---
 
@@ -46,19 +44,21 @@ This document defines the **syntactic rules** of GeneForgeLang—the symbolic la
 <body> ::= <module> { "-" <module> }
 ```
 
-Each `<module>` is a symbolic unit (domain, motif, mutation, etc.).
+Each module is a unit of information: domain, mutation, logic, edit, etc.
 
 ---
 
 ## 🧩 Module Syntax
 
 ```ebnf
-<module> ::= <region> | <motif> | <domain> | <event> | <logic> | <mutation> | <edit> | <delivery> | <dose>
+<module> ::= <region> | <motif> | <domain> | <event> | <logic> | <mutation>
+           | <edit> | <delivery> | <dose> | <effect> | <hypothesis>
+           | <simulate> | <time> | <pathway> | <macro> | <use>
 ```
 
 ---
 
-### 📦 Sequence Regions
+### 🧬 Sequence Regions
 
 ```ebnf
 <region> ::= "[" <label> "]"
@@ -83,7 +83,6 @@ Each `<module>` is a symbolic unit (domain, motif, mutation, etc.).
 <event> ::= <residue> "*" <mod> "@" <position>
 <residue> ::= "K" | "Y" | "S" | "T" | ...
 <mod> ::= "Ac" | "P" | "Ub" | "m" | ...
-<position> ::= <int>
 ```
 
 ---
@@ -96,94 +95,115 @@ Each `<module>` is a symbolic unit (domain, motif, mutation, etc.).
 <rhs> ::= <function> | <location>
 ```
 
-Examples:
-- `Mot(PEST) = Deg`
-- `Dom(Kin)-Mot(NLS)*AcK@147 = Localize(Nucleus)`
-
 ---
 
-## 🧬 Mutation and Edit Syntax
-
-### 🔬 Mutation Notation
+### 🧬 Mutations
 
 ```ebnf
-<mutation> ::= "[MUT:" <origin> ":" <ref> ">" <alt> "@" <pos> "]"
+<mutation> ::= "[MUT:" [<origin> ":"] <ref> ">" <alt> "@" <pos> "]"
 <origin> ::= "PAT" | "MAT" | "SOM" | "GER"
 ```
 
-### 🧨 Structural Variants
+---
+
+### 🔨 Edits
 
 ```ebnf
-<deletion> ::= "[DEL:" <start> "-" <end> "]"
-<insertion> ::= "[INS:" <seq> "@" <pos> "]"
+<edit> ::= "EDIT:" <tool> "(" <operation> ")" [<metadata>]
+<tool> ::= "Base" | "Prime" | "ARCUS"
+<operation> ::= e.g. "A→G@42", "INS:CTT@27"
+<metadata> ::= "{" <kvpair> { "," <kvpair> } "}"
+<kvpair> ::= <key> "=" <value>
 ```
 
 ---
 
-### 🛠️ Edit Operations
-
-```ebnf
-<edit> ::= "EDIT:Base(" <ref> "→" <alt> "@" <pos> ")" [<metadata>]
-         | "EDIT:Prime(" <insdel> "@" <pos> ")" [<metadata>]
-<metadata> ::= "{" <keyval> { "," <keyval> } "}"
-<keyval> ::= <key> "=" <value>
-```
-
----
-
-## 🚚 Delivery Syntax
+### 💉 Delivery and Dosing
 
 ```ebnf
 <delivery> ::= "DELIV(" <vector> "@" <route> ")"
-<vector> ::= "mRNA" | "LNP" | "AAV" | "NP_mRNA" | ...
+<vector> ::= "mRNA" | "LNP" | "AAV" | ...
 <route> ::= "IV" | "IT" | "local" | "ex vivo"
+
+<dose> ::= "DOSE(" <int> "):" <edit>
 ```
 
 ---
 
-## 💉 Dose Schedule
+### ⏳ Timed Events
 
 ```ebnf
-<dose> ::= "DOSE(" <int> "):" <edit>
+<time> ::= "TIME(" <day_expr> "):" <module>
+<day_expr> ::= e.g. "0d", "7d", "3w"
 ```
 
-Example:
-```text
-DOSE(2):EDIT:Base(A→G@Q335X){dose=mid, day=21}
+---
+
+### 🧠 Effects and Reasoning
+
+```ebnf
+<effect> ::= "EFFECT(" <description> ")"
+<hypothesis> ::= "HYPOTHESIS:" <logic_statement>
+<simulate> ::= "SIMULATE:" "{" <option_list> "}"
+```
+
+---
+
+### 🔬 Pathways and Omics
+
+```ebnf
+<pathway> ::= "PATHWAY:" <molecule_chain>
+```
+
+---
+
+### 🧩 Macros and Calls
+
+```ebnf
+<macro> ::= "MACRO:" <name> "=" "{" <body> "}"
+<use> ::= "USE:" <name>
 ```
 
 ---
 
 ## ✅ Valid Examples
 
-```text
+```gfl
 ~d:[TATA]-ATG-[EX]-[IN]-[EX2]
-^p:Dom(Kin)-Mot(NLS)*AcK@147 = Localize(Nucleus)
-:r:Cap5'-Ex1-Intr1-Ex2-UTR3'
-EDIT:Base(A→G@Q335X){tool=ABE, cells=hepatocyte}
+^p:Dom(Kin)-Mot(NLS)*AcK@147=Localize(Nucleus)
+EDIT:Base(G→A@Q335X){target=CPS1}
 DELIV(mRNA+LNP@IV)
-DOSE(1):EDIT:Base(A→G@Q335X){dose=low, day=0}
+DOSE(2):EDIT:Base(A→G@123){rate=low}
+TIME(7d):EDIT:Base(G→A@Q335X)
+EFFECT(restore function=urea cycle)
+HYPOTHESIS: if MUT(Q335X) → loss(CPS1)
+SIMULATE: {EDIT:Base(...), OUTCOME:↓ammonia}
+PATHWAY: ARG → CPS1 → Carbamoyl-P
+MACRO:FIX1={DELIV(...) - EDIT:Base(...)}
+USE:FIX1
 ```
 
 ---
 
 ## ❌ Invalid Examples
 
-```text
-~r::TATA]       # double colon, invalid structure
-:p:Dom()        # empty domain
-*Exon1          # missing prefix
-[DEL:12]        # malformed deletion syntax
+```gfl
+~r::TATA]        # double colon
+:p:Dom()         # missing domain
+*EX              # missing prefix
+[DEL:12]         # malformed deletion
 ```
 
 ---
 
 ## 🔄 Syntax vs. Grammar
 
-- **Syntax** ensures inputs are **well-formed** and **parsable**.
-- **Grammar** defines **semantic meaning** and **logic** of components.
+- **Syntax** = ensures well-formed, machine-parseable phrases
+- **Grammar** = defines semantic logic and transformation behavior
 
 ---
 
-**Version:** 0.2 (post-CRISPR2 update)  
+## Version
+
+Syntax Spec v1.1  
 © 2025 Fundación de Neurociencias — MIT License
