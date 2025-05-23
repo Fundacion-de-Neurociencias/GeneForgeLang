@@ -1,102 +1,140 @@
-🧬 GeneForgeLang: Symbolic-to-Sequence & Cross-Modality Biomolecular Design Toolkit
-GeneForgeLang is a symbolic, generative language that allows scientists to design and interpret DNA, RNA, and protein sequences with unified syntax and AI support.
+# 🧬 GeneForgeLang: Symbolic-to-Sequence & Cross-Modality Biomolecular Design Toolkit
 
-This toolkit enables:
+**GeneForgeLang (GFL)** is a symbolic, generative language that allows scientists to **design, analyze and simulate** DNA, RNA, and protein structures with unified syntax and AI-compatible logic.
 
-Generation of realistic proteins from symbolic design
+---
 
-Translation of symbolic phrases across DNA ↔ RNA ↔ Protein
+## 🌐 What It Enables
 
-Structured, human-readable and AI-trainable syntax
+- ✅ Symbolic design of gene therapies, edits, enhancers, and protein domains
+- 🔁 Cross-modality conversion: DNA ↔ RNA ↔ Protein
+- 🧠 Causal and conditional logic: `if A then B`, `EDIT(...)`, `EFFECT(...)`
+- 🧬 Multi-level modeling with time, dosage, pathway, and simulation
+- 📡 Integration with AI models for code generation and interpretation
 
-Semantic equivalence across molecular layers
+---
 
-Synthetic enhancer design with cell-specific transcription factor logic
+## 🚀 Core Features
 
-🚀 Features
-Module	Description
-🧠 Phrase → Protein	Generate realistic protein sequences from symbolic phrases
-🔁 Transcode Molecule Types	Translate GeneForgeLang phrases between DNA, RNA, and Protein
-📖 Phrase → English	Interpret symbolic code into scientific natural language
-🧬 Enhancer Generator	Create synthetic regulatory sequences (e.g., ARE elements)
-📚 Universal Grammar	Compact notation with motifs, domains, PTMs, and splicing
-🔄 Sequence → Phrase (WIP)	Infer functional representation from sequences
-⚙️ AI-Ready Interface	Compatible with transformer-based models like ProtGPT2
+| Module                  | Description                                                             |
+|-------------------------|-------------------------------------------------------------------------|
+| 🧠 Phrase → Protein      | Generate realistic protein sequences from symbolic phrases              |
+| 🔁 Transcode Molecules   | Translate GeneForgeLang phrases between DNA, RNA, and Protein           |
+| 📖 Phrase → English      | Interpret symbolic code into natural scientific language                |
+| 🧬 Enhancer Generator    | Create regulatory sequences with TF logic and conditionals              |
+| 🔮 Simulate Edits        | Predict outcomes via `SIMULATE:` and `HYPOTHESIS:` logic                |
+| ⏳ Timeline & Dosing     | Represent `DOSE(n)` and `TIME(n):` blocks for therapeutic modeling      |
+| ⚙️ AI-Ready Interface     | Compatible with transformers like ProtGPT2, GeneForgeTransformer         |
 
-🧪 Example Input Phrases
-DNA → RNA
-~d:Prom-Exon1-Intr1-Exon2
+---
+
+## 🧪 Example Input Phrases
+
+### DNA → RNA
+
+```gfl
+~d:[TATA]-ATG-[EX]-[IN]-[EX2]
 ↓
 :r:Cap5'-Ex1-Ex2-UTR3'
+```
 
-RNA → Protein
+### RNA → Protein
+
+```gfl
 :r:Ex1-Ex2
 ↓
 ^p:Dom(Kin)-Mot(NLS)*AcK@147
+```
 
-🧬 Enhancer Design Example: ARE Activation
-We include a working notebook demonstrating the design of a synthetic enhancer targeting the antioxidant response element (ARE) pathway.
+---
 
-📂 examples/enhancer_ARE_example.ipynb
+## 🔬 In Vivo Gene Editing Example (CRISPR 2.0)
 
-This shows how to:
+```gfl
+~d:[TATA]CPS1[MUT:PAT:A>G@1001]
+EDIT:Base(A→G@1001){efficacy=partial, cells=liver}
+DELIV(mRNA+LNP@IV)
+DOSE(1):EDIT:Base(A→G@1001)
+TIME(0d):DELIV(...)
+EFFECT(restore function=urea cycle)
+HYPOTHESIS: if MUT(Q335X) → Loss(CPS1)
+SIMULATE: {EDIT:Base(...), OUTCOME:↓ammonia}
+MACRO:FIX1 = {DELIV(...) - EDIT:Base(...)}
+USE:FIX1
+```
 
-Define an enhancer targeting NQO1 via the NRF2 pathway
+---
 
-Use the GeneForge enhancer generator to create regulatory DNA fragments
+## 🧬 Enhancer Design Example: ARE Activation
 
-Specify transcription factors like NFE2L2, MAFG, ATF4
-
-Simulate transcriptional logic for activation in hepatocytes
-
-GeneForgeLang YAML example:
-
+```yaml
 enhancer:
-name: "ARE_Synthetic_Enhancer"
-target_gene: "NQO1"
-cell_type: "hepatocyte"
-species: "Homo sapiens"
-factors:
-- NFE2L2
-- MAFG
-- ATF4
-goal: "activate"
-model: "GeneForgeEnhancerGen-v1"
+  name: "ARE_Synthetic_Enhancer"
+  target_gene: "NQO1"
+  cell_type: "hepatocyte"
+  species: "Homo sapiens"
+  factors:
+    - NFE2L2
+    - MAFG
+    - ATF4
+  goal: "activate"
+  model: "GeneForgeEnhancerGen-v1"
+```
 
-This is a live demonstration of how GeneForgeLang enables symbolic and modular genetic programming.
+📂 See: `examples/enhancer_ARE_example.ipynb`
 
-▶️ How to Use
-Clone this repo:
+---
 
+## ▶️ How to Use
+
+### 1. Clone the repo:
+
+```bash
 git clone https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git
 cd GeneForgeLang
+```
 
-Install dependencies:
+### 2. Install dependencies:
 
+```bash
 pip install -r requirements.txt
+```
 
-Launch the app:
+### 3. Launch the app:
 
+```bash
 python app.py
+```
 
-Open in browser:
-http://127.0.0.1:7860
+Then open:
 
-📁 File Overview
-File	Description
-app.py	Full Gradio app (all tabs)
-semillas.json	Phrase-to-seed dictionary
-transcoder.py	DNA/RNA/protein converter
-generate_from_phrase.py	AI-based generator from GFL
-describe_phrase.py	English interpretation module
-translate_to_geneforgelang.py	Inference engine: Sequence → Phrase
-examples/enhancer_ARE_example.ipynb	Notebook for enhancer design
-requirements.txt	Python dependencies
-README.md	This file
+[http://127.0.0.1:7860](http://127.0.0.1:7860)
 
-🧠 Developed by
-Fundación de Neurociencias
-Project lead: Manuel Menéndez González
-Licensed under the MIT License
+---
 
-Join us in shaping symbolic bio-AI. Contributions are welcome!
+## 📁 File Overview
+
+| File                             | Description                                                |
+|----------------------------------|------------------------------------------------------------|
+| `app.py`                         | Gradio interface with parser and editor                    |
+| `parser.py`                      | Main GFL parser with logic, edits, macros, and more        |
+| `parser_notebook.ipynb`          | Jupyter notebook for interactive parsing                   |
+| `semillas.json`                  | Test cases and GFL templates                               |
+| `geneforge_grammar.json`         | Structured grammar definitions and mappings                |
+| `syntax.md`                      | Formal syntax specification (EBNF-like)                    |
+| `grammar.md`                     | Full grammar and symbolic logic for GFL                    |
+| `test_parser.py`                 | Unit tests with `pytest` for new blocks and logic          |
+| `examples/enhancer_ARE_example.ipynb` | Enhancer design notebook                              |
+| `requirements.txt`              | Python dependencies                                        |
+| `README.md`                      | This file                                                  |
+
+---
+
+## 🧠 Developed By
+
+**Fundación de Neurociencias**  
+Project lead: *Manuel Menéndez González*  
+Licensed under the **MIT License**
+
+Join us in shaping symbolic bio-AI.  
+📬 Contributions welcome via [issues](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues) or pull requests!
