@@ -1,0 +1,7 @@
+# Stanford RNA Neuron Case (CRISPR-TO)
+# Based on Qi et al., Nature, 2025
+:r:[RNA:NRXN1]
+EDIT:RNA_Transport(NRXN1→neurite_tip){method=CRISPR-TO, carrier=Cas13}
+EFFECT(↑neurite_growth@24h){magnitude=50%}
+HYPOTHESIS: if localized(RNA=NRXN1) then repair(synapse)
+SIMULATE: {EDIT:RNA_Transport(NRXN1→neurite_tip), OUTCOME=Regrowth(neurite)}
