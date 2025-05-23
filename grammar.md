@@ -140,6 +140,11 @@ EFFECT(restore function=urea cycle)
 HYPOTHESIS: if MUT(Q335X) → Loss(CPS1)
 SIMULATE: {EDIT:Base(...), OUTCOME:↓ammonia}
 ```
+### 5.5 EFFECT Operator
+
+| Syntax                          | Meaning                                        |
+|----------------------------------|------------------------------------------------|
+| `EFFECT(↑neurite_growth@24h)`    | Increase neurite growth after 24h             |
 
 ---
 
