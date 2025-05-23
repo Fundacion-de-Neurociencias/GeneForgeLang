@@ -25,6 +25,12 @@ regex_time = re.compile(r"TIME\(([^)]+)\):(.+)")
 regex_pathway = re.compile(r"PATHWAY:\s*(.+)")
 regex_macro = re.compile(r"MACRO:([A-Za-z_0-9]+)=\{(.+?)\}")
 regex_use = re.compile(r"USE:([A-Za-z_0-9]+)")
+regex_edit_rna_transport = re.compile(r"EDIT:RNA_Transport\(([^→]+)→([^)]+)\)\{([^}]*)\}")
+regex_effect = re.compile(r"EFFECT\((↑|↓|→)([^@)]+)(?:@(\d+[hd]))?\)(?:\{([^}]*)\})?")
+regex_localized = re.compile(r"localized\(RNA=([^)]+)\)")
+regex_hypothesis = re.compile(r"HYPOTHESIS:\s*if\s*(.*?)\s*then\s*(.*)")
+regex_simulate = re.compile(r"SIMULATE:\s*\{(.*?)\}")
+
 
 def parse_metadata_block(block):
     metadata = {}
@@ -82,6 +88,34 @@ def parse_geneforge_line(line):
         output["mutations"].append({"origin": origin, "from": f, "to": t, "position": int(pos)})
     for f, t, pos in regex_mut_simple.findall(content):
         output["mutations"].append({"from": f, "to": t, "position": int(pos)})
+# RNA Transport Editing
+transport_edits = regex_edit_rna_transport.findall(content)
+output["rna_transport"] = [{
+    "from": src.strip(),
+    "to": dst.strip(),
+    "metadata": meta.strip()
+} for src, dst, meta in transport_edits]
+
+# Effects
+effects = regex_effect.findall(content)
+output["effects"] = [{
+    "direction": d,
+    "effect": e.strip(),
+    "time": t.strip() if t else None,
+    "metadata": meta.strip() if meta else None
+} for d, e, t, meta in effects]
+
+# Localized
+localized = regex_localized.findall(content)
+output["localized"] = localized
+
+# Hypothesis
+hypotheses = regex_hypothesis.findall(content)
+output["hypotheses"] = [{"if": i.strip(), "then": t.strip()} for i, t in hypotheses]
+
+# Simulate
+simulate = regex_simulate.findall(content)
+output["simulate"] = simulate
 
     output["insertions"] = [{"sequence": s, "position": int(pos)} for s, pos in regex_ins.findall(content)]
     output["deletions"] = [{"start": int(a), "end": int(b)} for a, b in regex_del.findall(content)]
