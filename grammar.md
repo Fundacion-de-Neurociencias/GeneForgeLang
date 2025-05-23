@@ -1,4 +1,4 @@
-# **GeneForgeLang Grammar Specification (v1.0)**
+# **GeneForgeLang Grammar Specification (v1.1)**
 
 GeneForgeLang (GFL) is a **symbolic, structured, and cross-modality language** designed to represent, analyze, and simulate biomolecular entities—DNA, RNA, and proteins—at sequence, structural, functional, regulatory, and therapeutic levels.
 
@@ -34,19 +34,26 @@ Each GFL phrase starts with a **molecular prefix** combining:
 
 ### 2.1 Symbols and Modifiers
 
-| Symbol | Function                                 | Origin        |
-|--------|------------------------------------------|---------------|
-| `*`    | Post-translational modification          | ProForma      |
-| `'`    | High conservation or emphasis            | GeneForgeLang |
-| `^`    | Epigenetic state (e.g. methylation)      | GeneForgeLang |
-| `@`    | Index or positional reference            | ProForma      |
-| `[]`   | Logical annotation block                 | Eugene        |
-| `{}`   | Metadata block for structured properties | GFL v1.0      |
-| `=`    | Causality or function mapping            | GFL           |
-| `/`    | Co-occurrence or module junction         | GFL           |
-| `:`    | Structural prefix or operator indicator  | GFL           |
-| `-`    | Sequential linkage                       | GFL           |
-| `#`    | Human-readable comment (not parsed)      | GFL           |
+| Symbol     | Function                                       | Origin        |
+|------------|------------------------------------------------|---------------|
+| `*`        | Post-translational modification                | ProForma      |
+| `'`        | High conservation or emphasis                  | GeneForgeLang |
+| `^`        | Epigenetic state (e.g. methylation)            | GeneForgeLang |
+| `@`        | Index or positional reference                  | ProForma      |
+| `[]`       | Logical annotation block                       | Eugene        |
+| `{}`       | Metadata block for structured properties       | GFL           |
+| `=`        | Causality or function mapping                  | GFL           |
+| `/`        | Co-occurrence or module junction               | GFL           |
+| `:`        | Structural prefix or operator indicator        | GFL           |
+| `-`        | Sequential linkage                             | GFL           |
+| `#`        | Human-readable comment (not parsed)            | GFL           |
+| `TIME()`   | Timestamped expression                         | GFL           |
+| `EFFECT()` | Describes biological or clinical outcome       | GFL           |
+| `HYPOTHESIS:` | Formal logic premise                       | GFL           |
+| `SIMULATE:`  | Predictive design block                      | GFL           |
+| `PATHWAY:`   | Metabolic or regulatory sequence             | GFL           |
+| `MACRO:`     | Reusable definition                          | GFL           |
+| `USE:`       | Macro invocation                             | GFL           |
 
 ---
 
@@ -85,8 +92,6 @@ Each GFL phrase starts with a **molecular prefix** combining:
 | `[MUT:MAT:E>T@714X]`   | Maternal point mutation    |
 | `[MUT:SOM:del@exon4]`  | Somatic deletion in exon 4 |
 
-**Provenance types**: `PAT`, `MAT`, `SOM`, `GER`
-
 ### 4.2 Genome Editing Operations
 
 | Expression                | Description                         |
@@ -95,31 +100,12 @@ Each GFL phrase starts with a **molecular prefix** combining:
 | `EDIT:Prime(INS:CTT@27)`  | Prime editing: insert CTT at pos 27 |
 | `EDIT:ARCUS(DEL:codon12)` | ARCUS editing to delete codon 12    |
 
-**Supported editors**:
-```json
-{
-  "ABE": "Adenine Base Editor",
-  "CBE": "Cytosine Base Editor",
-  "Prime": "Prime Editor",
-  "Cas9": "Cas9 Endonuclease"
-}
-```
-
-**Supported delivery types**:
-```json
-{
-  "NP_mRNA": "Nanoparticle-delivered mRNA",
-  "AAV": "Adeno-Associated Virus",
-  "LNP": "Lipid Nanoparticle"
-}
-```
-
 ### 4.3 Structured Metadata for Edits
 
-| Example                                               | Meaning                             |
-|--------------------------------------------------------|-------------------------------------|
-| `EDIT:Base(G→A@Q335X){efficacy=partial, cells=liver}` | Partial editing in liver cells      |
-| `EDIT:Base(A→T@123){rate=low, target=CPS1}`           | Slow editing targeted to CPS1 gene  |
+```gfl
+EDIT:Base(G→A@Q335X){efficacy=partial, cells=liver}
+EDIT:Base(A→T@123){rate=low, target=CPS1}
+```
 
 ---
 
@@ -127,56 +113,53 @@ Each GFL phrase starts with a **molecular prefix** combining:
 
 ### 5.1 Delivery and Administration
 
-| Syntax               | Meaning                                  |
-|----------------------|------------------------------------------|
-| `DELIV(mRNA+LNP@IV)` | mRNA + lipid nanoparticle via IV         |
-| `DELIV(AAV9@IT)`     | AAV serotype 9 via intrathecal injection |
+```gfl
+DELIV(mRNA+LNP@IV)
+DELIV(AAV9@IT)
+```
 
 ### 5.2 Dosing and Chronology
 
 ```gfl
 DOSE(1):EDIT:Base(G→A@Q335X)
-DOSE(2):EDIT:Base(G→A@Q335X)
+TIME(0d):DELIV(mRNA@IV)
+TIME(7d):EDIT:Base(G→A@Q335X)
 ```
 
-### 5.3 Conditional Logic
+### 5.3 Conditional and Functional Modeling
 
 ```gfl
 if MUT(PAT:A>G@Q335X) then EDIT:Base(G→A@Q335X)
+EFFECT(restore function=urea cycle)
+```
+
+### 5.4 Predictive and Declarative Reasoning
+
+```gfl
+HYPOTHESIS: if MUT(Q335X) → Loss(CPS1)
+SIMULATE: {EDIT:Base(...), OUTCOME:↓ammonia}
 ```
 
 ---
 
-## **6. Structural Examples**
-
-### 6.1 CRISPR Case — CPS1 Base Editing (with semantics)
+## **6. Pathway and Multi-omic Integration**
 
 ```gfl
-~d:[TATA]ATGCTGAC[MUT:PAT:Q>STOP@335][MUT:MAT:E>T@714]
-EDIT:Base(STOP→Q@335){tool=K-ABE, efficacy=partial, cells=hepatocyte}
-DELIV(mRNA+LNP@IV)
-DOSE(1):EDIT:Base(STOP→Q@335)
-```
-
-### 6.2 Regulatory Protein Domain
-
-```gfl
-^p:Dom(Kin)'-Mot(NLS)*AcK@147=Localize(Nucleus)
+PATHWAY: ARG+NH3 → CPS1 → Carbamoyl-P → OTC
+TRANSCRIPTOME: ↑CPS1(mRNA)
+PROTEOME: CPS1*P@K347
 ```
 
 ---
 
-## **7. Formal Grammar (BNF Snippet)**
+## **7. Macros and Abstractions**
 
-```bnf
-<phrase> ::= <prefix> <module_list>
-<prefix> ::= "~d:" | ":r:" | "^p:" | "*p:" | "!p:"
-<module_list> ::= <module> | <module> "-" <module_list>
-<module> ::= "Dom(" <text> ")" 
-           | "Mot(" <text> ")" 
-           | "EDIT:" <edit_expr> 
-           | "MUT:" <mut_expr> 
-           | ...
+```gfl
+MACRO:EDIT_CPS1 = {
+  DELIV(mRNA+LNP@IV)
+  EDIT:Base(A→G@Q335X){target=CPS1}
+}
+USE:EDIT_CPS1
 ```
 
 ---
@@ -194,15 +177,15 @@ GeneForgeLang serves as:
 
 ## **9. Applications**
 
-- **Gene therapy design** with variant targeting logic  
-- **Protein modeling** with motifs and functional tags  
-- **Human-AI codevelopment** of synthetic pathways  
-- **Phenotype ↔ Genotype simulations**  
-- **Clinical annotation pipelines for precision medicine**
+- Gene therapy design with variant targeting logic  
+- Protein modeling with motifs and functional tags  
+- Human-AI codevelopment of synthetic pathways  
+- Phenotype ↔ Genotype simulations  
+- Clinical annotation pipelines for precision medicine  
 
 ---
 
 ## **Version**
 
-**Grammar Spec v1.0 (Release)**  
-© 2025 Fundación de Neurociencias — MIT License  
+**Grammar Spec v1.1** (post-CRISPR2 + logic/simulation extensions)  
+© 2025 Fundación de Neurociencias — MIT License
