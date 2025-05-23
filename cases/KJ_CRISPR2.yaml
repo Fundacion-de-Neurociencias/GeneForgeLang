@@ -1,0 +1,34 @@
+case:
+  id: "KJ_CRISPR2"
+  title: "In vivo CRISPR 2.0 base editing for CPS1 gene mutation"
+  source: "https://www.nejm.org/doi/full/10.1056/NEJMoa2504747"
+genome:
+  patient_id: "KJ"
+  diagnosis: "CPS1 deficiency"
+  mutation_paternal: "[MUT:PAT:G>A@Q335X]"
+  mutation_maternal: "[MUT:MAT:G>A@E714X]"
+  tissue: "hepatocyte"
+editor:
+  type: "ABE"
+  model_used: "K-abe"
+  delivery: "mRNA + LNP"
+  target_site: "[MUT:PAT:G>A@Q335X]"
+  dose_schedule:
+    - day: 0
+      dose: low
+      response: minimal
+    - day: 21
+      dose: mid
+      response: "↓ ammonia"
+    - day: 42
+      dose: high
+      response: "↑ metabolic stability"
+symbolic_design:
+  - "~d:[TATA]CPS1[TF(HNF4A)][MUT:PAT:G>A@Q335X]"
+  - "EDIT:Base(A→G@Q335X){tool=ABE, cells=hepatocyte}"
+  - "DELIV(mRNA+LNP@IV)"
+  - "DOSE(1-3)"
+notes:
+  - "First in vivo base editing in a human infant"
+  - "No liver biopsy due to risk; phenotype-based evaluation"
+  - "Non-viral delivery avoided immune reaction"
