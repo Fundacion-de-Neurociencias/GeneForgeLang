@@ -53,7 +53,9 @@ Domains and Motifs: <domain> ::= "Dom(" <name> ")" <motif>  ::= "Mot(" <name> ")
 Modifications: <event> ::= <residue> "\*" <mod> "@" <position> <residue> ::= "K" | "Y" | "S" | "T" | ... <mod> ::= "Ac" | "P" | "Ub" | "m" | ...
 
 Logical Rules: <logic> ::= <lhs> "=" <rhs> <lhs> ::= <domain> | <motif> | <tf> | <event> <rhs> ::= <function> | <location>
+EDIT:Base(), EDIT:Prime(), DOSE(n):, DELIV(vector@route)
 
+Structured metadata blocks {} for contextual and semantic data
 ---
 
 🧬 Mutation Notation
