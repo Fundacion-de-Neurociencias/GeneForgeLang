@@ -114,6 +114,9 @@ Each module is a unit of information: domain, mutation, logic, edit, etc.
 <operation> ::= e.g. "A→G@42", "INS:CTT@27"
 <metadata> ::= "{" <kvpair> { "," <kvpair> } "}"
 <kvpair> ::= <key> "=" <value>
+<edit_expr> ::= "EDIT:" ("Base" | "Prime" | "ARCUS" | "RNA_Transport") "(" <payload> ")"
+<payload> ::= <source> "→" <target> | <mutation> | <edit_event>
+
 ```
 
 ---
