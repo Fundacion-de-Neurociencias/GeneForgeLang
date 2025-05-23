@@ -94,6 +94,11 @@ Developed by Fundación de Neurociencias
 Lead: Dr. Manuel Menéndez González
 License: MIT
 Website: [https://github.com/Fundacion-de-Neurociencias/GeneForgeLang](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang)
+📄 DOI
+
+This whitepaper is published on [Zenodo](https://doi.org/10.5281/zenodo.15493559) and citable as:
+
+Menéndez González, M. (2025). *GeneForgeLang: A Symbolic Language for Rational Bio-Design and Clinical Genomic Engineering*. Fundación de Neurociencias. https://doi.org/10.5281/zenodo.15493559
 
 ---
 
