@@ -92,13 +92,14 @@ Each GFL phrase starts with a **molecular prefix** combining:
 | `[MUT:MAT:E>T@714X]`   | Maternal point mutation    |
 | `[MUT:SOM:del@exon4]`  | Somatic deletion in exon 4 |
 
-### 4.2 Genome Editing Operations
+### 4.2 Genome Editing and RNA Engineering Operations
 
-| Expression                | Description                         |
-|---------------------------|-------------------------------------|
-| `EDIT:Base(A→G@Q335X)`    | Base editing at codon Q335X         |
-| `EDIT:Prime(INS:CTT@27)`  | Prime editing: insert CTT at pos 27 |
-| `EDIT:ARCUS(DEL:codon12)` | ARCUS editing to delete codon 12    |
+| Expression                      | Description                                        |
+|--------------------------------|----------------------------------------------------|
+| `EDIT:Base(A→G@123)`            | Base editing at position                          |
+| `EDIT:Prime(INS:...)`           | Prime editing                                      |
+| `EDIT:ARCUS(DEL:...)`           | ARCUS deletion                                     |
+| `EDIT:RNA_Transport(R→T)`       | CRISPR-TO style spatial RNA localization           |
 
 ### 4.3 Structured Metadata for Edits
 
