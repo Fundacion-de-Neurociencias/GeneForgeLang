@@ -1,14 +1,14 @@
-# **GeneForgeLang Grammar Specification (v1.1)**
+# GeneForgeLang Grammar Specification (v1.2)
 
-GeneForgeLang (GFL) is a **symbolic, structured, and cross-modality language** designed to represent, analyze, and simulate biomolecular entities—DNA, RNA, and proteins—at sequence, structural, functional, regulatory, and therapeutic levels.
+GeneForgeLang (GFL) is a symbolic, structured, cross-modality, and reasoning-enhanced language designed to represent, analyze, simulate, and deduce properties of biomolecular systems—DNA, RNA, proteins, gene therapies, and synthetic biological constructs.
 
-Built on inspirations from GenoCAD, Eugene, ProForma, and SBOL, GFL introduces **semantic compactness**, **logical abstraction**, and **therapeutic modeling** for synthetic biology, molecular medicine, and AI reasoning.
+Built from GenoCAD, ProForma, SBOL, and AI logic grammars, GFL introduces semantic compactness, logical abstraction, therapeutic modeling, and causal reasoning for synthetic biology, molecular medicine, and AI automation.
 
 ---
 
-## **1. Structural Prefix Convention**
+## 1. Structural Prefix Convention
 
-Each GFL phrase starts with a **molecular prefix** combining:
+Each GFL phrase starts with a molecular prefix combining:
 
 - Molecular modality: `d` (DNA), `r` (RNA), `p` (protein)
 - Structural abstraction:
@@ -16,13 +16,12 @@ Each GFL phrase starts with a **molecular prefix** combining:
 | Symbol | Level      | Description                                   |
 |--------|------------|-----------------------------------------------|
 | `~`    | Linear     | Raw sequence, coding or non-coding            |
-| `:`    | Secondary  | Structural motifs (stem-loops, alpha helices) |
+| `:`    | Secondary  | Structural motifs (stem-loops, helices)       |
 | `^`    | Tertiary   | Folded domains, 3D configuration              |
 | `*`    | Quaternary | Complex/multimeric interaction                |
 | `!`    | Unknown    | Ambiguous/unspecified structure               |
 
-**Examples:**
-
+Examples:
 - `~d:` = Linear DNA  
 - `^p:` = Folded protein  
 - `:r:` = RNA stem-loop  
@@ -30,127 +29,127 @@ Each GFL phrase starts with a **molecular prefix** combining:
 
 ---
 
-## **2. Core Grammar Units**
+## 2. Core Grammar Units
 
 ### 2.1 Symbols and Modifiers
 
-| Symbol     | Function                                       | Origin        |
-|------------|------------------------------------------------|---------------|
-| `*`        | Post-translational modification                | ProForma      |
-| `'`        | High conservation or emphasis                  | GeneForgeLang |
-| `^`        | Epigenetic state (e.g. methylation)            | GeneForgeLang |
-| `@`        | Index or positional reference                  | ProForma      |
-| `[]`       | Logical annotation block                       | Eugene        |
-| `{}`       | Metadata block for structured properties       | GFL           |
-| `=`        | Causality or function mapping                  | GFL           |
-| `/`        | Co-occurrence or module junction               | GFL           |
-| `:`        | Structural prefix or operator indicator        | GFL           |
-| `-`        | Sequential linkage                             | GFL           |
-| `#`        | Human-readable comment (not parsed)            | GFL           |
-| `TIME()`   | Timestamped expression                         | GFL           |
-| `EFFECT()` | Describes biological or clinical outcome       | GFL           |
-| `HYPOTHESIS:` | Formal logic premise                       | GFL           |
-| `SIMULATE:`  | Predictive design block                      | GFL           |
-| `PATHWAY:`   | Metabolic or regulatory sequence             | GFL           |
-| `MACRO:`     | Reusable definition                          | GFL           |
-| `USE:`       | Macro invocation                             | GFL           |
+| Symbol     | Function                                 |
+|------------|------------------------------------------|
+| `*`        | Post-translational modification          |
+| `'`        | High conservation or emphasis            |
+| `^`        | Epigenetic mark                          |
+| `@`        | Index or position                        |
+| `[]`       | Annotation block                         |
+| `{}`       | Metadata block                           |
+| `=`        | Function mapping                         |
+| `/`        | Co-occurrence or junction                |
+| `:`        | Structural prefix                        |
+| `-`        | Sequential linkage                       |
+| `#`        | Human-readable comment                   |
+| `TIME()`   | Timestamped expression                   |
+| `EFFECT()` | Biological/clinical outcome              |
+| `HYPOTHESIS:` | Logical premise                      |
+| `SIMULATE:`  | Predictive model                       |
+| `PATHWAY:`   | Regulatory/metabolic flow              |
+| `MACRO:`     | Macro definition                       |
+| `USE:`       | Macro invocation                       |
 
 ---
 
-## **3. Modules and Functional Components**
+## 3. Modules and Functional Components
 
-### 3.1 Sequence-Level Units
+### 3.1 Sequence-Level Tokens
 
-| Token    | Description              |
-|----------|--------------------------|
-| `[EX]`   | Exon                     |
-| `[IN]`   | Intron                   |
-| `[UTR5]` | 5' Untranslated Region   |
-| `[UTR3]` | 3' Untranslated Region   |
-| `[TATA]` | Promoter box             |
-| `[TSS]`  | Transcription start site |
+| Token    | Meaning                    |
+|----------|----------------------------|
+| `[EX]`   | Exon                       |
+| `[IN]`   | Intron                     |
+| `[UTR5]` | 5' UTR                     |
+| `[UTR3]` | 3' UTR                     |
+| `[TATA]` | Promoter motif             |
+| `[TSS]`  | Transcription start site   |
 
-### 3.2 Functional and Regulatory Elements
+### 3.2 Regulatory Elements
 
-| Expression      | Meaning                           |
-|-----------------|-----------------------------------|
-| `Dom(Kin)`      | Kinase domain                     |
-| `Mot(NLS)`      | Nuclear localization signal       |
-| `Mot(PEST)`     | Degradation motif                 |
-| `TF(GATA1)`     | Transcription factor binding site |
-| `Ctrl{Enh+Sil}` | Combined enhancer/silencer logic  |
+| Token          | Meaning                          |
+|----------------|----------------------------------|
+| `Dom(Kin)`     | Kinase domain                    |
+| `Mot(NLS)`     | Nuclear localization signal      |
+| `TF(GATA1)`    | Transcription factor site        |
+| `Ctrl{Enh+Sil}`| Enhancer/silencer combo logic    |
 
 ---
 
-## **4. Mutation and Editing Logic**
+## 4. Mutation and Editing
 
-### 4.1 Mutation Encoding with Provenance
+### 4.1 Mutations
 
-| Syntax                | Meaning                    |
-|------------------------|---------------------------|
-| `[MUT:PAT:A>G@Q335X]`  | Paternal point mutation    |
-| `[MUT:MAT:E>T@714X]`   | Maternal point mutation    |
-| `[MUT:SOM:del@exon4]`  | Somatic deletion in exon 4 |
+| Syntax                    | Meaning                         |
+|---------------------------|---------------------------------|
+| `[MUT:PAT:A>G@Q335X]`     | Paternal point mutation         |
+| `[MUT:MAT:E>T@714X]`      | Maternal point mutation         |
+| `[MUT:SOM:del@exon4]`     | Somatic deletion                |
 
-### 4.2 Genome Editing and RNA Engineering Operations
+### 4.2 Gene/RNA Editing
 
-| Expression                      | Description                                        |
-|--------------------------------|----------------------------------------------------|
-| `EDIT:Base(A→G@123)`            | Base editing at position                          |
-| `EDIT:Prime(INS:...)`           | Prime editing                                      |
-| `EDIT:ARCUS(DEL:...)`           | ARCUS deletion                                     |
-| `EDIT:RNA_Transport(R→T)`       | CRISPR-TO style spatial RNA localization           |
+| Syntax                              | Meaning                                  |
+|-------------------------------------|------------------------------------------|
+| `EDIT:Base(A→G@123)`                | Base editing                             |
+| `EDIT:Prime(INS:TTA@245)`           | Prime editing insertion                  |
+| `EDIT:ARCUS(DEL:exon5)`             | ARCUS deletion                           |
+| `EDIT:RNA_Transport(nuc→axon)`      | Spatial RNA redirection                  |
 
-### 4.3 Structured Metadata for Edits
+### 4.3 Edit Metadata
 
-```gfl
+```
 EDIT:Base(G→A@Q335X){efficacy=partial, cells=liver}
-EDIT:Base(A→T@123){rate=low, target=CPS1}
+EDIT:Prime(INS:AGC@122){target=BRCA1}
 ```
 
 ---
 
-## **5. Therapeutic and Clinical Modeling**
+## 5. Therapeutic & Clinical Logic
 
-### 5.1 Delivery and Administration
+### 5.1 Delivery
 
-```gfl
+```
 DELIV(mRNA+LNP@IV)
 DELIV(AAV9@IT)
 ```
 
-### 5.2 Dosing and Chronology
+### 5.2 Dosing / Time
 
-```gfl
+```
 DOSE(1):EDIT:Base(G→A@Q335X)
 TIME(0d):DELIV(mRNA@IV)
 TIME(7d):EDIT:Base(G→A@Q335X)
 ```
 
-### 5.3 Conditional and Functional Modeling
+### 5.3 Conditional Logic
 
-```gfl
+```
 if MUT(PAT:A>G@Q335X) then EDIT:Base(G→A@Q335X)
 EFFECT(restore function=urea cycle)
 ```
 
-### 5.4 Predictive and Declarative Reasoning
+### 5.4 Predictive Logic
 
-```gfl
+```
 HYPOTHESIS: if MUT(Q335X) → Loss(CPS1)
 SIMULATE: {EDIT:Base(...), OUTCOME:↓ammonia}
 ```
+
 ### 5.5 EFFECT Operator
 
-| Syntax                          | Meaning                                        |
-|----------------------------------|------------------------------------------------|
-| `EFFECT(↑neurite_growth@24h)`    | Increase neurite growth after 24h             |
+| Syntax                          | Meaning                                |
+|----------------------------------|----------------------------------------|
+| `EFFECT(↑neurite_growth@24h)`    | Neurite growth increase after 24h      |
 
 ---
 
-## **6. Pathway and Multi-omic Integration**
+## 6. Multi-omic & Pathway Modeling
 
-```gfl
+```
 PATHWAY: ARG+NH3 → CPS1 → Carbamoyl-P → OTC
 TRANSCRIPTOME: ↑CPS1(mRNA)
 PROTEOME: CPS1*P@K347
@@ -158,9 +157,9 @@ PROTEOME: CPS1*P@K347
 
 ---
 
-## **7. Macros and Abstractions**
+## 7. Macros and Reuse
 
-```gfl
+```
 MACRO:EDIT_CPS1 = {
   DELIV(mRNA+LNP@IV)
   EDIT:Base(A→G@Q335X){target=CPS1}
@@ -170,28 +169,60 @@ USE:EDIT_CPS1
 
 ---
 
-## **8. Integration with AI Models**
+## 8. Reasoning and Simulation Enhancements
 
-GeneForgeLang serves as:
+### 8.1 Mechanisms
 
-- **Symbolic input/output layer** for LLMs (e.g., GeneForge Transformer, ProtGPT)
-- **Generative prompt template** for editing or simulating variants
-- **Interoperable exporter** to FASTA, GenBank, SBOL, ProForma
-- **Anchor for reverse-engineering molecular edits from phenotype descriptions**
+```
+TRANSCRIBE(Promoter→Gene)
+SPLICE(Exon2, Exon4)
+TRANSLATE(mRNA→Protein)
+INHIBIT(miR29b → BACE1_mRNA)
+```
+
+### 8.2 Localization / Context
+
+```
+RNA(STMN2){localization=axonal_tip}
+EFFECT(↑Translation@local_synapse){via=local_mTOR}
+```
+
+### 8.3 Feedback Loops
+
+```
+if Protein(P53) > threshold then INDUCE(p21)
+AUTOREGULATE(TF1){repression=strong}
+```
+
+### 8.4 Evolution / Probability
+
+```
+PROB(Mutation[ARG>GLY@codon121])=0.002
+FITNESS(DNA_variant_X)=+2.1
+EPISTASIS(variantA+variantB){effect=nonadditive}
+```
+
+### 8.5 Formal Logic
+
+```
+∀x ∈ Exon: PRESERVE(x) ⇒ ↑Function
+¬EXIST(mutation@codon618) ⇒ FUNCTIONAL
+(MUT1 ∧ MUT2) ⇒ ↓Expression
+```
 
 ---
 
-## **9. Applications**
+## 9. Diagnostics and Simulation Blocks
 
-- Gene therapy design with variant targeting logic  
-- Protein modeling with motifs and functional tags  
-- Human-AI codevelopment of synthetic pathways  
-- Phenotype ↔ Genotype simulations  
-- Clinical annotation pipelines for precision medicine  
+```
+SIMULATE:{CellLine=HEK293, Mutation=CFTR(ΔF508), Drug=VX-770}
+DIAGNOSE:{if ↓ATP7B_mRNA & ↑serum_copper then Wilson_Disease}
+```
 
 ---
 
-## **Version**
+## Version
 
-**Grammar Spec v1.1** (post-CRISPR2 + logic/simulation extensions)  
+**Grammar Spec v1.2**  
+Post-logical reasoning, RNA transport, feedback & epistasis extensions  
 © 2025 Fundación de Neurociencias — MIT License
