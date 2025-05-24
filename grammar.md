@@ -1,4 +1,3 @@
-
 # GeneForgeLang Grammar Specification (v1.2)
 
 GeneForgeLang (GFL) is a symbolic, structured, cross-modality, and reasoning-enhanced language designed to represent, analyze, simulate, and deduce properties of biomolecular systems—DNA, RNA, proteins, gene therapies, and synthetic biological constructs.
@@ -25,7 +24,7 @@ Each GFL phrase starts with a molecular prefix combining:
 Examples:
 - `~d:` = Linear DNA  
 - `^p:` = Folded protein  
-- `:r:` = RNA stem-loop  
+- `:r:` = Structured RNA  
 - `*p:` = Multimeric protein complex  
 
 ---
@@ -102,7 +101,7 @@ Examples:
 
 ### 4.3 Edit Metadata
 
-```gfl
+```
 EDIT:Base(G→A@Q335X){efficacy=partial, cells=liver}
 EDIT:Prime(INS:AGC@122){target=BRCA1}
 ```
@@ -113,14 +112,14 @@ EDIT:Prime(INS:AGC@122){target=BRCA1}
 
 ### 5.1 Delivery
 
-```gfl
+```
 DELIV(mRNA+LNP@IV)
 DELIV(AAV9@IT)
 ```
 
 ### 5.2 Dosing / Time
 
-```gfl
+```
 DOSE(1):EDIT:Base(G→A@Q335X)
 TIME(0d):DELIV(mRNA@IV)
 TIME(7d):EDIT:Base(G→A@Q335X)
@@ -128,14 +127,14 @@ TIME(7d):EDIT:Base(G→A@Q335X)
 
 ### 5.3 Conditional Logic
 
-```gfl
+```
 if MUT(PAT:A>G@Q335X) then EDIT:Base(G→A@Q335X)
 EFFECT(restore function=urea cycle)
 ```
 
 ### 5.4 Predictive Logic
 
-```gfl
+```
 HYPOTHESIS: if MUT(Q335X) → Loss(CPS1)
 SIMULATE: {EDIT:Base(...), OUTCOME:↓ammonia}
 ```
@@ -150,7 +149,7 @@ SIMULATE: {EDIT:Base(...), OUTCOME:↓ammonia}
 
 ## 6. Multi-omic & Pathway Modeling
 
-```gfl
+```
 PATHWAY: ARG+NH3 → CPS1 → Carbamoyl-P → OTC
 TRANSCRIPTOME: ↑CPS1(mRNA)
 PROTEOME: CPS1*P@K347
@@ -160,7 +159,7 @@ PROTEOME: CPS1*P@K347
 
 ## 7. Macros and Reuse
 
-```gfl
+```
 MACRO:EDIT_CPS1 = {
   DELIV(mRNA+LNP@IV)
   EDIT:Base(A→G@Q335X){target=CPS1}
@@ -174,31 +173,30 @@ USE:EDIT_CPS1
 
 ### 8.1 Mechanisms
 
-```gfl
+```
 TRANSCRIBE(Promoter→Gene)
 SPLICE(Exon2, Exon4)
 TRANSLATE(mRNA→Protein)
 INHIBIT(miR29b → BACE1_mRNA)
-MODULATE_ALLOSTERIC(MAPK → ERK){Kd=2.5nM, mode=noncompetitive}
 ```
 
 ### 8.2 Localization / Context
 
-```gfl
+```
 RNA(STMN2){localization=axonal_tip}
 EFFECT(↑Translation@local_synapse){via=local_mTOR}
 ```
 
 ### 8.3 Feedback Loops
 
-```gfl
+```
 if Protein(P53) > threshold then INDUCE(p21)
 AUTOREGULATE(TF1){repression=strong}
 ```
 
 ### 8.4 Evolution / Probability
 
-```gfl
+```
 PROB(Mutation[ARG>GLY@codon121])=0.002
 FITNESS(DNA_variant_X)=+2.1
 EPISTASIS(variantA+variantB){effect=nonadditive}
@@ -206,7 +204,7 @@ EPISTASIS(variantA+variantB){effect=nonadditive}
 
 ### 8.5 Formal Logic
 
-```gfl
+```
 ∀x ∈ Exon: PRESERVE(x) ⇒ ↑Function
 ¬EXIST(mutation@codon618) ⇒ FUNCTIONAL
 (MUT1 ∧ MUT2) ⇒ ↓Expression
@@ -216,7 +214,7 @@ EPISTASIS(variantA+variantB){effect=nonadditive}
 
 ## 9. Diagnostics and Simulation Blocks
 
-```gfl
+```
 SIMULATE:{CellLine=HEK293, Mutation=CFTR(ΔF508), Drug=VX-770}
 DIAGNOSE:{if ↓ATP7B_mRNA & ↑serum_copper then Wilson_Disease}
 ```
