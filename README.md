@@ -85,7 +85,7 @@ enhancer:
 
 ---
 
-## ▶️ How to Use
+## ▶️ How to Use this Example
 
 ### 1. Clone the repo:
 
