@@ -1,0 +1,70 @@
+{
+  "structures": {
+    "~": "Linear",
+    ":": "Secondary",
+    "^": "Tertiary",
+    "*": "Quaternary",
+    "!": "Unknown"
+  },
+  "molecules": {
+    "d": "DNA",
+    "r": "RNA",
+    "p": "Protein"
+  },
+  "modifiers": {
+    "*": "Post-translational modification",
+    "'": "High conservation",
+    "^": "Epigenetic mark",
+    "@": "Position index",
+    "[]": "Annotation block",
+    "{}": "Metadata block",
+    "=": "Functional mapping",
+    "/": "Module junction",
+    ":": "Structural prefix",
+    "-": "Sequential linkage",
+    "#": "Comment",
+    "TIME()": "Timestamped event",
+    "EFFECT()": "Biological effect",
+    "HYPOTHESIS:": "Logical hypothesis",
+    "SIMULATE:": "Simulation block",
+    "PATHWAY:": "Pathway description",
+    "MACRO:": "Macro definition",
+    "USE:": "Macro invocation"
+  },
+  "sequence_units": {
+    "[EX]": "Exon",
+    "[IN]": "Intron",
+    "[UTR5]": "5' Untranslated Region",
+    "[UTR3]": "3' Untranslated Region",
+    "[TATA]": "Promoter box",
+    "[TSS]": "Transcription start site"
+  },
+  "regulatory_elements": {
+    "Dom": "Domain",
+    "Mot": "Motif",
+    "TF": "Transcription factor binding site",
+    "Ctrl": "Control logic block"
+  },
+  "editing": {
+    "Base": "Base editing",
+    "Prime": "Prime editing",
+    "ARCUS": "ARCUS editing",
+    "RNA_Transport": "RNA localization"
+  },
+  "delivery": {
+    "LNP": "Lipid nanoparticle",
+    "AAV9": "AAV serotype 9"
+  },
+  "logic_operators": {
+    "if": "Conditional",
+    "then": "Result",
+    "→": "Mapping",
+    "↑": "Increase",
+    "↓": "Decrease",
+    "¬": "Negation",
+    "∧": "AND",
+    "∨": "OR",
+    "∀": "Universal quantifier",
+    "∃": "Existential quantifier"
+  }
+}
