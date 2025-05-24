@@ -14,57 +14,135 @@
   "modifiers": {
     "*": "Post-translational modification",
     "'": "High conservation",
-    "^": "Epigenetic mark",
-    "@": "Position index",
-    "[]": "Annotation block",
+    "^": "Epigenetic state",
+    "@": "Position",
+    "[]": "Logical annotation",
     "{}": "Metadata block",
     "=": "Functional mapping",
-    "/": "Module junction",
-    ":": "Structural prefix",
+    "/": "Co-occurrence or junction",
+    ":": "Prefix/operator",
     "-": "Sequential linkage",
-    "#": "Comment",
-    "TIME()": "Timestamped event",
-    "EFFECT()": "Biological effect",
-    "HYPOTHESIS:": "Logical hypothesis",
-    "SIMULATE:": "Simulation block",
-    "PATHWAY:": "Pathway description",
-    "MACRO:": "Macro definition",
-    "USE:": "Macro invocation"
+    "#": "Comment"
   },
-  "sequence_units": {
-    "[EX]": "Exon",
-    "[IN]": "Intron",
-    "[UTR5]": "5' Untranslated Region",
-    "[UTR3]": "3' Untranslated Region",
-    "[TATA]": "Promoter box",
-    "[TSS]": "Transcription start site"
+  "functions": {
+    "TRANSCRIBE": [
+      "DNA -> RNA"
+    ],
+    "TRANSLATE": [
+      "RNA -> Protein"
+    ],
+    "SPLICE": [
+      "Exon, Exon"
+    ],
+    "EDIT": [
+      "Base",
+      "Prime",
+      "ARCUS",
+      "RNA_Transport"
+    ],
+    "DELIV": [
+      "Vector@Route"
+    ],
+    "DOSE": [
+      "n:EDIT(...)"
+    ],
+    "EFFECT": [
+      "\u2191|\u2193|\u2192 effect@time"
+    ],
+    "HYPOTHESIS": [
+      "if X then Y"
+    ],
+    "SIMULATE": [
+      "{conditions}"
+    ],
+    "PATHWAY": [
+      "Metabolic|Regulatory"
+    ],
+    "MACRO": [
+      "name={block}"
+    ],
+    "USE": [
+      "MacroName"
+    ],
+    "DYNAMICS": [
+      "entity, profile"
+    ],
+    "PROFILE": [
+      "entity{expression=...}"
+    ],
+    "PROB": [
+      "Mutation[]=p"
+    ],
+    "STOCHASTIC": [
+      "{event=..., distribution=...}"
+    ],
+    "BIND": [
+      "(A, B){Kd=x, reversible=bool}"
+    ],
+    "MODULATE": [
+      "(A, B){type=allosteric, direction=\u2191|\u2193}"
+    ],
+    "ACTIVATE": [
+      "(A -> B)"
+    ],
+    "REPRESS": [
+      "(A -> B)"
+    ],
+    "COMPETE": [
+      "(A, B -> C)"
+    ]
   },
-  "regulatory_elements": {
-    "Dom": "Domain",
-    "Mot": "Motif",
-    "TF": "Transcription factor binding site",
-    "Ctrl": "Control logic block"
+  "entities": {
+    "types": [
+      "DNA",
+      "RNA",
+      "mRNA",
+      "ncRNA",
+      "miRNA",
+      "Protein",
+      "TF",
+      "RegElement",
+      "Enzyme",
+      "Ribozyme",
+      "Virus",
+      "Plasmid"
+    ],
+    "allowed_conversions": {
+      "DNA": [
+        "RNA"
+      ],
+      "RNA": [
+        "Protein"
+      ],
+      "mRNA": [
+        "Protein"
+      ]
+    }
   },
-  "editing": {
-    "Base": "Base editing",
-    "Prime": "Prime editing",
-    "ARCUS": "ARCUS editing",
-    "RNA_Transport": "RNA localization"
+  "tokens": {
+    "sequence": [
+      "[EX]",
+      "[IN]",
+      "[UTR5]",
+      "[UTR3]",
+      "[TATA]",
+      "[TSS]"
+    ],
+    "regulatory": [
+      "Dom()",
+      "Mot()",
+      "TF()",
+      "Ctrl{}"
+    ]
   },
-  "delivery": {
-    "LNP": "Lipid nanoparticle",
-    "AAV9": "AAV serotype 9"
-  },
-  "logic_operators": {
-    "if": "Conditional",
-    "then": "Result",
-    "→": "Mapping",
-    "↑": "Increase",
-    "↓": "Decrease",
-    "¬": "Negation",
-    "∧": "AND",
-    "∨": "OR",
-    "∀": "Universal quantifier",
-    "∃": "Existential quantifier"
+  "ontologies": {
+    "supported": [
+      "HGNC",
+      "GO",
+      "Pfam",
+      "UniProt",
+      "ChEBI",
+      "ClinVar"
+    ]
   }
 }
