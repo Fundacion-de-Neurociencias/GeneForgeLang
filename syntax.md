@@ -1,6 +1,6 @@
-# 🧬 GeneForgeLang Syntax Specification
+# 🧬 GeneForgeLang Syntax Specification (v1.2)
 
-This document defines the **syntactic rules** of GeneForgeLang—the symbolic language for cross-modality biomolecular design.
+This document defines the **syntactic rules** of GeneForgeLang (GFL)—a symbolic language for cross-modality biomolecular representation and reasoning.
 
 ---
 
@@ -26,15 +26,16 @@ This document defines the **syntactic rules** of GeneForgeLang—the symbolic la
 ## 🔤 Prefixes
 
 ```ebnf
-<prefix> ::= "~d" | ":r" | "^p" | "*p" | "!d" | "^r"
+<prefix> ::= "~d" | ":r" | "^p" | "*p" | "!d" | "^r" | "*^p"
 ```
 
-**Examples:**
+Examples:
 
 - `~d:` → linear DNA  
-- `:r:` → structured RNA  
 - `^p:` → folded protein  
+- `:r:` → structured RNA  
 - `*p:` → multimeric protein  
+- `*^p:` → folded domain within complex
 
 ---
 
@@ -44,16 +45,17 @@ This document defines the **syntactic rules** of GeneForgeLang—the symbolic la
 <body> ::= <module> { "-" <module> }
 ```
 
-Each module is a unit of information: domain, mutation, logic, edit, etc.
+Each module is a unit of information: domain, motif, mutation, logic, edit, etc.
 
 ---
 
 ## 🧩 Module Syntax
 
 ```ebnf
-<module> ::= <region> | <motif> | <domain> | <event> | <logic> | <mutation>
+<module> ::= <region> | <motif> | <domain> | <tf> | <event> | <logic> | <mutation>
            | <edit> | <delivery> | <dose> | <effect> | <hypothesis>
-           | <simulate> | <time> | <pathway> | <macro> | <use>
+           | <simulate> | <diagnose> | <time> | <pathway> | <macro> | <use>
+           | <mechanism> | <probability> | <feedback> | <formal_logic>
 ```
 
 ---
@@ -67,7 +69,7 @@ Each module is a unit of information: domain, mutation, logic, edit, etc.
 
 ---
 
-### 🧷 Domains and Motifs
+### 🧷 Domains, Motifs, TFs
 
 ```ebnf
 <domain> ::= "Dom(" <name> ")"
@@ -82,7 +84,7 @@ Each module is a unit of information: domain, mutation, logic, edit, etc.
 ```ebnf
 <event> ::= <residue> "*" <mod> "@" <position>
 <residue> ::= "K" | "Y" | "S" | "T" | ...
-<mod> ::= "Ac" | "P" | "Ub" | "m" | ...
+<mod> ::= "Ac" | "P" | "Ub" | ...
 ```
 
 ---
@@ -106,21 +108,15 @@ Each module is a unit of information: domain, mutation, logic, edit, etc.
 
 ---
 
-### 🔨 Edits
+### 🛠 Edits
 
 ```ebnf
 <edit> ::= "EDIT:" <tool> "(" <operation> ")" [<metadata>]
-<tool> ::= "Base" | "Prime" | "ARCUS"
-<operation> ::= e.g. "A→G@42", "INS:CTT@27"
+<tool> ::= "Base" | "Prime" | "ARCUS" | "RNA_Transport"
+<operation> ::= <source> "→" <target> | "INS:" <seq> "@" <pos> | ...
 <metadata> ::= "{" <kvpair> { "," <kvpair> } "}"
 <kvpair> ::= <key> "=" <value>
-<edit_expr> ::= "EDIT:" ("Base" | "Prime" | "ARCUS" | "RNA_Transport") "(" <payload> ")"
-<payload> ::= <source> "→" <target> | <mutation> | <edit_event>
-
 ```
-<effect_expr> ::= "EFFECT(" <symbol> <outcome> [ "@" <time> ] ")"
-<symbol> ::= "↑" | "↓" | "→" | ...
-<outcome> ::= <function> | <phenotype>
 
 ---
 
@@ -140,7 +136,7 @@ Each module is a unit of information: domain, mutation, logic, edit, etc.
 
 ```ebnf
 <time> ::= "TIME(" <day_expr> "):" <module>
-<day_expr> ::= e.g. "0d", "7d", "3w"
+<day_expr> ::= "0d" | "7d" | "3w"
 ```
 
 ---
@@ -148,9 +144,13 @@ Each module is a unit of information: domain, mutation, logic, edit, etc.
 ### 🧠 Effects and Reasoning
 
 ```ebnf
-<effect> ::= "EFFECT(" <description> ")"
-<hypothesis> ::= "HYPOTHESIS:" <logic_statement>
-<simulate> ::= "SIMULATE:" "{" <option_list> "}"
+<effect> ::= "EFFECT(" <direction> <outcome> [ "@" <time> ] [ <metadata> ] ")"
+<direction> ::= "↑" | "↓" | "→"
+<outcome> ::= <function> | <phenotype>
+
+<hypothesis> ::= "HYPOTHESIS:" "if" <condition> "then" <consequence>
+<simulate> ::= "SIMULATE:" "{" <kvpair> { "," <kvpair> } "}"
+<diagnose> ::= "DIAGNOSE:" "{" <if_cond> "then" <diagnosis> "}"
 ```
 
 ---
@@ -163,11 +163,40 @@ Each module is a unit of information: domain, mutation, logic, edit, etc.
 
 ---
 
-### 🧩 Macros and Calls
+### 📦 Macros
 
 ```ebnf
 <macro> ::= "MACRO:" <name> "=" "{" <body> "}"
 <use> ::= "USE:" <name>
+```
+
+---
+
+### ⚙️ Feedback and Regulation
+
+```ebnf
+<feedback> ::= "AUTOREGULATE(" <target> ")" "{" <kvpair> "}"
+```
+
+---
+
+### 🎲 Probability and Fitness
+
+```ebnf
+<probability> ::= "PROB(" <mutation> ")" "=" <float>
+<fitness> ::= "FITNESS(" <variant> ")" "=" <float>
+<epistasis> ::= "EPISTASIS(" <variant1> "+" <variant2> ")" "{" <kvpair> "}"
+```
+
+---
+
+### ∀ Formal Logic
+
+```ebnf
+<formal_logic> ::= "∀" <var> "∈" <set> ":" <statement>
+                 | "¬" <statement>
+                 | "(" <statement> ")" "⇒" <statement>
+                 | "(" <statement> ")" "∧" "(" <statement> ")"
 ```
 
 ---
@@ -181,9 +210,9 @@ EDIT:Base(G→A@Q335X){target=CPS1}
 DELIV(mRNA+LNP@IV)
 DOSE(2):EDIT:Base(A→G@123){rate=low}
 TIME(7d):EDIT:Base(G→A@Q335X)
-EFFECT(restore function=urea cycle)
-HYPOTHESIS: if MUT(Q335X) → loss(CPS1)
-SIMULATE: {EDIT:Base(...), OUTCOME:↓ammonia}
+EFFECT(↑neurite_growth@24h){via=mTOR}
+HYPOTHESIS: if MUT(Q335X) → Loss(CPS1)
+SIMULATE: {Mutation=CFTR(ΔF508), Drug=VX-770}
 PATHWAY: ARG → CPS1 → Carbamoyl-P
 MACRO:FIX1={DELIV(...) - EDIT:Base(...)}
 USE:FIX1
@@ -191,25 +220,14 @@ USE:FIX1
 
 ---
 
-## ❌ Invalid Examples
-
-```gfl
-~r::TATA]        # double colon
-:p:Dom()         # missing domain
-*EX              # missing prefix
-[DEL:12]         # malformed deletion
-```
-
----
-
 ## 🔄 Syntax vs. Grammar
 
-- **Syntax** = ensures well-formed, machine-parseable phrases
-- **Grammar** = defines semantic logic and transformation behavior
+- **Syntax** = defines well-formed machine-parseable phrases
+- **Grammar** = defines transformation and logic
 
 ---
 
 ## Version
 
-Syntax Spec v1.1  
+Syntax Spec v1.2  
 © 2025 Fundación de Neurociencias — MIT License
