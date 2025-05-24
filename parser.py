@@ -1,3 +1,4 @@
+
 import re
 import json
 
@@ -6,30 +7,30 @@ with open("geneforge_grammar.json", "r", encoding="utf-8") as f:
 
 # Compilar patrones
 regex_prefix = re.compile(r"^([~:\^\*!])([a-z]+):")
-regex_entity = re.compile(r"(DNA|RNA|mRNA|ncRNA|miRNA|Protein|Ribozyme|Enzyme|TF|RegElement|Virus|Plasmid):([^(\\s]+)(\\{[^}]*\\})?")
-regex_mechanism = re.compile(r"(TRANSCRIBE|SPLICE|TRANSLATE|EDIT|INHIBIT)\\(([^)]+)\\)")
-regex_logic_block = re.compile(r"Ctrl\\{([^}]+)\\}")
-regex_ptm = re.compile(r"([A-Z])\\*([A-Za-z]+)@(\\d+)")
-regex_compact_ptm = re.compile(r"\\*([A-Za-z]+)([A-Z])@(\\d+)")
-regex_mut_prov = re.compile(r"\\[MUT:(PAT|MAT|SOM|GER):([A-Z])>([A-Z])@(\\d+)]")
-regex_mut_simple = re.compile(r"\\[MUT:([A-Z])>([A-Z])@(\\d+)]")
-regex_del = re.compile(r"\\[DEL:(\\d+)-(\\d+)]")
-regex_ins = re.compile(r"\\[INS:([A-Z]+)@(\\d+)]")
-regex_edit = re.compile(r"EDIT:(Base|Prime|ARCUS)\\(([^)]+)\\)(\\{[^}]+\\})?")
-regex_dose = re.compile(r"DOSE\\((\\d+)\\):EDIT:(Base|Prime|ARCUS)\\(([^)]+)\\)(\\{[^}]+\\})?")
-regex_deliv = re.compile(r"DELIV\\(([^@)]+)@([^\\)]+)\\)")
-regex_conditional = re.compile(r"if\\s+(.+?)\\s+then\\s+(.+)")
-regex_effect = re.compile(r"EFFECT\\((↑|↓|→)([^@)]+)(?:@(\\d+[hd]))?\\)(?:\\{([^}]*)\\})?")
-regex_prob = re.compile(r"PROB\\(([^)]+)\\)=([0-9.]+)")
-regex_fit = re.compile(r"FITNESS\\(([^)]+)\\)=([+-]?[0-9.]+)")
-regex_epi = re.compile(r"EPISTASIS\\(([^)]+)\\)\\{([^}]*)\\}")
-regex_hypothesis = re.compile(r"HYPOTHESIS:\\s*if\\s*(.*?)\\s*then\\s*(.*)")
-regex_simulate = re.compile(r"SIMULATE:\\s*\\{(.*?)\\}")
-regex_time = re.compile(r"TIME\\(([^)]+)\\):(.+)")
-regex_pathway = re.compile(r"PATHWAY:\\s*(.+)")
-regex_macro = re.compile(r"MACRO:([A-Za-z_0-9]+)=\\{(.+?)\\}")
+regex_entity = re.compile(r"(DNA|RNA|mRNA|ncRNA|miRNA|Protein|Ribozyme|Enzyme|TF|RegElement|Virus|Plasmid):([^\s]+)(\{[^}]*\})?")
+regex_mechanism = re.compile(r"(TRANSCRIBE|SPLICE|TRANSLATE|EDIT|INHIBIT)\(([^)]+)\)")
+regex_logic_block = re.compile(r"Ctrl\{([^}]+)\}")
+regex_ptm = re.compile(r"([A-Z])\*([A-Za-z]+)@(\d+)")
+regex_compact_ptm = re.compile(r"\*([A-Za-z]+)([A-Z])@(\d+)")
+regex_mut_prov = re.compile(r"\[MUT:(PAT|MAT|SOM|GER):([A-Z])>([A-Z])@(\d+)]")
+regex_mut_simple = re.compile(r"\[MUT:([A-Z])>([A-Z])@(\d+)]")
+regex_del = re.compile(r"\[DEL:(\d+)-(\d+)]")
+regex_ins = re.compile(r"\[INS:([A-Z]+)@(\d+)]")
+regex_edit = re.compile(r"EDIT:(Base|Prime|ARCUS)\(([^)]+)\)(\{[^}]+\})?")
+regex_dose = re.compile(r"DOSE\((\d+)\):EDIT:(Base|Prime|ARCUS)\(([^)]+)\)(\{[^}]+\})?")
+regex_deliv = re.compile(r"DELIV\(([^@)]+)@([^\)]+)\)")
+regex_conditional = re.compile(r"if\s+(.+?)\s+then\s+(.+)")
+regex_effect = re.compile(r"EFFECT\((↑|↓|→)([^@)]+)(?:@(\d+[hd]))?\)(?:\{([^}]*)\})?")
+regex_prob = re.compile(r"PROB\(([^)]+)\)=([0-9.]+)")
+regex_fit = re.compile(r"FITNESS\(([^)]+)\)=([+-]?[0-9.]+)")
+regex_epi = re.compile(r"EPISTASIS\(([^)]+)\)\{([^}]*)\}")
+regex_hypothesis = re.compile(r"HYPOTHESIS:\s*if\s*(.*?)\s*then\s*(.*)")
+regex_simulate = re.compile(r"SIMULATE:\s*\{(.*?)\}")
+regex_time = re.compile(r"TIME\(([^)]+)\):(.+)")
+regex_pathway = re.compile(r"PATHWAY:\s*(.+)")
+regex_macro = re.compile(r"MACRO:([A-Za-z_0-9]+)=\{(.+?)\}")
 regex_use = re.compile(r"USE:([A-Za-z_0-9]+)")
-regex_localized = re.compile(r"localized\\(([^)]+)\\)")
+regex_localized = re.compile(r"localized\(([^)]+)\)")
 
 def parse_metadata_block(block):
     metadata = {}
