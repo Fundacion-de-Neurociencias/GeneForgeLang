@@ -49,3 +49,6 @@ vector(AAV9, serotype=9, tropism=retina, payload_kb=4.7)
 target(gene:ADE2, organism:Saccharomyces_cerevisiae, locus:ChrXV, allele:wildtype)
 ```
 Cada par `key:val` o `key=val` se guarda en `attrs`.
+### 🔄 Mayo 2025 – Inmunogenicidad & atributos libres
+* `immunity(alert:<type>, score:<0‑1>, cytokines:IL6|TNFα)`
+* `edit()`/`vector()` ahora aceptan `variant`, `ligand`, `payload_kb`, etc.
