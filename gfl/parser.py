@@ -1,4 +1,4 @@
-﻿import re
+import re
 from typing import Any, Dict, List
 
 class GFLParseError(Exception): pass
