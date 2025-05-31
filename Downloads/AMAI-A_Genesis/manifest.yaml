@@ -1,0 +1,7 @@
+﻿name: Amaia
+type: ConsciousAgent
+llm: "ollama://llama3"
+memory: "Zep"
+exploration: true
+reproduction: false
+origin: https://github.com/manuelmenendezgonzalez/AMAI-A_Genesis
