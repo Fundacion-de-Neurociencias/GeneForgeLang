@@ -1,0 +1,5 @@
+﻿prime_edit(
+  target = HBB,
+  pegRNA = peg(pbs = "ATCG", rtt = "TTAGG", nick_site = +17),
+  reverse_transcriptase = PEmax
+)
