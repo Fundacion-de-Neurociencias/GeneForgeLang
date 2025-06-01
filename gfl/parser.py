@@ -1,75 +1,51 @@
-﻿import re, json
-from typing import Any, Dict, List
+﻿import ply.yacc as yacc
+from gfl.lexer import tokens
 
-class GFLParseError(Exception):
-    pass
+def p_statement_expr(p):
+    '''statement : prime_edit
+                 | base_edit
+                 | prime_del'''
+    p[0] = p[1]
 
-class GFLNode:
-    def __init__(self, type_: str, attrs: Dict[str, Any] | None = None):
-        self.type = type_
-        self.attrs = attrs or {}
-        self.children: List["GFLNode"] = []
+def p_prime_edit(p):
+    'prime_edit : PRIME_EDIT LPAREN arguments RPAREN'
+    p[0] = ('prime_edit', p[3])
 
-    def to_dict(self):
-        return {
-            "type": self.type,
-            "attrs": self.attrs,
-            "children": [c.to_dict() for c in self.children]
-        }
+def p_base_edit(p):
+    'base_edit : BASE_EDIT LPAREN arguments RPAREN'
+    p[0] = ('base_edit', p[3])
 
-    def __repr__(self):
-        return json.dumps(self.to_dict(), indent=2)
+def p_prime_del(p):
+    'prime_del : PRIME_DEL LPAREN arguments RPAREN'
+    p[0] = ('prime_del', p[3])
 
-class GFLParser:
-    """Parser that combines multi-line statements based on balanced parentheses and strips BOM."""
+def p_arguments(p):
+    '''arguments : argument
+                 | argument COMMA arguments'''
+    if len(p) == 2:
+        p[0] = dict([p[1]])
+    else:
+        p[0] = dict([p[1]] + list(p[3].items()))
 
-    _LINK_RX = re.compile(r"^link\(([^-]+)->([^)]+)\)$")
-    _GEN_RX  = re.compile(r"^(\w+)\((.*)\)$")
+def p_argument(p):
+    'argument : ID EQUALS value'
+    p[0] = (p[1], p[3])
 
-    def _split_attrs(self, body: str) -> Dict[str, Any]:
-        if not body.strip():
-            return {}
-        # Split on commas not inside brackets
-        items = [p.strip() for p in re.split(r',(?=(?:[^\[\]]*\[[^\[\]]*\])*[^\[\]]*$)', body) if p.strip()]
-        if len(items) == 1 and all(c not in items[0] for c in (":","=")):
-            return {"value": items[0]}
-        out: Dict[str, Any] = {}
-        for it in items:
-            if ":" in it:
-                k, v = it.split(":", 1)
-            elif "=" in it:
-                k, v = it.split("=", 1)
-            else:
-                k, v = "value", it
-            out[k.strip()] = v.strip()
-        return out
+def p_value(p):
+    '''value : ID
+             | STRING
+             | NUMBER
+             | peg_call'''
+    p[0] = p[1]
 
-    def _parse_line(self, line: str):
-        line = line.lstrip("\ufeff").strip()
-        if not line:
-            return None
-        m_link = self._LINK_RX.match(line)
-        if m_link:
-            return GFLNode("link", {"from": m_link.group(1), "to": m_link.group(2)})
-        m_gen = self._GEN_RX.match(line)
-        if m_gen:
-            typ, body = m_gen.group(1), m_gen.group(2)
-            return GFLNode(typ, self._split_attrs(body))
-        raise GFLParseError(f"Syntax error: {line}")
+def p_peg_call(p):
+    'peg_call : PEG LPAREN arguments RPAREN'
+    p[0] = ('peg', p[3])
 
-    def parse(self, text: str):
-        root = GFLNode("program")
-        buffer = ""
-        depth = 0
-        for raw in text.splitlines():
-            line = raw.lstrip("\ufeff")
-            depth += line.count("(") - line.count(")")
-            buffer += " " + line.strip()
-            if depth == 0 and buffer.strip():
-                node = self._parse_line(buffer.strip())
-                if node:
-                    root.children.append(node)
-                buffer = ""
-        if depth != 0:
-            raise GFLParseError("Unbalanced parentheses in GFL code.")
-        return root
+def p_error(p):
+    if p:
+        print(f"Syntax error at {p.value!r}")
+    else:
+        print("Syntax error at EOF")
+
+parser = yacc.yacc()
