@@ -52,3 +52,10 @@ Cada par `key:val` o `key=val` se guarda en `attrs`.
 ### 🔄 Mayo 2025 – Inmunogenicidad & atributos libres
 * `immunity(alert:<type>, score:<0‑1>, cytokines:IL6|TNFα)`
 * `edit()`/`vector()` ahora aceptan `variant`, `ligand`, `payload_kb`, etc.
+## 🆕 Junio 2025 – Soporte de UTR y características de traducción endógena
+* `uaug(start:AUG, frame:0|1|2)` — uORF start codon (in-frame o fuera de marco)
+* `uorf(aa_length:<int>, frame:<0|1|2>)` — región de uORF con longitud y marco
+* `structure(ΔG:<float>, region:[<start>-<end>])` — energía libre de estructura secundaria
+* `gc_content(pct:<float>, region:[<start>-<end>]|whole)` — contenido G/C de una región o UTR completo
+* `rbp_site(rbp:<name>, pos:<start>-<end>)` — sitio de unión de proteína RBP (e.g., Pumilio)
+* `mir_site(mir:<name>, pos:<start>-<end>)` — sitio de unión de microRNA (e.g., miR34a)
