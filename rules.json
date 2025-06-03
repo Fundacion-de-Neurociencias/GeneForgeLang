@@ -1,0 +1,14 @@
+﻿{
+  "pirna": {
+    "cluster": ["flamenco", "20A"]
+  },
+  "transposon": {
+    "element_name": ["gypsy", "hobo", "mariner"]
+  },
+  "endogenous_retrovirus": {
+    "activity": ["low", "medium", "high"]
+  },
+  "mitochondrial_gene": {
+    "gene_startswith": "MT_"
+  }
+}

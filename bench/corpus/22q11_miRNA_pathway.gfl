@@ -1,0 +1,20 @@
+﻿target(gene:DGCR8, locus:22q11.2, allele:hemizygous)
+target(gene:Mir185, locus:22q11.2, allele:hemizygous)
+
+effect(function:miRNA_dysregulation,
+       location:neurons)
+
+link(target->effect)
+
+target(gene:Emc10, locus:Chr22q11.2)
+
+edit(miRNA_lof,
+     type:loss_of_function,
+     mechanism:hemizygosity)
+
+effect(function:Emc10_overexpression,
+       phenotype:neuronal_dysfunction)
+
+link(effect(miRNA_dysregulation)->edit(miRNA_lof))
+link(edit(miRNA_lof)->effect(Emc10_overexpression))
+link(effect(Emc10_overexpression)->target(Emc10))

@@ -1,0 +1,18 @@
+﻿[
+  {
+    "file": "bench/corpus/22q11_iPSC_ASO.gfl",
+    "expected_fired": []
+  },
+  {
+    "file": "bench/corpus/22q11_mouse_ASO.gfl",
+    "expected_fired": []
+  },
+  {
+    "file": "bench/corpus/22q11_miRNA_pathway.gfl",
+    "expected_fired": []
+  },
+  {
+    "file": "bench/corpus/22q11_high_level.gfl",
+    "expected_fired": []
+  }
+]

@@ -33,3 +33,12 @@ def default_rules() -> List[ProbRule]:
         ProbRule("repeat_interruption", 4.0,
                  lambda n: n["type"]=="repeat_edit")
     ]
+# ─── New probability rules ──────────────────────────────────────
+def score_prime_edit(node):
+    return 0.9 if "pegRNA" in node.args else 0.5
+
+def score_base_edit(node):
+    return 0.8 if "base_editor" in node.args else 0.4
+
+rule_scores["prime_edit"] = score_prime_edit
+rule_scores["base_edit"] = score_base_edit

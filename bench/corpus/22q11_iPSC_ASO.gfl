@@ -1,0 +1,28 @@
+﻿vector(ASO,
+       chemistry:2'-MOE_gapmer,
+       target:EMC10_mRNA,
+       delivery:lipid_transfection,
+       cell_type:hiPSC_neurons,
+       duration:72h)
+
+target(cell:hiPSC_neurons,
+       genotype:22q11.2_deletion,
+       gene:EMC10,
+       locus:Chr22q11.2)
+
+edit(ASO_knockdown,
+     mechanism:RNase_H,
+     efficiency:0.85)
+
+effect(function:EMC10_reduction,
+       phenotype:restored_neurite_outgrowth,
+       phenotype:normalized_Ca2+_signaling)
+
+risk(off_target_transcripts:0.10,
+     immunogenicity:0.05)
+
+governance(value:preclinical_in_vitro)
+
+link(vector->edit)
+link(edit->effect)
+link(effect->target)

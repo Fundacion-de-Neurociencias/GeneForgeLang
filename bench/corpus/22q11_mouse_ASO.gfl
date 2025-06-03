@@ -1,0 +1,36 @@
+﻿vector(ASO,
+       chemistry:2'-MOE_gapmer,
+       target:Emc10_mRNA,
+       delivery:ICV_injection,
+       dosage:100µg,
+       animal_model:Df16A+/–,
+       age:8_weeks,
+       species:Mus_musculus)
+
+target(gene:Emc10,
+       organism:Mus_musculus,
+       tissue:hippocampus,
+       cell_type:excitatory_neurons)
+
+edit(ASO_knockdown,
+     mechanism:RNase_H,
+     efficiency_in_vivo:0.70,
+     duration:60_days)
+
+simulate(mouse_behavior,
+         assays:[social_memory, water_maze_spatial_memory],
+         timepoints:[2_weeks,8_weeks])
+
+effect(function:cognitive_restoration,
+       phenotype:improved_social, 
+       phenotype:improved_spatial_memory,
+       durability:>60_days)
+
+risk(off_target_transcripts:0.12,
+     immunogenicity:0.08)
+
+governance(value:therapeutic_in_vivo, approval_status:preclinical)
+
+link(vector->edit)
+link(edit->simulate)
+link(simulate->effect)

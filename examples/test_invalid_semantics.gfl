@@ -1,5 +1,5 @@
 prime_edit(
   target = HBB,
-  pegRNA = peg(pbs = "ATCG", rtt = "TTAGG", nick_site = +17),
+  pegRNA = "esto_debería_ser_un_objeto_peg",
   reverse_transcriptase = PEmax
 )

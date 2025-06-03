@@ -1,0 +1,27 @@
+﻿vector(ASO,
+       chemistry:2'-MOE_gapmer,
+       target:EMC10_mRNA,
+       delivery_platform:[lipid_transfection, ICV_injection])
+
+target(cell_type:hiPSC_neurons,
+       genotype:22q11.2_deletion)
+target(gene:Emc10, organism:Mus_musculus, tissue:hippocampus)
+
+edit(ASO_knockdown,
+     mechanism:RNase_H,
+     efficiency_in_vitro:0.85,
+     efficiency_in_vivo:0.70)
+
+simulate(model:[in_vitro_iPSC, in_vivo_mouse],
+         assays:[neurite_outgrowth, Ca2+_signaling, social_memory, spatial_memory])
+
+effect(function:phenotype_rescue,
+       phenotype:[restored_neurites, normalized_Ca2+, improved_cognition])
+
+risk(off_target_transcripts:0.12, immunogenicity_ASO:0.08)
+
+governance(value:preclinical, approval_status:in_progress)
+
+link(vector->edit)
+link(edit->simulate)
+link(simulate->effect)

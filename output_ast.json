@@ -1,0 +1,29 @@
+[
+  [
+    "pirna",
+    {
+      "target": "TE_28",
+      "cluster": "flamenco"
+    }
+  ],
+  [
+    "transposon",
+    {
+      "element_name": "gypsy"
+    }
+  ],
+  [
+    "endogenous_retrovirus",
+    {
+      "locus": "HERVK",
+      "activity": "high"
+    }
+  ],
+  [
+    "mitochondrial_gene",
+    {
+      "gene": "MT_ND1",
+      "function": "respiration"
+    }
+  ]
+]
