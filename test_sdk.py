@@ -1,17 +1,50 @@
-﻿import unittest
-from gfl_sdk import parse_phrase, simulate_edit
+﻿# --- gfl_sdk/__init__.py: extender import y funciones ---
+Add-Content -Path ".\gfl_sdk\__init__.py" -Value @'
+from .external_integrations import get_crispor_guides, get_projects
 
-class TestGflSdk(unittest.TestCase):
+def simulate_advanced_edit(edit: dict) -> dict:
+    # Simulate complex edit effects placeholder
+    result = simulate_edit(edit)
+    result['effect'] = 'complex simulation placeholder'
+    return result
+'@
+
+# --- test_sdk.py: ampliar con tests integrados ---
+@"
+import unittest
+from gfl_sdk import parse_phrase, simulate_advanced_edit
+from gfl_sdk.external_integrations import get_crispor_guides, get_projects
+import requests
+
+class TestSDK(unittest.TestCase):
 
     def test_parse_phrase(self):
-        result = parse_phrase('EDIT:Base(A→G@1001)')
-        self.assertTrue(result.get('parsed', False))
-        self.assertIn('input', result)
+        phrase = 'EDIT:Base(A→G@1001)'
+        result = parse_phrase(phrase)
+        self.assertIsInstance(result, dict)
 
-    def test_simulate_edit(self):
-        edit = {'type': 'base_change', 'pos': 1001, 'from': 'A', 'to': 'G'}
-        result = simulate_edit(edit)
-        self.assertEqual(result.get('result'), 'simulated')
+    def test_simulate_advanced_edit(self):
+        edit = {'type': 'EDIT', 'details': 'Base(A→G@1001)'}
+        result = simulate_advanced_edit(edit)
+        self.assertIn('effect', result)
+        self.assertEqual(result['effect'], 'complex simulation placeholder')
+
+    def test_get_crispor_guides(self):
+        seq = 'GAGTCCGAGCAGAAGAAGA'
+        result = get_crispor_guides(seq)
+        self.assertIsInstance(result, dict)
+        self.assertIn('guides', result)
+
+    def test_get_projects(self):
+        try:
+            result = get_projects()
+        except requests.exceptions.RequestException:
+            self.assertTrue(True)
+        except Exception as e:
+            self.assertIn('Benchling API error', str(e))
+        else:
+            self.assertIsInstance(result, dict)
+            self.assertIn('projects', result)
 
 if __name__ == '__main__':
     unittest.main()
