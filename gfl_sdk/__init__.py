@@ -1,13 +1,14 @@
-﻿# GeneForgeLang Python SDK base module
+﻿from .parser import parse
 
-def parse_phrase(phrase: str) -> dict:
-    '''
-    Dummy parser function - replace with actual implementation
-    '''
-    return {'input': phrase, 'parsed': True}
+from .external_integrations import get_crispor_guides, get_projects
 
 def simulate_edit(edit: dict) -> dict:
-    '''
-    Dummy simulate function - extend for real simulation
-    '''
-    return {'edit': edit, 'result': 'simulated'}
+    # Simulated basic edit function placeholder
+    return {"edit": edit, "result": "simulated"}
+
+def simulate_advanced_edit(edit: dict) -> dict:
+    result = simulate_edit(edit)
+    result['effect'] = 'complex simulation placeholder'
+    return result
+
+parse_phrase = parse

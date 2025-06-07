@@ -1,17 +1,4 @@
-﻿# --- gfl_sdk/__init__.py: extender import y funciones ---
-Add-Content -Path ".\gfl_sdk\__init__.py" -Value @'
-from .external_integrations import get_crispor_guides, get_projects
-
-def simulate_advanced_edit(edit: dict) -> dict:
-    # Simulate complex edit effects placeholder
-    result = simulate_edit(edit)
-    result['effect'] = 'complex simulation placeholder'
-    return result
-'@
-
-# --- test_sdk.py: ampliar con tests integrados ---
-@"
-import unittest
+﻿import unittest
 from gfl_sdk import parse_phrase, simulate_advanced_edit
 from gfl_sdk.external_integrations import get_crispor_guides, get_projects
 import requests
