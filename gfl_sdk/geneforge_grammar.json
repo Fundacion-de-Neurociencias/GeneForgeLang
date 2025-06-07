@@ -1,0 +1,8 @@
+{
+  "grammar": {
+    "phrase": ["EDIT", "DEL", "INS"],
+    "base_change": {
+      "pattern": "Base\\([ATCGU]→[ATCGU]@[0-9]+\\)"
+    }
+  }
+}
