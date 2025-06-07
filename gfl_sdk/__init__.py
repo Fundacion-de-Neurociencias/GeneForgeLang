@@ -12,3 +12,4 @@ def simulate_advanced_edit(edit: dict) -> dict:
     return result
 
 parse_phrase = parse
+from .external_integrations.enhancers import Enhancer, AAVVector, simulate_enhancer_expression
