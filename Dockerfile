@@ -4,7 +4,6 @@ WORKDIR /app
 
 COPY . /app
 
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
-CMD [\"python\", \"-m\", \"gf_core.cli\"]
+CMD [""python"", ""-m"", ""gf_core.cli""]
