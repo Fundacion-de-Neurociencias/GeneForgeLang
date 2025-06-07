@@ -1,7 +1,7 @@
 ﻿# External Integrations
 
-This folder will contain integration modules for BioPython, CRISPOR, and Benchling.
+This folder will contain integration modules for external bioinformatics APIs like Benchling, CRISPOR, and BioPython.
 
-- BioPython: Sequence manipulation and analysis  
-- CRISPOR: Guide RNA design  
-- Benchling: Data management APIs  
+- Benchling: Data management and experiment tracking
+- CRISPOR: Guide RNA design
+- BioPython: Sequence manipulation and analysis
