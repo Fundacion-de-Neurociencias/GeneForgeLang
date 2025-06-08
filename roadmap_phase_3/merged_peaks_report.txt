@@ -1,0 +1,26 @@
+Total peaks: 37845
+Peaks per chromosome:
+  chr1: 4257
+  chr19: 2852
+  chr2: 2375
+  chr6: 2246
+  chr17: 2227
+  chr11: 2084
+  chr7: 2032
+  chr3: 1965
+  chr12: 1899
+  chr16: 1806
+  chr10: 1625
+  chr5: 1585
+  chr9: 1530
+  chr8: 1410
+  chr15: 1210
+  chr4: 1176
+  chr20: 1118
+  chr22: 1082
+  chr14: 946
+  chrX: 881
+  chr18: 545
+  chr13: 516
+  chr21: 478
+Peak size (bp): mean=449, min=105, max=7208
