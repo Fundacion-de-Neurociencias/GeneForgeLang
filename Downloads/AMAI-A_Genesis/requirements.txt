@@ -1,3 +1,0 @@
-﻿transformers
-gradio
-torch
