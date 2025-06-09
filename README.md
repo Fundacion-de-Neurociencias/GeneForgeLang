@@ -138,3 +138,31 @@ Licensed under the **MIT License**
 
 Join us in shaping symbolic bio-AI.  
 📬 Contributions welcome via [issues](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues) or pull requests!
+
+---
+
+## 🚀 GeneForgeLang — Project Status (June 2025)
+
+**GeneForgeLang (GFL)** is a declarative DSL and autonomous engine for planning, simulating, and adaptively executing genetic and omics experiments.
+
+- **Robust pipeline:** Runs experiments defined in the DSL with automatic adaptive logic.
+- **Real integration:** Executes Scanpy pipelines on real `.h5ad` data.
+- **Automatic feedback:** Dynamically adjusts the AST based on experimental results.
+- **Resilient:** Never crashes, always reports clear status and error reasons.
+- **Ready for:** multi-omics, plugins, advanced reporting, web/CLI dashboards.
+
+### Quick example execution
+
+```bash
+python -m scripts.fix_and_demo
+Requires a .h5ad file in data/example.h5ad (an example is provided).
+
+You can edit experimental parameters in examples/example1.gfl.
+
+Documentation & Support
+Main repo: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang
+
+Fundación de Neurociencias
+
+For questions, contributions, or troubleshooting: contact the project maintainer.
+
