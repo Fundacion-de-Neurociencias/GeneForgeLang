@@ -166,3 +166,25 @@ Fundación de Neurociencias
 
 For questions, contributions, or troubleshooting: contact the project maintainer.
 
+
+---
+
+## Example: Running a basic scRNA-seq pipeline
+
+You can run a real demo pipeline using the included GFL example:
+
+```bash
+python applications/launch_pipeline.py
+This will parse, adapt, and (optionally) execute the experiment steps defined in applications/pipeline_basic_scRNA.gfl.
+
+
+---
+
+## Example: Running a basic scRNA-seq pipeline
+
+You can run a real demo pipeline using the included GFL example:
+
+```bash
+python applications/launch_pipeline.py
+This will parse, adapt, and (optionally) execute the experiment steps defined in applications/pipeline_basic_scRNA.gfl.
+
