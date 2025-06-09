@@ -1,0 +1,13 @@
+simulate cell_death
+simulate apoptosis
+
+experiment TOOL scanpy TYPE scRNA PARAMS {
+    normalize: true,
+    pca_dims: 50,
+    min_cells: 3,
+    min_genes: 200,
+    target_cluster_count: 7
+}
+
+simulate cell_growth
+simulate inflammation
