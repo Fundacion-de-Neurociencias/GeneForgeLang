@@ -1,0 +1,4 @@
+simulate {
+    process: "cell_death"
+    conditions: ["oxidative_stress", "dna_damage"]
+}

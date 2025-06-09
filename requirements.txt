@@ -1,3 +1,15 @@
-gradio==3.50.2
-transformers
+ply==3.11
+ply==3.11
+gradio
+matplotlib
+model
+openai
+pandas
+parser
+pybedtools
+pysam
+pytest
+pyttsx3
+sklearn
 torch
+transformers

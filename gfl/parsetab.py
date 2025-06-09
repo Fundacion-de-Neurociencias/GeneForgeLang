@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'statementsBASE_EDIT COMMA ENDOGENOUS_RETROVIRUS EQUALS ID LPAREN MITOCHONDRIAL_GENE NICK_SITE NUMBER PEG PIRNA PRIME_DEL PRIME_EDIT REVERSE_TRANSCRIPTASE RPAREN STRING TRANSPOSONstatements : statement\n| statement statementsstatement : prime_edit\n| base_edit\n| prime_del\n| peg\n| nick_site\n| reverse_transcriptase\n| pirna\n| transposon\n| endogenous_retrovirus\n| mitochondrial_geneprime_edit : PRIME_EDIT LPAREN arguments RPARENbase_edit : BASE_EDIT LPAREN arguments RPARENprime_del : PRIME_DEL LPAREN arguments RPARENpeg : PEG LPAREN arguments RPARENnick_site : NICK_SITE LPAREN arguments RPARENreverse_transcriptase : REVERSE_TRANSCRIPTASE LPAREN arguments RPARENpirna : PIRNA LPAREN arguments RPARENtransposon : TRANSPOSON LPAREN arguments RPARENendogenous_retrovirus : ENDOGENOUS_RETROVIRUS LPAREN arguments RPARENmitochondrial_gene : MITOCHONDRIAL_GENE LPAREN arguments RPARENarguments : argument\n| argument COMMA argumentsargument : ID EQUALS ID'
+_lr_signature = 'COLON COMMA EXPERIMENT FALSE IDENTIFIER LBRACE NUMBER PARAMS RBRACE SIMULATE TOOL TRUE TYPEprogram : statementsstatements : statements statementstatements : statementstatement : SIMULATE IDENTIFIERstatement : EXPERIMENT LBRACE experiment_body RBRACEexperiment_body : experiment_fieldsexperiment_fields : experiment_fields experiment_fieldexperiment_fields : experiment_fieldexperiment_field : TYPE COLON IDENTIFIERexperiment_field : TOOL COLON IDENTIFIERexperiment_field : PARAMS COLON param_dictparam_dict : LBRACE param_pairs RBRACEparam_pairs : param_pairs COMMA param_pairparam_pairs : param_pairparam_pair : IDENTIFIER COLON param_valueparam_value : TRUE\n                   | FALSEparam_value : NUMBERparam_value : IDENTIFIER'
     
-_lr_action_items = {'PRIME_EDIT':([0,2,3,4,5,6,7,8,9,10,11,12,46,49,50,51,52,53,54,55,56,57,],[13,13,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,]),'BASE_EDIT':([0,2,3,4,5,6,7,8,9,10,11,12,46,49,50,51,52,53,54,55,56,57,],[14,14,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,]),'PRIME_DEL':([0,2,3,4,5,6,7,8,9,10,11,12,46,49,50,51,52,53,54,55,56,57,],[15,15,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,]),'PEG':([0,2,3,4,5,6,7,8,9,10,11,12,46,49,50,51,52,53,54,55,56,57,],[16,16,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,]),'NICK_SITE':([0,2,3,4,5,6,7,8,9,10,11,12,46,49,50,51,52,53,54,55,56,57,],[17,17,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,]),'REVERSE_TRANSCRIPTASE':([0,2,3,4,5,6,7,8,9,10,11,12,46,49,50,51,52,53,54,55,56,57,],[18,18,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,]),'PIRNA':([0,2,3,4,5,6,7,8,9,10,11,12,46,49,50,51,52,53,54,55,56,57,],[19,19,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,]),'TRANSPOSON':([0,2,3,4,5,6,7,8,9,10,11,12,46,49,50,51,52,53,54,55,56,57,],[20,20,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,]),'ENDOGENOUS_RETROVIRUS':([0,2,3,4,5,6,7,8,9,10,11,12,46,49,50,51,52,53,54,55,56,57,],[21,21,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,]),'MITOCHONDRIAL_GENE':([0,2,3,4,5,6,7,8,9,10,11,12,46,49,50,51,52,53,54,55,56,57,],[22,22,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,]),'$end':([1,2,3,4,5,6,7,8,9,10,11,12,23,46,49,50,51,52,53,54,55,56,57,],[0,-1,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-2,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,]),'LPAREN':([13,14,15,16,17,18,19,20,21,22,],[24,25,26,27,28,29,30,31,32,33,]),'ID':([24,25,26,27,28,29,30,31,32,33,47,48,],[36,36,36,36,36,36,36,36,36,36,36,59,]),'RPAREN':([34,35,37,38,39,40,41,42,43,44,45,58,59,],[46,-23,49,50,51,52,53,54,55,56,57,-24,-25,]),'COMMA':([35,59,],[47,-25,]),'EQUALS':([36,],[48,]),}
+_lr_action_items = {'SIMULATE':([0,2,3,6,7,15,],[4,4,-3,-2,-4,-5,]),'EXPERIMENT':([0,2,3,6,7,15,],[5,5,-3,-2,-4,-5,]),'$end':([1,2,3,6,7,15,],[0,-1,-3,-2,-4,-5,]),'IDENTIFIER':([4,17,18,23,28,29,],[7,20,21,26,26,31,]),'LBRACE':([5,19,],[8,23,]),'TYPE':([8,10,11,16,20,21,22,27,],[12,12,-8,-7,-9,-10,-11,-12,]),'TOOL':([8,10,11,16,20,21,22,27,],[13,13,-8,-7,-9,-10,-11,-12,]),'PARAMS':([8,10,11,16,20,21,22,27,],[14,14,-8,-7,-9,-10,-11,-12,]),'RBRACE':([9,10,11,16,20,21,22,24,25,27,30,31,32,33,34,35,],[15,-6,-8,-7,-9,-10,-11,27,-14,-12,-13,-19,-15,-16,-17,-18,]),'COLON':([12,13,14,26,],[17,18,19,29,]),'COMMA':([24,25,30,31,32,33,34,35,],[28,-14,-13,-19,-15,-16,-17,-18,]),'TRUE':([29,],[33,]),'FALSE':([29,],[34,]),'NUMBER':([29,],[35,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'statements':([0,2,],[1,23,]),'statement':([0,2,],[2,2,]),'prime_edit':([0,2,],[3,3,]),'base_edit':([0,2,],[4,4,]),'prime_del':([0,2,],[5,5,]),'peg':([0,2,],[6,6,]),'nick_site':([0,2,],[7,7,]),'reverse_transcriptase':([0,2,],[8,8,]),'pirna':([0,2,],[9,9,]),'transposon':([0,2,],[10,10,]),'endogenous_retrovirus':([0,2,],[11,11,]),'mitochondrial_gene':([0,2,],[12,12,]),'arguments':([24,25,26,27,28,29,30,31,32,33,47,],[34,37,38,39,40,41,42,43,44,45,58,]),'argument':([24,25,26,27,28,29,30,31,32,33,47,],[35,35,35,35,35,35,35,35,35,35,35,]),}
+_lr_goto_items = {'program':([0,],[1,]),'statements':([0,],[2,]),'statement':([0,2,],[3,6,]),'experiment_body':([8,],[9,]),'experiment_fields':([8,],[10,]),'experiment_field':([8,10,],[11,16,]),'param_dict':([19,],[22,]),'param_pairs':([23,],[24,]),'param_pair':([23,28,],[25,30,]),'param_value':([29,],[32,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,30 +26,24 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> statements","S'",1,None,None,None),
-  ('statements -> statement','statements',1,'p_statements','parser.py',5),
-  ('statements -> statement statements','statements',2,'p_statements','parser.py',6),
-  ('statement -> prime_edit','statement',1,'p_statement','parser.py',13),
-  ('statement -> base_edit','statement',1,'p_statement','parser.py',14),
-  ('statement -> prime_del','statement',1,'p_statement','parser.py',15),
-  ('statement -> peg','statement',1,'p_statement','parser.py',16),
-  ('statement -> nick_site','statement',1,'p_statement','parser.py',17),
-  ('statement -> reverse_transcriptase','statement',1,'p_statement','parser.py',18),
-  ('statement -> pirna','statement',1,'p_statement','parser.py',19),
-  ('statement -> transposon','statement',1,'p_statement','parser.py',20),
-  ('statement -> endogenous_retrovirus','statement',1,'p_statement','parser.py',21),
-  ('statement -> mitochondrial_gene','statement',1,'p_statement','parser.py',22),
-  ('prime_edit -> PRIME_EDIT LPAREN arguments RPAREN','prime_edit',4,'p_prime_edit','parser.py',26),
-  ('base_edit -> BASE_EDIT LPAREN arguments RPAREN','base_edit',4,'p_base_edit','parser.py',30),
-  ('prime_del -> PRIME_DEL LPAREN arguments RPAREN','prime_del',4,'p_prime_del','parser.py',34),
-  ('peg -> PEG LPAREN arguments RPAREN','peg',4,'p_peg','parser.py',38),
-  ('nick_site -> NICK_SITE LPAREN arguments RPAREN','nick_site',4,'p_nick_site','parser.py',42),
-  ('reverse_transcriptase -> REVERSE_TRANSCRIPTASE LPAREN arguments RPAREN','reverse_transcriptase',4,'p_reverse_transcriptase','parser.py',46),
-  ('pirna -> PIRNA LPAREN arguments RPAREN','pirna',4,'p_pirna','parser.py',50),
-  ('transposon -> TRANSPOSON LPAREN arguments RPAREN','transposon',4,'p_transposon','parser.py',54),
-  ('endogenous_retrovirus -> ENDOGENOUS_RETROVIRUS LPAREN arguments RPAREN','endogenous_retrovirus',4,'p_endogenous_retrovirus','parser.py',58),
-  ('mitochondrial_gene -> MITOCHONDRIAL_GENE LPAREN arguments RPAREN','mitochondrial_gene',4,'p_mitochondrial_gene','parser.py',62),
-  ('arguments -> argument','arguments',1,'p_arguments','parser.py',66),
-  ('arguments -> argument COMMA arguments','arguments',3,'p_arguments','parser.py',67),
-  ('argument -> ID EQUALS ID','argument',3,'p_argument','parser.py',74),
+  ("S' -> program","S'",1,None,None,None),
+  ('program -> statements','program',1,'p_program','parser_rules.py',5),
+  ('statements -> statements statement','statements',2,'p_statements_multiple','parser_rules.py',9),
+  ('statements -> statement','statements',1,'p_statements_single','parser_rules.py',13),
+  ('statement -> SIMULATE IDENTIFIER','statement',2,'p_statement_simulate','parser_rules.py',17),
+  ('statement -> EXPERIMENT LBRACE experiment_body RBRACE','statement',4,'p_statement_experiment_block','parser_rules.py',21),
+  ('experiment_body -> experiment_fields','experiment_body',1,'p_experiment_body','parser_rules.py',25),
+  ('experiment_fields -> experiment_fields experiment_field','experiment_fields',2,'p_experiment_fields_multiple','parser_rules.py',32),
+  ('experiment_fields -> experiment_field','experiment_fields',1,'p_experiment_fields_single','parser_rules.py',36),
+  ('experiment_field -> TYPE COLON IDENTIFIER','experiment_field',3,'p_experiment_field_type','parser_rules.py',40),
+  ('experiment_field -> TOOL COLON IDENTIFIER','experiment_field',3,'p_experiment_field_tool','parser_rules.py',44),
+  ('experiment_field -> PARAMS COLON param_dict','experiment_field',3,'p_experiment_field_params','parser_rules.py',48),
+  ('param_dict -> LBRACE param_pairs RBRACE','param_dict',3,'p_param_dict','parser_rules.py',52),
+  ('param_pairs -> param_pairs COMMA param_pair','param_pairs',3,'p_param_pairs_multiple','parser_rules.py',56),
+  ('param_pairs -> param_pair','param_pairs',1,'p_param_pairs_single','parser_rules.py',62),
+  ('param_pair -> IDENTIFIER COLON param_value','param_pair',3,'p_param_pair','parser_rules.py',66),
+  ('param_value -> TRUE','param_value',1,'p_param_value_bool','parser_rules.py',70),
+  ('param_value -> FALSE','param_value',1,'p_param_value_bool','parser_rules.py',71),
+  ('param_value -> NUMBER','param_value',1,'p_param_value_number','parser_rules.py',75),
+  ('param_value -> IDENTIFIER','param_value',1,'p_param_value_string','parser_rules.py',79),
 ]

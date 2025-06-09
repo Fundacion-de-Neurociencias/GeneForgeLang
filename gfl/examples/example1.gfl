@@ -1,0 +1,7 @@
+simulate 'cell_death'
+simulate 'apoptosis'
+simulate 'cell_death'
+simulate 'apoptosis'
+simulate 'cell_death'
+simulate 'cell_death'
+simulate 'cell_death'
