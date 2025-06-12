@@ -1,0 +1,9556 @@
+simulate drug_effect
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.2
+  }
+}
+
+simulate inflammation
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    min_cells: 10,
+    min_genes: 379,
+    pca_dims: 20
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate drug_effect
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    min_cells: 3,
+    min_genes: 488,
+    target_cluster_count: 4
+  }
+}
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.8,
+    pval: 0.01
+  }
+}
+
+simulate apoptosis
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate cell_division
+    simulate immune_response
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_cells: 5,
+    min_genes: 273,
+    pca_dims: 50,
+    imputation: true
+  }
+}
+
+simulate cell_growth
+
+simulate tissue_repair
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.7,
+    pval: 0.001
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.1
+  }
+}
+
+simulate cell_division
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+simulate cell_division
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.05
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.2
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.47
+  }
+}
+
+simulate protein_synthesis
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.32,
+    pval: 0.001
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate immune_response
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.36
+  }
+}
+  }
+}
+
+simulate drug_effect
+
+simulate tissue_repair
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+simulate immune_response
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.5
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.14,
+    integrate_datasets: false
+  }
+}
+    simulate tissue_repair
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.21
+  }
+}
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.3
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+simulate apoptosis
+
+simulate gene_expression
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate protein_synthesis
+    simulate tissue_repair
+  }
+  else: {
+    simulate metabolic_pathway
+  }
+}
+
+simulate inflammation
+
+simulate gene_expression
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    min_cells: 10,
+    min_genes: 297
+  }
+}
+  }
+  else: {
+    simulate apoptosis
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.3
+  }
+}
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.2
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 10,
+    min_genes: 338,
+    pca_dims: 50,
+    imputation: true
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: false,
+    min_cells: 9,
+    min_genes: 492,
+    target_cluster_count: 10
+  }
+}
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_cells: 5,
+    target_cluster_count: 6
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    min_cells: 6,
+    pca_dims: 30
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate immune_response
+    simulate metabolic_pathway
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+}
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_genes: 476,
+    pca_dims: 30,
+    target_cluster_count: 9
+  }
+}
+    simulate apoptosis
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.8
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+  }
+  else: {
+    simulate inflammation
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.46
+  }
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.51
+  }
+}
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "unifrac
+  }
+}
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.13
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "unifrac
+  }
+}
+    simulate drug_effect
+  }
+}
+
+simulate metabolic_pathway
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: clustering
+}
+  }
+  else: {
+    simulate cell_growth
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate cell_growth
+  }
+  else: {
+    simulate inflammation
+    simulate immune_response
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "unifrac
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.4
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.9
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.5
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.77
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    control_group: "healthy",
+    batch_correction: false
+  }
+}
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate immune_response
+    simulate cell_growth
+  }
+  else: {
+    simulate cell_division
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+
+simulate cell_growth
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    min_cells: 2,
+    min_genes: 136,
+    imputation: true
+  }
+}
+
+simulate tissue_repair
+
+simulate protein_synthesis
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype"
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate cell_division
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.41
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.95
+  }
+}
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.93,
+    pval: 0.001
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    integrate_datasets: false
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.14,
+    pval: 0.05
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.47
+  }
+}
+
+simulate metabolic_pathway
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate apoptosis
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    integrate_datasets: true
+  }
+}
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "mutant",
+    control_group: "healthy",
+    batch_correction: false
+  }
+}
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+
+simulate apoptosis
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.4
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: true,
+    min_genes: 475,
+    pca_dims: 20
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 1.41
+  }
+}
+
+simulate gene_expression
+
+simulate gene_expression
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+simulate cell_division
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate apoptosis
+    simulate gene_expression
+  }
+  else: {
+    simulate inflammation
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.93,
+    integrate_datasets: false
+  }
+}
+  }
+}
+
+simulate tissue_repair
+
+simulate cell_division
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.34,
+    integrate_datasets: true
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+    simulate immune_response
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "wildtype",
+    batch_correction: false
+  }
+}
+
+simulate gene_expression
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.92,
+    integrate_datasets: false
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.5
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.54
+  }
+}
+
+simulate inflammation
+
+simulate immune_response
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.29,
+    integrate_datasets: false
+  }
+}
+    simulate immune_response
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+}
+
+simulate metabolic_pathway
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype",
+    batch_correction: true
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.56
+  }
+}
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "unifrac
+  }
+}
+  }
+  else: {
+    simulate cell_division
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+simulate immune_response
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    min_cells: 1,
+    min_genes: 101
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "untreated"
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate protein_synthesis
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+}
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "disease",
+    control_group: "healthy"
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate inflammation
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.5
+  }
+}
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.27
+  }
+}
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+
+simulate apoptosis
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.95
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    min_cells: 8,
+    min_genes: 151,
+    pca_dims: 50,
+    target_cluster_count: 13
+  }
+}
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    pval: 0.01
+  }
+}
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+    simulate drug_effect
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 1.41,
+    integrate_datasets: false
+  }
+}
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    integrate_datasets: false
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 1.24
+  }
+}
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    control_group: "untreated",
+    batch_correction: false
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.76
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype",
+    batch_correction: false
+  }
+}
+  }
+}
+
+simulate tissue_repair
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.97,
+    integrate_datasets: true
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    min_cells: 2,
+    imputation: false
+  }
+}
+
+simulate cell_division
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.98,
+    pval: 0.001
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "disease",
+    control_group: "untreated"
+  }
+}
+
+analyze {
+  strategy: clustering
+}
+
+simulate drug_effect
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.7
+  }
+}
+  }
+  else: {
+    simulate cell_growth
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    integrate_datasets: true
+  }
+}
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.28,
+    pval: 0.01
+  }
+}
+  }
+  else: {
+    simulate inflammation
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.11
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate apoptosis
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.55
+  }
+}
+  }
+  else: {
+    simulate protein_synthesis
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    pval: 0.001
+  }
+}
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.8,
+    pval: 0.01
+  }
+}
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: true,
+    min_cells: 7,
+    min_genes: 214
+  }
+}
+  }
+  else: {
+    simulate immune_response
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.29,
+    pval: 0.01
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    simulate cell_division
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.0
+  }
+}
+  }
+  else: {
+    simulate inflammation
+    simulate cell_division
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.25
+  }
+}
+  }
+}
+
+simulate inflammation
+
+simulate protein_synthesis
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.2
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.79
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+simulate protein_synthesis
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.57
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+    simulate metabolic_pathway
+  }
+  else: {
+    simulate cell_growth
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.53,
+    pval: 0.05
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.86
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    min_cells: 7,
+    min_genes: 121,
+    target_cluster_count: 3,
+    imputation: false
+  }
+}
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate gene_expression
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: false,
+    min_cells: 1,
+    min_genes: 198
+  }
+}
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "untreated"
+  }
+}
+  }
+}
+
+simulate tissue_repair
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "untreated"
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.14
+  }
+}
+    analyze {
+  strategy: clustering
+}
+  }
+  else: {
+    simulate tissue_repair
+  }
+}
+
+simulate apoptosis
+
+simulate gene_expression
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.77
+  }
+}
+
+simulate inflammation
+
+simulate protein_synthesis
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    target_cluster_count: 10
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.3
+  }
+}
+    simulate protein_synthesis
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate cell_division
+    simulate gene_expression
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.6
+  }
+}
+    simulate cell_division
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.1
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 1,
+    min_genes: 118
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.15
+  }
+}
+
+simulate drug_effect
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.16,
+    integrate_datasets: true
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.65
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.57
+  }
+}
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: true,
+    min_cells: 9,
+    min_genes: 180,
+    pca_dims: 20,
+    imputation: true
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.58,
+    pval: 0.001
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "untreated"
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+  else: {
+    simulate gene_expression
+  }
+}
+
+simulate gene_expression
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.22,
+    integrate_datasets: true
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate protein_synthesis
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.17,
+    integrate_datasets: false
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.57,
+    pval: 0.01
+  }
+}
+    simulate metabolic_pathway
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.28,
+    pval: 0.05
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "untreated"
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "mutant",
+    control_group: "healthy",
+    batch_correction: true
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.24,
+    integrate_datasets: false
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: false,
+    target_cluster_count: 15
+  }
+}
+
+simulate apoptosis
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "untreated"
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.11
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.5
+  }
+}
+
+simulate cell_division
+
+simulate cell_growth
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: true,
+    min_cells: 3,
+    min_genes: 317,
+    pca_dims: 20,
+    imputation: false
+  }
+}
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    pca_dims: 30
+  }
+}
+  }
+  else: {
+    simulate tissue_repair
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.9
+  }
+}
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: true,
+    min_cells: 2,
+    min_genes: 347,
+    pca_dims: 20
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.46,
+    pval: 0.05
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "wildtype"
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.88,
+    integrate_datasets: false
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate immune_response
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: false,
+    min_cells: 9,
+    min_genes: 347,
+    pca_dims: 20
+  }
+}
+  }
+  else: {
+    simulate apoptosis
+    simulate gene_expression
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: false,
+    pca_dims: 50
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.15
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate gene_expression
+    analyze {
+  strategy: pathway_enrichment
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_cells: 3,
+    min_genes: 156,
+    imputation: true
+  }
+}
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    min_cells: 8,
+    target_cluster_count: 3,
+    imputation: true
+  }
+}
+
+simulate metabolic_pathway
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.65
+  }
+}
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_cells: 3,
+    min_genes: 426,
+    pca_dims: 50
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+simulate cell_division
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.4
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.7
+  }
+}
+
+simulate immune_response
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.4
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: true,
+    min_cells: 6,
+    min_genes: 217,
+    pca_dims: 50,
+    target_cluster_count: 14
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "healthy"
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.4
+  }
+}
+  }
+}
+
+simulate gene_expression
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.23
+  }
+}
+
+simulate metabolic_pathway
+
+simulate cell_growth
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+  else: {
+    simulate inflammation
+    simulate immune_response
+  }
+}
+
+simulate apoptosis
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    integrate_datasets: true
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.42
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.57,
+    integrate_datasets: true
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "unifrac
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.14,
+    integrate_datasets: true
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.7,
+    pval: 0.001
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.19,
+    integrate_datasets: true
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.3
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "unifrac
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.29
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype"
+  }
+}
+
+simulate gene_expression
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.45,
+    pval: 0.05
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 8,
+    min_genes: 408,
+    pca_dims: 30
+  }
+}
+
+simulate drug_effect
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "untreated",
+    batch_correction: false
+  }
+}
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.26,
+    pval: 0.001
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    min_cells: 4,
+    min_genes: 309,
+    imputation: false
+  }
+}
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "disease",
+    control_group: "wildtype"
+  }
+}
+
+simulate tissue_repair
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+simulate cell_growth
+
+simulate gene_expression
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.8
+  }
+}
+
+simulate immune_response
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate metabolic_pathway
+  }
+  else: {
+    simulate gene_expression
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    pval: 0.001
+  }
+}
+
+simulate inflammation
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.17
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    control_group: "healthy"
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.93
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: false
+  }
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate cell_division
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.28
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.33
+  }
+}
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.33,
+    pval: 0.05
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.84,
+    pval: 0.05
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate tissue_repair
+    simulate tissue_repair
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "unifrac
+  }
+}
+    experiment {
+  tool: qiime2
+  type: metagenomics
+}
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    pval: 0.01
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.03
+  }
+}
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.6
+  }
+}
+  }
+  else: {
+    simulate apoptosis
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.1
+  }
+}
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: false,
+    min_cells: 4,
+    min_genes: 403
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.1
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_genes: 140,
+    pca_dims: 20,
+    target_cluster_count: 4
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.61
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate drug_effect
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "unifrac
+  }
+}
+  }
+}
+
+simulate gene_expression
+
+simulate cell_division
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.14,
+    pval: 0.05
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.69,
+    pval: 0.001
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.46
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    min_genes: 307
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "unifrac
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "disease",
+    control_group: "healthy",
+    batch_correction: true
+  }
+}
+    simulate immune_response
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.53
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "unifrac
+  }
+}
+  }
+}
+
+simulate immune_response
+
+simulate metabolic_pathway
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "untreated",
+    batch_correction: false
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "unifrac
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate apoptosis
+    simulate tissue_repair
+  }
+  else: {
+    simulate protein_synthesis
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+}
+  }
+  else: {
+    simulate metabolic_pathway
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.71
+  }
+}
+
+simulate cell_division
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.27
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: scRNA
+}
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    min_genes: 106,
+    target_cluster_count: 7
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    min_genes: 464,
+    pca_dims: 20,
+    imputation: true
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    min_cells: 8,
+    min_genes: 293,
+    pca_dims: 20
+  }
+}
+  }
+}
+
+simulate drug_effect
+
+simulate apoptosis
+
+simulate apoptosis
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.23
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.84,
+    integrate_datasets: true
+  }
+}
+
+simulate metabolic_pathway
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.98
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+simulate gene_expression
+
+simulate metabolic_pathway
+
+simulate apoptosis
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    min_cells: 10
+  }
+}
+  }
+  else: {
+    simulate tissue_repair
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "untreated",
+    batch_correction: true
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "unifrac
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.2
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+simulate cell_growth
+
+simulate cell_growth
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: false,
+    min_cells: 3,
+    min_genes: 244,
+    pca_dims: 20,
+    target_cluster_count: 7,
+    imputation: false
+  }
+}
+
+simulate immune_response
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+  else: {
+    simulate cell_growth
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.63
+  }
+}
+  }
+}
+
+simulate apoptosis
+
+simulate apoptosis
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+simulate protein_synthesis
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_genes: 300,
+    pca_dims: 20
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.02,
+    pval: 0.05
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.6,
+    pval: 0.01
+  }
+}
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate cell_division
+  }
+  else: {
+    simulate apoptosis
+    analyze {
+  strategy: clustering
+}
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate metabolic_pathway
+    simulate metabolic_pathway
+  }
+  else: {
+    simulate metabolic_pathway
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+  }
+}
+
+simulate cell_growth
+
+analyze {
+  strategy: pathway_enrichment
+}
+
+simulate drug_effect
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate protein_synthesis
+  }
+  else: {
+    simulate protein_synthesis
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.13,
+    integrate_datasets: true
+  }
+}
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+    simulate apoptosis
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "unifrac
+  }
+}
+    simulate inflammation
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    simulate drug_effect
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.6
+  }
+}
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    simulate metabolic_pathway
+    simulate drug_effect
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.64,
+    pval: 0.05
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate drug_effect
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false
+  }
+}
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.2
+  }
+}
+  }
+  else: {
+    simulate cell_growth
+    simulate apoptosis
+  }
+}
+
+simulate metabolic_pathway
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+  else: {
+    simulate metabolic_pathway
+    simulate inflammation
+  }
+}
+
+simulate tissue_repair
+
+simulate drug_effect
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.82
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.49
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    control_group: "untreated"
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: false,
+    min_cells: 5,
+    min_genes: 273,
+    pca_dims: 20
+  }
+}
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated"
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    batch_correction: false
+  }
+}
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+
+simulate protein_synthesis
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.2
+  }
+}
+
+simulate tissue_repair
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.1
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "unifrac
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.2
+  }
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+simulate apoptosis
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    simulate metabolic_pathway
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+  }
+}
+
+simulate cell_division
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate protein_synthesis
+    simulate tissue_repair
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.5
+  }
+}
+  }
+}
+
+simulate gene_expression
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "healthy"
+  }
+}
+
+simulate immune_response
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.42,
+    pval: 0.001
+  }
+}
+    analyze {
+  strategy: clustering
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 4,
+    pca_dims: 50,
+    target_cluster_count: 14
+  }
+}
+    simulate gene_expression
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+  }
+  else: {
+    simulate inflammation
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate immune_response
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+    simulate inflammation
+  }
+}
+
+simulate drug_effect
+
+simulate tissue_repair
+
+simulate gene_expression
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+    simulate gene_expression
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+    simulate cell_growth
+  }
+  else: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "wildtype",
+    batch_correction: false
+  }
+}
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+}
+
+simulate metabolic_pathway
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.35,
+    integrate_datasets: false
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.12
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate metabolic_pathway
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.28,
+    integrate_datasets: false
+  }
+}
+  }
+  else: {
+    simulate metabolic_pathway
+    simulate apoptosis
+  }
+}
+
+simulate tissue_repair
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate gene_expression
+    simulate inflammation
+  }
+  else: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.61,
+    pval: 0.001
+  }
+}
+  }
+}
+
+simulate protein_synthesis
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: true,
+    min_cells: 2,
+    pca_dims: 50
+  }
+}
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.53
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "disease",
+    control_group: "wildtype"
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.55
+  }
+}
+
+simulate apoptosis
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.56,
+    pval: 0.01
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype",
+    batch_correction: true
+  }
+}
+  }
+  else: {
+    simulate tissue_repair
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+}
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate inflammation
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+    analyze {
+  strategy: clustering
+}
+  }
+}
+
+simulate cell_growth
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate apoptosis
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "healthy"
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.2
+  }
+}
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.33,
+    integrate_datasets: true
+  }
+}
+
+simulate gene_expression
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.03,
+    pval: 0.001
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.03,
+    pval: 0.001
+  }
+}
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    min_cells: 9,
+    min_genes: 379
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.3
+  }
+}
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.2
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "disease",
+    control_group: "healthy",
+    batch_correction: true
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.1
+  }
+}
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "unifrac
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.82,
+    integrate_datasets: true
+  }
+}
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    min_genes: 198
+  }
+}
+
+analyze {
+  strategy: clustering
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_cells: 4,
+    min_genes: 476,
+    pca_dims: 20
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.67
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.22
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.23
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.98,
+    pval: 0.01
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "mutant",
+    control_group: "untreated"
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.42,
+    integrate_datasets: false
+  }
+}
+
+simulate cell_division
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.1
+  }
+}
+
+simulate cell_division
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.52,
+    pval: 0.05
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.1
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 1.05,
+    integrate_datasets: true
+  }
+}
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.94
+  }
+}
+  }
+  else: {
+    simulate immune_response
+    simulate immune_response
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.22
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "untreated"
+  }
+}
+
+simulate immune_response
+
+simulate apoptosis
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "unifrac
+  }
+}
+
+simulate cell_division
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.73
+  }
+}
+
+simulate inflammation
+
+simulate tissue_repair
+
+simulate protein_synthesis
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.6
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate protein_synthesis
+  }
+  else: {
+    simulate protein_synthesis
+  }
+}
+
+simulate immune_response
+
+simulate inflammation
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_genes: 306,
+    imputation: false
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+  }
+}
+
+simulate immune_response
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    simulate immune_response
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false
+  }
+}
+  }
+  else: {
+    simulate drug_effect
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype"
+  }
+}
+    simulate drug_effect
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 3,
+    pca_dims: 50,
+    imputation: true
+  }
+}
+    simulate tissue_repair
+  }
+}
+
+simulate cell_growth
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.92
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.48
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+
+simulate metabolic_pathway
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    simulate inflammation
+    simulate gene_expression
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+
+simulate drug_effect
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.5
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "disease",
+    control_group: "wildtype"
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+simulate metabolic_pathway
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+  }
+  else: {
+    simulate metabolic_pathway
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 1,
+    min_genes: 254
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.2
+  }
+}
+    simulate inflammation
+  }
+}
+
+simulate apoptosis
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "untreated"
+  }
+}
+
+simulate immune_response
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.69,
+    integrate_datasets: false
+  }
+}
+
+simulate metabolic_pathway
+
+simulate inflammation
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.8
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_cells: 8
+  }
+}
+    simulate tissue_repair
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.38,
+    integrate_datasets: false
+  }
+}
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate immune_response
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.12
+  }
+}
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.81
+  }
+}
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate gene_expression
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.68
+  }
+}
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.62
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+
+simulate gene_expression
+
+simulate cell_growth
+
+simulate protein_synthesis
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.2
+  }
+}
+  }
+}
+
+simulate apoptosis
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.24
+  }
+}
+
+simulate cell_growth
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    integrate_datasets: true
+  }
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "disease",
+    control_group: "healthy"
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.65,
+    pval: 0.01
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.43
+  }
+}
+  }
+}
+
+simulate inflammation
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.57
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype",
+    batch_correction: false
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.76
+  }
+}
+    simulate apoptosis
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+  }
+}
+
+simulate protein_synthesis
+
+simulate gene_expression
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    min_cells: 1,
+    min_genes: 177,
+    pca_dims: 50,
+    imputation: true
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: true,
+    min_cells: 9,
+    min_genes: 284,
+    pca_dims: 30
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.2
+  }
+}
+
+simulate immune_response
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.61,
+    integrate_datasets: true
+  }
+}
+
+simulate gene_expression
+
+simulate gene_expression
+
+simulate cell_growth
+
+simulate apoptosis
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate cell_division
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+  }
+  else: {
+    simulate metabolic_pathway
+    simulate cell_division
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.58,
+    pval: 0.05
+  }
+}
+
+simulate cell_growth
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.3
+  }
+}
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+  }
+  else: {
+    simulate inflammation
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+  }
+}
+
+simulate apoptosis
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_cells: 9,
+    imputation: true
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+  else: {
+    simulate protein_synthesis
+  }
+}
+
+simulate apoptosis
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_genes: 198,
+    pca_dims: 50
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "wildtype"
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.3
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: clustering
+}
+    simulate tissue_repair
+  }
+  else: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.82
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.99
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated"
+  }
+}
+    simulate cell_growth
+  }
+  else: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype",
+    batch_correction: true
+  }
+}
+    simulate immune_response
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.91,
+    pval: 0.05
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: true,
+    min_cells: 8,
+    target_cluster_count: 3
+  }
+}
+    simulate protein_synthesis
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+}
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 6,
+    min_genes: 338,
+    pca_dims: 50
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.59,
+    pval: 0.001
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.53
+  }
+}
+  }
+  else: {
+    simulate inflammation
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+  }
+  else: {
+    simulate inflammation
+  }
+}
+
+analyze {
+  strategy: clustering
+}
+
+simulate tissue_repair
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.82,
+    pval: 0.001
+  }
+}
+
+simulate cell_division
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.42
+  }
+}
+
+simulate drug_effect
+
+simulate drug_effect
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate protein_synthesis
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate immune_response
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+}
+  }
+}
+
+simulate apoptosis
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate protein_synthesis
+  }
+  else: {
+    simulate drug_effect
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    integrate_datasets: false
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.64
+  }
+}
+    simulate immune_response
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.7
+  }
+}
+
+simulate immune_response
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+simulate metabolic_pathway
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    simulate tissue_repair
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.89
+  }
+}
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.28,
+    pval: 0.01
+  }
+}
+  }
+}
+
+simulate gene_expression
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    min_cells: 2,
+    target_cluster_count: 6
+  }
+}
+
+simulate tissue_repair
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "unifrac
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 2,
+    min_genes: 432,
+    pca_dims: 20,
+    target_cluster_count: 12
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate tissue_repair
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.43
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "unifrac
+  }
+}
+    simulate inflammation
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "mutant",
+    control_group: "healthy"
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate apoptosis
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 1.07
+  }
+}
+    simulate tissue_repair
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate tissue_repair
+  }
+  else: {
+    simulate apoptosis
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+}
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.31
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.0
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    integrate_datasets: true
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "mutant",
+    control_group: "healthy"
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.82
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "untreated"
+  }
+}
+
+simulate gene_expression
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    integrate_datasets: true
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.7
+  }
+}
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.95
+  }
+}
+  }
+  else: {
+    simulate protein_synthesis
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    min_cells: 5,
+    min_genes: 358
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate gene_expression
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    integrate_datasets: false
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.14
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.95
+  }
+}
+  }
+  else: {
+    simulate apoptosis
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "untreated"
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    min_cells: 2,
+    min_genes: 265,
+    pca_dims: 50
+  }
+}
+
+simulate cell_division
+
+simulate cell_division
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate apoptosis
+  }
+  else: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "disease",
+    control_group: "healthy"
+  }
+}
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "unifrac
+  }
+}
+
+simulate immune_response
+
+simulate tissue_repair
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate cell_division
+    simulate gene_expression
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+    simulate cell_growth
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.16,
+    pval: 0.001
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate cell_growth
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: true,
+    min_cells: 9,
+    min_genes: 144
+  }
+}
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+}
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    min_cells: 5,
+    min_genes: 322,
+    pca_dims: 50
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: true,
+    min_genes: 343,
+    pca_dims: 30
+  }
+}
+
+simulate cell_division
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+simulate protein_synthesis
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.88,
+    pval: 0.01
+  }
+}
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.75,
+    pval: 0.05
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    min_cells: 6,
+    pca_dims: 50
+  }
+}
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.02,
+    pval: 0.01
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.4,
+    integrate_datasets: true
+  }
+}
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: true,
+    min_cells: 9
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    min_cells: 7,
+    min_genes: 308,
+    pca_dims: 20
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype",
+    batch_correction: true
+  }
+}
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.3
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.6
+  }
+}
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.38
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.09,
+    integrate_datasets: false
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: false,
+    min_genes: 191,
+    imputation: true
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.33
+  }
+}
+
+simulate drug_effect
+
+simulate gene_expression
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 9,
+    min_genes: 384,
+    pca_dims: 50,
+    target_cluster_count: 3
+  }
+}
+
+simulate gene_expression
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+
+simulate gene_expression
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.26
+  }
+}
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate protein_synthesis
+    analyze {
+  strategy: survival_analysis
+}
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.12
+  }
+}
+    simulate cell_growth
+  }
+}
+
+simulate cell_growth
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.13,
+    pval: 0.01
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.61,
+    pval: 0.01
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    simulate metabolic_pathway
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.13
+  }
+}
+
+simulate inflammation
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+simulate inflammation
+
+simulate protein_synthesis
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    min_cells: 10,
+    min_genes: 143
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate inflammation
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.98
+  }
+}
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "untreated",
+    batch_correction: false
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "unifrac
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+
+simulate cell_division
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.94,
+    pval: 0.05
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    simulate cell_growth
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: true,
+    min_cells: 1,
+    min_genes: 351,
+    pca_dims: 30
+  }
+}
+  }
+  else: {
+    simulate protein_synthesis
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.29,
+    pval: 0.05
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.65
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+    simulate tissue_repair
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    control_group: "untreated"
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    integrate_datasets: false
+  }
+}
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "unifrac
+  }
+}
+  }
+  else: {
+    simulate gene_expression
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    simulate cell_division
+    simulate metabolic_pathway
+  }
+  else: {
+    simulate inflammation
+  }
+}
+
+simulate metabolic_pathway
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "disease",
+    control_group: "untreated"
+  }
+}
+  }
+  else: {
+    simulate inflammation
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate apoptosis
+    simulate metabolic_pathway
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.54
+  }
+}
+
+simulate apoptosis
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.51
+  }
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+
+simulate cell_growth
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 1.41
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate tissue_repair
+    simulate immune_response
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "disease",
+    control_group: "wildtype"
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "wildtype"
+  }
+}
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.94,
+    integrate_datasets: true
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate gene_expression
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.47
+  }
+}
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_genes: 144,
+    pca_dims: 50,
+    imputation: false
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.32
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate drug_effect
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    integrate_datasets: false
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: clustering
+}
+
+simulate apoptosis
+
+simulate gene_expression
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.53
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    simulate apoptosis
+  }
+  else: {
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+}
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    control_group: "healthy"
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    min_cells: 9,
+    target_cluster_count: 14
+  }
+}
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.9
+  }
+}
+  }
+  else: {
+    simulate cell_division
+    simulate cell_growth
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+simulate cell_growth
+
+simulate tissue_repair
+
+simulate drug_effect
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+
+simulate cell_growth
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate apoptosis
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.49
+  }
+}
+  }
+  else: {
+    simulate apoptosis
+    simulate gene_expression
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.66
+  }
+}
+    simulate tissue_repair
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+    simulate tissue_repair
+  }
+}
+
+simulate cell_division
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 2,
+    min_genes: 306,
+    target_cluster_count: 7
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.8
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "disease",
+    control_group: "untreated",
+    batch_correction: false
+  }
+}
+
+simulate inflammation
+
+branch {
+  if: immune_cells_activated
+  then: {
+    simulate cell_growth
+    simulate cell_growth
+  }
+  else: {
+    simulate gene_expression
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.85,
+    pval: 0.01
+  }
+}
+  }
+}
+
+simulate drug_effect
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+simulate inflammation
+
+simulate apoptosis
+
+simulate cell_division
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "disease",
+    control_group: "wildtype"
+  }
+}
+
+simulate drug_effect
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.71,
+    pval: 0.05
+  }
+}
+    simulate drug_effect
+  }
+  else: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.3,
+    pval: 0.01
+  }
+}
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate immune_response
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.2
+  }
+}
+  }
+  else: {
+    simulate cell_division
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.11,
+    pval: 0.01
+  }
+}
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.0
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    min_cells: 3,
+    pca_dims: 50
+  }
+}
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype"
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+simulate drug_effect
+
+simulate cell_division
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.83,
+    pval: 0.001
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.22,
+    integrate_datasets: true
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate cell_division
+  }
+  else: {
+    simulate protein_synthesis
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "disease",
+    control_group: "untreated"
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.03
+  }
+}
+
+simulate gene_expression
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.31
+  }
+}
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.5
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate gene_expression
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+  }
+  else: {
+    simulate cell_division
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.9
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.16
+  }
+}
+    simulate gene_expression
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+    simulate immune_response
+  }
+}
+
+simulate metabolic_pathway
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    integrate_datasets: true
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: true,
+    min_cells: 5,
+    min_genes: 349,
+    pca_dims: 20
+  }
+}
+  }
+}
+
+simulate immune_response
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+  else: {
+    simulate tissue_repair
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    pval: 0.01
+  }
+}
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    simulate cell_division
+    simulate tissue_repair
+  }
+  else: {
+    simulate apoptosis
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+    simulate drug_effect
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate cell_division
+  }
+  else: {
+    simulate gene_expression
+    simulate apoptosis
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.02,
+    integrate_datasets: true
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+}
+
+simulate tissue_repair
+
+simulate immune_response
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate tissue_repair
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.39
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.54,
+    pval: 0.001
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate cell_division
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    simulate cell_division
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.9
+  }
+}
+    analyze {
+  strategy: survival_analysis
+}
+  }
+}
+
+simulate gene_expression
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate gene_expression
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 1.16,
+    integrate_datasets: false
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.19,
+    pval: 0.001
+  }
+}
+    analyze {
+  strategy: clustering
+}
+  }
+}
+
+simulate cell_growth
+
+analyze {
+  strategy: pathway_enrichment
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate gene_expression
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype"
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+}
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.14,
+    integrate_datasets: false
+  }
+}
+
+simulate inflammation
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_cells: 2,
+    min_genes: 251
+  }
+}
+  }
+  else: {
+    simulate cell_growth
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "bray_curtis
+  }
+}
+  }
+}
+
+simulate tissue_repair
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.3
+  }
+}
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.26
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 3,
+    min_genes: 412,
+    pca_dims: 30,
+    imputation: true
+  }
+}
+    simulate cell_division
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.79,
+    pval: 0.01
+  }
+}
+  }
+  else: {
+    simulate apoptosis
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.75
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.4
+  }
+}
+
+simulate apoptosis
+
+simulate metabolic_pathway
+
+simulate immune_response
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "unifrac
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.35,
+    integrate_datasets: false
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: true,
+    min_cells: 9,
+    min_genes: 223,
+    pca_dims: 50,
+    target_cluster_count: 15
+  }
+}
+  }
+  else: {
+    simulate inflammation
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    pca_dims: 30,
+    target_cluster_count: 3
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    min_genes: 397,
+    pca_dims: 30,
+    target_cluster_count: 11
+  }
+}
+
+simulate inflammation
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    min_cells: 4,
+    min_genes: 279,
+    pca_dims: 30
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.6
+  }
+}
+    experiment {
+  tool: seurat
+  type: scRNA
+}
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+simulate cell_division
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "untreated"
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    min_cells: 3,
+    pca_dims: 30,
+    target_cluster_count: 9
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.4
+  }
+}
+
+simulate protein_synthesis
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.22,
+    pval: 0.001
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_genes: 474,
+    target_cluster_count: 3
+  }
+}
+
+simulate gene_expression
+
+simulate protein_synthesis
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "untreated"
+  }
+}
+
+simulate cell_growth
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.68,
+    integrate_datasets: false
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate inflammation
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: false,
+    min_cells: 7,
+    min_genes: 159,
+    pca_dims: 20
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.25
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+  }
+  else: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "wildtype"
+  }
+}
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.7
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.62
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.69,
+    pval: 0.05
+  }
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "unifrac
+  }
+}
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate immune_response
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    min_cells: 6,
+    target_cluster_count: 3
+  }
+}
+  }
+}
+
+simulate metabolic_pathway
+
+simulate apoptosis
+
+simulate drug_effect
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.53
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+  }
+  else: {
+    simulate tissue_repair
+  }
+}
+
+simulate gene_expression
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate immune_response
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "untreated",
+    batch_correction: false
+  }
+}
+  }
+  else: {
+    simulate protein_synthesis
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    simulate inflammation
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.75,
+    integrate_datasets: true
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.2
+  }
+}
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+simulate protein_synthesis
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 1.22
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.45
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+}
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.0
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate immune_response
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "untreated"
+  }
+}
+  }
+  else: {
+    simulate protein_synthesis
+  }
+}
+
+simulate immune_response
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "unifrac
+  }
+}
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype"
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.12,
+    pval: 0.001
+  }
+}
+  }
+}
+
+simulate immune_response
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.2
+  }
+}
+    simulate immune_response
+  }
+  else: {
+    simulate protein_synthesis
+  }
+}
+
+simulate gene_expression
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.26
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    simulate gene_expression
+  }
+  else: {
+    simulate inflammation
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    min_cells: 2,
+    min_genes: 255,
+    target_cluster_count: 13
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.56
+  }
+}
+
+simulate immune_response
+
+simulate cell_division
+
+simulate cell_division
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "unifrac
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.44
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+    simulate immune_response
+  }
+}
+
+simulate cell_growth
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: true,
+    min_cells: 5,
+    min_genes: 487,
+    pca_dims: 20,
+    target_cluster_count: 6,
+    imputation: false
+  }
+}
+
+simulate protein_synthesis
+
+simulate drug_effect
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.36,
+    pval: 0.05
+  }
+}
+
+simulate protein_synthesis
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+  }
+  else: {
+    simulate immune_response
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.15
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+simulate cell_division
+
+simulate protein_synthesis
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.32
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+simulate cell_division
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+simulate cell_division
+
+simulate inflammation
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.71
+  }
+}
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.92
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.14,
+    pval: 0.05
+  }
+}
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate cell_growth
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.8
+  }
+}
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+simulate apoptosis
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "healthy"
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "disease",
+    control_group: "healthy"
+  }
+}
+  }
+}
+
+simulate protein_synthesis
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "wildtype"
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.52,
+    pval: 0.01
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.1
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+  }
+  else: {
+    simulate drug_effect
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "untreated"
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    integrate_datasets: false
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+
+simulate drug_effect
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "disease",
+    control_group: "healthy"
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.98
+  }
+}
+
+simulate protein_synthesis
+
+simulate tissue_repair
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon",
+    beta_diversity_metric: "unifrac
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.5,
+    pval: 0.001
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+  }
+}
+
+simulate apoptosis
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.07,
+    pval: 0.001
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+    simulate drug_effect
+  }
+  else: {
+    simulate cell_division
+  }
+}
+
+simulate metabolic_pathway
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    min_genes: 262
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    min_cells: 5,
+    min_genes: 343,
+    pca_dims: 50
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    integrate_datasets: true
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 1.25,
+    integrate_datasets: false
+  }
+}
+
+simulate gene_expression
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate inflammation
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+}
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    integrate_datasets: false
+  }
+}
+    simulate protein_synthesis
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.2
+  }
+}
+    simulate inflammation
+  }
+  else: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.08
+  }
+}
+  }
+}
+
+simulate cell_division
+
+simulate inflammation
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.4
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+simulate apoptosis
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.24
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+  }
+  else: {
+    simulate apoptosis
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "disease",
+    control_group: "healthy"
+  }
+}
+  }
+}
+
+simulate cell_growth
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.7
+  }
+}
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.91
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.3
+  }
+}
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+}
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.85,
+    pval: 0.01
+  }
+}
+  }
+  else: {
+    simulate protein_synthesis
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+simulate cell_growth
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.83
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "disease",
+    control_group: "wildtype",
+    batch_correction: false
+  }
+}
+
+experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    integrate_datasets: false
+  }
+}
+
+simulate tissue_repair
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate drug_effect
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    simulate gene_expression
+  }
+  else: {
+    simulate tissue_repair
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: seurat
+  type: scRNA
+}
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.4
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+}
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "wildtype",
+    batch_correction: true
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    min_cells: 10
+  }
+}
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false
+  }
+}
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    pval: 0.01
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "disease",
+    control_group: "wildtype"
+  }
+}
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    min_cells: 8,
+    min_genes: 229,
+    pca_dims: 50
+  }
+}
+  }
+}
+
+simulate cell_growth
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "untreated"
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: false,
+    pca_dims: 30
+  }
+}
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "disease",
+    control_group: "untreated"
+  }
+}
+
+simulate apoptosis
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "mutant",
+    control_group: "healthy"
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.28
+  }
+}
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 5,
+    min_genes: 163
+  }
+}
+
+simulate protein_synthesis
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "unifrac
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    control_group: "wildtype"
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_cells: 10,
+    min_genes: 241,
+    pca_dims: 50,
+    target_cluster_count: 9
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.15
+  }
+}
+
+simulate tissue_repair
+
+simulate cell_growth
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    simulate apoptosis
+  }
+  else: {
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "B_cells"
+  }
+}
+  }
+}
+
+simulate metabolic_pathway
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.43,
+    pval: 0.05
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.83,
+    pval: 0.05
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.71,
+    pval: 0.05
+  }
+}
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    simulate protein_synthesis
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.34
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.99,
+    pval: 0.01
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate metabolic_pathway
+    experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "disease",
+    control_group: "untreated"
+  }
+}
+  }
+  else: {
+    simulate protein_synthesis
+  }
+}
+
+simulate apoptosis
+
+branch {
+  if: tumor_size_increased
+  then: {
+    experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    control_group: "wildtype"
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.78,
+    pval: 0.001
+  }
+}
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+simulate drug_effect
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson"
+  }
+}
+
+experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    beta_diversity_metric: "bray_curtis
+  }
+}
+
+simulate apoptosis
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+
+simulate metabolic_pathway
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate cell_division
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+  }
+  else: {
+    simulate cell_division
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.27,
+    pval: 0.001
+  }
+}
+  }
+}
+
+simulate protein_synthesis
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    min_cells: 5
+  }
+}
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+  params: {
+    resolution: 0.23,
+    integrate_datasets: true
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.9
+  }
+}
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+  }
+}
+
+simulate gene_expression
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate tissue_repair
+    simulate drug_effect
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: scRNA
+}
+    simulate tissue_repair
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.85,
+    pval: 0.001
+  }
+}
+  }
+  else: {
+    simulate inflammation
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.5
+  }
+}
+  }
+}
+
+branch {
+  if: cell_death_rate_high
+  then: {
+    simulate tissue_repair
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.26,
+    pval: 0.01
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+}
+  }
+}
+
+simulate cell_division
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.84,
+    pval: 0.05
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: true,
+    min_cells: 10,
+    min_genes: 303
+  }
+}
+
+simulate protein_synthesis
+
+simulate inflammation
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+
+simulate cell_division
+
+branch {
+  if: immune_cells_activated
+  then: {
+    simulate cell_growth
+    simulate drug_effect
+  }
+  else: {
+    simulate drug_effect
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.98
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate tissue_repair
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 0.16,
+    integrate_datasets: false
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    simulate cell_division
+  }
+}
+
+simulate cell_growth
+
+branch {
+  if: tumor_size_increased
+  then: {
+    simulate immune_response
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.17
+  }
+}
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.92
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    simulate tissue_repair
+  }
+  else: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.1
+  }
+}
+    simulate gene_expression
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.2,
+    pval: 0.001
+  }
+}
+
+analyze {
+  strategy: gene_set_enrichment
+}
+
+simulate tissue_repair
+
+branch {
+  if: immune_cells_activated
+  then: {
+    simulate apoptosis
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.72
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: ATACseq
+  params: {
+    normalize: false,
+    min_cells: 2,
+    min_genes: 463
+  }
+}
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.2
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: true,
+    min_genes: 246
+  }
+}
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.11
+  }
+}
+
+simulate apoptosis
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    pval: 0.01
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: bulkRNA
+  params: {
+    condition_group: "treated",
+    control_group: "healthy"
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    simulate apoptosis
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.7
+  }
+}
+  }
+  else: {
+    simulate cell_growth
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    experiment {
+  tool: seurat
+  type: spatial_transcriptomics
+}
+  }
+  else: {
+    simulate inflammation
+    simulate tissue_repair
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 0.79
+  }
+}
+
+simulate tissue_repair
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate cell_growth
+    analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 2.77,
+    pval: 0.01
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 0.12
+  }
+}
+    simulate cell_growth
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate immune_response
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_cells: 4
+  }
+}
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    integrate_datasets: true
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.7
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.37,
+    pval: 0.001
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: false,
+    min_cells: 3
+  }
+}
+
+simulate tissue_repair
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate protein_synthesis
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "simpson",
+    beta_diversity_metric: "unifrac
+  }
+}
+  }
+  else: {
+    simulate immune_response
+  }
+}
+
+simulate drug_effect
+
+simulate drug_effect
+
+simulate tissue_repair
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    integrate_datasets: true
+  }
+}
+
+experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "T_cells"
+  }
+}
+
+analyze {
+  strategy: differential_expression
+}
+
+simulate protein_synthesis
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    pval: 0.001
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate immune_response
+  }
+  else: {
+    simulate drug_effect
+    experiment {
+  tool: flowjo
+  type: flow_cytometry
+  params: {
+    gating_strategy: "Macrophages"
+  }
+}
+  }
+}
+
+simulate gene_expression
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.1
+  }
+}
+
+branch {
+  if: gene_mutation_detected
+  then: {
+    simulate protein_synthesis
+    experiment {
+  tool: seurat
+  type: scRNA
+}
+  }
+  else: {
+    experiment {
+  tool: qiime2
+  type: metagenomics
+}
+  }
+}
+
+branch {
+  if: immune_cells_activated
+  then: {
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+    simulate cell_division
+  }
+  else: {
+    simulate immune_response
+    analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.05
+  }
+}
+  }
+}
+
+analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 2.6
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate drug_effect
+    experiment {
+  tool: qiime2
+  type: metagenomics
+  params: {
+    alpha_diversity_metric: "shannon"
+  }
+}
+  }
+  else: {
+    experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    min_cells: 1,
+    min_genes: 353,
+    pca_dims: 50,
+    imputation: false
+  }
+}
+  }
+}
+
+experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 1.28,
+    integrate_datasets: true
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate cell_growth
+  }
+  else: {
+    experiment {
+  tool: seurat
+  type: scRNA
+  params: {
+    resolution: 1.31
+  }
+}
+    simulate tissue_repair
+  }
+}
+
+analyze {
+  strategy: pathway_enrichment
+  thresholds: {
+    FDR: 0.01
+  }
+}
+
+simulate immune_response
+
+analyze {
+  strategy: clustering
+  thresholds: {
+    resolution: 1.24
+  }
+}
+
+simulate inflammation
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    pval: 0.05
+  }
+}
+
+simulate drug_effect
+
+simulate apoptosis
+
+branch {
+  if: tumor_size_increased
+  then: {
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.7
+  }
+}
+    analyze {
+  strategy: survival_analysis
+  thresholds: {
+    hazard_ratio_threshold: 1.4
+  }
+}
+  }
+  else: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+    analyze {
+  strategy: clustering
+}
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    analyze {
+  strategy: gene_set_enrichment
+}
+  }
+  else: {
+    simulate drug_effect
+  }
+}
+
+experiment {
+  tool: scanpy
+  type: spatial_transcriptomics
+  params: {
+    normalize: true,
+    min_cells: 1,
+    pca_dims: 20,
+    target_cluster_count: 15
+  }
+}
+
+experiment {
+  tool: DESeq2
+  type: ChIPseq
+  params: {
+    condition_group: "treated",
+    control_group: "wildtype"
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    log2FC: 1.38,
+    pval: 0.001
+  }
+}
+

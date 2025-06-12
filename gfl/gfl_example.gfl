@@ -1,0 +1,33 @@
+analyze {
+    strategy: "pathway_enrichment",
+    thresholds: {
+        FDR: 0.05
+    }
+}
+
+experiment {
+    tool: "DESeq2",
+    type: "bulkRNA",
+    params: {
+        condition_group: "disease",
+        control_group: "healthy"
+    }
+}
+
+simulate cell_growth
+
+branch {
+    if: tumor_size_increased AND cell_death_rate_high
+    then: {
+        simulate apoptosis
+        analyze {
+            strategy: "clustering",
+            thresholds: {
+                resolution: 0.8
+            }
+        }
+    }
+    else: {
+        simulate cell_division
+    }
+}

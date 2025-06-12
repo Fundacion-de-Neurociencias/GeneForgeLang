@@ -2,9 +2,42 @@ simulate cell_death
 simulate apoptosis
 
 experiment {
-    type: scRNA
-    tool: scanpy
-    params: {normalize: true, dropout: 0.35, pca_dims: 50, min_cells: 3, min_genes: 200, target_cluster_count: 7}
+  tool: scanpy
+  type: scRNA
+  params: {
+    normalize: true,
+    dropout: 0.35,
+    pca_dims: 50,
+    min_cells: 3,
+    min_genes: 200,
+    target_cluster_count: 7
+  }
+}
+
+analyze {
+  strategy: differential_expression
+  thresholds: {
+    pval: 0.01,
+    log2FC: 1.5
+  }
+}
+
+branch {
+  if: inflammation_high
+  then: {
+    simulate anti_inflammatory_response
+    experiment {
+      tool: DESeq2
+      type: bulkRNA
+      params: {
+        condition_group: "treated",
+        control_group: "untreated"
+      }
+    }
+  }
+  else: {
+    simulate tissue_repair
+  }
 }
 
 simulate cell_growth

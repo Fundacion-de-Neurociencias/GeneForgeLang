@@ -1,15 +1,25 @@
-Downloads/AMAI-A_Genesis/
-AMAI-A_Genesis/
-Downloads/AMAI-A_Genesis/
-AMAI-A_Genesis/
-Downloads/AMAI-A_Genesis/
-AMAI-A_Genesis/
-Downloads/AMAI-A_Genesis/
-AMAI-A_Genesis/
-roadmap_phase_3/AMAI-A_Genesis/
-datasets/
-results/
-datasets/
-results/
-Downloads/AMAI-A_Genesis/
-roadmap_phase_3/AMAI-A_Genesis/
+# Entorno virtual
+venv/
+.env/
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos de logs y temporales
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Archivos generados por PLY
+gfl/parsetab.py
+gfl/lextab.py
+gfl/parser.out
+*.out
+
+# Directorios de modelos finetuneados (si no deben ser versionados)
+gfl_finetuned_model/
