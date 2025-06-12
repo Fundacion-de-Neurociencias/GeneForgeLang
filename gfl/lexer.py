@@ -124,3 +124,4 @@ class GFLLexer:
                 break
             # print(tok) # Para depuración
             yield tok
+t_ignore_LINE_COMMENT = r'\#.*'
