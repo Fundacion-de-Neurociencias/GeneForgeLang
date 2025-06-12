@@ -1,37 +1,30 @@
 # gfl/validation_registry.py
 
 # Este módulo define todos los valores válidos y reconocidos por GeneForgeLang
-# para objetivos de simulación, herramientas de análisis, tipos de experimento, etc.
+# para objetivos de simulación, herramientas de análisis, tipos de experimento, parámetros, etc.
 
 # --- Objetivos de Simulación Válidos ---
-# Diccionario que mapea nombres de objetivos a una descripción o sugerencia.
-# Esto permite dar feedback más específico al usuario.
 VALID_SIMULATION_TARGETS = {
     "cell_growth": "Simula el crecimiento celular.",
     "apoptosis": "Simula la muerte celular programada.",
     "cell_division": "Simula la división celular.",
     "mutation_rate": "Simula la tasa de mutación genética.",
-    # Añadir aquí futuros objetivos de simulación
 }
 
 # --- Nombres de Herramientas de Análisis Válidos ---
-# Diccionario para herramientas con sus descripciones.
 VALID_ANALYSIS_TOOLS = {
     "DESeq2": "Herramienta para el análisis de expresión diferencial en datos de RNA-seq.",
     "Scanpy": "Paquete para el análisis de datos de transcriptómica de células individuales (scRNA-seq).",
     "GSEA": "Análisis de Enriquecimiento de Conjuntos de Genes.",
     "CellRanger": "Herramienta para el procesamiento de datos de 10x Genomics.",
-    # Añadir aquí futuras herramientas
 }
 
 # --- Tipos de Experimento Válidos ---
-# Lista simple si no se necesita descripción detallada, o diccionario si sí.
 VALID_EXPERIMENT_TYPES = [
     "bulkRNA",
     "scRNA",
     "proteomics",
     "genomics",
-    # Añadir aquí futuros tipos de experimento
 ]
 
 # --- Estrategias de Análisis Válidas ---
@@ -40,8 +33,39 @@ VALID_ANALYSIS_STRATEGIES = [
     "differential_expression",
     "clustering",
     "trajectory_inference",
-    # Añadir aquí futuras estrategias
 ]
 
-# Puedes añadir más categorías de validación según el crecimiento de GFL
-# Por ejemplo: VALID_DATA_TYPES, VALID_PARAMETERS_FOR_TOOL, etc.
+# --- Parámetros Válidos por Herramienta y Estrategia ---
+# Define un mapeo de herramienta -> estrategia -> {parametro: descripcion_tipo}
+# Esto nos permite validar que solo se usen parámetros relevantes para cada combinación.
+VALID_PARAMS_BY_TOOL_STRATEGY = {
+    "DESeq2": {
+        "differential_expression": {
+            "threshold": "float (umbral de p-valor ajustado, ej. 0.05)",
+            "log2FC": "float (umbral de cambio de expresión en log2, ej. 1.0)",
+            "conditions": "lista de strings (ej. ['treated', 'untreated'])",
+        },
+        # Puedes añadir otras estrategias para DESeq2 aquí
+    },
+    "Scanpy": {
+        "clustering": {
+            "resolution": "float (resolución para el algoritmo de clustering, ej. 0.5)",
+            "n_neighbors": "int (número de vecinos para la construcción del grafo, ej. 15)",
+        },
+        "differential_expression": { # Scanpy también puede hacer esto
+            "method": "string (ej. 'wilcoxon', 't-test')",
+            "groupby": "string (columna para agrupar, ej. 'cell_type')",
+        },
+        "trajectory_inference": {
+            "root_cells": "lista de strings (ID de células raíz)",
+            "method": "string (ej. 'diffusion_map', 'paga')",
+        },
+    },
+    "GSEA": {
+        "pathway_enrichment": {
+            "gene_set_library": "string (ej. 'GO_BP', 'KEGG_2019')",
+            "permutation_type": "string (ej. 'phenotype', 'gene_set')",
+        },
+    },
+    # Añadir más herramientas y sus parámetros válidos aquí
+}
