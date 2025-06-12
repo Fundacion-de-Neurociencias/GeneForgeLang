@@ -31,3 +31,22 @@ branch {
         simulate cell_division
     }
 }
+
+# Este bloque debería generar un ERROR de validación de parámetros
+analyze using DESeq2 with strategy differential_expression params {
+    threshold: 0.05,
+    log2FC: 1.0,
+    unknown_param: "esto_es_invalido"
+}
+
+# Este bloque debería generar un ERROR de validación de parámetros
+analyze using Scanpy with strategy clustering params {
+    resolution: 0.8,
+    invalid_cluster_method: "leiden"
+}
+
+# Este bloque debería generar un ERROR de validación de parámetros
+analyze using GSEA with strategy pathway_enrichment params {
+    gene_set_library: "GO_BP",
+    extra_option: true
+}
