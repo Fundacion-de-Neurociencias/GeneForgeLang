@@ -1,0 +1,55 @@
+DEFINE my_variable = "Hello GFL World"
+INVOKE Console.log message = my_variable
+
+DEFINE list_data = ["apple", "banana", "cherry", "date"]
+INVOKE Console.log message = list_data
+
+DEFINE first_fruit BASED ON list_data[0]
+INVOKE Console.log message = first_fruit
+
+DEFINE second_fruit BASED ON list_data[1]
+INVOKE Console.log message = second_fruit
+
+DEFINE not_a_list = "this is not a list"
+DEFINE invalid_index = 99
+
+TRY
+    DEFINE bad_access BASED ON not_a_list[0]
+    INVOKE Console.log message = "This should not be reached if previous line errors: " & bad_access
+CATCH
+    INVOKE Console.log message = "Caught expected error when trying to index a non-list variable."
+    INVOKE Console.log message = "Error details (from _error_message): " & _error_message
+
+TRY
+    DEFINE out_of_bounds BASED ON list_data[invalid_index]
+    INVOKE Console.log message = "This should not be reached if previous line errors: " & out_of_bounds
+CATCH
+    INVOKE Console.log message = "Caught expected error when trying to access out of bounds index."
+    INVOKE Console.log message = "Error details (from _error_message): " & _error_message
+
+DEFINE number_val = 10
+DEFINE string_val = "20"
+
+BRANCH IF number_val > 5 THEN
+    INVOKE Console.log message = "Number is greater than 5. (True)"
+ELSE
+    INVOKE Console.log message = "Number is not greater than 5. (False)"
+END
+
+BRANCH IF string_val == "20" THEN
+    INVOKE Console.log message = "String value is '20'. (True)"
+ELSE
+    INVOKE Console.log message = "String value is not '20'. (False)"
+END
+
+BRANCH IF (number_val > 20) AND (string_val == "20") THEN
+    INVOKE Console.log message = "Both conditions are true. (False)"
+ELSE
+    INVOKE Console.log message = "At least one condition is false. (True)"
+END
+
+BRANCH IF (number_val == 10) OR (string_val == "30") THEN
+    INVOKE Console.log message = "One condition is true. (True)"
+ELSE
+    INVOKE Console.log message = "Neither condition is true. (False)"
+END
