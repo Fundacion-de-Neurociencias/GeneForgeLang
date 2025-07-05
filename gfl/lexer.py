@@ -1,127 +1,108 @@
 import ply.lex as lex
-import logging
 
-class GFLLexer:
-    # Lista de nombres de tokens
-    tokens = (
-        'ANALYZE',
-        'EXPERIMENT',
-        'SIMULATE',
-        'BRANCH',
-        'IF',
-        'THEN',
-        'ELSE',        # Agregado para posible uso futuro
-        'COLON',
-        'LBRACE',
-        'RBRACE',
-        'STRING',
-        'NUMBER',
-        'IDENTIFIER',
-        'TRUE',
-        'FALSE',
-        'EQUALS',      # ==
-        'NOT_EQUALS',  # !=
-        'LT',          # <
-        'GT',          # >
-        'LTE',         # <=
-        'GTE',         # >=
-        'AND',         # Lógico AND
-        'OR',          # Lógico OR
-        'LPAREN',      # (
-        'RPAREN',      # )
-        'COMMA',       # ,
-        'COMMENT',     # Bloque de comentario /* ... */
-        'LINE_COMMENT' # Comentario de línea // o #
-    )
+# Lista de nombres de tokens (debe estar a nivel de módulo para que funcione el import)
+tokens = [
+    'DEFINE', 'INVOKE', 'MESSAGE', 'IF', 'THEN', 'ELSE', 'END', 'BRANCH',
+    'TRY', 'CATCH', 'AS', 'BASED_ON', 'NOT',
+    'EQUALS_EQUALS', 'NOT_EQUALS', 'LTE', 'GTE', 'GREATER_THAN', 'LESS_THAN', # Operadores de comparación primero
+    'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'EQUALS', 'DOT', 'AMPERSAND',
+    'LPAREN', 'RPAREN', 'COMMA', 'COLON',
+    'LBRACKET', 'RBRACKET', 'LCURLY', 'RCURLY',
+    'AND', 'OR',
+    'TRUE', 'FALSE',
+    'ANALYZE',
+    'LINE_COMMENT',
+    'BLOCK_COMMENT',
+    'ID', 'STRING', 'NUMBER' # ID, STRING, NUMBER should be last and are handled by functions
+]
 
-    # Reglas de expresiones regulares para tokens simples
-    t_COLON = r':'
-    t_LBRACE = r'{'
-    t_RBRACE = r'}'
-    t_EQUALS = r'=='
-    t_NOT_EQUALS = r'!='
-    t_LT = r'<'
-    t_GT = r'>'
-    t_LTE = r'<='
-    t_GTE = r'>='
-    t_LPAREN = r'\('
-    t_RPAREN = r'\)'
-    t_COMMA = r','
+# Reglas de expresiones regulares para tokens simples
+t_PLUS          = r'\+'
+t_MINUS         = r'-'
+t_TIMES         = r'\*'
+t_DIVIDE        = r'/'
+t_EQUALS        = r'='
+t_DOT           = r'\.'
+t_AMPERSAND     = r'&'
+t_LPAREN        = r'\('
+t_RPAREN        = r'\)'
+t_COMMA         = r','
+t_COLON         = r':'
+t_LBRACKET      = r'\['
+t_RBRACKET      = r'\]'
+t_LCURLY        = r'{'
+t_RCURLY        = r'}'
+t_EQUALS_EQUALS = r'=='
+t_NOT_EQUALS    = r'!='
+t_LTE           = r'<='
+t_GTE           = r'>='
+t_GREATER_THAN  = r'>'
+t_LESS_THAN     = r'<'
 
-    # Palabras reservadas
-    reserved = {
-        'analyze': 'ANALYZE',
-        'experiment': 'EXPERIMENT',
-        'simulate': 'SIMULATE',
-        'branch': 'BRANCH',
-        'if': 'IF',
-        'then': 'THEN',
-        'else': 'ELSE',
-        'true': 'TRUE',
-        'false': 'FALSE',
-        'AND': 'AND',
-        'OR': 'OR',
-    }
 
-    # Regla para identificadores y palabras reservadas
-    def t_IDENTIFIER(self, t):
-        r'[a-zA-Z_][a-zA-Z_0-9]*'
-        t.type = self.reserved.get(t.value, 'IDENTIFIER')  # Verifica palabras reservadas
-        return t
+# Palabras reservadas (ahora con los tokens de GFL)
+reserved = {
+    'DEFINE'    : 'DEFINE',
+    'INVOKE'    : 'INVOKE',
+    'MESSAGE'   : 'MESSAGE',
+    'IF'        : 'IF',
+    'THEN'      : 'THEN',
+    'ELSE'      : 'ELSE',
+    'END'       : 'END',
+    'BRANCH'    : 'BRANCH',
+    'TRY'       : 'TRY',
+    'CATCH'     : 'CATCH',
+    'AS'        : 'AS',
+    'BASED_ON'  : 'BASED_ON',
+    'AND'       : 'AND',
+    'OR'        : 'OR',
+    'NOT'       : 'NOT',
+    'TRUE'      : 'TRUE',
+    'FALSE'     : 'FALSE',
+    'ANALYZE'   : 'ANALYZE',
+}
 
-    # Reglas para STRING (maneja comillas dobles y simples)
-    def t_STRING(self, t):
-        r'\"([^\\\n]|(\\.))*?\"|\'([^\\\n]|(\\.))*?\''
-        t.value = t.value[1:-1] # Elimina las comillas
-        return t
+# Regla para identificadores y palabras reservadas
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = reserved.get(t.value.upper(), 'ID')
+    return t
 
-    # Reglas para NUMBER (enteros o flotantes)
-    def t_NUMBER(self, t):
-        r'\d+(\.\d*)?([eE][+-]?\d+)?'
-        t.value = float(t.value) if '.' in t.value or 'e' in t.value or 'E' in t.value else int(t.value)
-        return t
+# Reglas para STRING (comillas dobles y simples)
+def t_STRING(t):
+    r'\"([^\\\n]|\\.)*?\"|\'([^\\\n]|\\.)*?\'' # Added support for single quotes too
+    t.value = t.value[1:-1]
+    return t
 
-    # Reglas para comentarios de línea (// o #)
-    def t_LINE_COMMENT(self, t):
-        r'//.*|\#.*'  # ¡CORREGIDO: # ahora está escapado como \#!
-        pass # No necesitamos devolver el comentario como un token
+# Reglas para NUMBER (enteros o flotantes)
+def t_NUMBER(t):
+    r'\d+(\.\d*)?([eE][+-]?\d+)?'
+    t.value = float(t.value) if '.' in t.value or 'e' in t.value or 'E' in t.value else int(t.value)
+    return t
 
-    # Regla para comentarios de bloque /* ... */
-    def t_COMMENT(self, t):
-        r'/\*[^*]*\*+(?:[^/*][^*]*\*+)*/'
-        pass  # No necesitamos devolver el comentario como un token
+# Regla para comentarios de línea (// o #)
+def t_LINE_COMMENT(t):
+    r'//.*|\#.*'
+    pass
 
-    # Ignorar espacios y tabulaciones
-    t_ignore = ' \t'
+# Regla para comentarios de bloque /* ... */
+def t_BLOCK_COMMENT(t):
+    r'/\*[^*]*\*+(?:[^/*][^*]*\*+)*/'
+    t.lexer.lineno += t.value.count('\n')
+    pass
 
-    # Regla para contar las líneas
-    def t_newline(self, t):
-        r'\n+'
-        t.lexer.lineno += len(t.value)
+# Ignorar espacios y tabulaciones
+t_ignore = ' \t'
 
-    # Manejo de errores de caracteres ilegales
-    def t_error(self, t):
-        print(f"Carácter ilegal '{t.value[0]}' en la línea {t.lexer.lineno}")
-        t.lexer.skip(1)
+# Regla para contar las líneas (NEWLINE no es un token que el parser reciba directamente)
+def t_NEWLINE(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
 
-    # Constructor del lexer
-    def __init__(self):
-        # logging.basicConfig(
-        #     level=logging.DEBUG,
-        #     filename="lexer_debug.log",
-        #     filemode="w",
-        #     encoding="utf-8"
-        # )
-        # self.logger = logging.getLogger()
-        self.lexer = lex.lex(module=self, debug=True, errorlog=logging.getLogger())
+# Manejo de errores
+def t_error(t):
+    print(f"Illegal character '{t.value[0]}' at line {t.lineno}")
+    t.lexer.skip(1)
 
-    # Método para tokenizar una cadena (opcional, si se llama directamente al lexer)
-    def tokenize(self, data):
-        self.lexer.input(data)
-        while True:
-            tok = self.lexer.token()
-            if not tok:
-                break
-            # print(tok) # Para depuración
-            yield tok
-t_ignore_LINE_COMMENT = r'\#.*'
+# Construir el lexer
+lexer = lex.lex()
