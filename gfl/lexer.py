@@ -1,112 +1,104 @@
 import ply.lex as lex
 
-# Lista de nombres de tokens (debe estar a nivel de módulo para que funcione el import)
-tokens = [
-    'DEFINE', 'INVOKE', 'MESSAGE', 'IF', 'THEN', 'ELSE', 'END', 'BRANCH',
-    'TRY', 'CATCH', 'AS', 'BASED_ON', 'NOT',
-    'EQUALS_EQUALS', 'NOT_EQUALS', 'LTE', 'GTE', 'GREATER_THAN', 'LESS_THAN', # Operadores de comparación primero
-    'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'EQUALS', 'DOT', 'AMPERSAND',
-    'LPAREN', 'RPAREN', 'COMMA', 'COLON',
-    'LBRACKET', 'RBRACKET', 'LCURLY', 'RCURLY',
-    'AND', 'OR',
-    'TRUE', 'FALSE',
-    'ANALYZE', 'USING', 'WITH', 'STRATEGY', 'PARAMS', # New tokens for analyze statement
-    'LINE_COMMENT',
-    'BLOCK_COMMENT',
-    'ID', 'STRING', 'NUMBER' # ID, STRING, NUMBER should be last and are handled by functions
-]
+class GFLLexer:
+    """
+    Clase para el lexer de GeneForgeLang (GFL).
+    Define los tokens y reglas léxicas para el lenguaje.
+    """
+    def __init__(self):
+        # Construye el lexer
+        self.lexer = lex.lex(module=self)
 
-# Reglas de expresiones regulares para tokens simples
-t_PLUS          = r'\+'
-t_MINUS         = r'-'
-t_TIMES         = r'\*'
-t_DIVIDE        = r'/'
-t_EQUALS        = r'='
-t_DOT           = r'\.'
-t_AMPERSAND     = r'&'
-t_LPAREN        = r'\('
-t_RPAREN        = r'\)'
-t_COMMA         = r','
-t_COLON         = r':'
-t_LBRACKET      = r'\['
-t_RBRACKET      = r']'
-t_LCURLY        = r'{'
-t_RCURLY        = r'}'
-t_EQUALS_EQUALS = r'=='
-t_NOT_EQUALS    = r'!='
-t_LTE           = r'<='
-t_GTE           = r'>='
-t_GREATER_THAN  = r'>'
-t_LESS_THAN     = r'<'
+    # Lista de nombres de tokens (siempre necesaria)
+    # NOTA IMPORTANTE: 'BOOLEAN' no se incluye aquí directamente,
+    # ya que se añade a través de los valores de 'reserved'.
+    tokens = [
+        'ID',
+        'NUMBER',
+        'STRING',
+        'COMMA',
+        'COLON',
+        'LCURLY',     # {
+        'RCURLY',     # }
+        'LBRACKET',   # [
+        'RBRACKET',   # ]
+        'STRATEGY',   # Token explícito para "strategy" (case-insensitive)
+        'PARAMS'      # Token explícito para "params" (case-insensitive)
+    ]
 
+    # Palabras reservadas (keywords)
+    # Estas palabras se tokenizarán como su tipo de token correspondiente (en mayúsculas)
+    reserved = {
+        'if': 'IF',
+        'then': 'THEN',
+        'else': 'ELSE',
+        'analyze': 'ANALYZE',
+        'experiment': 'EXPERIMENT',
+        'simulate': 'SIMULATE',
+        'branch': 'BRANCH',
+        'using': 'USING',
+        'with': 'WITH',
+        'true': 'BOOLEAN',  # BOOLEAN se define aquí
+        'false': 'BOOLEAN', # BOOLEAN se define aquí
+        'and': 'AND',  # Añadido para expresiones lógicas
+        'or': 'OR',    # Añadido para expresiones lógicas
+    }
 
-# Palabras reservadas (ahora con los tokens de GFL)
-reserved = {
-    'DEFINE'    : 'DEFINE',
-    'INVOKE'    : 'INVOKE',
-    'MESSAGE'   : 'MESSAGE',
-    'IF'        : 'IF',
-    'THEN'      : 'THEN',
-    'ELSE'      : 'ELSE',
-    'END'       : 'END',
-    'BRANCH'    : 'BRANCH',
-    'TRY'       : 'TRY',
-    'CATCH'     : 'CATCH',
-    'AS'        : 'AS',
-    'BASED_ON'  : 'BASED_ON',
-    'AND'       : 'AND',
-    'OR'        : 'OR',
-    'NOT'       : 'NOT',
-    'TRUE'      : 'TRUE',
-    'FALSE'     : 'FALSE',
-    'ANALYZE'   : 'ANALYZE',
-    'USING'     : 'USING',
-    'WITH'      : 'WITH',
-    'STRATEGY'  : 'STRATEGY',
-    'PARAMS'    : 'PARAMS',
-}
+    # Agrega los valores del diccionario de palabras reservadas a la lista de tokens
+    tokens += list(reserved.values())
 
-# Regla para identificadores y palabras reservadas
-def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value.upper(), 'ID')
-    return t
+    # Ignorar caracteres de espacio en blanco y tabulaciones
+    t_ignore = ' \t'
 
-# Reglas para STRING (comillas dobles y simples)
-def t_STRING(t):
-    r'\"([^\\\n]|\\.)*?\"|\'([^\\\n]|\\.)*?\'' # Added support for single quotes too
-    t.value = t.value[1:-1]
-    return t
+    # Reglas para tokens simples (expresiones regulares)
+    t_COMMA = r','
+    t_COLON = r':'
+    t_LCURLY = r'{'
+    t_RCURLY = r'}'
+    t_LBRACKET = r'\['
+    t_RBRACKET = r'\]'
 
-# Reglas para NUMBER (enteros o flotantes)
-def t_NUMBER(t):
-    r'\d+(\.\d*)?([eE][+-]?\d+)?'
-    t.value = float(t.value) if '.' in t.value or 'e' in t.value or 'E' in t.value else int(t.value)
-    return t
+    # Regla para números (enteros o flotantes)
+    def t_NUMBER(self, t):
+        r'\d+(\.\d*)?'
+        t.value = float(t.value) if '.' in t.value else int(t.value)
+        return t
 
-# Regla para comentarios de línea (// o #)
-def t_LINE_COMMENT(t):
-    r'//.*|\#.*'
-    pass
+    # Regla para cadenas de texto (entre comillas dobles)
+    def t_STRING(self, t):
+        r'\"([^"\\]|\\.)*\"'
+        t.value = t.value[1:-1] # Elimina las comillas
+        return t
 
-# Regla para comentarios de bloque /* ... */
-def t_BLOCK_COMMENT(t):
-    r'/\*[^*]*\*+(?:[^/*][^*]*\*+)*/'
-    t.lexer.lineno += t.value.count('\n')
-    pass
+    # Regla case-insensitive para "strategy"
+    def t_STRATEGY(self, t):
+        r'[Ss][Tt][Rr][Aa][Tt][Ee][Gg][Yy]'
+        return t
 
-# Ignorar espacios y tabulaciones
-t_ignore = ' \t'
+    # Regla case-insensitive para "params"
+    def t_PARAMS(self, t):
+        r'[Pp][Aa][Rr][Aa][Mm][Ss]'
+        return t
 
-# Regla para contar las líneas (NEWLINE no es un token que el parser reciba directamente)
-def t_NEWLINE(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
+    # Regla para identificadores y palabras reservadas
+    def t_ID(self, t):
+        r'[a-zA-Z_][a-zA-Z_0-9]*'
+        # Verifica si el identificador es una palabra reservada (case-insensitive para reservadas)
+        # La conversión a minúsculas aquí es crucial para que coincida con las claves en 'reserved'
+        t.type = self.reserved.get(t.value.lower(), 'ID')
+        return t
 
-# Manejo de errores
-def t_error(t):
-    print(f"Illegal character '{t.value[0]}' at line {t.lineno}")
-    t.lexer.skip(1)
+    # Regla para contar líneas
+    def t_newline(self, t):
+        r'\n+'
+        t.lexer.lineno += len(t.value)
 
-# Construir el lexer
-lexer = lex.lex()
+    # Regla de manejo de errores
+    def t_error(self, t):
+        print(f"Carácter ilegal '{t.value[0]}' en la línea {t.lineno}")
+        t.lexer.skip(1)
+
+    # Comentarios (ignorar líneas que empiezan con #)
+    def t_COMMENT(self, t):
+        r'\#.*'
+        pass # No devuelve ningún token
