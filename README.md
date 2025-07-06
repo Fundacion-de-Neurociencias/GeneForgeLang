@@ -173,8 +173,7 @@ GeneForgeLang/
 └── venv/
     ├── bin/...
     ├── include/...
-    ├── lib/...
-    └── share/...
+    └── lib/...
 ```
 
 ## Getting Started
@@ -278,39 +277,3 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 ## Contact
 
 For questions or support, please open an issue on the GitHub repository.
-
----
-
-### Genetic Risk Predictor (Etiological Axis)
-
-This tool provides a command-line interface (CLI) for estimating the probability of a genetic etiology in neurodegenerative diseases, based on patient-specific parameters.
-
-#### Location:
-tools/genetics/genetic_predictor.py
-
-bash
-Copiar
-Editar
-
-#### How to use:
-Run the predictor from the terminal:
-```bash
-python tools/genetics/genetic_predictor.py
-It will interactively prompt you for patient data:
-
-pgsql
-Copiar
-Editar
-Neurodiagnoses: Genetic Risk Predictor (Etiological Axis)
-----------------------------------------------------------
-Enter age at symptom onset: 56
-Number of family members affected: 3
-Any early onset in family? (1=yes, 0=no): 1
-Is a parent affected? (1=yes, 0=no): 1
-Parent APOE ε4 carrier? (1=yes, 0=no): 1
-APOE ε4 carrier? (1=yes, 0=no): 1
-Clinical diagnosis (AD, FTD, VaD, PDD): AD
-
-✅ Predicted genetic risk: High
- About:
-This CLI module currently uses a dummy model (RandomForestClassifier) for demonstration purposes. In future iterations, it will integrate clinical, imaging (Axis 3), and family history data for more sophisticated predictions.
