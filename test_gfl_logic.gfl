@@ -53,3 +53,32 @@ BRANCH IF (number_val == 10) OR (string_val == "30") THEN
 ELSE
     INVOKE Console.log message = "Neither condition is true. (False)"
 END
+
+# --- Variant Simulation Integration Test ---
+DEFINE original_dna_sequence = "ATGTTTGGCATTAG"
+INVOKE Console.log message = "Original DNA Sequence for Simulation: " & original_dna_sequence
+
+INVOKE VariantSimulation.translate_dna \
+    dna_sequence = original_dna_sequence \
+    AS original_amino_acids
+
+INVOKE Console.log message = "Original Amino Acids: " & original_amino_acids
+
+DEFINE mutation_pos = 3 # 0-indexed for "T" in TTT
+DEFINE new_base = "C"
+
+INVOKE VariantSimulation.introduce_point_mutation \
+    dna_sequence = original_dna_sequence \
+    position = mutation_pos \
+    new_base = new_base \
+    AS mutated_dna_sequence
+
+INVOKE Console.log message = "Mutated DNA Sequence (pos " & (mutation_pos + 1) & " " & original_dna_sequence[mutation_pos] & "->" & new_base & "): " & mutated_dna_sequence
+
+INVOKE VariantSimulation.translate_dna \
+    dna_sequence = mutated_dna_sequence \
+    AS mutated_amino_acids
+
+INVOKE Console.log message = "Mutated Amino Acids: " & mutated_amino_acids
+
+# --- End of Variant Simulation Test ---

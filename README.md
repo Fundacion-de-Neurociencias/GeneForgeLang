@@ -1,283 +1,279 @@
-# GeneForgeLang: A Domain-Specific Language for Bio-simulation Workflows
+# GeneForgeLang
 
-GeneForgeLang (GFL) is a custom Domain-Specific Language (DSL) designed to simplify and automate complex bio-simulation and analysis workflows. It provides a human-readable syntax to describe multi-step processes involving experimental design, data analysis, and biological simulations.
-
-## Table of Contents
-* [Features](#features)
-* [Project Structure](#project-structure)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Setup](#setup)
-  * [Running the Demo](#running-the-demo)
-* [GFL Language Syntax](#gfl-language-syntax)
-  * [Analyze Statement](#analyze-statement)
-  * [Experiment Statement](#experiment-statement)
-  * [Simulate Statement](#simulate-statement)
-  * [Branch Statement](#branch-statement)
-  * [Comments](#comments)
-* [Error Handling and Validation](#error-handling-and-validation)
-* [Roadmap (Next Steps)](#roadmap-next-steps)
-* [Contributing](#contributing)
-* [License](#license)
-* [Contact](#contact)
-
----
-
-## Features
-
-GeneForgeLang's compiler (lexer and parser) is built using **PLY (Python Lex-Yacc)** and features:
-
-* **Intuitive Syntax:** Language designed to be close to the natural language of the biological domain.
-* **Robust Lexical Analysis (Lexer):**
-    * Tokenizes GFL source code, breaking it down into meaningful units (keywords, identifiers, literals, operators, etc.).
-    * Handles and ignores whitespace.
-* **Dedicated Pre-processor:**
-    * A component (`gfl/preprocessor.py`) that specifically removes both single-line (`//`, `#`) and multi-line (`/* ... */`) comments from the GFL code *before* it is passed to the lexer. This simplifies the lexer's responsibilities and maintains a clean token stream.
-* **Syntactic Analysis (Parser):**
-    * Constructs an Abstract Syntax Tree (AST) from the token stream, rigorously validating the code against the defined GFL grammar.
-    * Supports complex nested structures for `analyze`, `experiment`, and `branch` statements.
-* **Basic Workflow Evaluation & Validation:** The parser implicitly performs initial workflow evaluation by logging actions and implements basic validation rules for parameters and simulation targets (e.g., checking for valid simulation targets or unknown parameters for specific tools). It also flags some contextual parameter compatibility issues.
-* **Structured Output:** The parser generates a list of operations (representing the AST) that can then be interpreted or executed by a backend system.
-* **Enhanced Error and Warning Messages:** Provides clear, informative, and user-friendly feedback with specific suggestions, aiding in debugging GFL code.
-* **AI-Generated GFL Post-processing (Implicit):** The compiler's design supports the standardization and validation of GFL code, making it suitable for integration with language models that generate GFL.
-
----
+GeneForgeLang (GFL) is a domain-specific language designed for specifying and executing complex genomic workflows. It provides a high-level, human-readable syntax for defining genetic experiments, data processing pipelines, and analytical tasks.
 
 ## Project Structure
 
 ```
 GeneForgeLang/
-├── venv/                      # Python virtual environment
+├── __init__.py
+├── .gitattributes
+├── .gitignore
+├── advanced_validator.py
+├── alphagenenome_plugin.py
+├── app_gradio_full_graph.py
+├── app.py
+├── bfg.jar
+├── CITATION.cff
+├── Ejecutando
+├── example1.gfl
+├── export_ast.py
+├── geneforge_grammar_v1.2.json
+├── geneforge_grammar_v1.3.json
+├── geneforge_syntax_v1.2.md
+├── geneforgegrammar.json
+├── generar_desde_frase_input_v2.py
+├── generar_desde_frase_json.py
+├── generar_desde_frase_v2.py
+├── generar_interactivo.py
+├── gfl_benchmark_tasks.md
+├── gfl_example.gfl
+├── gfl_examples.gfl
+├── gfl_to_vcf.py
+├── grammar.md
+├── license
+├── main.py
+├── old_parser_root.py
+├── ontology.md
+├── output_ast.json
+├── paper.bib
+├── paper.md
+├── parselog.txt
+├── parser_notebook.ipynb
+├── pytest test_parser.py
+├── README.md
+├── requirements.txt
+├── rules.json
+├── run_axiom_demo.py
+├── sanitize_identifiers.py
+├── semillas.json
+├── summarize_ast.py
+├── syntax_v1.2.md
+├── syntax.md
+├── test_gfl_logic.gfl
+├── test_semantics.py
+├── translate_to_geneforgelang.py
+├── variant_simulation_plugin.py
+├── visualize_ast.py
+├── whitepaper.md
+├── ..bfg-report/
+│   └── 2025-06-08/
+│       ├── 23-48-11/
+│       │   ├── cache-stats.txt
+│       │   ├── deleted-files.txt
+│       │   └── object-id-map.old-new.txt
+│       ├── 23-48-12/
+│       │   ├── cache-stats.txt
+│       │   ├── deleted-files.txt
+│       │   └── object-id-map.old-new.txt
+│       ├── 23-48-13/
+│       │   ├── cache-stats.txt
+│       │   ├── deleted-files.txt
+│       │   └── object-id-map.old-new.txt
+│       └── 23-48-17/
+│           ├── cache-stats.txt
+│           └── object-id-map.old-new.txt
+├── .git/...
+├── applications/
+│   ├── launch_pipeline.py
+│   └── pipeline_basic_scRNA.gfl
+├── bench/
+│   ├── coverage.py
+│   ├── expectations.json
+│   ├── test_corpus.py
+│   └── corpus/
+│       ├── 22q11_high_level.gfl
+│       ├── 22q11_iPSC_ASO.gfl
+│       ├── 22q11_miRNA_pathway.gfl
+│       └── 22q11_mouse_ASO.gfl
+├── cases/
+│   ├── KJ_CRISPR2_GFL_case.md
+│   ├── KJ_CRISPR2.yaml
+│   └── examples/
+│       ├── example_rna_transport.gfl
+│       └── stanford_rna_neuron.gfl
+├── data/
+│   └── example.h5ad
+├── docs/
+│   ├── Enhancer_Module_Spec.md
+│   └── reasoning.md
+├── Downloads/
+│   └── GeneForgeLang/
+│       └── tests/
+│           └── test_basic.py
+├── examples/
+│   ├── example1.gfl
+│   ├── example2.gfl
+│   ├── gfl_training_data.txt
+│   ├── test_editing.gfl
+│   ├── test_invalid_semantics.gfl
+│   ├── test_multi_editing.gfl
+│   └── test_valid_semantics.gfl
+├── gf/
+│   ├── axioms/
+│   │   ├── axiom_store.json
+│   │   ├── axiom_tracker.py
+│   │   ├── axiom_utils.py
+│   │   ├── README.md
+│   │   └── __pycache__/
+│   └── reasoning/
+│       └── engine.py
 ├── gfl/
-│   ├── __init__.py            # Makes 'gfl' a Python package
-│   ├── lexer.py               # Lexical analyzer for GFL (defines tokens)
-│   ├── parser.py              # Syntactic analyzer for GFL (defines grammar & builds AST)
-│   ├── preprocessor.py        # Handles comment removal from GFL code
-│   ├── evaluator.py           # Placeholder for future AST evaluation logic
-│   └── gfl_example.gfl        # Example GFL code file
-└── scripts/
-    ├── __init__.py            # Makes 'scripts' a Python package
-    └── fix_and_demo.py        # Main script to run the compiler demo
-
+│   ├── __init__.py
+│   ├── adaptive_reasoner.py
+│   ├── axiom_hooks.py
+│   ├── evaluator.py
+│   ├── gfl_example.gfl
+│   ├── grammar_syntax.md
+│   ├── grammar.md
+│   ├── inference_engine.py
+│   ├── interpreter.py
+│   ├── lexer.py
+│   ├── manual_and_examples.md
+│   ├── parser_rules.py
+│   ├── parser.py
+│   ├── prob_rules.py
+│   ├── semantic_validator.py
+│   ├── temp_lexer.py
+│   ├── test_lexer.py
+│   ├── translate_lstm.py
+│   ├── validation_pipeline.py
+│   ├── validation_registry.py
+│   ├── __pycache__/
+│   ├── examples/
+│   │   ├── axiom_demo.gfl
+│   │   └── example1.gfl
+│   ├── execution/
+│   │   ├── __init__.py
+│   │   ├── experiment_runner.py
+│   │   └── scanpy_interface.py
+│   └── plugins/
+│       ├── __init__.py
+│       └── plugin_registry.py
+├── roadmap_phase_3/
+│   ├── .gitignore
+│   ├── analyze_long_peaks.py
+│   ├── bfg.jar
+│   ├── geneforge_grammar_v2.json
+│   ├── geneforge_grammar.json
+│   ├── process_datasets.py
+│   ├── README_reasoning_driven.md
+│   ├── syntax_extended.md
+│   ├── syntax_v2.md
+│   ├── syntax.md
+│   └── benchmarking/
+│       └── plot_long_peaks.py
+├── scripts/
+│   ├── clean_requirements.py
+│   ├── fix_and_demo.py
+│   ├── generate_gfl_data.py
+│   ├── patch_lexer_quotes.py
+│   ├── train_gfl_model.py
+│   └── update_requirements.py
+└── venv/
+    ├── bin/...
+    ├── include/...
+    └── lib/...
 ```
-
----
 
 ## Getting Started
 
-Follow these steps to set up the project and run the demo.
-
 ### Prerequisites
 
-* Python 3.8+ installed on your system.
-* `venv` module (usually comes with Python 3).
-* `pip` (Python package installer).
+- Python 3.8 or higher
+- pip (Python package installer)
 
-### Setup
+### Installation
 
-1.  **Navigate to your project directory:**
+1.  **Clone the repository:**
+
     ```bash
-    cd "$HOME/GeneForgeLang"
-    ```
-    If you don't have this directory, create it and navigate into it:
-    ```bash
-    mkdir -p "$HOME/GeneForgeLang"
-    cd "$HOME/GeneForgeLang"
+    git clone https://github.com/your-repo/GeneForgeLang.git
+    cd GeneForgeLang
     ```
 
-2.  **Create and activate a Python virtual environment:**
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
-    Your terminal prompt should now show `(venv)` at the beginning, indicating the virtual environment is active.
+2.  **Create a virtual environment (recommended):**
 
-3.  **Install PLY:**
     ```bash
-    pip install ply
+    python -m venv venv
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
     ```
 
-4.  **Create / Update project files manually:**
-    It's crucial that all `.py` and `.gfl` files have the correct and complete content. Use `nano` (or your preferred text editor) to create/update each file with the content provided in our previous conversation.
+3.  **Install dependencies:**
 
-    * **`gfl/preprocessor.py`**:
-        ```bash
-        nano gfl/preprocessor.py
-        # Paste content from the artifact "final_preprocessor_code_for_user"
-        # Ctrl+O, Enter, Ctrl+X
-        ```
-    * **`gfl/lexer.py`**:
-        ```bash
-        nano gfl/lexer.py
-        # Paste content from the artifact "final_lexer_code_for_user"
-        # Ctrl+O, Enter, Ctrl+X
-        ```
-    * **`gfl/parser.py`**:
-        ```bash
-        nano gfl/parser.py
-        # Paste content from the artifact "final_parser_code_fixed_grammar"
-        # Ctrl+O, Enter, Ctrl+X
-        ```
-    * **`gfl/gfl_example.gfl`**:
-        ```bash
-        nano gfl/gfl_example.gfl
-        # Paste content from the artifact "final_gfl_example_code_for_user"
-        # Ctrl+O, Enter, Ctrl+X
-        ```
-    * **`scripts/fix_and_demo.py`**:
-        ```bash
-        nano scripts/fix_and_demo.py
-        # Paste content from the artifact "final_demo_script_code_for_user"
-        # Ctrl+O, Enter, Ctrl+X
-        ```
-
----
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ## Usage
 
-To run the current demo which parses `gfl/gfl_example.gfl` and simulated AI outputs:
+### Running GFL Scripts
+
+You can execute GFL scripts using the `main.py` interpreter:
 
 ```bash
-PYTHONPATH=. python3 scripts/fix_and_demo.py
+python main.py your_script.gfl
 ```
 
-This command will:
-1.  Initialize the lexer and parser.
-2.  Parse the `gfl/gfl_example.gfl` file.
-3.  Demonstrate the parsing of several simulated AI-generated GFL code snippets.
-4.  Output the generated Abstract Syntax Tree (AST) for each successfully parsed section and report any parsing errors or validation warnings.
+### Examples
 
----
+Explore the `examples/` directory for various GFL code examples.
 
-## GFL Language Syntax
-
-Here's a brief overview of the GFL language syntax elements:
-
-### Analyze Statement
-
-Used to define data analysis tasks.
-
-**Block Form:**
 ```gfl
-analyze {
-    strategy: "pathway_enrichment",
-    thresholds: {
-        FDR: 0.05
-    }
+DEFINE GeneSet my_genes = {
+    "BRCA1",
+    "TP53",
+    "EGFR"
+};
+
+MESSAGE "Analyzing gene set: " + my_genes.name;
+
+IF my_genes.size > 2 THEN
+    MESSAGE "Gene set is large. Performing detailed analysis.";
+ELSE
+    MESSAGE "Gene set is small. Performing quick analysis.";
+END
+
+BRANCH on my_genes.type {
+    CASE "oncogenes":
+        INVOKE analyze_oncogenes(my_genes);
+    CASE "tumor_suppressors":
+        INVOKE analyze_tumor_suppressors(my_genes);
+    DEFAULT:
+        MESSAGE "Unknown gene set type.";
 }
+
+TRY
+    INVOKE process_data(my_genes);
+CATCH err:
+    MESSAGE "Error processing data: " + err.message;
+FINALLY
+    MESSAGE "Data processing attempt completed.";
+END
 ```
 
-**Inline Form (using a specific tool):**
-```gfl
-analyze using DESeq2 with strategy differential_expression params {
-    threshold: 0.05,
-    log2FC: 1.0
-}
+## Development
+
+### Running Tests
+
+To run the test suite, use `pytest`:
+
+```bash
+pytest
 ```
 
-### Experiment Statement
+### Code Style
 
-Used to configure experimental setups or data types.
-
-```gfl
-experiment {
-    tool: "DESeq2",
-    type: "bulkRNA",
-    params: {
-        condition_group: "disease",
-        control_group: "healthy"
-    }
-}
-```
-
-### Simulate Statement
-
-Used to specify biological simulation targets.
-
-```gfl
-simulate cell_growth
-```
-
-### Branch Statement
-
-Introduces conditional logic based on a boolean expression.
-
-**With `then` and `else` blocks:**
-```gfl
-branch {
-    if: tumor_size_increased AND cell_death_rate_high
-    then: {
-        simulate apoptosis
-        analyze {
-            strategy: "clustering",
-            thresholds: {
-                resolution: 0.8
-            }
-        }
-    }
-    else: {
-        simulate cell_division
-    }
-}
-```
-
-**With only a `then` block:**
-```gfl
-branch {
-    if: another_condition
-    then: {
-        simulate mutation_rate
-    }
-}
-```
-
-### Comments
-
-GFL supports both single-line and multi-line comments. These are removed by the pre-processor before parsing.
-
-```gfl
-// This is a single-line comment using double slash
-# This is another single-line comment using a hash
-
-/*
-This is a multi-line comment.
-It can span several lines.
-*/
-analyze {
-    strategy: "example_strategy" // Inline comment
-}
-```
-
----
-
-## Error Handling and Validation
-
-The compiler includes logging for various stages (lexer, parser, pre-processor). The parser also has basic validation logic embedded within its production rules to flag common issues like unrecognized simulation targets or invalid parameters for specific tools. Errors are logged to the console, providing clear and informative feedback.
-
----
-
-## Roadmap (Next Steps)
-
-Currently, the project is in **Phase 0 (Foundations and Proof of Concept)**. The next steps include:
-
-* **Phase 1: Language Enrichment and Semantic Analysis:** Implementation of type validations, valid values, and contextual parameter compatibility. This will build upon the basic validation already present.
-* **Phase 2: Integration with Real Bioinformatics Tools:** Development of wrappers for tools like DESeq2, Scanpy, and connection with simulation engines. This phase will bring GFL closer to real-world application.
-* **Phase 3: Optimization and Development Tools:** Performance improvements, robust Command Line Interface (CLI), comprehensive documentation, and Integrated Development Environment (IDE) support to enhance user experience and developer productivity.
-
----
+We adhere to PEP 8 guidelines. Please use a linter (e.g., `flake8` or `ruff`) to ensure your code conforms to the style.
 
 ## Contributing
 
-Contributions are welcome! If you're interested in contributing, please feel free to fork this repository, open issues to discuss new features or bugs, and submit pull requests.
-
----
+We welcome contributions! Please see `CONTRIBUTING.md` (if available) for guidelines on how to submit pull requests, report issues, and contribute to the project.
 
 ## License
 
-This project is licensed under the MIT License. A copy of the license details can be found in the `LICENSE` file within the project root directory.
-
----
+This project is licensed under the MIT License - see the `LICENSE` file for details.
 
 ## Contact
 
-For any inquiries or further information, please reach out via GitHub issues or your preferred contact method.
+For questions or support, please open an issue on the GitHub repository.
