@@ -10,7 +10,7 @@ tokens = [
     'LBRACKET', 'RBRACKET', 'LCURLY', 'RCURLY',
     'AND', 'OR',
     'TRUE', 'FALSE',
-    'ANALYZE',
+    'ANALYZE', 'USING', 'WITH', 'STRATEGY', 'PARAMS', # New tokens for analyze statement
     'LINE_COMMENT',
     'BLOCK_COMMENT',
     'ID', 'STRING', 'NUMBER' # ID, STRING, NUMBER should be last and are handled by functions
@@ -29,7 +29,7 @@ t_RPAREN        = r'\)'
 t_COMMA         = r','
 t_COLON         = r':'
 t_LBRACKET      = r'\['
-t_RBRACKET      = r'\]'
+t_RBRACKET      = r']'
 t_LCURLY        = r'{'
 t_RCURLY        = r'}'
 t_EQUALS_EQUALS = r'=='
@@ -60,6 +60,10 @@ reserved = {
     'TRUE'      : 'TRUE',
     'FALSE'     : 'FALSE',
     'ANALYZE'   : 'ANALYZE',
+    'USING'     : 'USING',
+    'WITH'      : 'WITH',
+    'STRATEGY'  : 'STRATEGY',
+    'PARAMS'    : 'PARAMS',
 }
 
 # Regla para identificadores y palabras reservadas
