@@ -8,7 +8,7 @@ tags:
   - AI-driven design
 authors:
   - name: Manuel Menéndez González
-    orcid: 0000-0003-2463-3288
+    orcid: 0000-0002-5218-0774
     affiliation: "1"
 affiliations:
  - index: 1
