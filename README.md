@@ -268,7 +268,7 @@ We adhere to PEP 8 guidelines. Please use a linter (e.g., `flake8` or `ruff`) to
 
 ## Contributing
 
-We welcome contributions! Please see `CONTRIBUTING.md` (if available) for guidelines on how to submit pull requests, report issues, and contribute to the project.
+We welcome contributions! Please see `CONTRIBUTING.md` for guidelines on how to submit pull requests, report issues, and contribute to the project.
 
 ## License
 
