@@ -55,12 +55,28 @@ def _strip_fences(text: str) -> str:
     return t
 
 
-def translate_to_gfl(natural_language_input: str) -> Tuple[str, str, dict]:
+def _format_inference_summary(inf: dict) -> str:
+    if not inf:
+        return ""
+    if "error" in inf:
+        return f"### Inference\n- Error: {inf['error']}"
+    label = inf.get("label", "unknown")
+    conf = inf.get("confidence")
+    exp = inf.get("explanation")
+    conf_str = f"{conf*100:.0f}%" if isinstance(conf, (int, float)) else str(conf)
+    parts = [f"### Inference", f"- Label: **{label}**", f"- Confidence: **{conf_str}**"]
+    if exp:
+        parts.append(f"- Explanation: {exp}")
+    return "\n".join(parts)
+
+
+def translate_to_gfl(natural_language_input: str) -> Tuple[str, str, str, dict]:
     """Generate GFL from NL and provide validation feedback."""
     if not natural_language_input:
         return (
             "# Please describe an experiment to begin.",
             "Validation: waiting for input.",
+            "",
             {},
         )
 
@@ -74,7 +90,7 @@ def translate_to_gfl(natural_language_input: str) -> Tuple[str, str, dict]:
         response = chat.send_message(prompt)
         code = _strip_fences((response.text or "").strip())
     except Exception as e:
-        return "# Error generating code.", f"Error contacting Gemini API: {e}", {}
+        return "# Error generating code.", f"Error contacting Gemini API: {e}", "", {}
 
     # Optional validation using local GFL modules if available
     inference: dict = {}
@@ -82,23 +98,23 @@ def translate_to_gfl(natural_language_input: str) -> Tuple[str, str, dict]:
         try:
             ast = gfl_parse(code)
             if ast is None:
-                return code, "Validation: parse failed (invalid YAML or syntax).", {}
+                return code, "Validation: parse failed (invalid YAML or syntax).", "", {}
             errors = gfl_validate(ast) or []
             if errors:
                 details = "\n".join(f"- {msg}" for msg in errors)
-                return code, f"Validation: FAILED\n{details}", {}
+                return code, f"Validation: FAILED\n{details}", "", {}
             # Optional inference
             if gfl_infer and DummyGeneModel:
                 try:
                     inference = gfl_infer(DummyGeneModel(), ast)
                 except Exception as e:  # noqa: BLE001
                     inference = {"error": f"infer failed: {e}"}
-            return code, "Validation: SUCCESS", inference
+            return code, "Validation: SUCCESS", _format_inference_summary(inference), inference
         except Exception as e:
-            return code, f"Validation error: {e}", {}
+            return code, f"Validation error: {e}", "", {}
 
     # If validation not available
-    return code, "Validation: not available (install/enable gfl.api)", {}
+    return code, "Validation: not available (install/enable gfl.api)", "", {}
 
 
 iface = gr.Interface(
@@ -107,6 +123,7 @@ iface = gr.Interface(
     outputs=[
         gr.Code(language="yaml", label="Generated GeneForgeLang"),
         gr.Markdown(label="Validation"),
+        gr.Markdown(label="Inference Summary"),
         gr.JSON(label="Inference"),
     ],
     title="Natural Language → GeneForgeLang Translator",
