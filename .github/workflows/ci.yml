@@ -32,5 +32,21 @@ jobs:
       - name: List repository files (depth 2)
         run: |
           find . -maxdepth 2 -type f -print | sort | sed -n '1,400p'
-      - name: Run tests (verbose)
-        run: pytest -vv
+      - name: Run tests (verbose, capture)
+        id: run_pytest
+        shell: bash
+        run: |
+          set -o pipefail
+          pytest -vv --maxfail=1 --junitxml=pytest.xml | tee pytest.out
+        continue-on-error: true
+      - name: Upload test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-logs
+          path: |
+            pytest.out
+            pytest.xml
+      - name: Fail if tests failed
+        if: steps.run_pytest.outcome == 'failure'
+        run: exit 1
