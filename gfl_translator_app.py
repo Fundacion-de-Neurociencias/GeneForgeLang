@@ -1,4 +1,6 @@
 import os
+import json
+import tempfile
 from typing import Tuple
 
 import gradio as gr
@@ -95,7 +97,9 @@ def _pick_model(model_name: str):
     return None
 
 
-def translate_to_gfl(natural_language_input: str, model_name: str) -> Tuple[str, str, str, str, dict]:
+def translate_to_gfl(
+    natural_language_input: str, model_name: str, selected_model_state: str
+) -> Tuple[str, str, str, str, dict, str, str, str]:
     """Generate GFL from NL and provide validation feedback."""
     if not natural_language_input:
         status = "Validation: waiting for input."
@@ -105,6 +109,9 @@ def translate_to_gfl(natural_language_input: str, model_name: str) -> Tuple[str,
             status,
             "",
             {},
+            (model_name or selected_model_state or "DummyGeneModel"),
+            "",
+            "",
         )
 
     # Configure Gemini and create model/chat per request to isolate context
@@ -118,7 +125,16 @@ def translate_to_gfl(natural_language_input: str, model_name: str) -> Tuple[str,
         code = _strip_fences((response.text or "").strip())
     except Exception as e:
         status = f"Validation: not available (generation error)"
-        return _status_banner_html(status), "# Error generating code.", status, "", {}
+        return (
+            _status_banner_html(status),
+            "# Error generating code.",
+            status,
+            "",
+            {},
+            (model_name or selected_model_state or "DummyGeneModel"),
+            "",
+            "",
+        )
 
     # Optional validation using local GFL modules if available
     inference: dict = {}
@@ -127,12 +143,30 @@ def translate_to_gfl(natural_language_input: str, model_name: str) -> Tuple[str,
             ast = gfl_parse(code)
             if ast is None:
                 status = "Validation: parse failed (invalid YAML or syntax)."
-                return _status_banner_html(status), code, status, "", {}
+                return (
+                    _status_banner_html(status),
+                    code,
+                    status,
+                    "",
+                    {},
+                    (model_name or selected_model_state or "DummyGeneModel"),
+                    "",
+                    "",
+                )
             errors = gfl_validate(ast) or []
             if errors:
                 details = "\n".join(f"- {msg}" for msg in errors)
                 status = "Validation: FAILED"
-                return _status_banner_html(status), code, f"{status}\n{details}", "", {}
+                return (
+                    _status_banner_html(status),
+                    code,
+                    f"{status}\n{details}",
+                    "",
+                    {},
+                    (model_name or selected_model_state or "DummyGeneModel"),
+                    "",
+                    "",
+                )
             # Optional inference
             if gfl_infer:
                 try:
@@ -141,22 +175,67 @@ def translate_to_gfl(natural_language_input: str, model_name: str) -> Tuple[str,
                         inference = gfl_infer(model, ast)
                 except Exception as e:  # noqa: BLE001
                     inference = {"error": f"infer failed: {e}"}
+            # Prepare downloadable files
+            code_path = ""
+            inf_path = ""
+            try:
+                with tempfile.NamedTemporaryFile("w", suffix=".gfl", delete=False, encoding="utf-8") as f:
+                    f.write(code)
+                    code_path = f.name
+                with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as f:
+                    json.dump(inference or {}, f, ensure_ascii=False, indent=2)
+                    inf_path = f.name
+            except Exception:
+                pass
+
             status = "Validation: SUCCESS"
-            return _status_banner_html(status), code, status, _format_inference_summary(inference), inference
+            return (
+                _status_banner_html(status),
+                code,
+                status,
+                _format_inference_summary(inference),
+                inference,
+                (model_name or selected_model_state or "DummyGeneModel"),
+                code_path,
+                inf_path,
+            )
         except Exception as e:
             status = "Validation: error"
-            return _status_banner_html(status), code, f"Validation error: {e}", "", {}
+            return (
+                _status_banner_html(status),
+                code,
+                f"Validation error: {e}",
+                "",
+                {},
+                (model_name or selected_model_state or "DummyGeneModel"),
+                "",
+                "",
+            )
 
     # If validation not available
     status = "Validation: not available (install/enable gfl.api)"
-    return _status_banner_html(status), code, status, "", {}
+    return (
+        _status_banner_html(status),
+        code,
+        status,
+        "",
+        {},
+        (model_name or selected_model_state or "DummyGeneModel"),
+        "",
+        "",
+    )
 
 
 iface = gr.Interface(
     fn=translate_to_gfl,
     inputs=[
         gr.Textbox(lines=3, label="Describe your experiment (EN/ES)"),
-        gr.Dropdown(choices=["DummyGeneModel", "SimpleHeuristicModel"], value="DummyGeneModel", label="Model"),
+        gr.Dropdown(
+            choices=["DummyGeneModel", "SimpleHeuristicModel"],
+            value="DummyGeneModel",
+            label="Model",
+        ),
+        gr.State(value="DummyGeneModel"),
     ],
     outputs=[
         gr.HTML(label="Validation Status"),
@@ -164,6 +243,9 @@ iface = gr.Interface(
         gr.Markdown(label="Validation Details"),
         gr.Markdown(label="Inference Summary"),
         gr.JSON(label="Inference (raw)"),
+        gr.State(),
+        gr.File(label="Download GFL"),
+        gr.File(label="Download Inference JSON"),
     ],
     title="Natural Language → GeneForgeLang Translator",
     description=(

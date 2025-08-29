@@ -1,6 +1,8 @@
 GeneForgeLang (GFL)
 
 [![CI](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/actions/workflows/ci.yml/badge.svg)](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/actions/workflows/ci.yml)
+[![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](license)
 [![PyPI](https://img.shields.io/badge/PyPI-coming%20soon-lightgrey)](https://pypi.org/project/geneforgelang/)
 
 GFL is a domain-specific language for specifying, validating, and reasoning about genomic workflows and experiments. It is intended primarily as a library for other applications to embed, with a few small demo apps included.
@@ -43,6 +45,13 @@ Repository layout
 - docs/: design notes and deeper language docs
 - examples/: sample GFL scripts
 - bench/: corpus and benchmarking helpers
+
+Try the app
+- Launch the translator app locally and generate GFL from natural language; the UI also validates and runs inference:
+  - python gfl_translator_app.py
+- Screenshots (place images under `docs/images/`):
+  - ![Translator Home](docs/images/translator_home.png)
+  - ![Translator Inference](docs/images/translator_inference.png)
 
 Stability and API
 - Public API: `gfl/api.py` exposes parse/validate/infer and is kept stable.
