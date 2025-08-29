@@ -30,4 +30,5 @@ def test_smoke_all_examples_parse():
     for p in EXAMPLES_DIR.glob("*.gfl"):
         text = p.read_text(encoding="utf-8")
         ast = parse(text)
-        assert isinstance(ast, (dict, type(None))), f"Parse returned unexpected type for {p}"
+        # Accept dict (YAML parsed), None (invalid YAML), or str (legacy DSL passthrough)
+        assert isinstance(ast, (dict, type(None), str)), f"Parse returned unexpected type for {p}"
