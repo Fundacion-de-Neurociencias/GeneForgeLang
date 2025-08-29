@@ -19,5 +19,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .
           pip install pytest
-      - name: Run tests
-        run: pytest
+      - name: Debug environment
+        run: |
+          echo "Python:"; python -V
+          echo "Which python:"; which python || where python || true
+          echo "Pip freeze:"; pip freeze
+          echo "Repo tree (top-level):"; ls -la
+          echo "Python path:"; python - << 'PY'
+          import sys, pprint
+          pprint.pprint(sys.path)
+          PY
+      - name: List repository files (depth 2)
+        run: |
+          find . -maxdepth 2 -type f -print | sort | sed -n '1,400p'
+      - name: Run tests (verbose)
+        run: pytest -vv
