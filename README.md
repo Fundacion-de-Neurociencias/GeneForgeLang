@@ -49,9 +49,6 @@ Repository layout
 Try the app
 - Launch the translator app locally and generate GFL from natural language; the UI also validates and runs inference:
   - python gfl_translator_app.py
-- Screenshots (place images under `docs/images/`):
-  - ![Translator Home](docs/images/translator_home.png)
-  - ![Translator Inference](docs/images/translator_inference.png)
 
 Stability and API
 - Public API: `gfl/api.py` exposes parse/validate/infer and is kept stable.
