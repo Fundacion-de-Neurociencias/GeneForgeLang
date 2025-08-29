@@ -1,5 +1,8 @@
 GeneForgeLang (GFL)
 
+[![CI](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/actions/workflows/ci.yml/badge.svg)](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/badge/PyPI-coming%20soon-lightgrey)](https://pypi.org/project/geneforgelang/)
+
 GFL is a domain-specific language for specifying, validating, and reasoning about genomic workflows and experiments. It is intended primarily as a library for other applications to embed, with a few small demo apps included.
 
 What GFL provides
@@ -80,4 +83,3 @@ Contributing
 
 License
 - MIT (see `license`).
-

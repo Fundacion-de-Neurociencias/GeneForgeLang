@@ -9,11 +9,13 @@ from dotenv import load_dotenv
 try:
     from gfl.api import parse as gfl_parse, validate as gfl_validate, infer as gfl_infer
     from gfl.models.dummy import DummyGeneModel
+    from gfl.models.simple import SimpleHeuristicModel
 except Exception:
     gfl_parse = None  # type: ignore
     gfl_validate = None  # type: ignore
     gfl_infer = None  # type: ignore
     DummyGeneModel = None  # type: ignore
+    SimpleHeuristicModel = None  # type: ignore
 
 
 load_dotenv()
@@ -70,12 +72,37 @@ def _format_inference_summary(inf: dict) -> str:
     return "\n".join(parts)
 
 
-def translate_to_gfl(natural_language_input: str) -> Tuple[str, str, str, dict]:
+def _status_banner_html(status: str) -> str:
+    status_lower = status.lower()
+    if "success" in status_lower:
+        color = "#e7f8ec"  # green-ish
+        border = "#2ea44f"
+    elif "failed" in status_lower or "parse failed" in status_lower or "error" in status_lower:
+        color = "#fdecea"  # red-ish
+        border = "#d73a49"
+    else:
+        color = "#fff8e1"  # amber-ish
+        border = "#c69026"
+    return f'<div style="padding:10px;border:1px solid {border};background:{color};border-radius:6px;">{status}</div>'
+
+
+def _pick_model(model_name: str):
+    if model_name == "SimpleHeuristicModel" and SimpleHeuristicModel:
+        return SimpleHeuristicModel()
+    # default
+    if DummyGeneModel:
+        return DummyGeneModel()
+    return None
+
+
+def translate_to_gfl(natural_language_input: str, model_name: str) -> Tuple[str, str, str, str, dict]:
     """Generate GFL from NL and provide validation feedback."""
     if not natural_language_input:
+        status = "Validation: waiting for input."
         return (
+            _status_banner_html(status),
             "# Please describe an experiment to begin.",
-            "Validation: waiting for input.",
+            status,
             "",
             {},
         )
@@ -90,7 +117,8 @@ def translate_to_gfl(natural_language_input: str) -> Tuple[str, str, str, dict]:
         response = chat.send_message(prompt)
         code = _strip_fences((response.text or "").strip())
     except Exception as e:
-        return "# Error generating code.", f"Error contacting Gemini API: {e}", "", {}
+        status = f"Validation: not available (generation error)"
+        return _status_banner_html(status), "# Error generating code.", status, "", {}
 
     # Optional validation using local GFL modules if available
     inference: dict = {}
@@ -98,37 +126,48 @@ def translate_to_gfl(natural_language_input: str) -> Tuple[str, str, str, dict]:
         try:
             ast = gfl_parse(code)
             if ast is None:
-                return code, "Validation: parse failed (invalid YAML or syntax).", "", {}
+                status = "Validation: parse failed (invalid YAML or syntax)."
+                return _status_banner_html(status), code, status, "", {}
             errors = gfl_validate(ast) or []
             if errors:
                 details = "\n".join(f"- {msg}" for msg in errors)
-                return code, f"Validation: FAILED\n{details}", "", {}
+                status = "Validation: FAILED"
+                return _status_banner_html(status), code, f"{status}\n{details}", "", {}
             # Optional inference
-            if gfl_infer and DummyGeneModel:
+            if gfl_infer:
                 try:
-                    inference = gfl_infer(DummyGeneModel(), ast)
+                    model = _pick_model(model_name)
+                    if model is not None:
+                        inference = gfl_infer(model, ast)
                 except Exception as e:  # noqa: BLE001
                     inference = {"error": f"infer failed: {e}"}
-            return code, "Validation: SUCCESS", _format_inference_summary(inference), inference
+            status = "Validation: SUCCESS"
+            return _status_banner_html(status), code, status, _format_inference_summary(inference), inference
         except Exception as e:
-            return code, f"Validation error: {e}", "", {}
+            status = "Validation: error"
+            return _status_banner_html(status), code, f"Validation error: {e}", "", {}
 
     # If validation not available
-    return code, "Validation: not available (install/enable gfl.api)", "", {}
+    status = "Validation: not available (install/enable gfl.api)"
+    return _status_banner_html(status), code, status, "", {}
 
 
 iface = gr.Interface(
     fn=translate_to_gfl,
-    inputs=gr.Textbox(lines=3, label="Describe your experiment (EN/ES)"),
+    inputs=[
+        gr.Textbox(lines=3, label="Describe your experiment (EN/ES)"),
+        gr.Dropdown(choices=["DummyGeneModel", "SimpleHeuristicModel"], value="DummyGeneModel", label="Model"),
+    ],
     outputs=[
+        gr.HTML(label="Validation Status"),
         gr.Code(language="yaml", label="Generated GeneForgeLang"),
-        gr.Markdown(label="Validation"),
+        gr.Markdown(label="Validation Details"),
         gr.Markdown(label="Inference Summary"),
-        gr.JSON(label="Inference"),
+        gr.JSON(label="Inference (raw)"),
     ],
     title="Natural Language → GeneForgeLang Translator",
     description=(
-        "Type a scientific goal; the app emits a valid GFL script and runs a local validation pass."
+        "Type a scientific goal; the app emits a valid GFL script, validates it, and runs inference using the selected model."
     ),
 )
 
