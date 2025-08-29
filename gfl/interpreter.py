@@ -1,5 +1,5 @@
 import logging
-from gfl.plugins import plugin_registry
+from gfl.plugins.plugin_registry import plugin_registry
 
 logger = logging.getLogger(__name__)
 
@@ -162,4 +162,3 @@ class Interpreter:
 
 
 __all__ = ["Interpreter"]
-
