@@ -1,0 +1,28 @@
+plan:
+  goal: "Generate a visual map of a simple genetic construct."
+
+  steps:
+    - name: define_construct
+      thought: "Define the sequence and features of our construct."
+      type: define
+      attrs:
+        sequence: "agtcgtcgtcgtAGTCGTgctgtcgtcgtcgactgactgactgactgactgactgactgactgactgactgactgactgactgactgactgactg"
+        features:
+          - label: "Promoter"
+            start: 5
+            end: 25
+            strand: 1
+            color: "#84b0e5"
+          - label: "Gene Y"
+            start: 30
+            end: 70
+            strand: -1
+            color: "#ff8c8c"
+
+    - name: generate_map
+      thought: "Visualize the construct and save it to a file."
+      type: visualize_sequence
+      attrs:
+        sequence: "${define_construct.result.defined_data.sequence}"
+        features: "${define_construct.result.defined_data.features}"
+        output_file: "results/construct_map.png"
