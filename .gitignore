@@ -23,3 +23,4 @@ gfl/parser.out
 
 # Directorios de modelos finetuneados (si no deben ser versionados)
 gfl_finetuned_model/
+GeneForgeLang
