@@ -82,7 +82,7 @@ A Python script that:
 
 ## GitHub repository
 
-All components and examples are hosted under MIT license at:  
+All components and examples are hosted under MIT license at:
 👉 [https://github.com/Fundacion-de-Neurociencias/GeneForgeLang](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang)
 
 # Use cases and examples

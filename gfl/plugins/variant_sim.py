@@ -1,7 +1,7 @@
-import logging
 import importlib.util
-import sys
+import logging
 import os
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,9 @@ class VariantSimulationPlugin:
                 "simulate_variant_effect.py not found. Provide it at repository root or "
                 "replace VariantSimulationPlugin with a real implementation."
             )
-        spec = importlib.util.spec_from_file_location("simulate_variant_effect", module_path)
+        spec = importlib.util.spec_from_file_location(
+            "simulate_variant_effect", module_path
+        )
         module = importlib.util.module_from_spec(spec)
         sys.modules["simulate_variant_effect"] = module
         assert spec and spec.loader
@@ -42,7 +44,9 @@ class VariantSimulationPlugin:
         if method_name == "translate_dna":
             dna_sequence = params.get("dna_sequence")
             if not dna_sequence:
-                raise ValueError("Parameter 'dna_sequence' is required for translate_dna.")
+                raise ValueError(
+                    "Parameter 'dna_sequence' is required for translate_dna."
+                )
             genetic_code = m.define_genetic_code  # type: ignore[attr-defined]
             return m.translate_dna(dna_sequence, genetic_code)  # type: ignore[attr-defined]
 
@@ -51,11 +55,14 @@ class VariantSimulationPlugin:
             position = params.get("position")
             new_base = params.get("new_base")
             if dna_sequence is None or position is None or new_base is None:
-                raise ValueError("Parameters 'dna_sequence', 'position', and 'new_base' are required.")
+                raise ValueError(
+                    "Parameters 'dna_sequence', 'position', and 'new_base' are required."
+                )
             return m.introduce_point_mutation(dna_sequence, position, new_base)  # type: ignore[attr-defined]
 
-        raise NotImplementedError(f"VariantSimulation method '{method_name}' not implemented.")
+        raise NotImplementedError(
+            f"VariantSimulation method '{method_name}' not implemented."
+        )
 
 
 __all__ = ["VariantSimulationPlugin"]
-

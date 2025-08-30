@@ -1,9 +1,12 @@
 ﻿import glob
+
 import pytest
-from gfl.parser import GFLParser, GFLParseError
+
+from gfl.parser import GFLParser
 
 parser = GFLParser()
 files = sorted(glob.glob("bench/corpus/*.gfl"))
+
 
 @pytest.mark.parametrize("f", files)
 def test_parse_corpus(f):

@@ -1,8 +1,11 @@
 ﻿from typing import Any, Dict
+
 import yaml
+
 
 class YamlParseError(Exception):
     """Generic YAML parsing error."""
+
 
 class GflYamlParseError(Exception):
     """GFL-YAML structure/validation error."""

@@ -1,8 +1,8 @@
 import os
-import gradio as gr
-import google.generativeai as genai
-from dotenv import load_dotenv
 
+import google.generativeai as genai
+import gradio as gr
+from dotenv import load_dotenv
 
 load_dotenv()
 api_key = os.environ.get("GOOGLE_API_KEY")
@@ -37,7 +37,7 @@ def translate_to_gfl(nl_request: str) -> str:
     if cleaned.startswith("```gfl"):
         cleaned = cleaned[len("```gfl") :].strip()
     if cleaned.endswith("```"):
-        cleaned = cleaned[: -3].strip()
+        cleaned = cleaned[:-3].strip()
     return cleaned
 
 
@@ -52,4 +52,3 @@ iface = gr.Interface(
 
 if __name__ == "__main__":
     iface.launch()
-

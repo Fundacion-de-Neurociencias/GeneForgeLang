@@ -1,4 +1,5 @@
 import logging
+
 from gfl.plugins.plugin_registry import plugin_registry
 
 logger = logging.getLogger(__name__)
@@ -58,10 +59,15 @@ class SemanticValidator:
 
         # Minimal domain rule example: prime_edit expects structured pegRNA, not a plain string
         try:
-            if str(plugin_name).lower() in {"geneediting", "gene_editing"} and str(method_name) == "prime_edit":
+            if (
+                str(plugin_name).lower() in {"geneediting", "gene_editing"}
+                and str(method_name) == "prime_edit"
+            ):
                 peg = params.get("pegRNA")
                 if isinstance(peg, dict) and peg.get("type") == "string_literal":
-                    self.errors.append("Invalid param: 'pegRNA' must be an object, not string")
+                    self.errors.append(
+                        "Invalid param: 'pegRNA' must be an object, not string"
+                    )
         except Exception:
             pass
         # Validate assignment name
@@ -93,7 +99,8 @@ class SemanticValidator:
         elif t in {"string_literal", "number_literal", "boolean_literal"}:
             return
         elif t == "binary_operation":
-            self.visit(node["left"]) ; self.visit(node["right"])
+            self.visit(node["left"])
+            self.visit(node["right"])
         elif t == "array_literal":
             for item in node.get("elements", []):
                 self.visit(item)

@@ -1,5 +1,6 @@
 import requests
 
+
 def is_valid_pypi_package(pkg):
     url = f"https://pypi.org/pypi/{pkg}/json"
     try:
@@ -7,6 +8,7 @@ def is_valid_pypi_package(pkg):
         return response.status_code == 200
     except:
         return False
+
 
 with open("requirements.txt", "r") as f:
     lines = f.readlines()

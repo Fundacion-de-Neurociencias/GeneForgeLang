@@ -26,4 +26,3 @@ class SimpleHeuristicModel:
 
 
 __all__ = ["SimpleHeuristicModel"]
-

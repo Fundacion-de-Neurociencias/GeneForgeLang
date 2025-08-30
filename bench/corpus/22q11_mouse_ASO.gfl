@@ -22,7 +22,7 @@ simulate(mouse_behavior,
          timepoints:[2_weeks,8_weeks])
 
 effect(function:cognitive_restoration,
-       phenotype:improved_social, 
+       phenotype:improved_social,
        phenotype:improved_spatial_memory,
        durability:>60_days)
 

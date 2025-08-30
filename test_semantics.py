@@ -1,8 +1,10 @@
-﻿import sys
-import json
+﻿import json
 import subprocess
+import sys
+
 from gfl import parser
 from gfl.semantic_validator import validate_ast
+
 
 def run_validation(file_path):
     print(f"\n🔎 Probando: {file_path}")
@@ -24,6 +26,7 @@ def run_validation(file_path):
         subprocess.run(["python", "advanced_validator.py"], check=False)
     else:
         print("❌ Validación semántica FALLIDA.")
+
 
 if len(sys.argv) > 1:
     run_validation(sys.argv[1])

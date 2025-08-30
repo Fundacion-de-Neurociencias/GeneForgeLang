@@ -1,5 +1,6 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
 
 def frase_a_semilla(frase):
     semilla = "M"
@@ -12,6 +13,7 @@ def frase_a_semilla(frase):
     if "*AcK@" in frase:
         semilla += "AK"
     return semilla
+
 
 frase = input("🔤 Escribe tu frase GeneForgeLang: ")
 semilla = frase_a_semilla(frase)
@@ -28,7 +30,7 @@ with torch.no_grad():
         do_sample=True,
         top_k=50,
         temperature=0.8,
-        num_return_sequences=1
+        num_return_sequences=1,
     )
 
 print("🧬 Proteína generada:")

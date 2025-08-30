@@ -1,4 +1,4 @@
-from gfl.api import parse, validate, infer
+from gfl.api import infer, parse, validate
 from gfl.models.dummy import DummyGeneModel
 
 

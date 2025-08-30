@@ -1,29 +1,31 @@
-﻿[bu[project.scripts]rngfl-parse = "gfl.cli
-"rngfl-validate = "gfl.cli
-"rn["[project.scripts]rngfl-parse = "gfl.cli
-"rngfl-validate = "gfl.cli
-"rn[[project.scripts]rngfl-parse = "gfl.cli
-"rngfl-validate = "gfl.cli
-"rn[{nam[project.scripts]rngfl-parse = "gfl.cli
-"rngfl-validate = "gfl.cli
-"rn[
-  "PyYAML>=6[project.scripts]rngfl-parse = "gfl.cli
-"rngfl-validate = "gfl.cli
-"rn[[project.scripts]rngfl-parse = "gfl.cli
-"rngfl-validate = "gfl.cli
-"rn["[project.scripts]rngfl-parse = "gfl.cli
-"rngfl-validate = "gfl.cli
-"rn["g[project.scripts]rngfl-parse = "gfl.cli
-"rngfl-validate = "gfl.cli
-"rn[
-  "[project.scripts]rngfl-parse = "gfl.cli
-"rngfl-validate = "gfl.cli
-"rn[[project.scripts]rngfl-parse = "gfl.cli
-"rngfl-validate = "gfl.cli
-"rn["[project.scripts]rngfl-parse = "gfl.cli
-"rngfl-validate = "gfl.cli
-"rn["gfl*", "gf*"]
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
 
-[[project.scripts]rngfl-parse = "gfl.cli
-"rngfl-validate = "gfl.cli
-"rn
+[project]
+name = "geneforgelang"
+version = "0.1.0"
+description = "GeneForgeLang: a DSL for genomic workflows"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "GeneForgeLang Team" }]
+dependencies = [
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+lexer = ["ply>=3.11"]
+apps = ["gradio>=4.0", "python-dotenv>=1.0", "google-generativeai>=0.7"]
+ml = [
+  "torch>=2.3; platform_machine!='arm64'",
+  "transformers>=4.40",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gfl*", "gf*"]
+
+[project.scripts]
+gfl-parse = "gfl.cli:cmd_parse"
+gfl-validate = "gfl.cli:cmd_validate"

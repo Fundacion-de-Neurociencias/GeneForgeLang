@@ -1,4 +1,5 @@
 from typing import Any, Dict
+
 from gfl.prob_rules import ProbReasoner, default_rules
 
 
@@ -62,10 +63,13 @@ class InferenceEngine:
 
         feats["experiment_tool"] = dig(ast, "experiment.tool")
         feats["experiment_type"] = dig(ast, "experiment.type")
-        feats["strategy"] = dig(ast, "analyze.strategy") or dig(ast, "experiment.strategy")
+        feats["strategy"] = dig(ast, "analyze.strategy") or dig(
+            ast, "experiment.strategy"
+        )
         feats["target_gene"] = dig(ast, "experiment.params.target_gene")
         feats["p_value"] = dig(ast, "analyze.thresholds.p_value")
         feats["log2fc"] = dig(ast, "analyze.thresholds.log2FoldChange")
-        feats["simulate"] = bool(ast.get("simulate")) if isinstance(ast, dict) else False
+        feats["simulate"] = (
+            bool(ast.get("simulate")) if isinstance(ast, dict) else False
+        )
         return {k: v for k, v in feats.items() if v is not None}
-

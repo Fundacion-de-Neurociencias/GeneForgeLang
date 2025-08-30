@@ -1,7 +1,7 @@
 
 import gradio as gr
-from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Cargar el modelo solo una vez
 model = AutoModelForCausalLM.from_pretrained("nferruz/ProtGPT2")

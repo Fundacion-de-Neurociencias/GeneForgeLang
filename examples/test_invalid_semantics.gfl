@@ -13,4 +13,3 @@ body:
       reverse_transcriptase:
         type: string_literal
         value: "PEmax"
-

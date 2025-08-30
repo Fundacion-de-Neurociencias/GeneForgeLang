@@ -1,7 +1,7 @@
-import pysam
-import pybedtools
-import gzip
 import os
+
+import pybedtools
+import pysam
 
 # Procesar archivo BAM de ATAC-seq
 bam_path = "./datasets/ATAC_seq/ENCFF000ATG.bam"

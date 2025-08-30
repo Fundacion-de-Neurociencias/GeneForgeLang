@@ -1,0 +1,158 @@
+name: Comprehensive CI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+  schedule:
+    # Run nightly to catch dependency issues
+    - cron: "0 2 * * *"
+
+env:
+  PYTHONFAULTHANDLER: "1"
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  # Quality checks
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[qa,test]
+      - name: Run ruff
+        run: ruff check gfl/
+      - name: Run black
+        run: black --check gfl/
+      - name: Run mypy
+        run: mypy gfl/
+      - name: Security check with bandit
+        run: bandit -r gfl/
+      - name: Dependency vulnerability check
+        run: safety check
+
+  # Test matrix
+  test:
+    needs: quality
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        extras: ["minimal", "full"]
+        include:
+          # Test with optional dependencies
+          - os: ubuntu-latest
+            python-version: "3.11"
+            extras: "schema"
+          - os: ubuntu-latest
+            python-version: "3.11"
+            extras: "apps"
+        exclude:
+          # Skip some combinations to reduce CI time
+          - os: macos-latest
+            python-version: "3.10"
+          - os: windows-latest
+            python-version: "3.13"
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies (minimal)
+        if: matrix.extras == 'minimal'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest pytest-cov
+
+      - name: Install dependencies (full)
+        if: matrix.extras == 'full'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[test,schema,ml]
+
+      - name: Install dependencies (schema)
+        if: matrix.extras == 'schema'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[test,schema]
+
+      - name: Install dependencies (apps)
+        if: matrix.extras == 'apps'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[test,apps]
+
+      - name: Run tests
+        run: |
+          pytest tests/ -v --cov=gfl --cov-report=xml --cov-report=term
+
+      - name: Test CLI commands
+        run: |
+          gfl-info
+          echo "experiment:" > test.gfl
+          echo "  tool: CRISPR_cas9" >> test.gfl
+          echo "  type: gene_editing" >> test.gfl
+          gfl-parse test.gfl
+          gfl-validate test.gfl
+          gfl-infer test.gfl
+
+      - name: Upload coverage
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+
+  # Build and packaging test
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+      - name: Build package
+        run: python -m build
+      - name: Check package
+        run: twine check dist/*
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  # Documentation build test
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[docs]
+      - name: Build docs
+        run: |
+          # Placeholder for future documentation build
+          echo "Documentation build would go here"

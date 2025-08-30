@@ -1,5 +1,6 @@
-import sys
 import re
+import sys
+
 
 # Nuevas reglas de reconocimiento con patrones suaves
 def traducir_a_geneforge(secuencia):
@@ -37,6 +38,7 @@ def traducir_a_geneforge(secuencia):
         return "// No se encontraron motivos reconocibles"
 
     return "^p:" + "-".join(sorted(set(motivos)))
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

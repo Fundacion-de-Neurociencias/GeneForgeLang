@@ -1,10 +1,10 @@
-import os
 import ast
-import sys
 import importlib.util
+import os
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 REQUIREMENTS_FILE = os.path.join(PROJECT_ROOT, "requirements.txt")
+
 
 def is_stdlib(module_name):
     try:
@@ -14,6 +14,7 @@ def is_stdlib(module_name):
     except ModuleNotFoundError:
         return False
     return False
+
 
 def find_imports(root_dir):
     imported = set()
@@ -35,6 +36,7 @@ def find_imports(root_dir):
                         print(f"[WARN] Invalid syntax in {filepath}, skipping.")
     return imported
 
+
 def update_requirements(imported_modules):
     if os.path.exists(REQUIREMENTS_FILE):
         with open(REQUIREMENTS_FILE, "r", encoding="utf-8") as f:
@@ -42,7 +44,9 @@ def update_requirements(imported_modules):
     else:
         existing = set()
 
-    new_modules = sorted([m for m in imported_modules if not is_stdlib(m) and m not in existing])
+    new_modules = sorted(
+        [m for m in imported_modules if not is_stdlib(m) and m not in existing]
+    )
 
     if new_modules:
         print("[INFO] Adding new packages to requirements.txt:", new_modules)
@@ -50,7 +54,10 @@ def update_requirements(imported_modules):
             for mod in new_modules:
                 f.write(f"{mod}\n")
     else:
-        print("[OK] requirements.txt already includes all necessary non-stdlib packages.")
+        print(
+            "[OK] requirements.txt already includes all necessary non-stdlib packages."
+        )
+
 
 if __name__ == "__main__":
     modules = find_imports(PROJECT_ROOT)

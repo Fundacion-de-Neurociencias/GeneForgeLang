@@ -1,6 +1,6 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
-import sys
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
 
 def frase_a_semilla(frase):
     frase = frase.lower()
@@ -22,6 +22,7 @@ def frase_a_semilla(frase):
         return "MAIFL"
     else:
         return "M"
+
 
 if __name__ == "__main__":
     frase = "^p:Dom(Kin)'-Mot(NLS)*AcK@147=Localize(Nucleus)"
@@ -45,7 +46,7 @@ if __name__ == "__main__":
             top_k=50,
             temperature=0.9,
             pad_token_id=tokenizer.eos_token_id,
-            num_return_sequences=1
+            num_return_sequences=1,
         )
 
     print("🧬 Proteína generada:")

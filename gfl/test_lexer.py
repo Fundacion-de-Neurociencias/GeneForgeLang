@@ -1,4 +1,3 @@
-import ply.lex as lex
 import lexer  # Importa tu lexer.py
 
 # Datos de entrada para probar el lexer
@@ -28,5 +27,5 @@ lexer.lexer.input(data)
 while True:
     tok = lexer.lexer.token()
     if not tok:
-        break      # No hay más entrada
+        break  # No hay más entrada
     print(tok)

@@ -52,7 +52,7 @@ VALID_PARAMS_BY_TOOL_STRATEGY = {
             "resolution": "float (resolución para el algoritmo de clustering, ej. 0.5)",
             "n_neighbors": "int (número de vecinos para la construcción del grafo, ej. 15)",
         },
-        "differential_expression": { # Scanpy también puede hacer esto
+        "differential_expression": {  # Scanpy también puede hacer esto
             "method": "string (ej. 'wilcoxon', 't-test')",
             "groupby": "string (columna para agrupar, ej. 'cell_type')",
         },

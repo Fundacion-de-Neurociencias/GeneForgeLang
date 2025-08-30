@@ -1,22 +1,79 @@
-﻿
-text=auto
-Scripts on Windows
+﻿﻿# Normalize line endings to LF for consistency across platforms
+* text=auto eol=lf
+
+# Explicitly set line endings for specific file types
+*.py text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.cfg text eol=lf
+*.ini text eol=lf
+*.sh text eol=lf
+
+# Windows-specific files should retain CRLF
 *.bat text eol=crlf
 *.cmd text eol=crlf
 *.ps1 text eol=crlf
 
-Common text
-*.sh text eol=lf
-*.yml text eol=lf
-*.yaml text eol=lf
-*.json text eol=lf
-*.md text eol=lf
-*.py text eol=lf
-
-Binary
+# Binary files
+*.jar binary
+*.zip binary
+*.gz binary
+*.tar binary
+*.pdf binary
 *.png binary
 *.jpg binary
 *.jpeg binary
 *.gif binary
-*.pdf binary
-*.zip binary
+*.ico binary
+*.svg binary
+
+# Language-specific attributes
+*.py diff=python
+*.md diff=markdown
+
+# Security and sensitive files
+# Mark these files as requiring manual review
+*.key merge=ours
+*.pem merge=ours
+*.p12 merge=ours
+*.pfx merge=ours
+secrets.* merge=ours
+.env merge=ours
+.env.* merge=ours
+
+# Large files that should use Git LFS (if configured)
+# *.model filter=lfs diff=lfs merge=lfs -text
+# *.weights filter=lfs diff=lfs merge=lfs -text
+# *.h5 filter=lfs diff=lfs merge=lfs -text
+
+# Jupyter notebooks - clean outputs on commit
+*.ipynb filter=nbstripout
+*.ipynb diff=ipynb
+
+# Generated files - exclude from diffs
+build/ -diff
+dist/ -diff
+*.egg-info/ -diff
+__pycache__/ -diff
+*.pyc -diff
+*.pyo -diff
+.coverage -diff
+htmlcov/ -diff
+.pytest_cache/ -diff
+.mypy_cache/ -diff
+.ruff_cache/ -diff
+
+# Documentation
+*.rst text eol=lf
+*.tex text eol=lf
+Makefile text eol=lf
+
+# Configuration files
+Dockerfile text eol=lf
+.dockerignore text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf

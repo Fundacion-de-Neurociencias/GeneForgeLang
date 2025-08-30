@@ -4,7 +4,6 @@ import pytest
 
 from gfl.api import parse, validate
 
-
 EXAMPLES_DIR = Path("examples")
 
 
@@ -31,4 +30,6 @@ def test_smoke_all_examples_parse():
         text = p.read_text(encoding="utf-8")
         ast = parse(text)
         # Accept dict (YAML parsed), None (invalid YAML), or str (legacy DSL passthrough)
-        assert isinstance(ast, (dict, type(None), str)), f"Parse returned unexpected type for {p}"
+        assert isinstance(
+            ast, (dict, type(None), str)
+        ), f"Parse returned unexpected type for {p}"

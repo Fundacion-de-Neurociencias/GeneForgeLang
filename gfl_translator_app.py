@@ -1,15 +1,17 @@
-import os
 import json
+import os
 import tempfile
 from typing import Tuple
 
-import gradio as gr
 import google.generativeai as genai
+import gradio as gr
 from dotenv import load_dotenv
 
 # Optional GFL validation/inference imports
 try:
-    from gfl.api import parse as gfl_parse, validate as gfl_validate, infer as gfl_infer
+    from gfl.api import infer as gfl_infer
+    from gfl.api import parse as gfl_parse
+    from gfl.api import validate as gfl_validate
     from gfl.models.dummy import DummyGeneModel
     from gfl.models.simple import SimpleHeuristicModel
 except Exception:
@@ -27,7 +29,9 @@ def _configure_gemini() -> None:
     try:
         api_key = os.environ.get("GOOGLE_API_KEY")
         if not api_key:
-            raise KeyError("GOOGLE_API_KEY not found in environment (check your .env file)")
+            raise KeyError(
+                "GOOGLE_API_KEY not found in environment (check your .env file)"
+            )
         genai.configure(api_key=api_key)
     except (KeyError, AttributeError) as e:
         # Keep message concise but actionable for users
@@ -55,7 +59,7 @@ def _strip_fences(text: str) -> str:
     if t.startswith("```gfl"):
         t = t[len("```gfl") :].strip()
     if t.endswith("```"):
-        t = t[: -3].strip()
+        t = t[:-3].strip()
     return t
 
 
@@ -68,7 +72,7 @@ def _format_inference_summary(inf: dict) -> str:
     conf = inf.get("confidence")
     exp = inf.get("explanation")
     conf_str = f"{conf*100:.0f}%" if isinstance(conf, (int, float)) else str(conf)
-    parts = [f"### Inference", f"- Label: **{label}**", f"- Confidence: **{conf_str}**"]
+    parts = ["### Inference", f"- Label: **{label}**", f"- Confidence: **{conf_str}**"]
     if exp:
         parts.append(f"- Explanation: {exp}")
     return "\n".join(parts)
@@ -79,7 +83,11 @@ def _status_banner_html(status: str) -> str:
     if "success" in status_lower:
         color = "#e7f8ec"  # green-ish
         border = "#2ea44f"
-    elif "failed" in status_lower or "parse failed" in status_lower or "error" in status_lower:
+    elif (
+        "failed" in status_lower
+        or "parse failed" in status_lower
+        or "error" in status_lower
+    ):
         color = "#fdecea"  # red-ish
         border = "#d73a49"
     else:
@@ -123,8 +131,8 @@ def translate_to_gfl(
         prompt = f"{GFL_MASTER_PROMPT}\n\nUser:\n{natural_language_input}\n\nGFL:"
         response = chat.send_message(prompt)
         code = _strip_fences((response.text or "").strip())
-    except Exception as e:
-        status = f"Validation: not available (generation error)"
+    except Exception:
+        status = "Validation: not available (generation error)"
         return (
             _status_banner_html(status),
             "# Error generating code.",
@@ -179,10 +187,14 @@ def translate_to_gfl(
             code_path = ""
             inf_path = ""
             try:
-                with tempfile.NamedTemporaryFile("w", suffix=".gfl", delete=False, encoding="utf-8") as f:
+                with tempfile.NamedTemporaryFile(
+                    "w", suffix=".gfl", delete=False, encoding="utf-8"
+                ) as f:
                     f.write(code)
                     code_path = f.name
-                with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as f:
+                with tempfile.NamedTemporaryFile(
+                    "w", suffix=".json", delete=False, encoding="utf-8"
+                ) as f:
                     json.dump(inference or {}, f, ensure_ascii=False, indent=2)
                     inf_path = f.name
             except Exception:

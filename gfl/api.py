@@ -6,12 +6,13 @@ without breaking this layer.
 """
 
 from __future__ import annotations
+
 from typing import Any, Dict, List
 
 from gfl import parser as _parser
-from gfl.semantic_validator import validate as _validate
 from gfl.inference_engine import InferenceEngine as _InferenceEngine
 from gfl.prob_rules import default_rules
+from gfl.semantic_validator import validate as _validate
 
 
 def parse(text: str) -> Dict[str, Any]:
@@ -41,4 +42,3 @@ def infer(model, ast: Dict[str, Any]) -> Dict[str, Any]:
 
 
 __all__ = ["parse", "validate", "infer"]
-
