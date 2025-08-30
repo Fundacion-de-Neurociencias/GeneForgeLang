@@ -26,3 +26,8 @@ ml = [
 where = ["."]
 include = ["gfl*", "gf*"]
 
+[project.scripts]
+gfl-parse = "gfl.cli
+"
+gfl-validate = "gfl.cli
+"
