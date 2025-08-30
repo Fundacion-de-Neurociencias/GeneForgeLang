@@ -402,6 +402,38 @@ def compare_inference_models(
         raise ImportError("Enhanced inference engine not available")
 
 
+def get_api_info() -> Dict[str, Any]:
+    """Get information about the GFL API and available features.
+    
+    Returns:
+        Dictionary containing API version, available features, and system info.
+    """
+    info = {
+        "api_version": "0.1.0",
+        "gfl_version": "0.1.0",
+        "features": {
+            "basic_parsing": True,
+            "grammar_parsing": HAS_GRAMMAR_PARSER,
+            "enhanced_inference": True,
+            "model_comparison": True,
+        },
+        "available_parsers": ["yaml"],
+        "inference_models": ["heuristic"],
+    }
+    
+    if HAS_GRAMMAR_PARSER:
+        info["available_parsers"].append("grammar")
+    
+    try:
+        from gfl.enhanced_inference_engine import get_inference_engine
+        engine = get_inference_engine()
+        info["inference_models"] = engine.list_models()
+    except ImportError:
+        pass
+    
+    return info
+
+
 __all__ = [
     "parse",
     "validate",
@@ -409,4 +441,5 @@ __all__ = [
     "parse_enhanced",
     "infer_enhanced",
     "compare_inference_models",
+    "get_api_info",
 ]

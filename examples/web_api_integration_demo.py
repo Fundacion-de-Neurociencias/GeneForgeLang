@@ -102,7 +102,7 @@ def demo_api_server():
 
     # Check if server components are available
     try:
-        from gfl.api_server import create_app, run_server
+        from gfl.api_server import create_app
         from gfl.client_sdk import create_client, GFLClientError
 
         print("✅ API Server components available")

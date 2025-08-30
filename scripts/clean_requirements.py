@@ -6,7 +6,7 @@ def is_valid_pypi_package(pkg):
     try:
         response = requests.get(url, timeout=3)
         return response.status_code == 200
-    except:
+    except Exception:
         return False
 
 

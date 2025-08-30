@@ -16,7 +16,7 @@ import logging
 import time
 from contextlib import asynccontextmanager
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request, UploadFile, File, BackgroundTasks

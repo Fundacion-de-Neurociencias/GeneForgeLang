@@ -35,8 +35,10 @@ except ImportError:
     except ImportError:
         HAS_ENTRY_POINTS = False
         _entry_points = None
+
         def version(x):
             return "unknown"
+
 
 logger = logging.getLogger(__name__)
 

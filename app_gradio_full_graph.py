@@ -176,7 +176,8 @@ with gr.Blocks() as demo:
         btn5 = gr.Button("Analyze")
 
         def analyze_graph(seq):
-            return generar_composicion_grafico(seq)
+            # TODO: Implement graph composition analysis
+            return "Graph analysis functionality not yet implemented"
 
         btn5.click(fn=analyze_graph, inputs=inp5, outputs=out5)
 

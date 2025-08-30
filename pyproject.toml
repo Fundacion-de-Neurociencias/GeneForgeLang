@@ -16,7 +16,7 @@ dependencies = [
 
 [project.optional-dependencies]
 lexer = ["ply>=3.11"]
-apps = ["gradio>=4.0", "python-dotenv>=1.0", "google-generativeai>=0.7"]
+apps = ["gradio>=5.35.0", "python-dotenv>=1.0", "google-generativeai>=0.7"]
 ml = [
   "torch>=2.3; platform_machine!='arm64'",
   "transformers>=4.40",
@@ -27,14 +27,18 @@ server = [
   "httpx>=0.25.0",
   "slowapi>=0.1.7",
   "pydantic>=2.0.0",
+  "starlette>=0.47.2",
+  "aiohttp>=3.12.14",
 ]
 full = [
-  "gradio>=4.0",
+  "gradio>=5.35.0",
   "fastapi>=0.104.0",
   "uvicorn[standard]>=0.24.0",
   "httpx>=0.25.0",
   "slowapi>=0.1.7",
   "pydantic>=2.0.0",
+  "starlette>=0.47.2",
+  "aiohttp>=3.12.14",
   "python-dotenv>=1.0",
   "google-generativeai>=0.7",
   "ply>=3.11",
