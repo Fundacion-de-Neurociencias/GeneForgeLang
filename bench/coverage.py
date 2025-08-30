@@ -1,4 +1,4 @@
-﻿import glob
+import glob
 import traceback
 
 from gfl.parser import GFLParseError, GFLParser

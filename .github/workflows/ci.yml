@@ -35,3 +35,33 @@ jobs:
         run: pytest -q
       - name: Run pre-commit (all files)
         uses: pre-commit/action@v3.0.1
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install security tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install bandit[toml] safety
+      - name: Run Bandit Security Scan
+        run: |
+          bandit -r gfl/ -f json -o bandit-report.json || true
+          bandit -r gfl/ -f txt
+      - name: Run Safety Check
+        run: |
+          # Create requirements from pip freeze for safety check
+          pip freeze > frozen-requirements.txt
+          safety check --file frozen-requirements.txt --json || true
+          safety check --file frozen-requirements.txt
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: |
+            bandit-report.json
+            frozen-requirements.txt

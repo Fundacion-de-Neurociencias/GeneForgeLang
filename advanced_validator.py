@@ -1,4 +1,4 @@
-﻿import json
+import json
 
 
 def validate_with_rules(ast):

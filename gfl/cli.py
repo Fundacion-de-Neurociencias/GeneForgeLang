@@ -1,4 +1,4 @@
-﻿"""Command-line interface for GeneForgeLang.
+"""Command-line interface for GeneForgeLang.
 
 Provides console commands for parsing, validation, inference, and utilities.
 """

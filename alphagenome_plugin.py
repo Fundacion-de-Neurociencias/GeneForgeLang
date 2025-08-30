@@ -41,9 +41,9 @@ class AlphaGenomePlugin:
 
             for track in tracks:
                 # Simular datos de tracks (ejemplo muy simple)
-                simulated_results["predicted_tracks"][
-                    track
-                ] = f"Simulated data for {track} on {sequence}"
+                simulated_results["predicted_tracks"][track] = (
+                    f"Simulated data for {track} on {sequence}"
+                )
 
             for var in variants:
                 # Simular efectos de variantes (ejemplo muy simple)

@@ -1,4 +1,4 @@
-﻿import json
+import json
 import sys
 
 from gfl import parser

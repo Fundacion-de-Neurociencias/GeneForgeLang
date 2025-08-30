@@ -1,4 +1,4 @@
-﻿import glob
+import glob
 
 import pytest
 

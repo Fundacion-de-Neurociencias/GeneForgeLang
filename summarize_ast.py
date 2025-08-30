@@ -1,4 +1,4 @@
-﻿import json
+import json
 from collections import defaultdict
 
 with open("output_ast.json", encoding="utf-8") as f:

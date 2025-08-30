@@ -1,4 +1,4 @@
-﻿﻿# Normalize line endings to LF for consistency across platforms
+﻿﻿﻿# Normalize line endings to LF for consistency across platforms
 * text=auto eol=lf
 
 # Explicitly set line endings for specific file types
@@ -77,3 +77,41 @@ Dockerfile text eol=lf
 .dockerignore text eol=lf
 .gitignore text eol=lf
 .gitattributes text eol=lf
+
+# GeneForgeLang Git Attributes for Cross-Platform Development
+
+# Normalize line endings to LF for all text files
+* text=auto eol=lf
+
+# Specific file types that should always use LF
+*.py text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.toml text eol=lf
+
+# Binary files should be left untouched
+*.bin binary
+*.pkl binary
+*.pth binary
+*.pt binary
+*.model binary
+
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text eol=lf
+
+# Documents
+*.pdf binary
+*.docx binary
+
+# Archives
+*.zip binary
+*.tar.gz binary
+*.tgz binary

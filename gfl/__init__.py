@@ -1,4 +1,4 @@
-﻿"""GeneForgeLang (GFL) - A typed DSL for genomic workflows.
+"""GeneForgeLang (GFL) - A typed DSL for genomic workflows.
 
 GFL provides a stable, typed API for parsing, validating, and reasoning
 about genomic experiments and workflows.
@@ -34,6 +34,15 @@ try:
     HAS_TYPES = True
 except ImportError:
     HAS_TYPES = False
+    # Define dummy types to avoid NameError in __all__
+    GFLAST = None
+    Analysis = None
+    AnalysisStrategy = None
+    Experiment = None
+    ExperimentType = None
+    InferenceResult = None
+    ValidationError = None
+    ValidationResult = None
 
 # Plugin system (optional import)
 try:

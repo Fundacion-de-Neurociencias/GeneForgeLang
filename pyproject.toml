@@ -29,3 +29,17 @@ include = ["gfl*", "gf*"]
 [project.scripts]
 gfl-parse = "gfl.cli:cmd_parse"
 gfl-validate = "gfl.cli:cmd_validate"
+
+# Security tool configurations
+[tool.bandit]
+# Skip certain security checks that are acceptable in this context
+# B101: assert used - OK in development and debugging code
+# B110: try/except pass - OK for graceful degradation
+# B112: try/except continue - OK for robust iteration
+# B311: random module - OK for non-cryptographic uses in scripts
+# B403: pickle imports - Documented risk in genetics tools
+# B404: subprocess imports - OK for development scripts
+skips = ["B101", "B110", "B112", "B311", "B403", "B404", "B603", "B607"]
+exclude_dirs = ["tests", "docs", "examples", "scripts", "tools", "bench"]
+confidence = "MEDIUM"
+severity = "MEDIUM"

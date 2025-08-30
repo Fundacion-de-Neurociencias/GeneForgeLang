@@ -31,9 +31,9 @@ class AlphaGenomePlugin:
             }
 
             for track in tracks:
-                simulated_results["predicted_tracks"][
-                    track
-                ] = f"Simulated data for {track} on {sequence}"
+                simulated_results["predicted_tracks"][track] = (
+                    f"Simulated data for {track} on {sequence}"
+                )
 
             for var in variants:
                 pos = var.get("pos")
