@@ -1,43 +1,422 @@
 ﻿{
-"$schema": "https://json-schema.org/draft/2020-12/schema",
-"$id": "https://fundacion-neurociencias.org/schemas/gfl.schema.json",
-"title": "GeneForge Language (GFL) YAML schema",
-"type": "object",
-"properties": {
-"experiment": {
-"type": "object",
-"properties": {
-"tool": { "type": "string" },
-"type": { "type": "string" },
-"strategy": { "type": ["string","null"] },
-"params": {
-"type": "object",
-"properties": {
-"target_gene": { "type": "string" },
-"sequence": { "type": "string" }
-},
-"additionalProperties": true
-}
-},
-"required": ["tool", "type"],
-"additionalProperties": true
-},
-"analyze": {
-"type": "object",
-"properties": {
-"strategy": { "type": "string" },
-"thresholds": {
-"type": "object",
-"properties": {
-"p_value": { "type": "number" },
-"log2FoldChange": { "type": ["number","string"] }
-},
-"additionalProperties": true
-}
-},
-"additionalProperties": true
-},
-"simulate": { "type": ["boolean","null"] }
-},
-"additionalProperties": true
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fundacion-neurociencias.org/schemas/gfl.schema.json",
+  "title": "GeneForgeLang (GFL) Schema",
+  "description": "JSON Schema for GeneForgeLang - a DSL for genomic workflows and experiments",
+  "type": "object",
+  "properties": {
+    "experiment": {
+      "type": "object",
+      "title": "Experiment Block",
+      "description": "Defines a genomic experiment with tools, parameters, and configuration",
+      "properties": {
+        "tool": {
+          "type": "string",
+          "title": "Experimental Tool",
+          "description": "The primary tool or technology used for the experiment",
+          "enum": [
+            "CRISPR_cas9",
+            "CRISPR_cas12",
+            "CRISPR_base_editor",
+            "CRISPR_prime_editor",
+            "RNAseq",
+            "ChIPseq",
+            "ATACseq",
+            "WGS",
+            "WES",
+            "targeted_seq",
+            "PCR",
+            "qPCR",
+            "flow_cytometry",
+            "microscopy"
+          ],
+          "examples": ["CRISPR_cas9", "RNAseq", "ChIPseq"]
+        },
+        "type": {
+          "type": "string",
+          "title": "Experiment Type",
+          "description": "The category or type of experiment being performed",
+          "enum": [
+            "gene_editing",
+            "sequencing",
+            "analysis",
+            "simulation",
+            "validation",
+            "screening",
+            "characterization"
+          ],
+          "examples": ["gene_editing", "sequencing", "analysis"]
+        },
+        "strategy": {
+          "type": "string",
+          "title": "Experimental Strategy",
+          "description": "Specific strategy or approach within the experiment type",
+          "enum": [
+            "knockout",
+            "knockin",
+            "activation",
+            "repression",
+            "base_editing",
+            "prime_editing",
+            "single_cell",
+            "bulk",
+            "targeted",
+            "genome_wide"
+          ],
+          "examples": ["knockout", "single_cell", "targeted"]
+        },
+        "params": {
+          "type": "object",
+          "title": "Experiment Parameters",
+          "description": "Tool-specific parameters and configuration",
+          "properties": {
+            "target_gene": {
+              "type": "string",
+              "title": "Target Gene",
+              "description": "Gene symbol or identifier being targeted",
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "examples": ["TP53", "BRCA1", "EGFR", "MYC"]
+            },
+            "sequence": {
+              "type": "string",
+              "title": "DNA/RNA Sequence",
+              "description": "Nucleotide sequence (DNA or RNA)",
+              "pattern": "^[ACGTUacgtu\\s]+$",
+              "examples": ["ATCGATCGATCG", "GGGCCGGGCGGGCTCCCAGACATGCGTAT"]
+            },
+            "guide_rna": {
+              "type": "string",
+              "title": "Guide RNA Sequence",
+              "description": "CRISPR guide RNA sequence (typically 20 nucleotides)",
+              "pattern": "^[ACGTUacgtu]{15,25}$",
+              "examples": ["GGGCCGGGCGGGCTCCCAGA"]
+            },
+            "vector": {
+              "type": "string",
+              "title": "Vector/Plasmid",
+              "description": "Delivery vector or plasmid name",
+              "examples": ["pCRISPR-Cas9", "lentiCRISPRv2", "pX458"]
+            },
+            "concentration": {
+              "type": "number",
+              "title": "Concentration",
+              "description": "Concentration in appropriate units (nM, μM, ng/μl, etc.)",
+              "minimum": 0,
+              "examples": [50.0, 100, 25.5]
+            },
+            "temperature": {
+              "type": "number",
+              "title": "Temperature (°C)",
+              "description": "Experimental temperature in Celsius",
+              "minimum": -80,
+              "maximum": 100,
+              "examples": [37.0, 42, 4]
+            },
+            "duration": {
+              "type": "string",
+              "title": "Duration",
+              "description": "Time duration (e.g., 24h, 48h, 7d)",
+              "pattern": "^\\d+[smhd]$",
+              "examples": ["24h", "48h", "7d", "30m"]
+            },
+            "replicates": {
+              "type": "integer",
+              "title": "Number of Replicates",
+              "description": "Number of experimental replicates",
+              "minimum": 1,
+              "maximum": 100,
+              "examples": [3, 5, 10]
+            },
+            "cell_line": {
+              "type": "string",
+              "title": "Cell Line",
+              "description": "Cell line or organism used",
+              "examples": ["HEK293T", "HeLa", "K562", "primary_human_fibroblasts"]
+            },
+            "samples": {
+              "type": "array",
+              "title": "Sample List",
+              "description": "List of sample identifiers",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "minItems": 1,
+              "examples": [["control_1", "control_2", "treated_1", "treated_2"]]
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "required": ["tool", "type"],
+      "additionalProperties": false
+    },
+    "analyze": {
+      "type": "object",
+      "title": "Analysis Block",
+      "description": "Defines data analysis parameters and methods",
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "title": "Analysis Strategy",
+          "description": "Type of analysis to perform",
+          "enum": [
+            "differential",
+            "pathway",
+            "variant",
+            "expression",
+            "structural",
+            "functional",
+            "comparative",
+            "longitudinal",
+            "single_cell",
+            "spatial"
+          ],
+          "examples": ["differential", "pathway", "variant"]
+        },
+        "data": {
+          "type": "string",
+          "title": "Data Source",
+          "description": "Path to input data file or reference to experiment output",
+          "examples": ["experiment_results.csv", "counts.tsv", "/path/to/data.h5"]
+        },
+        "thresholds": {
+          "type": "object",
+          "title": "Analysis Thresholds",
+          "description": "Statistical and filtering thresholds",
+          "properties": {
+            "p_value": {
+              "type": "number",
+              "title": "P-value Threshold",
+              "description": "Statistical significance threshold",
+              "minimum": 0,
+              "maximum": 1,
+              "examples": [0.05, 0.01, 0.001]
+            },
+            "adjusted_p_value": {
+              "type": "number",
+              "title": "Adjusted P-value (FDR)",
+              "description": "Multiple testing corrected p-value threshold",
+              "minimum": 0,
+              "maximum": 1,
+              "examples": [0.1, 0.05, 0.01]
+            },
+            "fold_change": {
+              "type": "number",
+              "title": "Fold Change Threshold",
+              "description": "Minimum fold change threshold",
+              "minimum": 0,
+              "examples": [1.5, 2.0, 3.0]
+            },
+            "log2_fold_change": {
+              "type": "number",
+              "title": "Log2 Fold Change",
+              "description": "Log2 fold change threshold",
+              "examples": [1.0, 1.5, 2.0]
+            },
+            "quality_score": {
+              "type": "number",
+              "title": "Quality Score",
+              "description": "Minimum quality score for filtering",
+              "minimum": 0,
+              "examples": [20, 30, 40]
+            }
+          },
+          "additionalProperties": true
+        },
+        "filters": {
+          "type": "array",
+          "title": "Data Filters",
+          "description": "List of preprocessing filters to apply",
+          "items": {
+            "type": "string",
+            "enum": [
+              "remove_low_counts",
+              "remove_low_quality",
+              "normalize",
+              "log_transform",
+              "remove_duplicates",
+              "quality_filter",
+              "remove_mitochondrial",
+              "remove_ribosomal",
+              "batch_correction"
+            ]
+          },
+          "examples": [["remove_low_counts", "normalize", "log_transform"]]
+        },
+        "operations": {
+          "type": "array",
+          "title": "Analysis Operations",
+          "description": "Sequence of analysis operations to perform",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "differential_expression",
+                  "pathway_analysis",
+                  "variant_calling",
+                  "annotation",
+                  "clustering",
+                  "dimensionality_reduction",
+                  "sort",
+                  "filter",
+                  "normalize"
+                ]
+              },
+              "params": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "required": ["type"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["strategy"],
+      "additionalProperties": false
+    },
+    "simulate": {
+      "type": "boolean",
+      "title": "Simulation Mode",
+      "description": "Whether to run in simulation mode (true) or execute actual experiment (false)",
+      "examples": [true, false]
+    },
+    "branch": {
+      "type": "object",
+      "title": "Conditional Branch",
+      "description": "Conditional logic for workflow branching",
+      "properties": {
+        "if": {
+          "type": "string",
+          "title": "Condition",
+          "description": "Conditional expression to evaluate",
+          "examples": ["quality_score > 30", "p_value < 0.05"]
+        },
+        "then": {
+          "type": "object",
+          "title": "Then Actions",
+          "description": "Actions to execute if condition is true",
+          "additionalProperties": true
+        },
+        "else": {
+          "type": "object",
+          "title": "Else Actions",
+          "description": "Actions to execute if condition is false",
+          "additionalProperties": true
+        }
+      },
+      "required": ["if", "then"],
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object",
+      "title": "Metadata",
+      "description": "Additional metadata and documentation for the experiment",
+      "properties": {
+        "experiment_id": {
+          "type": "string",
+          "title": "Experiment ID",
+          "description": "Unique identifier for this experiment",
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "examples": ["EXP001", "CRISPR_TP53_KO_2024"]
+        },
+        "researcher": {
+          "type": "string",
+          "title": "Researcher Name",
+          "description": "Name of the researcher conducting the experiment",
+          "examples": ["Dr. Jane Smith", "John Doe"]
+        },
+        "date": {
+          "type": "string",
+          "title": "Experiment Date",
+          "description": "Date when the experiment was conducted",
+          "format": "date",
+          "examples": ["2024-01-15", "2024-03-22"]
+        },
+        "description": {
+          "type": "string",
+          "title": "Description",
+          "description": "Detailed description of the experiment",
+          "examples": ["CRISPR knockout of TP53 in HEK293T cells"]
+        },
+        "project": {
+          "type": "string",
+          "title": "Project Name",
+          "description": "Associated project or study name",
+          "examples": ["cancer_research", "drug_screening"]
+        },
+        "approval_id": {
+          "type": "string",
+          "title": "Approval ID",
+          "description": "IRB or ethics approval identifier",
+          "examples": ["IRB2024001", "IACUC2024-05"]
+        },
+        "version": {
+          "type": "string",
+          "title": "Protocol Version",
+          "description": "Version of the experimental protocol",
+          "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+          "examples": ["1.0", "2.1", "1.0.5"]
+        }
+      },
+      "additionalProperties": true
+    },
+    "imports": {
+      "type": "array",
+      "title": "Imports",
+      "description": "List of external modules or libraries to import",
+      "items": {
+        "type": "string"
+      },
+      "examples": [["scanpy", "pandas", "numpy"]]
+    },
+    "exports": {
+      "type": "object",
+      "title": "Exports",
+      "description": "Outputs and results to export from this workflow",
+      "additionalProperties": true
+    }
+  },
+  "anyOf": [
+    { "required": ["experiment"] },
+    { "required": ["analyze"] },
+    { "required": ["simulate"] },
+    { "required": ["branch"] }
+  ],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "experiment": {
+        "tool": "CRISPR_cas9",
+        "type": "gene_editing",
+        "strategy": "knockout",
+        "params": {
+          "target_gene": "TP53",
+          "guide_rna": "GGGCCGGGCGGGCTCCCAGA",
+          "vector": "pCRISPR-Cas9",
+          "concentration": 50.0,
+          "replicates": 3
+        }
+      },
+      "metadata": {
+        "experiment_id": "TP53_KO_001",
+        "researcher": "Dr. Smith",
+        "date": "2024-01-15"
+      }
+    },
+    {
+      "analyze": {
+        "strategy": "differential",
+        "data": "rnaseq_counts.csv",
+        "thresholds": {
+          "p_value": 0.05,
+          "fold_change": 2.0
+        },
+        "filters": ["remove_low_counts", "normalize"]
+      }
+    }
+  ]
 }

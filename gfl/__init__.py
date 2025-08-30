@@ -11,7 +11,7 @@ __version__ = "0.2.0"
 __api_version__ = "2.0.0"
 
 # New stable API imports
-from .api import infer, parse, validate
+from .api import infer, parse, validate, parse_enhanced
 
 # Legacy YAML parser imports for backward compatibility
 from .yaml_lang.parser import GflYamlParseError, YamlParseError
@@ -34,15 +34,14 @@ try:
     HAS_TYPES = True
 except ImportError:
     HAS_TYPES = False
-    # Define dummy types to avoid NameError in __all__
-    GFLAST = None
-    Analysis = None
-    AnalysisStrategy = None
-    Experiment = None
-    ExperimentType = None
-    InferenceResult = None
-    ValidationError = None
-    ValidationResult = None
+
+# Optional grammar parser (requires PLY)
+try:
+    from .grammar_parser import parse_gfl_grammar, create_lexer, create_parser
+
+    HAS_GRAMMAR_PARSER = True
+except ImportError:
+    HAS_GRAMMAR_PARSER = False
 
 # Plugin system (optional import)
 try:
@@ -67,10 +66,24 @@ __all__ = [
     "parse",
     "validate",
     "infer",
+    "parse_enhanced",
 ]
-
 # Add types to exports if available
 if HAS_TYPES:
+    # Import globals into module namespace when types are available
+    globals().update(
+        {
+            "GFLAST": GFLAST,
+            "Experiment": Experiment,
+            "Analysis": Analysis,
+            "ValidationResult": ValidationResult,
+            "ValidationError": ValidationError,
+            "InferenceResult": InferenceResult,
+            "ExperimentType": ExperimentType,
+            "AnalysisStrategy": AnalysisStrategy,
+        }
+    )
+
     __all__.extend(
         [
             "GFLAST",
@@ -87,6 +100,10 @@ if HAS_TYPES:
 # Add plugin registry if available
 if HAS_PLUGINS:
     __all__.append("plugin_registry")
+
+# Add grammar parser if available
+if HAS_GRAMMAR_PARSER:
+    __all__.extend(["parse_gfl_grammar", "create_lexer", "create_parser"])
 
 # Optional NL translator (legacy)
 _has_transformers = importlib.util.find_spec("transformers") is not None

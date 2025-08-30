@@ -215,7 +215,7 @@ class Evaluator:
         elif node_type == "branch_statement":
             condition = node.get("condition")
             true_block = node.get("true_block", [])
-            false_block = node.get("false_block", [])
+            node.get("false_block", [])
 
             self.output_buffer.append(
                 f"INFO: Se encontró una bifurcación con condición: '{condition}'."

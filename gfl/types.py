@@ -9,7 +9,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    pass
 
 # Type aliases for clarity
 GFLValue = Union[str, int, float, bool, None]
@@ -230,8 +233,8 @@ class GFLAST:
             )
 
             ast.experiment = Experiment(
-                tool=exp_data["tool"],
-                type=exp_data["type"],
+                tool=str(exp_data["tool"]),
+                type=str(exp_data["type"]),
                 params=params,
                 strategy=exp_data.get("strategy"),
             )
@@ -239,21 +242,21 @@ class GFLAST:
         if "analyze" in data:
             analyze_data = data["analyze"]
             ast.analyze = Analysis(
-                strategy=analyze_data["strategy"],
+                strategy=str(analyze_data["strategy"]),
                 data=analyze_data.get("data"),
                 thresholds=analyze_data.get("thresholds", {}),
-                filters=analyze_data.get("filters", []),
-                operations=analyze_data.get("operations", []),
+                filters=list(analyze_data.get("filters", [])),
+                operations=list(analyze_data.get("operations", [])),
             )
 
         if "simulate" in data:
-            ast.simulate = data["simulate"]
+            ast.simulate = bool(data["simulate"])
 
         if "branch" in data:
-            ast.branch = data["branch"]
+            ast.branch = dict(data["branch"])
 
         if "metadata" in data:
-            ast.metadata = data["metadata"]
+            ast.metadata = dict(data["metadata"])
 
         return ast
 

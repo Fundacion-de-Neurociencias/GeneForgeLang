@@ -1,44 +1,412 @@
-"""Public API for GeneForgeLang (GFL).
+"""GeneForgeLang Public API.
 
 This module exposes a small, stable interface intended for consumption by
 third-party applications. Internals (lexer, parser variants, demos) may evolve
 without breaking this layer.
+
+Example:
+    Basic usage of the GFL API:
+
+    >>> from gfl.api import parse, validate, infer
+    >>> gfl_text = '''
+    ... experiment:
+    ...   tool: CRISPR_cas9
+    ...   type: gene_editing
+    ...   params:
+    ...     target_gene: TP53
+    ... '''
+    >>> ast = parse(gfl_text)
+    >>> errors = validate(ast)
+    >>> print(f"Valid: {not errors}")
+    Valid: True
 """
 
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union, Optional
 
 from gfl import parser as _parser
+from gfl.error_handling import EnhancedValidationResult
 from gfl.inference_engine import InferenceEngine as _InferenceEngine
+from gfl.performance import cached, get_monitor
 from gfl.prob_rules import default_rules
 from gfl.semantic_validator import validate as _validate
 
+# Optional grammar parser import
+try:
+    from gfl.grammar_parser import parse_gfl_grammar
 
-def parse(text: str) -> Dict[str, Any]:
-    """Parse GFL source (YAML-style) into a Python dict AST.
+    HAS_GRAMMAR_PARSER = True
+except ImportError:
+    HAS_GRAMMAR_PARSER = False
+    parse_gfl_grammar = None
 
-    Current canonical parser expects a YAML-like DSL. This may be extended with
-    grammar-based parsing in future versions, but the returned AST contract will
-    remain stable.
+
+def parse(
+    text: str, use_grammar: bool = False, filename: str = "<input>"
+) -> Dict[str, Any]:
+    """Parse GFL source into a Python dict AST.
+
+    Supports both YAML-based parsing (legacy) and grammar-based parsing (advanced).
+    Grammar-based parsing provides better error messages and supports more advanced
+    syntax features.
+
+    Args:
+        text: GFL source code as a string. Must be valid GFL syntax.
+        use_grammar: If True, use the grammar-based parser (requires PLY).
+                    If False, use the YAML-based parser (legacy).
+        filename: Source filename for better error reporting.
+
+    Returns:
+        Dictionary representing the AST structure with top-level blocks like
+        'experiment', 'analyze', 'simulate', etc.
+
+    Raises:
+        yaml.YAMLError: If YAML parsing fails (legacy parser).
+        GFLSyntaxError: If grammar parsing fails (grammar parser).
+        ValueError: If the input text is empty or malformed.
+        ImportError: If grammar parser is requested but PLY is not available.
+
+    Example:
+        YAML-based parsing (legacy):
+        >>> ast = parse('''
+        ... experiment:
+        ...   tool: CRISPR_cas9
+        ...   type: gene_editing
+        ...   params:
+        ...     target_gene: TP53
+        ... ''')
+        >>> print(ast['experiment']['tool'])
+        CRISPR_cas9
+
+        Grammar-based parsing (advanced):
+        >>> result = parse('''
+        ... experiment:
+        ...   tool: CRISPR_cas9
+        ...   type: gene_editing
+        ... ''', use_grammar=True)
+        >>> print(result['type'])
+        program
     """
-    return _parser.parse_gfl(text)
+    with get_monitor().time_operation("api_parse"):
+        if use_grammar:
+            if not HAS_GRAMMAR_PARSER:
+                raise ImportError(
+                    "Grammar parser not available. Install PLY dependency."
+                )
+
+            parse_result = parse_gfl_grammar(text, filename)
+
+            if not parse_result.is_valid:
+                # Convert enhanced errors to simple exception for API compatibility
+                error_messages = []
+                for error in parse_result.syntax_errors + parse_result.semantic_errors:
+                    if error.location:
+                        error_messages.append(f"{error.location}: {error.message}")
+                    else:
+                        error_messages.append(error.message)
+
+                from gfl.grammar_parser import GFLSyntaxError
+
+                raise GFLSyntaxError("\n".join(error_messages))
+
+            return parse_result.ast
+        else:
+            return _parser.parse_gfl(text)
 
 
-def validate(ast: Dict[str, Any]) -> List[str]:
-    """Return a list of semantic errors (empty if valid)."""
-    return _validate(ast)
+@cached(cache_name="schema_validation", ttl=600.0, max_size=500)
+def validate(
+    ast: Dict[str, Any], enhanced: bool = False
+) -> Union[List[str], EnhancedValidationResult]:
+    """Return validation errors for the given AST.
+
+    Performs semantic validation on the parsed AST to ensure it follows
+    GFL constraints and best practices. Results are cached for performance.
+
+    Args:
+        ast: Dictionary AST returned from parse(). Must be a valid AST structure.
+        enhanced: If True, return EnhancedValidationResult with rich error context.
+                 If False, return legacy list of error strings.
+
+    Returns:
+        List of error messages as strings (legacy mode) or EnhancedValidationResult
+        with detailed error information, suggested fixes, and context (enhanced mode).
+
+    Example:
+        Legacy mode:
+        >>> errors = validate(ast)
+        >>> if errors:
+        ...     print(f"Found {len(errors)} errors")
+
+        Enhanced mode:
+        >>> result = validate(ast, enhanced=True)
+        >>> if not result.is_valid:
+        ...     print(f"Found {len(result.semantic_errors)} errors")
+        ...     for error in result.semantic_errors:
+        ...         print(f"  {error.location}: {error.message}")
+        ...         for fix in error.suggested_fixes:
+        ...             print(f"    Suggestion: {fix.description}")
+    """
+    with get_monitor().time_operation("api_validate"):
+        return _validate(ast, enhanced=enhanced)
 
 
-def infer(model, ast: Dict[str, Any]) -> Dict[str, Any]:
+def infer(
+    model,
+    ast: Dict[str, Any],
+    enhanced: bool = False,
+    model_name: Optional[str] = None,
+    explain: bool = True,
+) -> Dict[str, Any]:
     """Run probabilistic post-processing with a provided model.
 
-    model must expose predict(features: Dict[str, Any]) -> Dict[str, Any].
+    Executes inference on the validated AST using the provided machine learning
+    model to generate predictions and confidence scores. Supports both legacy
+    and enhanced inference modes.
+
+    Args:
+        model: Machine learning model that must expose a predict() method.
+               The predict method should accept Dict[str, Any] features and
+               return Dict[str, Any] predictions.
+        ast: Dictionary AST from parse(). Should be validated before inference.
+        enhanced: If True, use enhanced inference engine if available.
+        model_name: Specific enhanced model to use ("heuristic", "protein_generation", etc.)
+        explain: If True, include detailed explanations in results.
+
+    Returns:
+        Dictionary containing inference results with at least:
+        - 'label': Predicted outcome/classification
+        - 'confidence': Confidence score (0.0-1.0)
+        - 'explanation': Human-readable explanation (optional)
+
+        Enhanced mode may include additional fields:
+        - 'enhanced_result': Detailed InferenceResult object
+        - 'feature_importance': Feature importance scores
+        - 'model_metadata': Model-specific metadata
+
+    Raises:
+        AttributeError: If model doesn't have a predict() method.
+        ValueError: If AST is malformed or incompatible with model.
+
+    Example:
+        Legacy inference:
+        >>> from gfl.models.dummy import DummyGeneModel
+        >>> model = DummyGeneModel()
+        >>> ast = parse('experiment:\n  tool: CRISPR_cas9\n  type: gene_editing')
+        >>> result = infer(model, ast)
+        >>> print(f"Prediction: {result['label']} (confidence: {result['confidence']})")
+        Prediction: edited (confidence: 0.85)
+
+        Enhanced inference:
+        >>> result = infer(model, ast, enhanced=True, model_name="heuristic")
+        >>> print(f"Enhanced: {result['enhanced_result']['explanation']}")
     """
-    engine = _InferenceEngine(model)
-    # default_rules are wired in the engine; this import exposes them for callers
-    _ = default_rules  # noqa: F401 (documented side-channel)
-    return engine.predict_effect(ast)
+    with get_monitor().time_operation("api_infer"):
+        engine = _InferenceEngine(model)
+
+        # Try enhanced inference if requested and available
+        if enhanced:
+            try:
+                # Import here to avoid circular imports
+                from gfl.enhanced_inference_engine import get_inference_engine
+
+                enhanced_engine = get_inference_engine()
+
+                # Extract features from AST
+                features = engine._extract_features(ast)
+
+                # Use enhanced prediction
+                model_name = model_name or "heuristic"
+                enhanced_result = enhanced_engine.predict(
+                    model_name, features, explain=explain
+                )
+
+                # Return enhanced format
+                return {
+                    "label": str(enhanced_result.prediction),
+                    "confidence": enhanced_result.confidence,
+                    "explanation": enhanced_result.explanation,
+                    "enhanced_result": enhanced_result.to_dict(),
+                    "features_used": features,
+                    "model_used": model_name,
+                }
+
+            except Exception as e:
+                # Fall back to legacy inference if enhanced fails
+                import logging
+
+                logging.warning(f"Enhanced inference failed, using legacy: {e}")
+
+        # Legacy inference path
+        _ = default_rules  # noqa: F401 (documented side-channel)
+        return engine.predict_effect(ast, enhanced=False)
 
 
-__all__ = ["parse", "validate", "infer"]
+def parse_enhanced(
+    text: str, use_grammar: bool = True, filename: str = "<input>"
+) -> EnhancedValidationResult:
+    """Parse GFL source with enhanced error reporting.
+
+    This function provides detailed parsing results with rich error information,
+    source locations, and suggested fixes. Recommended for development tools
+    and IDEs.
+
+    Args:
+        text: GFL source code as a string.
+        use_grammar: If True, use grammar-based parser. If False, use YAML parser
+                    with basic error wrapping.
+        filename: Source filename for error reporting.
+
+    Returns:
+        EnhancedValidationResult with detailed parsing information including:
+        - AST if parsing succeeded
+        - Detailed error information with locations
+        - Suggested fixes for common issues
+
+    Example:
+        >>> result = parse_enhanced('''
+        ... experiment:
+        ...   tool: CRISPR_cas9
+        ...   invalid_syntax here
+        ... ''')
+        >>> if not result.is_valid:
+        ...     for error in result.syntax_errors:
+        ...         print(f"{error.location}: {error.message}")
+        ...         for fix in error.suggested_fixes:
+        ...             print(f"  Suggestion: {fix.description}")
+    """
+    with get_monitor().time_operation("api_parse_enhanced"):
+        if use_grammar and HAS_GRAMMAR_PARSER:
+            return parse_gfl_grammar(text, filename)
+        else:
+            # Fallback to YAML parser with basic error wrapping
+            from gfl.error_handling import (
+                EnhancedValidationError,
+                ErrorCategory,
+                ErrorSeverity,
+            )
+
+            try:
+                ast = _parser.parse_gfl(text)
+                return EnhancedValidationResult(
+                    is_valid=True,
+                    ast=ast,
+                    syntax_errors=[],
+                    semantic_errors=[],
+                    schema_errors=[],
+                )
+            except Exception as e:
+                error = EnhancedValidationError(
+                    message=str(e),
+                    code="YAML_PARSE_ERROR",
+                    severity=ErrorSeverity.ERROR,
+                    category=ErrorCategory.SYNTAX,
+                )
+                return EnhancedValidationResult(
+                    is_valid=False,
+                    syntax_errors=[error],
+                    semantic_errors=[],
+                    schema_errors=[],
+                )
+
+
+# Enhanced inference convenience functions
+
+
+def infer_enhanced(
+    ast: Dict[str, Any], model_name: str = "heuristic", explain: bool = True
+) -> Dict[str, Any]:
+    """Enhanced inference using advanced ML models.
+
+    Convenience function for enhanced inference without requiring a model instance.
+
+    Args:
+        ast: Dictionary AST from parse()
+        model_name: Model to use ("heuristic", "genomic_classification",
+                   "protein_generation", "multimodal")
+        explain: Include detailed explanations
+
+    Returns:
+        Dictionary with enhanced inference results
+
+    Example:
+        >>> ast = parse('experiment:\n  tool: CRISPR_cas9')
+        >>> result = infer_enhanced(ast, "genomic_classification")
+        >>> print(result['explanation'])
+    """
+    try:
+        from gfl.enhanced_inference_engine import get_inference_engine
+        from gfl.inference_engine import InferenceEngine
+        from gfl.models.dummy import DummyGeneModel
+
+        # Create temporary engine to extract features
+        temp_engine = InferenceEngine(DummyGeneModel())
+        features = temp_engine._extract_features(ast)
+
+        # Use enhanced inference
+        enhanced_engine = get_inference_engine()
+        result = enhanced_engine.predict(model_name, features, explain=explain)
+
+        return {
+            "label": str(result.prediction),
+            "confidence": result.confidence,
+            "explanation": result.explanation,
+            "enhanced_result": result.to_dict(),
+            "features_used": features,
+            "model_used": model_name,
+        }
+
+    except ImportError:
+        raise ImportError("Enhanced inference engine not available")
+
+
+def compare_inference_models(
+    ast: Dict[str, Any], model_names: Optional[List[str]] = None
+) -> Dict[str, Any]:
+    """Compare predictions across multiple inference models.
+
+    Args:
+        ast: Dictionary AST from parse()
+        model_names: List of model names to compare. If None, uses all available.
+
+    Returns:
+        Dictionary with comparison results for each model
+
+    Example:
+        >>> ast = parse('experiment:\n  tool: CRISPR_cas9')
+        >>> results = compare_inference_models(ast)
+        >>> for model, result in results['comparisons'].items():
+        ...     print(f"{model}: {result['prediction']} ({result['confidence']:.2%})")
+    """
+    try:
+        from gfl.enhanced_inference_engine import get_inference_engine
+        from gfl.inference_engine import InferenceEngine
+        from gfl.models.dummy import DummyGeneModel
+
+        # Extract features
+        temp_engine = InferenceEngine(DummyGeneModel())
+        features = temp_engine._extract_features(ast)
+
+        # Compare models
+        enhanced_engine = get_inference_engine()
+        results = enhanced_engine.compare_models(features, model_names)
+
+        return {
+            "comparisons": {k: v.to_dict() for k, v in results.items()},
+            "features_used": features,
+            "available_models": enhanced_engine.list_models(),
+        }
+
+    except ImportError:
+        raise ImportError("Enhanced inference engine not available")
+
+
+__all__ = [
+    "parse",
+    "validate",
+    "infer",
+    "parse_enhanced",
+    "infer_enhanced",
+    "compare_inference_models",
+]

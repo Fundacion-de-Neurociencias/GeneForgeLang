@@ -21,14 +21,56 @@ ml = [
   "torch>=2.3; platform_machine!='arm64'",
   "transformers>=4.40",
 ]
+server = [
+  "fastapi>=0.104.0",
+  "uvicorn[standard]>=0.24.0",
+  "httpx>=0.25.0",
+  "slowapi>=0.1.7",
+  "pydantic>=2.0.0",
+]
+full = [
+  "gradio>=4.0",
+  "fastapi>=0.104.0",
+  "uvicorn[standard]>=0.24.0",
+  "httpx>=0.25.0",
+  "slowapi>=0.1.7",
+  "pydantic>=2.0.0",
+  "python-dotenv>=1.0",
+  "google-generativeai>=0.7",
+  "ply>=3.11",
+  "torch>=2.3; platform_machine!='arm64'",
+  "transformers>=4.40",
+]
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["gfl*", "gf*"]
 
 [project.scripts]
+gfl = "gfl.cli_main:main"
 gfl-parse = "gfl.cli:cmd_parse"
 gfl-validate = "gfl.cli:cmd_validate"
+gfl-enhanced = "gfl.enhanced_cli:main"
+gfl-inference = "gfl.cli_inference:main"
+gfl-server = "gfl.server_launcher:main"
+gfl-web = "gfl.web_interface:launch_web_interface"
+gfl-api = "gfl.api_server:run_server"
+
+# Entry points for GFL plugins
+[project.entry-points."gfl.plugins"]
+alpha_genome = "gfl.plugins.alpha_genome:AlphaGenomePlugin"
+variant_sim = "gfl.plugins.variant_sim:VariantSimulationPlugin"
+
+# Entry points for GFL validators
+[project.entry-points."gfl.validators"]
+semantic = "gfl.semantic_validator:SemanticValidator"
+schema = "gfl.enhanced_schema_validator:EnhancedSchemaValidator"
+
+# Entry points for GFL parsers
+[project.entry-points."gfl.parsers"]
+yaml_parser = "gfl.yaml_lang.parser:YamlParser"
+default_parser = "gfl.parser:parse_gfl"
+grammar_parser = "gfl.grammar_parser:parse_gfl_grammar"
 
 # Security tool configurations
 [tool.bandit]

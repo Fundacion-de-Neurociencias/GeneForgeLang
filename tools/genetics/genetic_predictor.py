@@ -65,7 +65,7 @@ def cli():
         age_onset = int(input("Enter age at symptom onset: "))
         family_members_affected = int(input("Number of family members affected: "))
         early_onset_in_family = int(input("Any early onset in family? (1=yes, 0=no): "))
-        parent_affected = int(input("Is a parent affected? (1=yes, 0=no): "))
+        int(input("Is a parent affected? (1=yes, 0=no): "))
         apoe_e4_status = int(input("APOE ε4 carrier? (1=yes, 0=no): "))
         clinical_diagnosis = (
             input("Clinical diagnosis (AD, FTD, VaD, PDD): ").strip().upper()
@@ -75,7 +75,7 @@ def cli():
             age_onset,
             family_members_affected,
             early_onset_in_family,
-            parent_e4_status,
+            apoe_e4_status,  # Use the correct variable name
             clinical_diagnosis,
         )
 

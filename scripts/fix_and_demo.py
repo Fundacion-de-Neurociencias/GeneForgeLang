@@ -11,7 +11,7 @@ def run_demo():
     print("--- GFL Parser Demo ---")
 
     # Instancia el lexer y el parser
-    gfl_lexer = GFLLexer()
+    GFLLexer()
     gfl_parser = GFLParser()
 
     # Define los snippets de código GFL para parsear

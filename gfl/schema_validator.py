@@ -134,9 +134,9 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
     Returns:
         ValidationResult with format validation errors
     """
-    errors = []
-    warnings = []
-    info = []
+    errors: List[ValidationError] = []
+    warnings: List[ValidationError] = []
+    info: List[ValidationError] = []
 
     # Check for required top-level blocks
     has_experiment = "experiment" in data
