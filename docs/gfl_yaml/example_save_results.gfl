@@ -1,0 +1,37 @@
+plan:
+  goal: "Design CRISPR guides, analyze their stability, and save the aggregated results to a file."
+  metadata:
+    author: "GFL_Bot"
+    version: 1.6
+
+  steps:
+    - name: design_guides
+      thought: "Design several guide RNAs for the human TP53 gene."
+      type: crispr_design
+      attrs:
+        target_gene: "TP53"
+        genome_assembly: "hg38"
+
+    - name: analyze_each_guide
+      thought: "Iterate through each generated guide to calculate its stability."
+      for_each: "guide in ${design_guides.result.guides}"
+      do:
+        - name: stability_check_substep
+          thought: "Check the MFE for the current guide RNA."
+          type: predict_ss
+          attrs:
+            sequence: "${guide.sequence}"
+
+    - name: save_report
+      thought: "Save the aggregated stability data to a JSON file."
+      type: save_results
+      attrs:
+        data: "${analyze_each_guide.result.aggregated_results}"
+        filename: "stability_report.json"
+        format: "json"
+
+    - name: final_log
+      thought: "Confirm that the file was saved."
+      type: log_message
+      attrs:
+        message: "Workflow complete. Results saved to ${save_report.result.path}"

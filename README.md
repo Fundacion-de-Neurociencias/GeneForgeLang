@@ -1,279 +1,170 @@
-# GeneForgeLang
+# GeneForge: Applications and Pipelines for GeneForgeLang
 
-GeneForgeLang (GFL) is a domain-specific language designed for specifying and executing complex genomic workflows. It provides a high-level, human-readable syntax for defining genetic experiments, data processing pipelines, and analytical tasks.
+## Overview
+
+This repository hosts the **applications, pipelines, examples, and utility scripts** that extend and leverage the **GeneForgeLang (GFL) DSL** (Domain-Specific Language). It serves as the practical implementation layer, demonstrating how GFL can be used to build and execute complex biological workflows.
+
+## Relationship with GeneForgeLang
+
+GeneForge relies on the **core GeneForgeLang engine** (available in the [GeneForgeLang repository](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git)) for parsing, evaluating, and reasoning about biological workflows. This repository focuses on the **applications and pipelines** that utilize this engine.
+
+## Recent Updates
+
+As of July 2025, the **GeneForgeLang (GFL) engine** has received significant improvements in the clarity of its error and warning messages, making workflow development more intuitive. This project (GeneForge applications) now includes **enhanced GFL parser and inference engine logic**, resulting in more robust handling of GFL workflows. For details on the DSL's roadmap, please refer to the [GeneForgeLang repository](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git).
 
 ## Project Structure
 
-```
-GeneForgeLang/
-├── __init__.py
-├── .gitattributes
-├── .gitignore
-├── advanced_validator.py
-├── alphagenenome_plugin.py
-├── app_gradio_full_graph.py
-├── app.py
-├── bfg.jar
-├── CITATION.cff
-├── Ejecutando
-├── example1.gfl
-├── export_ast.py
-├── geneforge_grammar_v1.2.json
-├── geneforge_grammar_v1.3.json
-├── geneforge_syntax_v1.2.md
-├── geneforgegrammar.json
-├── generar_desde_frase_input_v2.py
-├── generar_desde_frase_json.py
-├── generar_desde_frase_v2.py
-├── generar_interactivo.py
-├── gfl_benchmark_tasks.md
-├── gfl_example.gfl
-├── gfl_examples.gfl
-├── gfl_to_vcf.py
-├── grammar.md
-├── license
-├── main.py
-├── old_parser_root.py
-├── ontology.md
-├── output_ast.json
-├── paper.bib
-├── paper.md
-├── parselog.txt
-├── parser_notebook.ipynb
-├── pytest test_parser.py
-├── README.md
-├── requirements.txt
-├── rules.json
-├── run_axiom_demo.py
-├── sanitize_identifiers.py
-├── semillas.json
-├── summarize_ast.py
-├── syntax_v1.2.md
-├── syntax.md
-├── test_gfl_logic.gfl
-├── test_semantics.py
-├── translate_to_geneforgelang.py
-├── variant_simulation_plugin.py
-├── visualize_ast.py
-├── whitepaper.md
-├── ..bfg-report/
-│   └── 2025-06-08/
-│       ├── 23-48-11/
-│       │   ├── cache-stats.txt
-│       │   ├── deleted-files.txt
-│       │   └── object-id-map.old-new.txt
-│       ├── 23-48-12/
-│       │   ├── cache-stats.txt
-│       │   ├── deleted-files.txt
-│       │   └── object-id-map.old-new.txt
-│       ├── 23-48-13/
-│       │   ├── cache-stats.txt
-│       │   ├── deleted-files.txt
-│       │   └── object-id-map.old-new.txt
-│       └── 23-48-17/
-│           ├── cache-stats.txt
-│           └── object-id-map.old-new.txt
-├── .git/...
-├── applications/
-│   ├── launch_pipeline.py
-│   └── pipeline_basic_scRNA.gfl
-├── bench/
-│   ├── coverage.py
-│   ├── expectations.json
-│   ├── test_corpus.py
-│   └── corpus/
-│       ├── 22q11_high_level.gfl
-│       ├── 22q11_iPSC_ASO.gfl
-│       ├── 22q11_miRNA_pathway.gfl
-│       └── 22q11_mouse_ASO.gfl
-├── cases/
-│   ├── KJ_CRISPR2_GFL_case.md
-│   ├── KJ_CRISPR2.yaml
-│   └── examples/
-│       ├── example_rna_transport.gfl
-│       └── stanford_rna_neuron.gfl
-├── data/
-│   └── example.h5ad
-├── docs/
-│   ├── Enhancer_Module_Spec.md
-│   └── reasoning.md
-├── Downloads/
-│   └── GeneForgeLang/
-│       └── tests/
-│           └── test_basic.py
-├── examples/
-│   ├── example1.gfl
-│   ├── example2.gfl
-│   ├── gfl_training_data.txt
-│   ├── test_editing.gfl
-│   ├── test_invalid_semantics.gfl
-│   ├── test_multi_editing.gfl
-│   └── test_valid_semantics.gfl
-├── gf/
-│   ├── axioms/
-│   │   ├── axiom_store.json
-│   │   ├── axiom_tracker.py
-│   │   ├── axiom_utils.py
-│   │   ├── README.md
-│   │   └── __pycache__/
-│   └── reasoning/
-│       └── engine.py
-├── gfl/
-│   ├── __init__.py
-│   ├── adaptive_reasoner.py
-│   ├── axiom_hooks.py
-│   ├── evaluator.py
-│   ├── gfl_example.gfl
-│   ├── grammar_syntax.md
-│   ├── grammar.md
-│   ├── inference_engine.py
-│   ├── interpreter.py
-│   ├── lexer.py
-│   ├── manual_and_examples.md
-│   ├── parser_rules.py
-│   ├── parser.py
-│   ├── prob_rules.py
-│   ├── semantic_validator.py
-│   ├── temp_lexer.py
-│   ├── test_lexer.py
-│   ├── translate_lstm.py
-│   ├── validation_pipeline.py
-│   ├── validation_registry.py
-│   ├── __pycache__/
-│   ├── examples/
-│   │   ├── axiom_demo.gfl
-│   │   └── example1.gfl
-│   ├── execution/
-│   │   ├── __init__.py
-│   │   ├── experiment_runner.py
-│   │   └── scanpy_interface.py
-│   └── plugins/
-│       ├── __init__.py
-│       └── plugin_registry.py
-├── roadmap_phase_3/
-│   ├── .gitignore
-│   ├── analyze_long_peaks.py
-│   ├── bfg.jar
-│   ├── geneforge_grammar_v2.json
-│   ├── geneforge_grammar.json
-│   ├── process_datasets.py
-│   ├── README_reasoning_driven.md
-│   ├── syntax_extended.md
-│   ├── syntax_v2.md
-│   ├── syntax.md
-│   └── benchmarking/
-│       └── plot_long_peaks.py
-├── scripts/
-│   ├── clean_requirements.py
-│   ├── fix_and_demo.py
-│   ├── generate_gfl_data.py
-│   ├── patch_lexer_quotes.py
-│   ├── train_gfl_model.py
-│   └── update_requirements.py
-└── venv/
-    ├── bin/...
-    ├── include/...
-    └── lib/...
-```
+The structure of this repository is organized as follows:
 
-## Getting Started
+* **`applications/`**: Contains the core applications built with GFL.
+* **`launcher/`**: Scripts to launch GFL-based workflows.
+* **`datasets/`**: Test datasets for example pipelines.
+* **`examples/`**: Example GFL pipelines and usage scenarios.
+* **`README.md`**: This documentation file.
+* **`QC checklist`**: Quality control checklist for applications and pipelines.
+* **`src/tools/alphagenome/`**: Integration components for AlphaGenome tools.
+* **`sync_with_existing_repo.sh`**: Utility script for repository synchronization.
+* **`run_chatnt_cli.py`**: The new command-line interface for interacting with the conversational AI agent.
+* **`integrations/chatnt_plugin.py`**: The core plugin for integrating the multimodal conversational AI agent (Gemini API).
 
-### Prerequisites
+---
 
-- Python 3.8 or higher
-- pip (Python package installer)
+## Environment Setup and Large Files
 
-### Installation
+This project uses Python and manages dependencies and large files as follows:
 
-1.  **Clone the repository:**
+### Virtual Environment (`venv`)
 
+To ensure an isolated and reproducible development environment, we recommend using a virtual environment. The `venv/` directory, where dependencies are installed, is **excluded from Git version control** (`.gitignore`).
+
+To set up your environment:
+
+1.  Ensure you have Python (version 3.9 or higher recommended) and `pip` installed.
+2.  Create the virtual environment (if you don't have one already):
     ```bash
-    git clone https://github.com/your-repo/GeneForgeLang.git
-    cd GeneForgeLang
+    python3 -m venv venv
     ```
-
-2.  **Create a virtual environment (recommended):**
-
+3.  Activate the environment:
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    source venv/bin/activate
     ```
-
-3.  **Install dependencies:**
-
+4.  Install project dependencies:
     ```bash
     pip install -r requirements.txt
     ```
 
+### Models and Large Data (Managed Outside GitHub)
+
+Due to their large size, fine-tuned Artificial Intelligence (AI) models and some large datasets **are not stored directly in this GitHub repository**. Instead, they are hosted on specialized platforms.
+
+* **Fine-Tuned T5 Model (`fine_tuned_t5_model`):**
+    This model, fundamental to GeneForge, is located on **Hugging Face Hub**. You can access it directly here:
+    [https://huggingface.co/fneurociencias/GeneForge-T5-FineTuned](https://huggingface.co/fneurociencias/GeneForge-T5-FineTuned)
+
+    To use the model in your local environment, you will need to download or load it directly from Hugging Face Hub using the appropriate libraries (e.g., `transformers`). A basic example for loading it in Python would be:
+
+    ```python
+    from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+
+    model_name = "fneurociencias/GeneForge-T5-FineTuned"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+    ```
+
+* **Training Data (`data/nlp_training_data.json`):**
+    This file is also large and is not in this repository. If required for training or replication, it is located at **[PENDING: indicate here if it was also uploaded to Hugging Face as a dataset, will be made accessible otherwise, or is currently just a placeholder]**.
+
+### Specific External Dependencies (`external_libs/alphagenome`)
+
+This project uses the [AlphaGenome by Google DeepMind](https://github.com/google-deepmind/alphagenome) library as a **Git submodule**. This means it is an independent Git repository included within this project.
+
+**To clone the project including AlphaGenome:**
+If you are cloning GeneForge for the first time, use the following command to ensure submodules are also downloaded:
+
+```bash
+git clone --recurse-submodules https://github.com/Fundacion-de-Neurociencias/GeneForge.git
+```
+
+**If you already cloned the project without submodules, or to initialize/update existing submodules:**
+You can initialize and update them as follows:
+
+```bash
+git submodule update --init --recursive
+```
+
+This will download the contents of AlphaGenome into the `external_libs/alphagenome` folder.
+
+---
+
+## Installation
+
+Here, you should detail the specific steps to install and set up GeneForge applications. This might include:
+
+1.  Any additional system requirements (compilers, etc.).
+2.  Instructions for configuring paths or environment variables if necessary.
+3.  Any post-installation steps for Python dependencies.
+    *(If the GFL engine requires a separate installation prior to this, reference it here).*
+
+---
+
 ## Usage
 
-### Running GFL Scripts
+Provide clear and concise examples of how to use GeneForge applications and pipelines. Include:
 
-You can execute GFL scripts using the `main.py` interpreter:
+* How to run the launcher scripts (`launcher/`).
+* Example commands to execute specific pipelines in `examples/`.
+* Brief descriptions of expected results or how to interpret outputs.
+    *(Consider linking to Jupyter notebooks if you have interactive demonstrations in the `examples/` folder).*
 
-```bash
-python main.py your_script.gfl
-```
+### New: Conversational AI Interface
 
-### Examples
+GeneForge now features a command-line interface for interacting with a multimodal conversational AI agent (powered by Google Gemini). This allows users to perform biological tasks using natural language prompts.
 
-Explore the `examples/` directory for various GFL code examples.
+To use the conversational AI interface:
 
-```gfl
-DEFINE GeneSet my_genes = {
-    "BRCA1",
-    "TP53",
-    "EGFR"
-};
+1.  Ensure your `GEMINI_API_KEY` is set as an environment variable (e.g., in PowerShell: `$env:GEMINI_API_KEY="YOUR_API_KEY"`).
+2.  Run the `run_chatnt_cli.py` script from the project root:
+    ```bash
+    python3 run_chatnt_cli.py <modality> <task> "<your natural language prompt>"
+    ```
+    * **`<modality>`**: The biological modality (e.g., `DNA`, `RNA`, `Protein`).
+    * **`<task>`**: The specific task (e.g., `"promoter prediction"`, `"protein folding"`).
+    * **`<your natural language prompt>`**: Your detailed instruction, which can include biological sequences (e.g., `"Analyze this DNA sequence: ATGCGT... and predict promoter regions."`).
 
-MESSAGE "Analyzing gene set: " + my_genes.name;
+    **Example:**
+    ```bash
+    python3 run_chatnt_cli.py DNA "promoter prediction" "Analyze this DNA sequence: ATGCGTACGTATATAAT... and predict promoter regions."
+    ```
 
-IF my_genes.size > 2 THEN
-    MESSAGE "Gene set is large. Performing detailed analysis.";
-ELSE
-    MESSAGE "Gene set is small. Performing quick analysis.";
-END
+---
 
-BRANCH on my_genes.type {
-    CASE "oncogenes":
-        INVOKE analyze_oncogenes(my_genes);
-    CASE "tumor_suppressors":
-        INVOKE analyze_tumor_suppressors(my_genes);
-    DEFAULT:
-        MESSAGE "Unknown gene set type.";
-}
+### Results Output
 
-TRY
-    INVOKE process_data(my_genes);
-CATCH err:
-    MESSAGE "Error processing data: " + err.message;
-FINALLY
-    MESSAGE "Data processing attempt completed.";
-END
-```
+GeneForge now includes functionality to save execution results. You should find a new directory named `results/` in your project root. Inside this directory, a file named `stable_guides_output.json` will contain the results of guides that passed the stability filter.
 
-## Development
+---
 
-### Running Tests
+## Contributions
 
-To run the test suite, use `pytest`:
+Contributions are welcome! If you wish to contribute to GeneForge, please:
 
-```bash
-pytest
-```
+1.  Refer to the [contribution guidelines](link_to_CONTRIBUTING.md_if_exists) (highly recommended to create one).
+2.  Follow the code and style guidelines.
+3.  Open an issue to discuss any significant changes before submitting a pull request.
 
-### Code Style
-
-We adhere to PEP 8 guidelines. Please use a linter (e.g., `flake8` or `ruff`) to ensure your code conforms to the style.
-
-## Contributing
-
-We welcome contributions! Please see `CONTRIBUTING.md` (if available) for guidelines on how to submit pull requests, report issues, and contribute to the project.
+---
 
 ## License
 
-This project is licensed under the MIT License - see the `LICENSE` file for details.
+This repository's software (GeneForge applications and pipelines) is **proprietary software** developed by Fundacion de Neurociencias. It is licensed under specific terms and conditions. For commercial use, distribution, or licensing inquiries, please contact: admin @fneurociencias.org.
+
+Please note that GeneForge leverages the **GeneForgeLang (GFL) engine**, which is **open-source software**. The open-source license terms of GeneForgeLang apply only to the GFL engine itself, not to the proprietary GeneForge applications and pipelines contained in this repository.
+
+All rights reserved by Fundacion de Neurociencias.
+
+---
 
 ## Contact
 
-For questions or support, please open an issue on the GitHub repository.
+For any questions or feedback, you can contact:
+admin @fneurociencias.org

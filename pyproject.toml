@@ -1,0 +1,39 @@
+﻿[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geneforgelang"
+version = "0.2.0"
+description = "GeneForgeLang (GFL): core language with YAML DSL and optional NL translator"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "Fundación de Neurociencias", email = "admin@fneurociencias.org" }]
+license = { file = "license" }
+keywords = ["bioinformatics", "language", "GFL", "workflow"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent"
+]
+dependencies = [
+  "pyyaml>=6.0"
+]
+
+[project.optional-dependencies]
+nl = [
+  "transformers>=4.35",
+  "datasets>=2.14"
+]
+ply = [
+  "ply>=3.11"
+]
+
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["gfl*"]
+
+[project.urls]
+Homepage = "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang"
+Issues = "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues"
