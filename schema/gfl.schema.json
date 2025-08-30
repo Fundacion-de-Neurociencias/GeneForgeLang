@@ -1,0 +1,43 @@
+﻿{
+"$schema": "https://json-schema.org/draft/2020-12/schema",
+"$id": "https://fundacion-neurociencias.org/schemas/gfl.schema.json",
+"title": "GeneForge Language (GFL) YAML schema",
+"type": "object",
+"properties": {
+"experiment": {
+"type": "object",
+"properties": {
+"tool": { "type": "string" },
+"type": { "type": "string" },
+"strategy": { "type": ["string","null"] },
+"params": {
+"type": "object",
+"properties": {
+"target_gene": { "type": "string" },
+"sequence": { "type": "string" }
+},
+"additionalProperties": true
+}
+},
+"required": ["tool", "type"],
+"additionalProperties": true
+},
+"analyze": {
+"type": "object",
+"properties": {
+"strategy": { "type": "string" },
+"thresholds": {
+"type": "object",
+"properties": {
+"p_value": { "type": "number" },
+"log2FoldChange": { "type": ["number","string"] }
+},
+"additionalProperties": true
+}
+},
+"additionalProperties": true
+},
+"simulate": { "type": ["boolean","null"] }
+},
+"additionalProperties": true
+}
