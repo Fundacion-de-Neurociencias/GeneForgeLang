@@ -40,5 +40,8 @@ def score_prime_edit(node):
 def score_base_edit(node):
     return 0.8 if "base_editor" in node.args else 0.4
 
+# Inicializa el diccionario de puntuaciones de reglas antes de usarlo.
+rule_scores: Dict[str, Callable] = {}
+
 rule_scores["prime_edit"] = score_prime_edit
 rule_scores["base_edit"] = score_base_edit
