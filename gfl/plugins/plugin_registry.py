@@ -681,9 +681,19 @@ class _Registry:
                 gfl_plugins = _entry_points.select(group="gfl.plugins")
             else:  # Python 3.8-3.9
                 all_entry_points = _entry_points()
-                gfl_plugins = (
-                    all_entry_points.get("gfl.plugins", []) if all_entry_points else []
-                )
+                # Handle both dict-like and list-like entry points APIs
+                if hasattr(all_entry_points, 'get'):
+                    gfl_plugins = all_entry_points.get("gfl.plugins", [])
+                else:
+                    # For newer versions where entry_points() returns a different type
+                    gfl_plugins = []
+                    try:
+                        for group in all_entry_points:
+                            if group.group == "gfl.plugins":
+                                gfl_plugins.append(group)
+                    except AttributeError:
+                        # Fallback: no entry points found
+                        gfl_plugins = []
 
             for ep in gfl_plugins:
                 try:
@@ -727,18 +737,11 @@ class _Registry:
     def _log_discovery_summary(self) -> None:
         """Log summary of plugin discovery results."""
         total_plugins = len(self._plugins)
-        dependency_issues = self.validate_all_dependencies()
 
         logger.info(f"Plugin discovery complete: {total_plugins} plugins found")
 
-        if dependency_issues:
-            logger.warning(
-                f"Dependency issues found for {len(dependency_issues)} plugins:"
-            )
-            for plugin_name, missing_deps in dependency_issues.items():
-                logger.warning(f"  {plugin_name}: missing {', '.join(missing_deps)}")
-        else:
-            logger.info("All plugin dependencies satisfied")
+        # Skip dependency validation here to avoid recursion
+        # Dependencies will be validated when plugins are actually used
 
     def _try_autoregister_builtin(self) -> None:
         """Auto-register built-in demo plugins with dependency checking."""

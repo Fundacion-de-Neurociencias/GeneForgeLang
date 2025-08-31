@@ -32,6 +32,23 @@ from gfl.performance import cached, get_monitor
 from gfl.prob_rules import default_rules
 from gfl.semantic_validator import validate as _validate
 
+# Optional execution engine import
+try:
+    from gfl.execution_engine import (
+        execute_gfl_ast,
+        validate_execution_requirements,
+        ExecutionError,
+        GFLExecutionEngine,
+    )
+
+    HAS_EXECUTION_ENGINE = True
+except ImportError:
+    HAS_EXECUTION_ENGINE = False
+    execute_gfl_ast = None
+    validate_execution_requirements = None
+    ExecutionError = None
+    GFLExecutionEngine = None
+
 # Optional grammar parser import
 try:
     from gfl.grammar_parser import parse_gfl_grammar
@@ -402,7 +419,193 @@ def compare_inference_models(
         raise ImportError("Enhanced inference engine not available")
 
 
+def execute(
+    ast: Dict[str, Any], validate_first: bool = True
+) -> Dict[str, Any]:
+    """Execute a GFL workflow by dispatching to appropriate plugins.
+
+    This function orchestrates the execution of design and optimize blocks
+    by finding and invoking the appropriate plugin implementations.
+
+    Args:
+        ast: Dictionary AST from parse(). Should contain 'design' and/or 'optimize' blocks.
+        validate_first: If True, validate AST and plugin requirements before execution.
+
+    Returns:
+        Dictionary containing execution results:
+        - 'design': Results from design block execution (if present)
+        - 'optimize': Results from optimize block execution (if present)  
+        - 'workflow_state': Information about workflow variables and history
+
+    Raises:
+        ImportError: If execution engine is not available.
+        ExecutionError: If execution fails due to plugin issues or configuration errors.
+        ValueError: If AST is invalid or missing required plugins.
+
+    Example:
+        Design block execution:
+        >>> ast = parse('''
+        ... design:
+        ...   entity: ProteinSequence
+        ...   model: ProteinVAEGenerator
+        ...   objective:
+        ...     maximize: stability
+        ...   count: 10
+        ...   output: designed_proteins
+        ... ''')
+        >>> result = execute(ast)
+        >>> print(f"Generated {result['design']['count']} candidates")
+        Generated 10 candidates
+
+        Optimize block execution:
+        >>> ast = parse('''
+        ... optimize:
+        ...   search_space:
+        ...     temperature: range(25, 42)
+        ...     concentration: range(10, 100)
+        ...   strategy:
+        ...     name: BayesianOptimization
+        ...   objective:
+        ...     maximize: efficiency
+        ...   budget:
+        ...     max_experiments: 20
+        ...   run:
+        ...     experiment:
+        ...       tool: CRISPR_cas9
+        ...       params:
+        ...         temp: ${temperature}
+        ...         conc: ${concentration}
+        ... ''')
+        >>> result = execute(ast)
+        >>> best = result['optimize']['best_parameters']
+        >>> print(f"Best parameters: {best}")
+        Best parameters: {'temperature': 37.2, 'concentration': 75.5}
+    """
+    if not HAS_EXECUTION_ENGINE:
+        raise ImportError(
+            "Execution engine not available. Plugin system may not be properly installed."
+        )
+
+    with get_monitor().time_operation("api_execute"):
+        if validate_first:
+            # Validate AST first
+            validation_errors = validate(ast)
+            if validation_errors:
+                error_msg = "; ".join(validation_errors[:3])  # Show first 3 errors
+                raise ValueError(f"AST validation failed: {error_msg}")
+
+            # Validate plugin requirements
+            plugin_errors = validate_execution_requirements(ast)
+            if plugin_errors:
+                error_msg = "; ".join(plugin_errors)
+                raise ValueError(f"Plugin requirements not met: {error_msg}")
+
+        return execute_gfl_ast(ast)
+
+
+def validate_plugins(ast: Dict[str, Any]) -> List[str]:
+    """Validate that required plugins are available for AST execution.
+
+    Args:
+        ast: Dictionary AST from parse()
+
+    Returns:
+        List of validation error messages (empty if all plugins available)
+
+    Example:
+        >>> ast = parse('''
+        ... design:
+        ...   entity: ProteinSequence  
+        ...   model: NonExistentModel
+        ...   count: 10
+        ...   output: results
+        ... ''')
+        >>> errors = validate_plugins(ast)
+        >>> if errors:
+        ...     print(f"Missing plugins: {errors[0]}")
+        Missing plugins: Design model 'NonExistentModel' not available
+    """
+    if not HAS_EXECUTION_ENGINE:
+        return ["Execution engine not available"]
+
+    return validate_execution_requirements(ast)
+
+
+def list_available_plugins() -> Dict[str, List[str]]:
+    """List all available plugins for design and optimize blocks.
+
+    Returns:
+        Dictionary with 'generators' and 'optimizers' keys containing
+        lists of available plugin names.
+
+    Example:
+        >>> plugins = list_available_plugins()
+        >>> print(f"Available generators: {plugins['generators']}")
+        >>> print(f"Available optimizers: {plugins['optimizers']}")
+        Available generators: ['ProteinVAEGenerator', 'MoleculeTransformerGenerator']
+        Available optimizers: ['BayesianOptimizer']
+    """
+    if not HAS_EXECUTION_ENGINE:
+        return {"generators": [], "optimizers": []}
+
+    try:
+        from gfl.plugins import get_available_generators, get_available_optimizers
+
+        generators = get_available_generators()
+        optimizers = get_available_optimizers()
+
+        return {
+            "generators": list(generators.keys()),
+            "optimizers": list(optimizers.keys()),
+        }
+    except ImportError:
+        return {"generators": [], "optimizers": []}
+
+
 def get_api_info() -> Dict[str, Any]:
+    """Get information about the GFL API and available features.
+
+    Returns:
+        Dictionary containing API version, available features, and system info.
+    """
+    info = {
+        "api_version": "0.1.0",
+        "gfl_version": "0.1.0",
+        "features": {
+            "basic_parsing": True,
+            "grammar_parsing": HAS_GRAMMAR_PARSER,
+            "enhanced_inference": True,
+            "model_comparison": True,
+            "workflow_execution": HAS_EXECUTION_ENGINE,
+            "plugin_system": HAS_EXECUTION_ENGINE,
+        },
+        "available_parsers": ["yaml"],
+        "inference_models": ["heuristic"],
+        "execution_blocks": [],
+    }
+
+    if HAS_GRAMMAR_PARSER:
+        info["available_parsers"].append("grammar")
+
+    if HAS_EXECUTION_ENGINE:
+        info["execution_blocks"] = ["design", "optimize"]
+        
+        # Add plugin information
+        try:
+            plugins = list_available_plugins()
+            info["available_plugins"] = plugins
+        except Exception:
+            info["available_plugins"] = {"generators": [], "optimizers": []}
+
+    try:
+        from gfl.enhanced_inference_engine import get_inference_engine
+
+        engine = get_inference_engine()
+        info["inference_models"] = engine.list_models()
+    except ImportError:
+        pass
+
+    return info
     """Get information about the GFL API and available features.
 
     Returns:
@@ -439,6 +642,9 @@ __all__ = [
     "parse",
     "validate",
     "infer",
+    "execute",
+    "validate_plugins", 
+    "list_available_plugins",
     "parse_enhanced",
     "infer_enhanced",
     "compare_inference_models",

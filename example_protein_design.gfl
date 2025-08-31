@@ -1,0 +1,59 @@
+# GeneForgeLang Design Block Example
+# Protein design for COVID-19 therapeutics
+
+metadata:
+  experiment_id: COVID_PROT_DESIGN_001
+  researcher: Dr. Jane Smith  
+  project: covid19_therapeutics
+  description: Design high-affinity ACE2 binding proteins
+  date: "2024-01-15"
+
+design:
+  # Define what we're designing
+  entity: ProteinSequence
+
+  # Specify the generative model plugin
+  model: ProteinGeneratorVAE
+
+  # Define the optimization objective  
+  objective:
+    maximize: binding_affinity
+    target: ACE2_receptor
+
+  # Add design constraints
+  constraints:
+    - length(120, 150)
+    - has_motif("E_box")
+    - synthesizability > 0.7
+    - stability > 0.6
+    - no_aggregation_prone_regions
+
+  # Number of candidates to generate
+  count: 25
+
+  # Output variable for downstream analysis
+  output: designed_candidates
+
+# Analyze the generated candidates
+analyze:
+  strategy: functional
+  data: designed_candidates
+  thresholds:
+    binding_score: 0.8
+    stability_score: 0.7
+    toxicity_score: 0.2
+  filters:
+    - remove_low_activity
+    - remove_toxic
+  operations:
+    - type: sort
+      params:
+        by: binding_affinity
+        order: descending
+    - type: filter
+      params:
+        top_n: 10
+    - type: cluster
+      params:
+        method: sequence_similarity
+        threshold: 0.8

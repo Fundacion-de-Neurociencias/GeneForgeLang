@@ -17,9 +17,10 @@ GeneForgeLang (GFL) is a comprehensive framework for specifying, validating, and
 
 🔬 **Genomic Workflow Specification** - Declarative YAML-like syntax for complex genomic experiments
 🤖 **AI-Powered Analysis** - Built-in inference engine with machine learning capabilities
+🧪 **Workflow Execution Engine** - Execute design and optimize blocks with intelligent plugin dispatch
+🔌 **Advanced Plugin System** - Extensible interfaces for generators, optimizers, and AI models
 🌐 **Web Interface** - Modern web platform for interactive workflow creation and execution
-🔌 **Plugin System** - Extensible architecture for custom tools and integrations
-⚡ **High Performance** - Optimized for large-scale genomic data processing
+⚡ **High Performance** - Optimized for large-scale genomic data processing with intelligent caching
 🔒 **Secure & Robust** - Comprehensive security features and error handling
 
 ## 🚀 Quick Start
@@ -42,31 +43,57 @@ pip install -e .[server]   # Web server and API
 ### Your First GFL Workflow
 
 ```python
-from gfl.api import parse, validate, infer
+from gfl.api import parse, validate, execute
 
-# Define a CRISPR gene editing experiment
+# Define a protein design workflow with AI-powered generation
 workflow = """
-experiment:
-  tool: CRISPR_cas9
-  type: gene_editing
-  params:
-    target_gene: TP53
-    guide_rna: "GCCTACTGGTTCTGTACTGAGGG"
-    cell_line: "HEK293T"
+metadata:
+  experiment_id: PROTEIN_DESIGN_001
+  researcher: Dr. Jane Smith
+  project: therapeutic_proteins
 
-analyze:
-  tools: ["off_target_prediction", "efficiency_scoring"]
-  outputs: ["efficiency_score", "off_target_sites"]
+design:
+  entity: ProteinSequence
+  model: ProteinVAEGenerator
+  objective:
+    maximize: stability
+    target: therapeutic_protein
+  constraints:
+    - length(50, 150)
+    - synthesizability > 0.8
+    - stability_score > 0.7
+  count: 10
+  output: designed_proteins
+
+optimize:
+  search_space:
+    temperature: range(25, 42)
+    concentration: range(10, 100)
+  strategy:
+    name: BayesianOptimization
+  objective:
+    maximize: expression_level
+  budget:
+    max_experiments: 25
+  run:
+    experiment:
+      tool: protein_expression
+      type: validation
+      params:
+        proteins: designed_proteins
+        temp: ${temperature}
+        conc: ${concentration}
 """
 
-# Parse and validate
+# Parse, validate, and execute
 ast = parse(workflow)
 errors = validate(ast)
 print(f"Validation: {'✅ Passed' if not errors else '❌ Failed'}")
 
-# Run AI-powered inference
-result = infer(ast)
-print(f"Predicted efficiency: {result.get('efficiency_score', 'N/A')}")
+# Execute complete workflow with plugin dispatch
+result = execute(ast)
+print(f"Generated {result['design']['count']} protein candidates")
+print(f"Best experimental conditions: {result['optimize']['best_parameters']}")
 ```
 
 ## 📚 Documentation
@@ -80,10 +107,64 @@ print(f"Predicted efficiency: {result.get('efficiency_score', 'N/A')}")
 - 🌐 **[Web Platform](https://fundacion-de-neurociencias.github.io/GeneForgeLang/WEB_API_IMPLEMENTATION_SUMMARY/)** - Web interface guide
 - 🤖 **[AI Features](https://fundacion-de-neurociencias.github.io/GeneForgeLang/ENHANCED_INFERENCE_SUMMARY/)** - Machine learning capabilities
 - 🔒 **[Security](https://fundacion-de-neurociencias.github.io/GeneForgeLang/SECURITY_ADVISORY/)** - Security guidelines and best practices
+- 🔌 **[Plugin Ecosystem](https://fundacion-de-neurociencias.github.io/GeneForgeLang/PLUGIN_ECOSYSTEM/)** - Advanced plugin system and workflow execution
+- 🎯 **[Language Features](https://fundacion-de-neurociencias.github.io/GeneForgeLang/features/design_block/)** - Design and optimize block documentation
+- 🧪 **[Workflow Examples](https://fundacion-de-neurociencias.github.io/GeneForgeLang/examples/)** - Complete workflow examples with AI integration
 
-## 🎯 Use Cases
+### 🧪 Advanced AI-Driven Workflows
 
-### 🧬 Genomics Research
+**GeneForgeLang now supports intelligent experimental design with AI-powered plugins:**
+
+#### Design Block - Biological Entity Generation
+```yaml
+design:
+  entity: ProteinSequence           # or DNA, RNA, SmallMolecule
+  model: ProteinVAEGenerator        # AI plugin for generation
+  objective:
+    maximize: binding_affinity
+    target: SARS_CoV2_RBD
+  constraints:
+    - length(100, 200)
+    - synthesizability > 0.8
+    - stability_score > 0.7
+  count: 50
+  output: therapeutic_candidates
+```
+
+#### Optimize Block - Intelligent Parameter Search
+```yaml
+optimize:
+  search_space:
+    temperature: range(25, 42)      # Continuous parameters
+    duration: choice([6, 12, 24])   # Discrete choices
+    concentration: range(10, 100)
+  strategy:
+    name: BayesianOptimization      # AI optimization strategy
+    uncertainty_metric: entropy
+  objective:
+    maximize: editing_efficiency
+  budget:
+    max_experiments: 100
+    max_time: 48h
+  run:
+    experiment:
+      tool: CRISPR_cas9
+      params:
+        temp: ${temperature}         # Parameter injection
+        conc: ${concentration}
+        dur: ${duration}h
+```
+
+**Key Features:**
+- ✨ **AI-Powered Generation** - VAE, GAN, Transformer models for biological design
+- 🤖 **Intelligent Optimization** - Bayesian, evolutionary, and reinforcement learning
+- 🔄 **Parameter Injection** - Dynamic parameter substitution with `${...}` syntax
+- 🔗 **Workflow Integration** - Seamless combination of design and optimization
+- 📊 **Real-time Monitoring** - Live tracking of experimental campaigns
+
+### 🌍 Industrial & Research Applications
+
+🧬 Genomics Research
 - **CRISPR Design** - Automated guide RNA design and off-target prediction
 - **RNA-seq Analysis** - Differential expression and pathway analysis workflows
 - **Variant Analysis** - SNP/INDEL interpretation and clinical annotation
@@ -101,6 +182,20 @@ print(f"Predicted efficiency: {result.get('efficiency_score', 'N/A')}")
 - **Quality Control** - Genomic validation and testing workflows
 
 ## 📦 Core Components
+
+### 🔌 Advanced Plugin System
+- **Generator Plugins** - AI models for biological entity creation (proteins, DNA, molecules)
+- **Optimizer Plugins** - Intelligent algorithms for parameter space exploration
+- **Prior Plugins** - Bayesian integration for enhanced experimental design
+- **Plugin Registry** - Automatic discovery and lifecycle management
+- **Extensible Interfaces** - Standard contracts for seamless integration
+
+### 🧪 Workflow Execution Engine
+- **Design Block Execution** - Automated dispatch to appropriate AI generators
+- **Optimize Block Execution** - Intelligent experimental loops with parameter injection
+- **State Management** - Persistent workflow variables and execution history
+- **Error Recovery** - Comprehensive error handling and recovery mechanisms
+- **Real-time Monitoring** - Live tracking of workflow execution progress
 
 ### 🔭 Language Core
 - **Parser** - YAML-like DSL with stable, JSON-serializable AST
@@ -121,19 +216,24 @@ print(f"Predicted efficiency: {result.get('efficiency_score', 'N/A')}")
 - **Collaboration Tools** - Share and collaborate on workflows
 
 ### 🔌 Extension System
-- **Plugin Registry** - Extensible architecture for custom tools
-- **Third-party Integration** - Connect with existing bioinformatics tools
-- **Custom Validators** - Domain-specific validation rules
-- **External APIs** - Integration with genomic databases and services
+- **Advanced Plugin Interfaces** - GeneratorPlugin, OptimizerPlugin, PriorsPlugin
+- **Intelligent Dispatch** - Automatic plugin discovery and execution
+- **Plugin Ecosystem** - Community-driven plugin development and sharing
+- **Dependency Management** - Automatic dependency resolution and validation
+- **Lifecycle Hooks** - Plugin loading, activation, and cleanup events
 
 ## 🔧 CLI Tools
 
 GeneForgeLang provides powerful command-line tools for workflow management:
 
-```bash
+```
 # Parse and validate workflows
 gfl-parse workflow.gfl
 gfl-validate workflow.gfl
+
+# Execute complete workflows with AI plugins
+gfl-execute workflow.gfl
+gfl-plugins --list
 
 # Run inference and analysis
 gfl-inference workflow.gfl
@@ -178,27 +278,37 @@ gfl-web --port 8080
 
 ```
 GeneForgeLang/
-├── gfl/                    # Core library
-│   ├── api.py              # Public API
-│   ├── parser.py           # YAML parser
-│   ├── validator.py        # Semantic validation
-│   ├── inference_engine.py # AI inference
-│   ├── web_interface.py    # Web platform
-│   └── plugins/            # Plugin system
-├── applications/           # Demo applications
-├── docs/                   # Documentation source
-├── examples/               # Example workflows
-├── tests/                  # Test suite
-└── integrations/           # External integrations
+├── gfl/                         # Core library
+│   ├── api.py                   # Public API with execute() function
+│   ├── parser.py                # YAML parser
+│   ├── validator.py             # Semantic validation
+│   ├── execution_engine.py      # NEW: Workflow execution engine
+│   ├── inference_engine.py      # AI inference
+│   ├── web_interface.py         # Web platform
+│   └── plugins/                 # NEW: Advanced plugin system
+│       ├── interfaces.py        #   Plugin interface definitions
+│       ├── example_implementations.py  #   Reference plugins
+│       └── plugin_registry.py   #   Plugin discovery and management
+├── applications/                # Demo applications
+├── docs/                        # Documentation source
+│   ├── features/                # NEW: Feature-specific documentation
+│   ├── PLUGIN_ECOSYSTEM.md      # NEW: Plugin development guide
+│   └── PHASE_3_PLUGIN_ECOSYSTEM_SUMMARY.md  # NEW: Implementation summary
+├── examples/                    # Example workflows
+├── tests/                       # Test suite
+│   ├── test_new_features.py     # NEW: 24 regression tests
+│   └── test_plugin_interfaces.py # NEW: Plugin interface tests
+└── integrations/                # External integrations
 ```
 
 ## 🔒 Security & Quality
 
-- ✅ **Comprehensive Testing** - Full test suite with 24+ passing tests
+- ✅ **Comprehensive Testing** - 50+ tests including 24 new feature regression tests  
+- ✅ **Plugin Ecosystem Testing** - Complete test coverage for AI workflow execution
 - 🔒 **Security Scanning** - Automated security analysis with Bandit
 - 🧙 **Code Quality** - Enforced with Ruff, Black, and MyPy
 - 🔄 **Continuous Integration** - Automated testing on multiple Python versions
-- 📄 **Documentation** - Comprehensive docs with examples and tutorials
+- 📄 **Documentation** - Comprehensive docs with plugin ecosystem guides
 
 ## 🛣️ API Stability
 
@@ -256,7 +366,7 @@ We welcome contributions from the genomics and bioinformatics community!
 
 ### Development Setup
 
-```bash
+```
 # Clone the repository
 git clone https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git
 cd GeneForgeLang
@@ -275,7 +385,7 @@ pytest tests/
 
 If you use GeneForgeLang in your research, please cite:
 
-```bibtex
+```
 @software{geneforgelang2025,
   title={GeneForgeLang: A Domain-Specific Language for Genomic Workflows},
   author={GeneForgeLang Development Team},

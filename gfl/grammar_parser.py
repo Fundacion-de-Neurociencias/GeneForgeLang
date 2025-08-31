@@ -97,6 +97,8 @@ class AdvancedGFLLexer:
         "experiment": "EXPERIMENT",
         "analyze": "ANALYZE",
         "analyse": "ANALYZE",  # British spelling
+        "design": "DESIGN",
+        "optimize": "OPTIMIZE",
         "simulate": "SIMULATE",
         "branch": "BRANCH",
         "metadata": "METADATA",

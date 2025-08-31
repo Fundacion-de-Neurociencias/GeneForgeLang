@@ -1,4 +1,4 @@
-﻿{
+﻿﻿﻿{
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://fundacion-neurociencias.org/schemas/gfl.schema.json",
   "title": "GeneForgeLang (GFL) Schema",
@@ -278,6 +278,265 @@
       "required": ["strategy"],
       "additionalProperties": false
     },
+    "design": {
+      "type": "object",
+      "title": "Design Block",
+      "description": "Defines generative design tasks for creating new biological entities",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "title": "Entity Type",
+          "description": "Type of biological entity to design",
+          "enum": [
+            "ProteinSequence",
+            "DNASequence",
+            "RNASequence",
+            "SmallMolecule",
+            "Peptide",
+            "Antibody"
+          ],
+          "examples": ["ProteinSequence", "DNASequence", "SmallMolecule"]
+        },
+        "model": {
+          "type": "string",
+          "title": "Generative Model",
+          "description": "The generative model plugin to use for design",
+          "enum": [
+            "ProteinGeneratorVAE",
+            "DNADesignerGAN",
+            "MoleculeTransformer",
+            "SequenceOptimizer",
+            "StructurePredictor"
+          ],
+          "examples": ["ProteinGeneratorVAE", "DNADesignerGAN"]
+        },
+        "objective": {
+          "type": "object",
+          "title": "Design Objective",
+          "description": "Optimization objective for the design task",
+          "properties": {
+            "maximize": {
+              "type": "string",
+              "title": "Maximize Metric",
+              "description": "Metric to maximize during design",
+              "enum": [
+                "binding_affinity",
+                "stability",
+                "solubility",
+                "activity",
+                "selectivity",
+                "expression_level",
+                "permeability"
+              ],
+              "examples": ["binding_affinity", "stability"]
+            },
+            "minimize": {
+              "type": "string",
+              "title": "Minimize Metric",
+              "description": "Metric to minimize during design",
+              "enum": [
+                "toxicity",
+                "side_effects",
+                "instability",
+                "aggregation",
+                "off_target_effects"
+              ],
+              "examples": ["toxicity", "side_effects"]
+            },
+            "target": {
+              "type": "string",
+              "title": "Target",
+              "description": "Specific target for the objective (e.g., receptor name)",
+              "examples": ["ACE2_receptor", "EGFR", "TP53"]
+            }
+          },
+          "oneOf": [
+            { "required": ["maximize"] },
+            { "required": ["minimize"] }
+          ],
+          "additionalProperties": false
+        },
+        "constraints": {
+          "type": "array",
+          "title": "Design Constraints",
+          "description": "List of constraints to apply during design",
+          "items": {
+            "type": "string",
+            "description": "Constraint expression",
+            "examples": ["length(120, 150)", "has_motif('E_box')", "synthesizability > 0.7"]
+          },
+          "examples": [["length(120, 150)", "has_motif('E_box')", "synthesizability > 0.7"]]
+        },
+        "count": {
+          "type": "integer",
+          "title": "Number of Candidates",
+          "description": "Number of candidate designs to generate",
+          "minimum": 1,
+          "maximum": 1000,
+          "examples": [10, 50, 100]
+        },
+        "output": {
+          "type": "string",
+          "title": "Output Variable",
+          "description": "Variable name to store the generated candidates",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+          "examples": ["designed_candidates", "output_sequences", "generated_molecules"]
+        }
+      },
+      "required": ["entity", "model", "objective", "count", "output"],
+      "additionalProperties": false
+    },
+    "optimize": {
+      "type": "object",
+      "title": "Optimize Block",
+      "description": "Defines intelligent experimental loops for parameter optimization",
+      "properties": {
+        "search_space": {
+          "type": "object",
+          "title": "Search Space",
+          "description": "Parameters to explore and their ranges or choices",
+          "patternProperties": {
+            "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+              "type": "string",
+              "description": "Parameter definition using range(min, max) or choice([...]) syntax",
+              "pattern": "^(range\\(\\s*-?\\d+(\\.\\d+)?\\s*,\\s*-?\\d+(\\.\\d+)?\\s*\\)|choice\\(\\[.*\\]\\))$",
+              "examples": ["range(0.1, 1.0)", "choice([0.8, 0.9, 0.95, 0.99])"]
+            }
+          },
+          "minProperties": 1,
+          "additionalProperties": false
+        },
+        "strategy": {
+          "type": "object",
+          "title": "Optimization Strategy",
+          "description": "Configuration for the optimization algorithm",
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "Strategy Name",
+              "description": "Name of the optimization strategy plugin",
+              "enum": [
+                "ActiveLearning",
+                "BayesianOptimization",
+                "GeneticAlgorithm",
+                "SimulatedAnnealing",
+                "RandomSearch",
+                "GridSearch"
+              ],
+              "examples": ["ActiveLearning", "BayesianOptimization"]
+            },
+            "uncertainty_metric": {
+              "type": "string",
+              "title": "Uncertainty Metric",
+              "description": "Metric for measuring uncertainty (for active learning)",
+              "enum": ["entropy", "variance", "mutual_information"],
+              "examples": ["entropy", "variance"]
+            },
+            "acquisition_function": {
+              "type": "string",
+              "title": "Acquisition Function",
+              "description": "Function for selecting next experiments (for Bayesian optimization)",
+              "enum": ["expected_improvement", "upper_confidence_bound", "probability_of_improvement"],
+              "examples": ["expected_improvement", "upper_confidence_bound"]
+            }
+          },
+          "required": ["name"],
+          "additionalProperties": true
+        },
+        "objective": {
+          "type": "object",
+          "title": "Optimization Objective",
+          "description": "Objective function to maximize or minimize",
+          "properties": {
+            "maximize": {
+              "type": "string",
+              "title": "Maximize Metric",
+              "description": "Metric to maximize during optimization",
+              "examples": ["gene_expression_level", "binding_affinity", "yield", "efficiency"]
+            },
+            "minimize": {
+              "type": "string",
+              "title": "Minimize Metric",
+              "description": "Metric to minimize during optimization",
+              "examples": ["cost", "time", "toxicity", "off_target_effects"]
+            },
+            "target": {
+              "type": "string",
+              "title": "Target",
+              "description": "Specific target for the objective (optional)",
+              "examples": ["ACE2_receptor", "optimal_ph", "target_concentration"]
+            }
+          },
+          "oneOf": [
+            { "required": ["maximize"] },
+            { "required": ["minimize"] }
+          ],
+          "additionalProperties": false
+        },
+        "budget": {
+          "type": "object",
+          "title": "Optimization Budget",
+          "description": "Stopping criteria and resource constraints",
+          "properties": {
+            "max_experiments": {
+              "type": "integer",
+              "title": "Maximum Experiments",
+              "description": "Maximum number of experiments to run",
+              "minimum": 1,
+              "maximum": 10000,
+              "examples": [50, 100, 200]
+            },
+            "max_time": {
+              "type": "string",
+              "title": "Maximum Time",
+              "description": "Maximum time to spend optimizing (e.g., 24h, 7d)",
+              "pattern": "^\\d+[smhd]$",
+              "examples": ["24h", "7d", "48h"]
+            },
+            "max_cost": {
+              "type": "number",
+              "title": "Maximum Cost",
+              "description": "Maximum budget to spend on experiments",
+              "minimum": 0,
+              "examples": [1000, 5000, 10000]
+            },
+            "convergence_threshold": {
+              "type": "number",
+              "title": "Convergence Threshold",
+              "description": "Stop when improvement falls below this threshold",
+              "minimum": 0,
+              "maximum": 1,
+              "examples": [0.01, 0.001, 0.05]
+            }
+          },
+          "minProperties": 1,
+          "additionalProperties": false
+        },
+        "run": {
+          "type": "object",
+          "title": "Run Block",
+          "description": "Nested experiment or analyze block to execute in each iteration",
+          "oneOf": [
+            {
+              "properties": {
+                "experiment": { "$ref": "#/properties/experiment" }
+              },
+              "required": ["experiment"],
+              "additionalProperties": false
+            },
+            {
+              "properties": {
+                "analyze": { "$ref": "#/properties/analyze" }
+              },
+              "required": ["analyze"],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["search_space", "strategy", "objective", "budget", "run"],
+      "additionalProperties": false
+    },
     "simulate": {
       "type": "boolean",
       "title": "Simulation Mode",
@@ -383,6 +642,8 @@
   "anyOf": [
     { "required": ["experiment"] },
     { "required": ["analyze"] },
+    { "required": ["design"] },
+    { "required": ["optimize"] },
     { "required": ["simulate"] },
     { "required": ["branch"] }
   ],
@@ -416,6 +677,27 @@
           "fold_change": 2.0
         },
         "filters": ["remove_low_counts", "normalize"]
+      }
+    },
+    {
+      "design": {
+        "entity": "ProteinSequence",
+        "model": "ProteinGeneratorVAE",
+        "objective": {
+          "maximize": "binding_affinity",
+          "target": "ACE2_receptor"
+        },
+        "constraints": [
+          "length(120, 150)",
+          "has_motif('E_box')",
+          "synthesizability > 0.7"
+        ],
+        "count": 10,
+        "output": "designed_candidates"
+      },
+      "analyze": {
+        "strategy": "functional",
+        "data": "designed_candidates"
       }
     }
   ]

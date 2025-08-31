@@ -36,6 +36,8 @@ class GFLLexer:
         "else": "ELSE",
         "analyze": "ANALYZE",
         "experiment": "EXPERIMENT",
+        "design": "DESIGN",
+        "optimize": "OPTIMIZE", 
         "simulate": "SIMULATE",
         "branch": "BRANCH",
         "using": "USING",

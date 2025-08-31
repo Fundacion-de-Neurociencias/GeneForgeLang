@@ -172,11 +172,59 @@ class Analysis:
 
 
 @dataclass
+class Design:
+    """Design block representation for generative hypothesis tasks."""
+
+    entity: str  # Type of biological entity to design
+    model: str  # Generative model plugin to use
+    objective: Dict[str, Any]  # Optimization objective (maximize/minimize)
+    count: int  # Number of candidates to generate
+    output: str  # Output variable name for generated candidates
+    constraints: Optional[List[str]] = None  # Optional design constraints
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary representation."""
+        result = {
+            "entity": self.entity,
+            "model": self.model,
+            "objective": self.objective,
+            "count": self.count,
+            "output": self.output,
+        }
+        if self.constraints is not None:
+            result["constraints"] = self.constraints
+        return result
+
+
+@dataclass
+class Optimize:
+    """Optimize block representation for intelligent experimental loops."""
+
+    search_space: Dict[str, str]  # Parameters to explore and their ranges
+    strategy: Dict[str, Any]  # Optimization strategy configuration
+    objective: Dict[str, Any]  # Optimization objective (maximize/minimize)
+    budget: Dict[str, Any]  # Stopping criteria (e.g., max_experiments)
+    run: Dict[str, Any]  # Nested experiment or analyze block to execute
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "search_space": self.search_space,
+            "strategy": self.strategy,
+            "objective": self.objective,
+            "budget": self.budget,
+            "run": self.run,
+        }
+
+
+@dataclass
 class GFLAST:
     """Root GFL AST representation."""
 
     experiment: Optional[Experiment] = None
     analyze: Optional[Analysis] = None
+    design: Optional[Design] = None
+    optimize: Optional[Optimize] = None
     simulate: Optional[bool] = None
     branch: Optional[Dict[str, Any]] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
@@ -188,6 +236,10 @@ class GFLAST:
             result["experiment"] = self.experiment.to_dict()
         if self.analyze is not None:
             result["analyze"] = self.analyze.to_dict()
+        if self.design is not None:
+            result["design"] = self.design.to_dict()
+        if self.optimize is not None:
+            result["optimize"] = self.optimize.to_dict()
         if self.simulate is not None:
             result["simulate"] = self.simulate
         if self.branch is not None:
@@ -249,6 +301,27 @@ class GFLAST:
                 operations=list(analyze_data.get("operations", [])),
             )
 
+        if "design" in data:
+            design_data = data["design"]
+            ast.design = Design(
+                entity=str(design_data["entity"]),
+                model=str(design_data["model"]),
+                objective=dict(design_data["objective"]),
+                count=int(design_data["count"]),
+                output=str(design_data["output"]),
+                constraints=list(design_data["constraints"]) if "constraints" in design_data else None,
+            )
+
+        if "optimize" in data:
+            optimize_data = data["optimize"]
+            ast.optimize = Optimize(
+                search_space=dict(optimize_data["search_space"]),
+                strategy=dict(optimize_data["strategy"]),
+                objective=dict(optimize_data["objective"]),
+                budget=dict(optimize_data["budget"]),
+                run=dict(optimize_data["run"]),
+            )
+
         if "simulate" in data:
             ast.simulate = bool(data["simulate"])
 
@@ -270,6 +343,8 @@ __all__ = [
     "ExperimentParams",
     "Experiment",
     "Analysis",
+    "Design",
+    "Optimize",
     "GFLAST",
     # Validation types
     "ValidationError",

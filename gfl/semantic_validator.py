@@ -72,7 +72,7 @@ class EnhancedSemanticValidator:
             return
 
         # Check for at least one main block
-        main_blocks = {"experiment", "analyze", "simulate", "branch"}
+        main_blocks = {"experiment", "analyze", "simulate", "branch", "design", "optimize"}
         found_blocks = set(ast.keys()) & main_blocks
 
         if not found_blocks:
@@ -82,7 +82,7 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', or 'branch' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', or 'branch' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
@@ -108,6 +108,10 @@ class EnhancedSemanticValidator:
                 self._validate_experiment_block(block_content)
             elif block_name == "analyze":
                 self._validate_analysis_block(block_content)
+            elif block_name == "design":
+                self._validate_design_block(block_content)
+            elif block_name == "optimize":
+                self._validate_optimize_block(block_content)
             elif block_name == "simulate":
                 self._validate_simulate_block(block_content)
             elif block_name == "branch":
@@ -234,6 +238,10 @@ class EnhancedSemanticValidator:
         }
 
         for param_name, param_value in params.items():
+            # Skip validation for parameter injection (${...} syntax)
+            if isinstance(param_value, str) and param_value.startswith("${") and param_value.endswith("}"):
+                continue
+                
             if param_name in type_validations:
                 expected_types = type_validations[param_name]
                 if not isinstance(expected_types, tuple):
@@ -319,6 +327,613 @@ class EnhancedSemanticValidator:
             )
             error.add_fix(f"Use one of: {', '.join(sorted(valid_strategies))}")
             error.add_context("valid_strategies", list(valid_strategies))
+
+    def _validate_design_block(self, design: Any) -> None:
+        """Validate design block structure and content."""
+        if not isinstance(design, dict):
+            self.result.add_error(
+                "Design block must be a dictionary",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format the design block as a YAML dictionary")
+            return
+
+        # Required fields
+        required_fields = ["entity", "model", "objective", "count", "output"]
+        for field in required_fields:
+            if field not in design:
+                error = self.result.add_error(
+                    f"Missing required field '{field}' in design block",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                )
+                error.add_fix(f"Add '{field}: <value>' to the design block")
+                error.add_context("block", "design")
+                error.add_context("required_fields", required_fields)
+
+        # Validate entity field
+        if "entity" in design:
+            self._validate_design_entity(design["entity"])
+
+        # Validate model field
+        if "model" in design:
+            self._validate_design_model(design["model"])
+
+        # Validate objective field
+        if "objective" in design:
+            self._validate_design_objective(design["objective"])
+
+        # Validate count field
+        if "count" in design:
+            self._validate_design_count(design["count"])
+
+        # Validate output field
+        if "output" in design:
+            self._validate_design_output(design["output"])
+
+        # Validate constraints field if present
+        if "constraints" in design:
+            self._validate_design_constraints(design["constraints"])
+
+    def _validate_design_entity(self, entity: Any) -> None:
+        """Validate the entity field in design block."""
+        if not isinstance(entity, str):
+            self.result.add_error(
+                f"Design entity must be a string, got {type(entity).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Use a string like 'ProteinSequence' for the entity")
+            return
+
+        valid_entities = {
+            "ProteinSequence",
+            "DNASequence", 
+            "RNASequence",
+            "SmallMolecule",
+            "Peptide",
+            "Antibody",
+        }
+
+        if entity not in valid_entities:
+            error = self.result.add_error(
+                f"Unknown design entity '{entity}'",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ErrorSeverity.WARNING,
+            )
+            error.add_fix(f"Use one of: {', '.join(sorted(valid_entities))}")
+            error.add_context("valid_entities", list(valid_entities))
+
+    def _validate_design_model(self, model: Any) -> None:
+        """Validate the model field in design block."""
+        if not isinstance(model, str):
+            self.result.add_error(
+                f"Design model must be a string, got {type(model).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Use a string like 'ProteinGeneratorVAE' for the model")
+            return
+
+        # Known generative models (could be extended with a registry)
+        known_models = {
+            "ProteinGeneratorVAE",
+            "DNADesignerGAN",
+            "MoleculeTransformer",
+            "SequenceOptimizer",
+            "StructurePredictor",
+        }
+
+        if model not in known_models:
+            error = self.result.add_error(
+                f"Unknown generative model '{model}'",
+                ErrorCodes.SEMANTIC_UNKNOWN_TOOL,
+                ErrorSeverity.WARNING,
+            )
+            error.add_fix(f"Ensure '{model}' plugin is available or use a known model")
+            error.add_context("suggested_models", list(known_models))
+
+    def _validate_design_objective(self, objective: Any) -> None:
+        """Validate the objective field in design block."""
+        if not isinstance(objective, dict):
+            self.result.add_error(
+                f"Design objective must be a dictionary, got {type(objective).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Format objective as '{maximize: metric}' or '{minimize: metric}'")
+            return
+
+        # Must have exactly one of maximize or minimize
+        has_maximize = "maximize" in objective
+        has_minimize = "minimize" in objective
+
+        if not (has_maximize or has_minimize):
+            error = self.result.add_error(
+                "Objective must contain either 'maximize' or 'minimize' key",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            )
+            error.add_fix("Add 'maximize: binding_affinity' or 'minimize: toxicity'")
+
+        if has_maximize and has_minimize:
+            error = self.result.add_error(
+                "Objective cannot have both 'maximize' and 'minimize' keys",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            )
+            error.add_fix("Choose either 'maximize' or 'minimize', not both")
+
+        # Validate metric names
+        if has_maximize:
+            self._validate_objective_metric(objective["maximize"], "maximize")
+        if has_minimize:
+            self._validate_objective_metric(objective["minimize"], "minimize")
+
+    def _validate_objective_metric(self, metric: Any, direction: str) -> None:
+        """Validate an objective metric."""
+        if not isinstance(metric, str):
+            self.result.add_error(
+                f"Objective metric must be a string, got {type(metric).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix(f"Use a string like 'binding_affinity' for {direction}")
+            return
+
+        # Common metrics for different entity types
+        valid_metrics = {
+            "binding_affinity",
+            "stability", 
+            "solubility",
+            "toxicity",
+            "activity",
+            "selectivity",
+            "permeability",
+            "expression_level",
+        }
+
+        if metric not in valid_metrics:
+            error = self.result.add_error(
+                f"Unknown objective metric '{metric}'",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ErrorSeverity.WARNING,
+            )
+            error.add_fix(f"Use one of: {', '.join(sorted(valid_metrics))}")
+            error.add_context("valid_metrics", list(valid_metrics))
+
+    def _validate_design_count(self, count: Any) -> None:
+        """Validate the count field in design block."""
+        if not isinstance(count, int):
+            self.result.add_error(
+                f"Design count must be an integer, got {type(count).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Use an integer like 10 for the count")
+            return
+
+        if count <= 0:
+            error = self.result.add_error(
+                f"Design count must be positive, got {count}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            )
+            error.add_fix("Use a positive integer like 10 for the count")
+
+        if count > 1000:
+            error = self.result.add_error(
+                f"Design count {count} seems very high, consider reducing",
+                "HINT002",
+                ErrorSeverity.HINT,
+            )
+            error.add_fix("Consider using a smaller count for faster generation")
+
+    def _validate_design_output(self, output: Any) -> None:
+        """Validate the output field in design block."""
+        if not isinstance(output, str):
+            self.result.add_error(
+                f"Design output must be a string, got {type(output).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Use a string identifier like 'designed_candidates'")
+            return
+
+        # Validate identifier format
+        import re
+        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', output):
+            error = self.result.add_error(
+                f"Invalid output identifier '{output}'",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            )
+            error.add_fix("Use a valid identifier like 'designed_candidates' or 'output_seqs'")
+
+    def _validate_design_constraints(self, constraints: Any) -> None:
+        """Validate the constraints field in design block."""
+        if not isinstance(constraints, list):
+            self.result.add_error(
+                f"Design constraints must be a list, got {type(constraints).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Format constraints as a list of constraint expressions")
+            return
+
+        for i, constraint in enumerate(constraints):
+            if not isinstance(constraint, str):
+                error = self.result.add_error(
+                    f"Constraint {i+1} must be a string, got {type(constraint).__name__}",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix(f"Convert constraint {i+1} to a string expression")
+
+    def _validate_optimize_block(self, optimize: Any) -> None:
+        """Validate optimize block structure and content."""
+        if not isinstance(optimize, dict):
+            self.result.add_error(
+                "Optimize block must be a dictionary",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format the optimize block as a YAML dictionary")
+            return
+
+        # Required fields
+        required_fields = ["search_space", "strategy", "objective", "budget", "run"]
+        for field in required_fields:
+            if field not in optimize:
+                error = self.result.add_error(
+                    f"Missing required field '{field}' in optimize block",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                )
+                error.add_fix(f"Add '{field}: <value>' to the optimize block")
+                error.add_context("block", "optimize")
+                error.add_context("required_fields", required_fields)
+
+        # Validate individual fields
+        if "search_space" in optimize:
+            self._validate_optimize_search_space(optimize["search_space"])
+
+        if "strategy" in optimize:
+            self._validate_optimize_strategy(optimize["strategy"])
+
+        if "objective" in optimize:
+            self._validate_optimize_objective(optimize["objective"])
+
+        if "budget" in optimize:
+            self._validate_optimize_budget(optimize["budget"])
+
+        if "run" in optimize:
+            self._validate_optimize_run(optimize["run"])
+
+    def _validate_optimize_search_space(self, search_space: Any) -> None:
+        """Validate the search_space field in optimize block."""
+        if not isinstance(search_space, dict):
+            self.result.add_error(
+                f"Search space must be a dictionary, got {type(search_space).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Format search_space as parameter_name: range() or choice() expressions")
+            return
+
+        if not search_space:
+            self.result.add_error(
+                "Search space cannot be empty",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add at least one parameter with range() or choice() syntax")
+            return
+
+        # Validate each parameter definition
+        for param_name, param_def in search_space.items():
+            self._validate_search_space_parameter(param_name, param_def)
+
+    def _validate_search_space_parameter(self, param_name: str, param_def: Any) -> None:
+        """Validate a single parameter in search space."""
+        if not isinstance(param_def, str):
+            self.result.add_error(
+                f"Parameter '{param_name}' definition must be a string, got {type(param_def).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix(f"Use 'range(min, max)' or 'choice([...])' for '{param_name}'")
+            return
+
+        # Validate parameter name format
+        import re
+        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', param_name):
+            error = self.result.add_error(
+                f"Invalid parameter name '{param_name}'",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            )
+            error.add_fix("Use valid identifier like 'promoter_strength' or 'temperature'")
+
+        # Validate parameter definition syntax
+        if param_def.startswith('range(') and param_def.endswith(')'):
+            self._validate_range_syntax(param_name, param_def)
+        elif param_def.startswith('choice([') and param_def.endswith('])'):
+            self._validate_choice_syntax(param_name, param_def)
+        else:
+            error = self.result.add_error(
+                f"Invalid syntax for parameter '{param_name}': {param_def}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            )
+            error.add_fix("Use 'range(min, max)' or 'choice([val1, val2, ...])' syntax")
+
+    def _validate_range_syntax(self, param_name: str, range_def: str) -> None:
+        """Validate range(min, max) syntax."""
+        try:
+            # Extract content between parentheses
+            content = range_def[6:-1].strip()  # Remove 'range(' and ')'
+            parts = [p.strip() for p in content.split(',')]
+            
+            if len(parts) != 2:
+                error = self.result.add_error(
+                    f"Range for '{param_name}' must have exactly 2 values: range(min, max)",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                )
+                error.add_fix(f"Use 'range(0.1, 1.0)' format for '{param_name}'")
+                return
+                
+            # Try to parse as numbers
+            try:
+                min_val = float(parts[0])
+                max_val = float(parts[1])
+                
+                if min_val >= max_val:
+                    error = self.result.add_error(
+                        f"Range minimum ({min_val}) must be less than maximum ({max_val}) for '{param_name}'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    )
+                    error.add_fix(f"Ensure min < max in range() for '{param_name}'")
+            except ValueError:
+                error = self.result.add_error(
+                    f"Range values for '{param_name}' must be numbers",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix(f"Use numeric values like 'range(0.1, 1.0)' for '{param_name}'")
+                
+        except Exception:
+            error = self.result.add_error(
+                f"Invalid range syntax for '{param_name}': {range_def}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            )
+            error.add_fix(f"Use correct format: 'range(min, max)' for '{param_name}'")
+
+    def _validate_choice_syntax(self, param_name: str, choice_def: str) -> None:
+        """Validate choice([...]) syntax."""
+        try:
+            # Extract content between square brackets inside choice([...])
+            # Find the opening [ and closing ]
+            start_bracket = choice_def.find('[')
+            end_bracket = choice_def.rfind(']')
+            
+            if start_bracket == -1 or end_bracket == -1 or start_bracket >= end_bracket:
+                error = self.result.add_error(
+                    f"Invalid choice syntax for '{param_name}': {choice_def}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                )
+                error.add_fix(f"Use correct format: 'choice([val1, val2, ...])' for '{param_name}'")
+                return
+                
+            content = choice_def[start_bracket + 1:end_bracket].strip()
+            
+            if not content:
+                error = self.result.add_error(
+                    f"Choice for '{param_name}' cannot be empty",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                )
+                error.add_fix(f"Add at least one choice value for '{param_name}'")
+                return
+                
+            # Simple validation - should contain comma-separated values
+            choices = [c.strip() for c in content.split(',') if c.strip()]
+            
+            if len(choices) < 2:
+                error = self.result.add_error(
+                    f"Choice for '{param_name}' should have at least 2 options",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                )
+                error.add_fix(f"Add more choice options for '{param_name}'")
+                
+        except Exception:
+            error = self.result.add_error(
+                f"Invalid choice syntax for '{param_name}': {choice_def}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            )
+            error.add_fix(f"Use correct format: 'choice([val1, val2, ...])' for '{param_name}'")
+
+    def _validate_optimize_strategy(self, strategy: Any) -> None:
+        """Validate the strategy field in optimize block."""
+        if not isinstance(strategy, dict):
+            self.result.add_error(
+                f"Strategy must be a dictionary, got {type(strategy).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Format strategy as '{name: StrategyName, ...}'")
+            return
+
+        # Must have a name field
+        if "name" not in strategy:
+            error = self.result.add_error(
+                "Strategy must have a 'name' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            )
+            error.add_fix("Add 'name: ActiveLearning' to strategy")
+            return
+
+        strategy_name = strategy["name"]
+        if not isinstance(strategy_name, str):
+            self.result.add_error(
+                f"Strategy name must be a string, got {type(strategy_name).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Use a string like 'ActiveLearning' for strategy name")
+            return
+
+        # Known optimization strategies
+        known_strategies = {
+            "ActiveLearning",
+            "BayesianOptimization", 
+            "GeneticAlgorithm",
+            "SimulatedAnnealing",
+            "RandomSearch",
+            "GridSearch",
+        }
+
+        if strategy_name not in known_strategies:
+            error = self.result.add_error(
+                f"Unknown optimization strategy '{strategy_name}'",
+                ErrorCodes.SEMANTIC_UNKNOWN_TOOL,
+                ErrorSeverity.WARNING,
+            )
+            error.add_fix(f"Use one of: {', '.join(sorted(known_strategies))}")
+            error.add_context("available_strategies", list(known_strategies))
+
+    def _validate_optimize_objective(self, objective: Any) -> None:
+        """Validate the objective field in optimize block."""
+        if not isinstance(objective, dict):
+            self.result.add_error(
+                f"Objective must be a dictionary, got {type(objective).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Format objective as '{maximize: metric}' or '{minimize: metric}'")
+            return
+
+        # Must have exactly one of maximize or minimize
+        has_maximize = "maximize" in objective
+        has_minimize = "minimize" in objective
+
+        if not (has_maximize or has_minimize):
+            error = self.result.add_error(
+                "Objective must contain either 'maximize' or 'minimize' key",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            )
+            error.add_fix("Add 'maximize: gene_expression_level' or 'minimize: cost'")
+
+        if has_maximize and has_minimize:
+            error = self.result.add_error(
+                "Objective cannot have both 'maximize' and 'minimize' keys",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            )
+            error.add_fix("Choose either 'maximize' or 'minimize', not both")
+
+        # Validate metric names
+        if has_maximize:
+            self._validate_objective_metric(objective["maximize"], "maximize")
+        if has_minimize:
+            self._validate_objective_metric(objective["minimize"], "minimize")
+
+    def _validate_optimize_budget(self, budget: Any) -> None:
+        """Validate the budget field in optimize block."""
+        if not isinstance(budget, dict):
+            self.result.add_error(
+                f"Budget must be a dictionary, got {type(budget).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Format budget as '{max_experiments: 50}' or similar")
+            return
+
+        if not budget:
+            self.result.add_error(
+                "Budget cannot be empty",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add at least one budget constraint like 'max_experiments: 50'")
+            return
+
+        # Validate budget constraints
+        valid_constraints = {
+            "max_experiments", 
+            "max_time", 
+            "max_cost", 
+            "convergence_threshold",
+        }
+
+        for constraint, value in budget.items():
+            if constraint not in valid_constraints:
+                error = self.result.add_error(
+                    f"Unknown budget constraint '{constraint}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                )
+                error.add_fix(f"Use one of: {', '.join(sorted(valid_constraints))}")
+                error.add_context("valid_constraints", list(valid_constraints))
+
+            # Validate constraint values
+            if constraint == "max_experiments":
+                if not isinstance(value, int) or value <= 0:
+                    error = self.result.add_error(
+                        f"Budget constraint '{constraint}' must be a positive integer, got {value}",
+                        ErrorCodes.TYPE_INVALID_TYPE,
+                    )
+                    error.add_fix(f"Use a positive integer for '{constraint}'")
+            elif constraint == "max_time":
+                if not isinstance(value, str):
+                    error = self.result.add_error(
+                        f"Budget constraint '{constraint}' must be a string with time format, got {type(value).__name__}",
+                        ErrorCodes.TYPE_INVALID_TYPE,
+                    )
+                    error.add_fix(f"Use time format like '24h', '7d' for '{constraint}'")
+                else:
+                    # Validate time format
+                    import re
+                    if not re.match(r'^\d+[smhd]$', value):
+                        error = self.result.add_error(
+                            f"Budget constraint '{constraint}' has invalid time format: {value}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                        error.add_fix(f"Use format like '24h', '7d', '30m' for '{constraint}'")
+            elif constraint in ["max_cost", "convergence_threshold"]:
+                if not isinstance(value, (int, float)) or value <= 0:
+                    error = self.result.add_error(
+                        f"Budget constraint '{constraint}' must be a positive number, got {value}",
+                        ErrorCodes.TYPE_INVALID_TYPE,
+                    )
+                    error.add_fix(f"Use a positive number for '{constraint}'")
+
+    def _validate_optimize_run(self, run: Any) -> None:
+        """Validate the run field in optimize block."""
+        if not isinstance(run, dict):
+            self.result.add_error(
+                f"Run block must be a dictionary, got {type(run).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Format run as a nested experiment or analyze block")
+            return
+
+        # Must contain exactly one of: experiment, analyze
+        valid_nested_blocks = {"experiment", "analyze"}
+        found_blocks = set(run.keys()) & valid_nested_blocks
+
+        if not found_blocks:
+            error = self.result.add_error(
+                "Run block must contain an 'experiment' or 'analyze' block",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            )
+            error.add_fix("Add 'experiment: {...}' or 'analyze: {...}' to the run block")
+            error.add_context("valid_nested_blocks", list(valid_nested_blocks))
+
+        if len(found_blocks) > 1:
+            error = self.result.add_error(
+                "Run block can only contain one nested block",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            )
+            error.add_fix("Use either 'experiment' or 'analyze', not both")
+
+        # Validate the nested block
+        if "experiment" in run:
+            self._validate_experiment_block(run["experiment"])
+            self._validate_parameter_injection(run["experiment"])
+        elif "analyze" in run:
+            self._validate_analysis_block(run["analyze"])
+            self._validate_parameter_injection(run["analyze"])
+
+    def _validate_parameter_injection(self, block: dict) -> None:
+        """Validate ${...} parameter injection syntax in nested blocks."""
+        # Recursively check all values in the block for parameter injection
+        self._check_parameter_injection_recursive(block, "")
+
+    def _check_parameter_injection_recursive(self, obj: Any, path: str) -> None:
+        """Recursively check for parameter injection patterns."""
+        if isinstance(obj, dict):
+            for key, value in obj.items():
+                new_path = f"{path}.{key}" if path else key
+                self._check_parameter_injection_recursive(value, new_path)
+        elif isinstance(obj, list):
+            for i, item in enumerate(obj):
+                new_path = f"{path}[{i}]" if path else f"[{i}]"
+                self._check_parameter_injection_recursive(item, new_path)
+        elif isinstance(obj, str) and obj.startswith("${") and obj.endswith("}"):
+            # This is a parameter injection - validate the parameter name
+            param_name = obj[2:-1]  # Remove ${}
+            if not param_name:
+                error = self.result.add_error(
+                    f"Empty parameter injection at {path}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                )
+                error.add_fix("Specify a parameter name like ${parameter_name}")
+            else:
+                # Validate parameter name format
+                import re
+                if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', param_name):
+                    error = self.result.add_error(
+                        f"Invalid parameter name '{param_name}' in injection at {path}",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    )
+                    error.add_fix("Use valid identifier like ${valid_param_name}")
+
 
     def _validate_simulate_block(self, simulate: Any) -> None:
         """Validate simulate block."""
