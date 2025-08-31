@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+bioservices
+=======
 certifi==2025.8.3
 charset-normalizer==3.4.3
 filelock==3.16.1
@@ -39,3 +42,4 @@ transformers==4.56.0
 triton==3.3.1
 typing_extensions==4.15.0
 urllib3==2.5.0
+>>>>>>> 17066597019d6926bd4efb135734ad3f6922e2f8
