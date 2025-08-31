@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "geneforgelang"
-version = "0.1.0"
+version = "1.0.0"
 description = "GeneForgeLang: a DSL for genomic workflows"
 readme = "README.md"
 requires-python = ">=3.9"

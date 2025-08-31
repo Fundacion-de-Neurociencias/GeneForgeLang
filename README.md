@@ -1,4 +1,4 @@
-# GeneForgeLang (GFL) 🧬
+# GeneForgeLang (GFL) v1.0.0 🧬
 
 [![CI](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/actions/workflows/ci.yml/badge.svg)](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/actions/workflows/ci.yml)
 [![Documentation](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/actions/workflows/docs.yml/badge.svg)](https://fundacion-de-neurociencias.github.io/GeneForgeLang/)
@@ -161,6 +161,26 @@ optimize:
 - 🔄 **Parameter Injection** - Dynamic parameter substitution with `${...}` syntax
 - 🔗 **Workflow Integration** - Seamless combination of design and optimization
 - 📊 **Real-time Monitoring** - Live tracking of experimental campaigns
+
+### 🎉 GFL v1.0.0 Release Highlights
+
+GeneForgeLang v1.0.0 introduces major enhancements that make it the most powerful and extensible version yet:
+
+#### Advanced AI Workflow Syntax
+- **Active Learning Optimization**: Enhanced [optimize](https://fundacion-de-neurociencias.github.io/GeneForgeLang/features/optimize_block/) blocks with Active Learning strategy support
+- **Inverse Design**: Extended [design](https://fundacion-de-neurociencias.github.io/GeneForgeLang/features/design_block/) blocks for inverse design workflows
+- **Data Refinement**: New [refine_data](https://fundacion-de-neurociencias.github.io/GeneForgeLang/features/refine_data_block/) blocks for data processing workflows
+- **Guided Discovery**: New [guided_discovery](https://fundacion-de-neurociencias.github.io/GeneForgeLang/features/guided_discovery_block/) blocks that combine design and optimization
+
+#### IO Contracts System
+- **Data Integrity**: IO contracts ensure data compatibility between workflow blocks
+- **Static Validation**: Compile-time checking of data flow between blocks
+- **Type Safety**: Strong typing for genomic data with built-in validation
+
+#### Type System & Schema Registry
+- **Extensible Types**: Define custom data types in external schema files
+- **Schema Imports**: Import type definitions with `import_schemas` directive
+- **Custom Validation**: Validate data against user-defined schemas
 
 ### 🌍 Industrial & Research Applications
 

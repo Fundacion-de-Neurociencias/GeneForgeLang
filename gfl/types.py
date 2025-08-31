@@ -19,6 +19,26 @@ GFLValue = Union[str, int, float, bool, None]
 GFLDict = Dict[str, Any]
 
 
+class DataType(str, Enum):
+    """Valid data types for IO contracts."""
+    
+    # Sequence data types
+    FASTA = "FASTA"
+    FASTQ = "FASTQ"
+    BAM = "BAM"
+    SAM = "SAM"
+    VCF = "VCF"
+    
+    # General data types
+    CSV = "CSV"
+    JSON = "JSON"
+    TEXT = "TEXT"
+    BINARY = "BINARY"
+    
+    # Custom types
+    CUSTOM = "CUSTOM"
+
+
 class ExperimentType(str, Enum):
     """Valid experiment types in GFL."""
 
@@ -37,6 +57,42 @@ class AnalysisStrategy(str, Enum):
     VARIANT = "variant"
     EXPRESSION = "expression"
     STRUCTURAL = "structural"
+
+
+@dataclass
+class IOContract:
+    """IO Contract definition for data validation."""
+    
+    # Data type specification
+    type: str  # DataType enum value or custom type
+    
+    # Optional attributes for type specification
+    attributes: Dict[str, Any] = field(default_factory=dict)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "type": self.type,
+            "attributes": self.attributes
+        }
+
+
+@dataclass
+class BlockContract:
+    """Contract definition for a GFL block's inputs and outputs."""
+    
+    # Input contracts (data consumed by this block)
+    inputs: Dict[str, IOContract] = field(default_factory=dict)
+    
+    # Output contracts (data produced by this block)
+    outputs: Dict[str, IOContract] = field(default_factory=dict)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "inputs": {name: contract.to_dict() for name, contract in self.inputs.items()},
+            "outputs": {name: contract.to_dict() for name, contract in self.outputs.items()}
+        }
 
 
 # Validation result types
@@ -159,15 +215,15 @@ class Analysis:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
-        result = {"strategy": self.strategy}
+        result: Dict[str, Any] = {"strategy": self.strategy}
         if self.data is not None:
             result["data"] = self.data
         if self.thresholds:
-            result["thresholds"] = self.thresholds
+            result["thresholds"] = dict(self.thresholds)
         if self.filters:
-            result["filters"] = self.filters
+            result["filters"] = list(self.filters)
         if self.operations:
-            result["operations"] = self.operations
+            result["operations"] = [dict(op) for op in self.operations]
         return result
 
 
