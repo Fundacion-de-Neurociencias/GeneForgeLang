@@ -2,6 +2,8 @@
 
 Welcome to the comprehensive documentation for GeneForgeLang (GFL), a domain-specific language for genomic workflow specification, validation, and AI-powered analysis.
 
+🧬 **Now live on GitHub Pages!**
+
 ## 🚀 Quick Start
 
 - **[Installation Guide](installation.md)** - Get started with GeneForgeLang
