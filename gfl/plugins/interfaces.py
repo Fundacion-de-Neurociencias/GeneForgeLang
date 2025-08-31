@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 # Enums for plugin capabilities
 class EntityType(Enum):
     """Supported biological entity types for design plugins."""
-    
+
     PROTEIN_SEQUENCE = "ProteinSequence"
     DNA_SEQUENCE = "DNASequence"
     RNA_SEQUENCE = "RNASequence"
@@ -35,7 +35,7 @@ class EntityType(Enum):
 
 class OptimizationStrategy(Enum):
     """Supported optimization strategies for optimize plugins."""
-    
+
     RANDOM_SEARCH = "RandomSearch"
     GRID_SEARCH = "GridSearch"
     BAYESIAN_OPTIMIZATION = "BayesianOptimization"
@@ -48,16 +48,16 @@ class OptimizationStrategy(Enum):
 @dataclass
 class DesignCandidate:
     """Represents a generated biological entity candidate."""
-    
+
     sequence: str
     """The primary sequence (amino acids, nucleotides, or SMILES string)"""
-    
+
     properties: Dict[str, Any] = field(default_factory=dict)
     """Predicted or computed properties of the candidate"""
-    
+
     confidence: Optional[float] = None
     """Model confidence score (0-1) if available"""
-    
+
     metadata: Dict[str, Any] = field(default_factory=dict)
     """Additional metadata about generation process"""
 
@@ -65,19 +65,19 @@ class DesignCandidate:
 @dataclass
 class OptimizationStep:
     """Represents one step in an optimization loop."""
-    
+
     parameters: Dict[str, Any]
     """Parameter values to test in this step"""
-    
+
     iteration: int
     """Iteration number in the optimization sequence"""
-    
+
     expected_improvement: Optional[float] = None
     """Expected improvement score if using acquisition functions"""
-    
+
     uncertainty: Optional[float] = None
     """Parameter uncertainty estimate if available"""
-    
+
     metadata: Dict[str, Any] = field(default_factory=dict)
     """Additional step metadata"""
 
@@ -85,22 +85,22 @@ class OptimizationStep:
 @dataclass
 class ExperimentResult:
     """Results from executing an experiment with specific parameters."""
-    
+
     parameters: Dict[str, Any]
     """Parameters used in this experiment"""
-    
+
     objective_value: float
     """Measured objective function value"""
-    
+
     metrics: Dict[str, float] = field(default_factory=dict)
     """Additional measured metrics"""
-    
+
     success: bool = True
     """Whether experiment completed successfully"""
-    
+
     error_message: Optional[str] = None
     """Error details if experiment failed"""
-    
+
     metadata: Dict[str, Any] = field(default_factory=dict)
     """Additional experimental metadata"""
 
@@ -108,11 +108,11 @@ class ExperimentResult:
 # Core plugin interfaces
 class GeneratorPlugin(BaseGFLPlugin):
     """Abstract base class for biological entity generation plugins.
-    
+
     GeneratorPlugin instances are responsible for creating new biological entities
     (proteins, DNA, RNA, small molecules, etc.) based on specified objectives and
     constraints. This is the core interface for GFL's design block.
-    
+
     Plugins implementing this interface typically integrate with AI/ML models like:
     - Variational Autoencoders (VAEs) for protein design
     - Generative Adversarial Networks (GANs) for molecular generation
@@ -124,7 +124,7 @@ class GeneratorPlugin(BaseGFLPlugin):
     @abstractmethod
     def supported_entities(self) -> List[EntityType]:
         """Return list of entity types this plugin can generate.
-        
+
         Returns:
             List of EntityType enums that this plugin supports.
         """
@@ -140,21 +140,21 @@ class GeneratorPlugin(BaseGFLPlugin):
         **kwargs
     ) -> List[DesignCandidate]:
         """Generate biological entity candidates based on design specification.
-        
+
         This method implements the core generative capability, taking the design
         requirements from a GFL design block and producing candidates that meet
         the specified criteria.
-        
+
         Args:
             entity: Type of biological entity to design (e.g., "ProteinSequence")
             objective: Optimization objective with 'maximize'/'minimize' and optional 'target'
             constraints: List of constraint expressions to satisfy
             count: Number of candidates to generate
             **kwargs: Additional plugin-specific parameters
-            
+
         Returns:
             List of DesignCandidate objects containing generated entities
-            
+
         Raises:
             ValueError: If entity type is not supported or parameters are invalid
             RuntimeError: If generation process fails
@@ -163,10 +163,10 @@ class GeneratorPlugin(BaseGFLPlugin):
 
     def validate_objective(self, objective: Dict[str, Any]) -> List[str]:
         """Validate that the objective is compatible with this plugin.
-        
+
         Args:
             objective: Design objective dictionary
-            
+
         Returns:
             List of validation error messages (empty if valid)
         """
@@ -174,10 +174,10 @@ class GeneratorPlugin(BaseGFLPlugin):
 
     def validate_constraints(self, constraints: List[str]) -> List[str]:
         """Validate that constraints are compatible with this plugin.
-        
+
         Args:
             constraints: List of constraint expressions
-            
+
         Returns:
             List of validation error messages (empty if valid)
         """
@@ -185,11 +185,11 @@ class GeneratorPlugin(BaseGFLPlugin):
 
     def estimate_generation_time(self, count: int, entity: str) -> float:
         """Estimate time required for generation in seconds.
-        
+
         Args:
             count: Number of candidates to generate
             entity: Entity type
-            
+
         Returns:
             Estimated time in seconds
         """
@@ -197,7 +197,7 @@ class GeneratorPlugin(BaseGFLPlugin):
 
     def get_supported_constraints(self) -> List[str]:
         """Get list of constraint types supported by this plugin.
-        
+
         Returns:
             List of constraint type names (e.g., ['length', 'gc_content', 'motif'])
         """
@@ -206,14 +206,14 @@ class GeneratorPlugin(BaseGFLPlugin):
 
 class OptimizerPlugin(BaseGFLPlugin):
     """Abstract base class for experiment optimization plugins.
-    
+
     OptimizerPlugin instances implement intelligent experimental design algorithms
     that can efficiently explore parameter spaces to find optimal experimental
     conditions. This is the core interface for GFL's optimize block.
-    
+
     Plugins implementing this interface typically integrate with optimization libraries:
     - Scikit-optimize for Bayesian optimization
-    - Optuna for advanced hyperparameter optimization  
+    - Optuna for advanced hyperparameter optimization
     - GPyOpt for Gaussian process optimization
     - Ray Tune for distributed optimization
     - Custom reinforcement learning agents
@@ -223,7 +223,7 @@ class OptimizerPlugin(BaseGFLPlugin):
     @abstractmethod
     def supported_strategies(self) -> List[OptimizationStrategy]:
         """Return list of optimization strategies this plugin supports.
-        
+
         Returns:
             List of OptimizationStrategy enums supported by this plugin.
         """
@@ -238,16 +238,16 @@ class OptimizerPlugin(BaseGFLPlugin):
         budget: Dict[str, Any]
     ) -> None:
         """Initialize the optimization algorithm with problem specification.
-        
+
         This method is called once before optimization begins to configure
         the algorithm with the complete problem definition.
-        
+
         Args:
             search_space: Parameter definitions using range() and choice() syntax
             strategy: Algorithm configuration (name, hyperparameters)
             objective: Optimization objective (maximize/minimize target)
             budget: Resource constraints (max_experiments, max_time, etc.)
-            
+
         Raises:
             ValueError: If configuration is invalid or unsupported
             RuntimeError: If setup fails
@@ -257,17 +257,17 @@ class OptimizerPlugin(BaseGFLPlugin):
     @abstractmethod
     def suggest_next(self, experiment_history: List[ExperimentResult]) -> OptimizationStep:
         """Suggest the next parameter configuration to evaluate.
-        
+
         This is the core intelligence of the optimization algorithm - using
         the history of previous experiments to intelligently select the most
         promising next configuration.
-        
+
         Args:
             experiment_history: Complete history of experiments and their results
-            
+
         Returns:
             OptimizationStep containing next parameters to test
-            
+
         Raises:
             StopIteration: If optimization should terminate (budget exhausted, converged)
             RuntimeError: If suggestion generation fails
@@ -275,16 +275,16 @@ class OptimizerPlugin(BaseGFLPlugin):
         pass
 
     def should_stop(
-        self, 
+        self,
         experiment_history: List[ExperimentResult],
         budget: Dict[str, Any]
     ) -> bool:
         """Determine if optimization should terminate.
-        
+
         Args:
             experiment_history: Complete history of experiments
             budget: Budget constraints from optimize block
-            
+
         Returns:
             True if optimization should stop, False to continue
         """
@@ -292,18 +292,18 @@ class OptimizerPlugin(BaseGFLPlugin):
         if 'max_experiments' in budget:
             if len(experiment_history) >= budget['max_experiments']:
                 return True
-                
+
         # Check convergence if specified
         if 'convergence_threshold' in budget and len(experiment_history) >= 3:
             recent_values = [r.objective_value for r in experiment_history[-3:]]
             if max(recent_values) - min(recent_values) < budget['convergence_threshold']:
                 return True
-                
+
         return False
 
     def get_optimization_state(self) -> Dict[str, Any]:
         """Get current optimization algorithm state for checkpointing.
-        
+
         Returns:
             Dictionary containing algorithm state that can be serialized
         """
@@ -311,7 +311,7 @@ class OptimizerPlugin(BaseGFLPlugin):
 
     def load_optimization_state(self, state: Dict[str, Any]) -> None:
         """Load optimization algorithm state from checkpoint.
-        
+
         Args:
             state: Previously saved algorithm state
         """
@@ -323,11 +323,11 @@ class OptimizerPlugin(BaseGFLPlugin):
         budget: Dict[str, Any]
     ) -> Optional[float]:
         """Estimate remaining optimization time in seconds.
-        
+
         Args:
             experiment_history: Experiment history for time estimation
             budget: Budget constraints
-            
+
         Returns:
             Estimated remaining time in seconds, or None if unknown
         """
@@ -336,7 +336,7 @@ class OptimizerPlugin(BaseGFLPlugin):
 
 class PriorsPlugin(BaseGFLPlugin):
     """Abstract base class for Bayesian prior integration plugins.
-    
+
     PriorsPlugin instances handle the integration of prior knowledge into
     experimental design and analysis workflows. This supports GFL's with_priors
     clause by enabling sophisticated statistical modeling.
@@ -350,12 +350,12 @@ class PriorsPlugin(BaseGFLPlugin):
         **kwargs
     ) -> Dict[str, Any]:
         """Specify prior distributions for experimental parameters.
-        
+
         Args:
             parameters: Parameter definitions from experiment/analyze blocks
             prior_type: Type of prior specification ('informative', 'non_informative', 'conjugate')
             **kwargs: Additional prior specification parameters
-            
+
         Returns:
             Dictionary containing prior distribution specifications
         """
@@ -368,11 +368,11 @@ class PriorsPlugin(BaseGFLPlugin):
         data: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Update posterior distributions based on observed data.
-        
+
         Args:
             priors: Prior distribution specifications
             data: Observed experimental data
-            
+
         Returns:
             Dictionary containing updated posterior distributions
         """
@@ -380,10 +380,10 @@ class PriorsPlugin(BaseGFLPlugin):
 
     def validate_priors(self, priors: Dict[str, Any]) -> List[str]:
         """Validate prior distribution specifications.
-        
+
         Args:
             priors: Prior distribution specifications
-            
+
         Returns:
             List of validation error messages (empty if valid)
         """
@@ -393,14 +393,14 @@ class PriorsPlugin(BaseGFLPlugin):
 # Specialized plugin classes for common use cases
 class SequenceGeneratorPlugin(GeneratorPlugin):
     """Specialized base class for sequence-based entity generators.
-    
+
     Provides common functionality for proteins, DNA, and RNA sequence generation.
     """
 
     def validate_constraints(self, constraints: List[str]) -> List[str]:
         """Validate sequence-specific constraints."""
         errors = []
-        
+
         for constraint in constraints:
             # Basic constraint syntax validation
             if constraint.startswith('length(') and not constraint.endswith(')'):
@@ -409,14 +409,14 @@ class SequenceGeneratorPlugin(GeneratorPlugin):
                 errors.append(f"Invalid gc_content constraint syntax: {constraint}")
             elif constraint.startswith('has_motif(') and not constraint.endswith(')'):
                 errors.append(f"Invalid motif constraint syntax: {constraint}")
-        
+
         return errors
 
     def get_supported_constraints(self) -> List[str]:
         """Common sequence constraints."""
         return [
             'length',
-            'gc_content', 
+            'gc_content',
             'has_motif',
             'no_stop_codons',
             'synthesizability',
@@ -426,21 +426,21 @@ class SequenceGeneratorPlugin(GeneratorPlugin):
 
 class MoleculeGeneratorPlugin(GeneratorPlugin):
     """Specialized base class for small molecule generators.
-    
+
     Provides common functionality for drug-like molecule generation.
     """
 
     def validate_constraints(self, constraints: List[str]) -> List[str]:
         """Validate molecule-specific constraints."""
         errors = []
-        
+
         for constraint in constraints:
             # Drug-likeness constraint validation
             if 'molecular_weight' in constraint and not any(op in constraint for op in ['<', '>', '=']):
                 errors.append(f"Invalid molecular_weight constraint: {constraint}")
             elif 'logP' in constraint and not any(op in constraint for op in ['<', '>', '=']):
                 errors.append(f"Invalid logP constraint: {constraint}")
-        
+
         return errors
 
     def get_supported_constraints(self) -> List[str]:
@@ -450,7 +450,7 @@ class MoleculeGeneratorPlugin(GeneratorPlugin):
             'logP',
             'rotatable_bonds',
             'hbd_count',
-            'hba_count', 
+            'hba_count',
             'drug_likeness',
             'synthetic_accessibility',
             'toxicity'
@@ -459,7 +459,7 @@ class MoleculeGeneratorPlugin(GeneratorPlugin):
 
 class BayesianOptimizerPlugin(OptimizerPlugin):
     """Specialized base class for Bayesian optimization plugins.
-    
+
     Provides common functionality and validation for Bayesian optimization approaches.
     """
 
@@ -474,7 +474,7 @@ class BayesianOptimizerPlugin(OptimizerPlugin):
     def validate_search_space(self, search_space: Dict[str, str]) -> List[str]:
         """Validate search space for Bayesian optimization."""
         errors = []
-        
+
         for param, definition in search_space.items():
             if definition.startswith('range('):
                 # Validate continuous parameter ranges
@@ -489,10 +489,10 @@ class BayesianOptimizerPlugin(OptimizerPlugin):
                 except (ValueError, IndexError):
                     errors.append(f"Invalid range syntax for parameter {param}: {definition}")
             elif definition.startswith('choice('):
-                # Validate discrete parameter choices  
+                # Validate discrete parameter choices
                 if definition == 'choice([])':
                     errors.append(f"Empty choice list for parameter {param}")
-        
+
         return errors
 
 
@@ -505,7 +505,7 @@ def register_generator_plugin(
     dependencies: Optional[List[PluginDependency]] = None
 ) -> None:
     """Convenience function to register a generator plugin.
-    
+
     Args:
         plugin_class: The plugin class implementing GeneratorPlugin
         name: Plugin name
@@ -514,11 +514,11 @@ def register_generator_plugin(
         dependencies: List of plugin dependencies
     """
     from .plugin_registry import plugin_registry
-    
+
     # Validate that class implements GeneratorPlugin
     if not issubclass(plugin_class, GeneratorPlugin):
         raise TypeError(f"Plugin class must inherit from GeneratorPlugin")
-    
+
     instance = plugin_class()
     plugin_registry.register(name, instance, version)
 
@@ -526,12 +526,12 @@ def register_generator_plugin(
 def register_optimizer_plugin(
     plugin_class: type,
     name: str,
-    version: str = "1.0.0", 
+    version: str = "1.0.0",
     priority: PluginPriority = PluginPriority.NORMAL,
     dependencies: Optional[List[PluginDependency]] = None
 ) -> None:
     """Convenience function to register an optimizer plugin.
-    
+
     Args:
         plugin_class: The plugin class implementing OptimizerPlugin
         name: Plugin name
@@ -540,42 +540,42 @@ def register_optimizer_plugin(
         dependencies: List of plugin dependencies
     """
     from .plugin_registry import plugin_registry
-    
+
     # Validate that class implements OptimizerPlugin
     if not issubclass(plugin_class, OptimizerPlugin):
         raise TypeError(f"Plugin class must inherit from OptimizerPlugin")
-    
+
     instance = plugin_class()
     plugin_registry.register(name, instance, version)
 
 
 def get_available_generators() -> Dict[str, GeneratorPlugin]:
     """Get all registered generator plugins.
-    
+
     Returns:
         Dictionary mapping plugin names to GeneratorPlugin instances
     """
     from .plugin_registry import plugin_registry
-    
+
     generators = {}
     for info in plugin_registry.list_plugins():
         if info.instance and isinstance(info.instance, GeneratorPlugin):
             generators[info.name] = info.instance
-    
+
     return generators
 
 
 def get_available_optimizers() -> Dict[str, OptimizerPlugin]:
     """Get all registered optimizer plugins.
-    
+
     Returns:
         Dictionary mapping plugin names to OptimizerPlugin instances
     """
     from .plugin_registry import plugin_registry
-    
+
     optimizers = {}
     for info in plugin_registry.list_plugins():
         if info.instance and isinstance(info.instance, OptimizerPlugin):
             optimizers[info.name] = info.instance
-    
+
     return optimizers

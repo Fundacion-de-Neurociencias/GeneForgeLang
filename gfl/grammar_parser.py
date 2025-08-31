@@ -630,7 +630,7 @@ class AdvancedGFLParser:
             location = SourceLocation(
                 line=p.lineno,
                 column=getattr(p, "lexpos", 0),
-                filename=getattr(self, "current_file", "<input>"),
+                file_path=getattr(self, "current_file", "<input>"),
             )
             error = EnhancedValidationError(
                 message=f"Unexpected token '{p.value}' of type '{p.type}'",
@@ -670,9 +670,9 @@ class AdvancedGFLParser:
                 if callable(p.lineno)
                 else getattr(p.slice[index], "lineno", 1),
                 column=getattr(p.slice[index], "lexpos", 0),
-                filename=getattr(self, "current_file", "<input>"),
+                file_path=getattr(self, "current_file", "<input>"),
             )
-        return SourceLocation(line=1, column=0, filename="<input>")
+        return SourceLocation(line=1, column=0, file_path="<input>")
 
     @cached(cache_name="grammar_parse", ttl=300.0, max_size=100)
     def parse(self, data: str, filename: str = "<input>") -> EnhancedValidationResult:
@@ -686,15 +686,13 @@ class AdvancedGFLParser:
                 ast = self.parser.parse(data, lexer=self.lexer.lexer, debug=False)
 
                 # Create result
-                result = EnhancedValidationResult(
-                    is_valid=len(self.errors) == 0,
-                    syntax_errors=self.errors.copy(),
-                    semantic_errors=[],
-                    schema_errors=[],
-                )
-
-                if result.is_valid:
+                result = EnhancedValidationResult(file_path=filename)
+                if len(self.errors) == 0:
+                    # Add AST as attribute for successful parses
                     result.ast = ast
+                else:
+                    # Add syntax errors for failed parses
+                    result.errors.extend(self.errors)
 
                 return result
 
@@ -709,10 +707,8 @@ class AdvancedGFLParser:
                 )
 
                 return EnhancedValidationResult(
-                    is_valid=False,
-                    syntax_errors=[error],
-                    semantic_errors=[],
-                    schema_errors=[],
+                    errors=[error],
+                    file_path=filename
                 )
 
 

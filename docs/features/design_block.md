@@ -24,7 +24,7 @@ Especifica qué tipo de entidad biológica se va a diseñar. Esta campo determin
 **Entidades Soportadas:**
 
 - **`ProteinSequence`**: Secuencias de aminoácidos para proteínas
-- **`DNASequence`**: Secuencias de nucleótidos de ADN  
+- **`DNASequence`**: Secuencias de nucleótidos de ADN
 - **`RNASequence`**: Secuencias de nucleótidos de ARN
 - **`SmallMolecule`**: Compuestos químicos pequeños (< 1000 Da)
 - **`Peptide`**: Péptidos cortos (< 50 aminoácidos)
@@ -92,7 +92,7 @@ objective:
   maximize: binding_affinity
   target: ACE2_receptor
 
-# Minimizar toxicidad  
+# Minimizar toxicidad
 objective:
   minimize: toxicity
 
@@ -109,7 +109,7 @@ Lista opcional de restricciones que deben cumplir las entidades generadas. Estas
 **Tipos de Restricciones Comunes:**
 
 - **Longitud**: `length(min, max)` - Rango de longitud permitido
-- **Contenido**: `gc_content(min, max)` - Contenido GC para ADN/ARN  
+- **Contenido**: `gc_content(min, max)` - Contenido GC para ADN/ARN
 - **Motivos**: `has_motif('secuencia')` - Presencia de secuencias específicas
 - **Propiedades**: `synthesizability > 0.7` - Factibilidad de síntesis
 - **Estructura**: `no_aggregation_prone_regions` - Evitar regiones problemáticas
@@ -150,7 +150,7 @@ count: numero_entero
 **Ejemplos:**
 ```yaml
 count: 10      # Para validación inicial rápida
-count: 100     # Para screening de tamaño medio  
+count: 100     # Para screening de tamaño medio
 count: 1000    # Para bibliotecas grandes de screening
 ```
 
@@ -171,7 +171,7 @@ output: nombre_variable
 **Ejemplos:**
 ```yaml
 output: designed_proteins      # Proteínas diseñadas
-output: candidate_molecules    # Moléculas candidatas  
+output: candidate_molecules    # Moléculas candidatas
 output: optimized_sequences    # Secuencias optimizadas
 output: generated_antibodies   # Anticuerpos generados
 ```
@@ -203,7 +203,7 @@ design:
   # Restricciones para asegurar viabilidad terapéutica
   constraints:
     - heavy_chain_length(110, 130)        # Longitud cadena pesada
-    - light_chain_length(105, 115)        # Longitud cadena liviana  
+    - light_chain_length(105, 115)        # Longitud cadena liviana
     - developability_score > 0.8          # Puntuación de desarrollabilidad
     - immunogenicity_risk < 0.3           # Bajo riesgo inmunogénico
     - stability_score > 0.7               # Alta estabilidad
@@ -232,7 +232,7 @@ analyze:
         expression_prediction: true
     - type: ranking
       params:
-        criteria: 
+        criteria:
           - binding_affinity: 0.4
           - developability: 0.3
           - stability: 0.2
@@ -279,14 +279,14 @@ design:
 
 ```yaml
 design:
-  entity: DNASequence  
+  entity: DNASequence
   model: DNADesignerGAN
   objective:
     maximize: specificity
     target: target_gene_region
   constraints:
     - length(18, 25)
-    - gc_content(0.4, 0.6) 
+    - gc_content(0.4, 0.6)
     - melting_temp(55, 65)
     - no_secondary_structures
     - no_primer_dimers
@@ -345,7 +345,7 @@ design:
   constraints:
     - molecular_weight < 500      # Regla de Lipinski
     - logP < 5                   # Permeabilidad
-    - rotatable_bonds < 10       # Flexibilidad  
+    - rotatable_bonds < 10       # Flexibilidad
     - hbd_count < 5              # Donadores H
     - hba_count < 10             # Aceptores H
     - drug_likeness > 0.8        # Drug-likeness score
@@ -438,7 +438,7 @@ design:
   count: 1000
   output: raw_candidates
 
-# Filtrado computacional rápido  
+# Filtrado computacional rápido
 analyze:
   strategy: computational_screening
   data: raw_candidates
@@ -460,7 +460,7 @@ experiment:
 
 # Optimización dirigida de hits
 design:
-  entity: SmallMolecule  
+  entity: SmallMolecule
   model: MoleculeTransformer
   objective:
     maximize: validated_activity

@@ -42,10 +42,10 @@ class TestOptimizeBlockParsing:
                 terminator: ${terminator_efficiency}
         """
         ast = parse(gfl_text)
-        
+
         assert ast is not None
         assert "optimize" in ast
-        
+
         optimize = ast["optimize"]
         assert optimize["search_space"]["promoter_strength"] == "range(0.1, 1.0)"
         assert optimize["search_space"]["terminator_efficiency"] == "choice([0.8, 0.9, 0.95, 0.99])"
@@ -77,7 +77,7 @@ class TestOptimizeBlockParsing:
                 buffer_ph: ${ph}
         """
         ast = parse(gfl_text)
-        
+
         assert ast is not None
         optimize = ast["optimize"]
         assert optimize["objective"]["minimize"] == "cost"
@@ -106,7 +106,7 @@ class TestOptimizeBlockParsing:
                 concentration: ${dose}
         """
         ast = parse(gfl_text)
-        
+
         optimize = ast["optimize"]
         budget = optimize["budget"]
         assert budget["max_experiments"] == 100
@@ -134,7 +134,7 @@ class TestOptimizeBlockParsing:
                 p_value: ${threshold}
         """
         ast = parse(gfl_text)
-        
+
         optimize = ast["optimize"]
         assert "analyze" in optimize["run"]
         assert optimize["run"]["analyze"]["strategy"] == "differential"
@@ -459,7 +459,7 @@ class TestOptimizeTypeDefinitions:
             budget={"max_experiments": 50},
             run={"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
         )
-        
+
         assert optimize.search_space["param1"] == "range(0, 10)"
         assert optimize.strategy["name"] == "ActiveLearning"
         assert optimize.objective["maximize"] == "efficiency"
@@ -475,7 +475,7 @@ class TestOptimizeTypeDefinitions:
             budget={"max_experiments": 30, "max_time": "24h"},
             run={"experiment": {"tool": "PCR", "type": "validation"}}
         )
-        
+
         result = optimize.to_dict()
         expected = {
             "search_space": {"temperature": "range(20, 40)"},
@@ -484,7 +484,7 @@ class TestOptimizeTypeDefinitions:
             "budget": {"max_experiments": 30, "max_time": "24h"},
             "run": {"experiment": {"tool": "PCR", "type": "validation"}}
         }
-        
+
         assert result == expected
 
 
@@ -520,11 +520,11 @@ class TestOptimizeBlockIntegration:
                 replicates: 3
         """
         ast = parse(gfl_text)
-        
+
         assert ast is not None
         assert "metadata" in ast
         assert "optimize" in ast
-        
+
         errors = validate(ast)
         # Should be valid
         assert not errors
@@ -560,17 +560,17 @@ class TestOptimizeBlockIntegration:
                 replicates: 5
         """
         ast = parse(gfl_text)
-        
+
         assert "optimize" in ast
         optimize = ast["optimize"]
-        
+
         # Check complex structures
         assert len(optimize["search_space"]) == 3
         assert "acquisition_function" in optimize["strategy"]
         assert optimize["objective"]["target"] == "target_protein"
         assert len(optimize["budget"]) == 3
         assert optimize["run"]["experiment"]["strategy"] == "activation"
-        
+
         errors = validate(ast)
         # Should be valid
         assert not errors
@@ -602,13 +602,13 @@ class TestParameterInjectionSyntax:
                 primer_conc: 0.5
         """
         ast = parse(gfl_text)
-        
+
         assert ast is not None
         params = ast["optimize"]["run"]["experiment"]["params"]
         assert params["temperature"] == "${temp}"
         assert params["buffer_ph"] == "${ph}"
         assert params["primer_conc"] == 0.5
-        
+
         errors = validate(ast)
         # Basic validation should pass
         assert not errors
@@ -637,7 +637,7 @@ class TestParameterInjectionSyntax:
         """
         ast = parse(gfl_text)
         assert ast is not None
-        
+
         # Basic parsing should work
         params = ast["optimize"]["run"]["experiment"]["params"]
         assert params["value"] == "${param1}"

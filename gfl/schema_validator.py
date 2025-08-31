@@ -186,7 +186,7 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
     # Validate design block
     if has_design:
         design = data["design"]
-        
+
         # Check for required fields
         required_design_fields = ["entity", "model", "objective", "count", "output"]
         for field in required_design_fields:
@@ -198,14 +198,14 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                         code="MISSING_REQUIRED_FIELD",
                     )
                 )
-        
+
         # Validate objective structure
         if "objective" in design:
             objective = design["objective"]
             if isinstance(objective, dict):
                 has_maximize = "maximize" in objective
                 has_minimize = "minimize" in objective
-                
+
                 if not (has_maximize or has_minimize):
                     warnings.append(
                         ValidationError(
@@ -215,7 +215,7 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                             code="OBJECTIVE_MISSING_DIRECTION",
                         )
                     )
-                
+
                 if has_maximize and has_minimize:
                     errors.append(
                         ValidationError(
@@ -224,7 +224,7 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                             code="OBJECTIVE_CONFLICTING_DIRECTIONS",
                         )
                     )
-        
+
         # Validate count field
         if "count" in design:
             count = design["count"]
@@ -250,7 +250,7 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
     # Validate optimize block
     if has_optimize:
         optimize = data["optimize"]
-        
+
         # Check for required fields
         required_optimize_fields = ["search_space", "strategy", "objective", "budget", "run"]
         for field in required_optimize_fields:
@@ -262,7 +262,7 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                         code="MISSING_REQUIRED_FIELD",
                     )
                 )
-        
+
         # Validate search_space structure
         if "search_space" in optimize:
             search_space = optimize["search_space"]
@@ -275,7 +275,7 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                             code="EMPTY_SEARCH_SPACE",
                         )
                     )
-                
+
                 # Basic validation of parameter definitions
                 for param_name, param_def in search_space.items():
                     if not isinstance(param_def, str):
@@ -291,7 +291,7 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                             ValidationError(
                                 message=f"Parameter '{param_name}' should use range() or choice() syntax",
                                 location=f"optimize.search_space.{param_name}",
-                                severity="warning", 
+                                severity="warning",
                                 code="UNUSUAL_PARAMETER_SYNTAX",
                             )
                         )
@@ -303,7 +303,7 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                         code="INVALID_SEARCH_SPACE_TYPE",
                     )
                 )
-        
+
         # Validate strategy structure
         if "strategy" in optimize:
             strategy = optimize["strategy"]
@@ -324,14 +324,14 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                         code="INVALID_STRATEGY_TYPE",
                     )
                 )
-        
+
         # Validate objective structure (similar to design block)
         if "objective" in optimize:
             objective = optimize["objective"]
             if isinstance(objective, dict):
                 has_maximize = "maximize" in objective
                 has_minimize = "minimize" in objective
-                
+
                 if not (has_maximize or has_minimize):
                     warnings.append(
                         ValidationError(
@@ -341,7 +341,7 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                             code="OBJECTIVE_MISSING_DIRECTION",
                         )
                     )
-                
+
                 if has_maximize and has_minimize:
                     errors.append(
                         ValidationError(
@@ -358,7 +358,7 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                         code="INVALID_OBJECTIVE_TYPE",
                     )
                 )
-        
+
         # Validate budget structure
         if "budget" in optimize:
             budget = optimize["budget"]
@@ -371,7 +371,7 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                             code="EMPTY_BUDGET",
                         )
                     )
-                
+
                 # Check for common budget constraints
                 for constraint, value in budget.items():
                     if constraint == "max_experiments":
@@ -420,14 +420,14 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                         code="INVALID_BUDGET_TYPE",
                     )
                 )
-        
+
         # Validate run structure
         if "run" in optimize:
             run_block = optimize["run"]
             if isinstance(run_block, dict):
                 nested_blocks = {"experiment", "analyze"}
                 found_blocks = set(run_block.keys()) & nested_blocks
-                
+
                 if not found_blocks:
                     errors.append(
                         ValidationError(

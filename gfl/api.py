@@ -40,23 +40,22 @@ try:
         ExecutionError,
         GFLExecutionEngine,
     )
-
     HAS_EXECUTION_ENGINE = True
 except ImportError:
     HAS_EXECUTION_ENGINE = False
-    execute_gfl_ast = None
-    validate_execution_requirements = None
-    ExecutionError = None
-    GFLExecutionEngine = None
+    # Type: ignore for conditional assignments
+    execute_gfl_ast = None  # type: ignore
+    validate_execution_requirements = None  # type: ignore
+    ExecutionError = None  # type: ignore
+    GFLExecutionEngine = None  # type: ignore
 
 # Optional grammar parser import
 try:
     from gfl.grammar_parser import parse_gfl_grammar
-
     HAS_GRAMMAR_PARSER = True
 except ImportError:
     HAS_GRAMMAR_PARSER = False
-    parse_gfl_grammar = None
+    parse_gfl_grammar = None  # type: ignore
 
 
 def parse(
@@ -306,26 +305,26 @@ def parse_enhanced(
 
             try:
                 ast = _parser.parse_gfl(text)
-                return EnhancedValidationResult(
-                    is_valid=True,
-                    ast=ast,
-                    syntax_errors=[],
-                    semantic_errors=[],
-                    schema_errors=[],
-                )
+                result = EnhancedValidationResult(file_path=filename)
+                # Add the AST as an attribute instead of constructor param
+                result.ast = ast
+                return result
             except Exception as e:
+                from gfl.error_handling import (
+                    EnhancedValidationError,
+                    ErrorCategory,
+                    ErrorSeverity,
+                )
+                
                 error = EnhancedValidationError(
                     message=str(e),
                     code="YAML_PARSE_ERROR",
                     severity=ErrorSeverity.ERROR,
                     category=ErrorCategory.SYNTAX,
                 )
-                return EnhancedValidationResult(
-                    is_valid=False,
-                    syntax_errors=[error],
-                    semantic_errors=[],
-                    schema_errors=[],
-                )
+                result = EnhancedValidationResult(file_path=filename)
+                result.errors = [error]
+                return result
 
 
 # Enhanced inference convenience functions
@@ -434,7 +433,7 @@ def execute(
     Returns:
         Dictionary containing execution results:
         - 'design': Results from design block execution (if present)
-        - 'optimize': Results from optimize block execution (if present)  
+        - 'optimize': Results from optimize block execution (if present)
         - 'workflow_state': Information about workflow variables and history
 
     Raises:
@@ -515,7 +514,7 @@ def validate_plugins(ast: Dict[str, Any]) -> List[str]:
     Example:
         >>> ast = parse('''
         ... design:
-        ...   entity: ProteinSequence  
+        ...   entity: ProteinSequence
         ...   model: NonExistentModel
         ...   count: 10
         ...   output: results
@@ -589,7 +588,7 @@ def get_api_info() -> Dict[str, Any]:
 
     if HAS_EXECUTION_ENGINE:
         info["execution_blocks"] = ["design", "optimize"]
-        
+
         # Add plugin information
         try:
             plugins = list_available_plugins()
@@ -643,7 +642,7 @@ __all__ = [
     "validate",
     "infer",
     "execute",
-    "validate_plugins", 
+    "validate_plugins",
     "list_available_plugins",
     "parse_enhanced",
     "infer_enhanced",

@@ -194,6 +194,11 @@ class EnhancedValidationResult:
 
     errors: List[EnhancedValidationError] = field(default_factory=list)
     file_path: Optional[str] = None
+    # Dynamic attributes that can be set after construction
+    ast: Optional[Dict[str, Any]] = field(default=None, init=False)
+    syntax_errors: Optional[List[EnhancedValidationError]] = field(default=None, init=False)
+    semantic_errors: Optional[List[EnhancedValidationError]] = field(default=None, init=False)
+    schema_errors: Optional[List[EnhancedValidationError]] = field(default=None, init=False)
 
     def add_error(
         self,
@@ -220,9 +225,14 @@ class EnhancedValidationResult:
         return [e for e in self.errors if e.severity == ErrorSeverity.CRITICAL]
 
     @property
+    def syntax_errors(self) -> List[EnhancedValidationError]:
+        """Get syntax errors only (for backward compatibility)."""
+        return [e for e in self.errors if e.category == ErrorCategory.SYNTAX]
+
+    @property
     def semantic_errors(self) -> List[EnhancedValidationError]:
         """Get semantic errors only."""
-        return [e for e in self.errors if e.severity == ErrorSeverity.ERROR]
+        return [e for e in self.errors if e.severity == ErrorSeverity.ERROR and e.category == ErrorCategory.SEMANTIC]
 
     @property
     def warnings(self) -> List[EnhancedValidationError]:

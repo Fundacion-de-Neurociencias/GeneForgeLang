@@ -29,10 +29,10 @@ class TestDesignBlockParsing:
           output: designed_candidates
         """
         ast = parse(gfl_text)
-        
+
         assert ast is not None
         assert "design" in ast
-        
+
         design = ast["design"]
         assert design["entity"] == "ProteinSequence"
         assert design["model"] == "ProteinGeneratorVAE"
@@ -57,7 +57,7 @@ class TestDesignBlockParsing:
           output: dna_designs
         """
         ast = parse(gfl_text)
-        
+
         assert ast is not None
         design = ast["design"]
         assert design["entity"] == "DNASequence"
@@ -78,7 +78,7 @@ class TestDesignBlockParsing:
           output: molecules
         """
         ast = parse(gfl_text)
-        
+
         design = ast["design"]
         assert design["objective"]["maximize"] == "solubility"
         assert "minimize" not in design["objective"]
@@ -95,7 +95,7 @@ class TestDesignBlockParsing:
           output: peptides
         """
         ast = parse(gfl_text)
-        
+
         design = ast["design"]
         assert design["objective"]["minimize"] == "aggregation"
         assert "maximize" not in design["objective"]
@@ -293,7 +293,7 @@ class TestDesignBlockValidation:
             ast = {
                 "design": {
                     "entity": "ProteinSequence",
-                    "model": "ProteinGeneratorVAE", 
+                    "model": "ProteinGeneratorVAE",
                     "objective": {"maximize": "binding_affinity"},
                     "count": 10,
                     "output": output,
@@ -347,7 +347,7 @@ class TestDesignTypeDefinitions:
             count=10,
             output="designed_proteins"
         )
-        
+
         assert design.entity == "ProteinSequence"
         assert design.model == "ProteinGeneratorVAE"
         assert design.objective == {"maximize": "binding_affinity"}
@@ -366,7 +366,7 @@ class TestDesignTypeDefinitions:
             output="peptide_designs",
             constraints=constraints
         )
-        
+
         assert design.constraints == constraints
 
     def test_design_to_dict(self):
@@ -378,7 +378,7 @@ class TestDesignTypeDefinitions:
             count=15,
             output="dna_sequences"
         )
-        
+
         result = design.to_dict()
         expected = {
             "entity": "DNASequence",
@@ -387,7 +387,7 @@ class TestDesignTypeDefinitions:
             "count": 15,
             "output": "dna_sequences"
         }
-        
+
         assert result == expected
 
     def test_design_to_dict_with_constraints(self):
@@ -401,7 +401,7 @@ class TestDesignTypeDefinitions:
             output="dna_sequences",
             constraints=constraints
         )
-        
+
         result = design.to_dict()
         assert result["constraints"] == constraints
 
@@ -428,14 +428,14 @@ class TestDesignBlockIntegration:
             binding_score: 0.8
         """
         ast = parse(gfl_text)
-        
+
         assert ast is not None
         assert "design" in ast
         assert "analyze" in ast
-        
+
         # Analyze block should reference the design output
         assert ast["analyze"]["data"] == "designed_candidates"
-        
+
         errors = validate(ast)
         # Should be valid
         assert not errors
@@ -461,11 +461,11 @@ class TestDesignBlockIntegration:
           data: candidate_molecules
         """
         ast = parse(gfl_text)
-        
+
         assert "metadata" in ast
         assert "design" in ast
         assert "analyze" in ast
-        
+
         # This should fail validation due to conflicting objective
         errors = validate(ast)
         assert len(errors) > 0

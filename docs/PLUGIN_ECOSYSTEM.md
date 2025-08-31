@@ -9,7 +9,7 @@ GeneForgeLang's plugin ecosystem provides a sophisticated framework for integrat
 ### Core Components
 
 1. **Plugin Interfaces**: Abstract base classes defining contracts for plugin types
-2. **Plugin Registry**: Discovery, lifecycle, and dependency management system  
+2. **Plugin Registry**: Discovery, lifecycle, and dependency management system
 3. **Execution Engine**: Orchestrates plugin invocation during workflow execution
 4. **Example Implementations**: Reference plugins demonstrating best practices
 
@@ -21,7 +21,7 @@ GeneForgeLang's plugin ecosystem provides a sophisticated framework for integrat
 - **Interface**: `gfl.plugins.GeneratorPlugin`
 - **Methods**: `generate()`, `validate_objective()`, `validate_constraints()`
 
-#### OptimizerPlugin  
+#### OptimizerPlugin
 - **Purpose**: Intelligent parameter space exploration and optimization
 - **Use Case**: Powers GFL `optimize` blocks
 - **Interface**: `gfl.plugins.OptimizerPlugin`
@@ -106,20 +106,20 @@ class MyProteinGenerator(GeneratorPlugin):
     @property
     def name(self) -> str:
         return "MyProteinGenerator"
-    
+
     @property
     def version(self) -> str:
         return "1.0.0"
-    
+
     @property
     def supported_entities(self) -> List[EntityType]:
         return [EntityType.PROTEIN_SEQUENCE]
-    
+
     def generate(
-        self, 
-        entity: str, 
-        objective: Dict[str, Any], 
-        constraints: List[str], 
+        self,
+        entity: str,
+        objective: Dict[str, Any],
+        constraints: List[str],
         count: int,
         **kwargs
     ) -> List[DesignCandidate]:
@@ -129,16 +129,16 @@ class MyProteinGenerator(GeneratorPlugin):
             sequence = self._generate_protein_sequence(objective, constraints)
             properties = self._predict_properties(sequence)
             confidence = self._calculate_confidence(sequence, properties)
-            
+
             candidates.append(DesignCandidate(
                 sequence=sequence,
-                properties=properties, 
+                properties=properties,
                 confidence=confidence,
                 metadata={"method": "my_algorithm", "iteration": i}
             ))
-        
+
         return candidates
-    
+
     def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
         return {"plugin_type": "generator", "status": "processed"}
 ```
@@ -153,19 +153,19 @@ class MyBayesianOptimizer(OptimizerPlugin):
     @property
     def name(self) -> str:
         return "MyBayesianOptimizer"
-    
+
     @property
     def version(self) -> str:
         return "1.0.0"
-    
-    @property 
+
+    @property
     def supported_strategies(self) -> List[OptimizationStrategy]:
         return [OptimizationStrategy.BAYESIAN_OPTIMIZATION]
-    
+
     def setup(
         self,
         search_space: Dict[str, str],
-        strategy: Dict[str, Any], 
+        strategy: Dict[str, Any],
         objective: Dict[str, Any],
         budget: Dict[str, Any]
     ) -> None:
@@ -175,7 +175,7 @@ class MyBayesianOptimizer(OptimizerPlugin):
         self.objective_config = objective
         self.budget_config = budget
         # Set up Gaussian Process, acquisition function, etc.
-    
+
     def suggest_next(self, experiment_history: List[ExperimentResult]) -> OptimizationStep:
         # Your optimization algorithm logic
         if len(experiment_history) < 3:
@@ -184,14 +184,14 @@ class MyBayesianOptimizer(OptimizerPlugin):
         else:
             # Use GP + acquisition function for intelligent selection
             parameters = self._optimize_acquisition_function(experiment_history)
-        
+
         return OptimizationStep(
             parameters=parameters,
             iteration=len(experiment_history) + 1,
             expected_improvement=self._calculate_expected_improvement(parameters),
             uncertainty=self._estimate_uncertainty(parameters)
         )
-    
+
     def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
         return {"plugin_type": "optimizer", "status": "processed"}
 ```
@@ -223,17 +223,17 @@ class MyPlugin(GeneratorPlugin):
         """Called when plugin is loaded."""
         print("Initializing ML model...")
         self.model = self._load_pretrained_model()
-    
+
     def on_unload(self) -> None:
         """Called when plugin is unloaded."""
         print("Cleaning up resources...")
         if hasattr(self, 'model'):
             del self.model
-    
+
     def on_activate(self) -> None:
         """Called when plugin becomes active."""
         print("Plugin activated")
-    
+
     def on_deactivate(self) -> None:
         """Called when plugin is deactivated."""
         print("Plugin deactivated")
@@ -246,15 +246,15 @@ class MyPlugin(GeneratorPlugin):
     def validate_config(self, config: Dict[str, Any]) -> List[str]:
         """Validate plugin configuration."""
         errors = []
-        
+
         if "model_path" not in config:
             errors.append("Missing required 'model_path' configuration")
-        
+
         if "temperature" in config:
             temp = config["temperature"]
             if not isinstance(temp, (int, float)) or temp <= 0:
                 errors.append("Temperature must be a positive number")
-        
+
         return errors
 ```
 
@@ -283,18 +283,18 @@ from my_package.plugins import MyProteinGenerator
 class TestMyProteinGenerator:
     def test_generation(self):
         generator = MyProteinGenerator()
-        
+
         candidates = generator.generate(
             entity="ProteinSequence",
             objective={"maximize": "stability"},
             constraints=["length(50, 100)"],
             count=5
         )
-        
+
         assert len(candidates) == 5
         assert all(isinstance(c, DesignCandidate) for c in candidates)
         assert all(50 <= len(c.sequence) <= 100 for c in candidates)
-    
+
     def test_entity_support(self):
         generator = MyProteinGenerator()
         assert EntityType.PROTEIN_SEQUENCE in generator.supported_entities
@@ -305,10 +305,10 @@ class TestMyProteinGenerator:
 ```python
 def test_gfl_integration():
     from gfl.api import parse, validate, execute
-    
+
     # Register plugin
     register_generator_plugin(MyProteinGenerator, "my_generator")
-    
+
     # Test GFL execution
     gfl_script = '''
     design:
@@ -319,11 +319,11 @@ def test_gfl_integration():
       count: 3
       output: proteins
     '''
-    
+
     ast = parse(gfl_script)
     errors = validate(ast)
     assert not errors
-    
+
     result = execute(ast)
     assert len(result['design']['candidates']) == 3
 ```
@@ -338,13 +338,13 @@ def generate(self, entity: str, objective: Dict[str, Any], constraints: List[str
         # Validate inputs
         if entity not in [e.value for e in self.supported_entities]:
             raise ValueError(f"Unsupported entity type: {entity}")
-        
+
         if count <= 0:
             raise ValueError("Count must be positive")
-        
+
         # Generation logic
         return self._perform_generation(entity, objective, constraints, count)
-        
+
     except Exception as e:
         # Log error and re-raise with context
         logger.error(f"Generation failed in {self.name}: {e}")
@@ -359,13 +359,13 @@ class MyPlugin(GeneratorPlugin):
         super().__init__()
         self._model = None
         self._device = None
-    
+
     def _ensure_model_loaded(self):
         """Lazy loading of expensive resources."""
         if self._model is None:
             self._model = self._load_model()
             self._device = self._get_best_device()
-    
+
     def generate(self, ...):
         self._ensure_model_loaded()
         # Use self._model for generation
@@ -394,14 +394,14 @@ class MyPlugin(GeneratorPlugin):
     def generate(self, ...):
         logger.info(f"Starting generation: {count} {entity} candidates")
         start_time = time.time()
-        
+
         try:
             candidates = self._perform_generation(...)
             duration = time.time() - start_time
-            
+
             logger.info(f"Generated {len(candidates)} candidates in {duration:.2f}s")
             return candidates
-            
+
         except Exception as e:
             logger.error(f"Generation failed after {time.time() - start_time:.2f}s: {e}")
             raise
@@ -446,7 +446,7 @@ dependencies = [
 
 [project.entry-points."gfl.plugins"]
 my_protein_generator = "my_gfl_plugin.generators:MyProteinGenerator"
-my_molecule_generator = "my_gfl_plugin.generators:MyMoleculeGenerator"  
+my_molecule_generator = "my_gfl_plugin.generators:MyMoleculeGenerator"
 my_bayesian_optimizer = "my_gfl_plugin.optimizers:MyBayesianOptimizer"
 ```
 

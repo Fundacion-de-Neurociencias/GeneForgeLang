@@ -9,10 +9,10 @@ from gfl.plugins.example_implementations import register_example_plugins
 
 def test_plugin_ecosystem():
     """Test the complete plugin ecosystem functionality."""
-    
+
     print("🚀 Testing GeneForgeLang Plugin Ecosystem")
     print("=" * 60)
-    
+
     # 1. Register example plugins
     print("\n1. Registering example plugins...")
     try:
@@ -21,18 +21,18 @@ def test_plugin_ecosystem():
     except Exception as e:
         print(f"❌ Failed to register plugins: {e}")
         return False
-    
+
     # 2. Check API info and available plugins
     print("\n2. Checking API capabilities...")
     api_info = get_api_info()
     print(f"✓ API version: {api_info['api_version']}")
     print(f"✓ Workflow execution: {api_info['features']['workflow_execution']}")
     print(f"✓ Plugin system: {api_info['features']['plugin_system']}")
-    
+
     available_plugins = list_available_plugins()
     print(f"✓ Available generators: {available_plugins['generators']}")
     print(f"✓ Available optimizers: {available_plugins['optimizers']}")
-    
+
     # 3. Test design block execution
     print("\n3. Testing design block execution...")
     design_gfl = """
@@ -55,36 +55,36 @@ design:
   count: 5
   output: designed_proteins
 """
-    
+
     try:
         # Parse GFL
         ast = parse(design_gfl)
         print("✓ Successfully parsed design GFL")
-        
+
         # Validate AST
         errors = validate(ast)
         if errors:
             print(f"❌ Validation errors: {errors}")
             return False
         print("✓ AST validation passed")
-        
+
         # Execute design block
         result = execute(ast)
         print("✓ Design block executed successfully")
-        
+
         # Check results
         design_result = result['design']
         candidates = design_result['candidates']
-        
+
         print(f"✓ Generated {len(candidates)} protein candidates")
         print(f"✓ First candidate: {candidates[0].sequence[:20]}...")
         print(f"✓ First candidate properties: {candidates[0].properties}")
         print(f"✓ First candidate confidence: {candidates[0].confidence:.3f}")
-        
+
     except Exception as e:
         print(f"❌ Design block execution failed: {e}")
         return False
-    
+
     # 4. Test optimize block execution
     print("\n4. Testing optimize block execution...")
     optimize_gfl = """
@@ -131,42 +131,42 @@ optimize:
         cell_line: HEK293T
         replicates: 3
 """
-    
+
     try:
         # Parse GFL
         ast = parse(optimize_gfl)
         print("✓ Successfully parsed optimize GFL")
-        
+
         # Validate AST
         errors = validate(ast)
         if errors:
             print(f"❌ Validation errors: {errors}")
             return False
         print("✓ AST validation passed")
-        
+
         # Execute optimize block
         result = execute(ast)
         print("✓ Optimize block executed successfully")
-        
+
         # Check results
         optimize_result = result['optimize']
         best_params = optimize_result['best_parameters']
         best_objective = optimize_result['best_objective_value']
         total_experiments = optimize_result['total_experiments']
-        
+
         print(f"✓ Optimization completed: {total_experiments} experiments")
         print(f"✓ Best objective value: {best_objective:.4f}")
         print(f"✓ Best parameters:")
         for param, value in best_params.items():
             print(f"    {param}: {value}")
-        
+
         convergence = optimize_result['convergence_info']
         print(f"✓ Convergence status: {convergence['converged']} ({convergence['reason']})")
-        
+
     except Exception as e:
         print(f"❌ Optimize block execution failed: {e}")
         return False
-    
+
     # 5. Test combined workflow
     print("\n5. Testing combined design + optimize workflow...")
     combined_gfl = """
@@ -212,50 +212,50 @@ optimize:
         temperature: ${design_temperature}
         diversity: ${diversity_weight}
 """
-    
+
     try:
         # Parse and execute combined workflow
         ast = parse(combined_gfl)
         print("✓ Successfully parsed combined GFL")
-        
+
         errors = validate(ast)
         if errors:
             print(f"❌ Validation errors: {errors}")
             return False
         print("✓ Combined AST validation passed")
-        
+
         result = execute(ast)
         print("✓ Combined workflow executed successfully")
-        
+
         # Check that both blocks executed
         assert 'design' in result, "Design block should have executed"
         assert 'optimize' in result, "Optimize block should have executed"
-        
+
         print(f"✓ Design generated {result['design']['count']} molecules")
         print(f"✓ Optimization found best objective: {result['optimize']['best_objective_value']:.4f}")
-        
+
     except Exception as e:
         print(f"❌ Combined workflow execution failed: {e}")
         return False
-    
+
     print("\n🎉 All Plugin Ecosystem Tests Passed!")
     print("=" * 60)
     print("✓ Plugin registration works")
     print("✓ Design block execution works")
-    print("✓ Optimize block execution works")  
+    print("✓ Optimize block execution works")
     print("✓ Combined workflows work")
     print("✓ Parameter injection works")
     print("✓ Plugin interfaces are properly implemented")
-    
+
     return True
 
 
 def test_plugin_validation():
     """Test plugin validation functionality."""
-    
+
     print("\n🔍 Testing Plugin Validation")
     print("=" * 40)
-    
+
     # Test missing plugin validation
     invalid_gfl = """
 design:
@@ -266,17 +266,17 @@ design:
   count: 5
   output: results
 """
-    
+
     try:
         from gfl.api import validate_plugins
-        
+
         ast = parse(invalid_gfl)
         plugin_errors = validate_plugins(ast)
-        
+
         print(f"✓ Plugin validation detected errors: {len(plugin_errors)}")
         if plugin_errors:
             print(f"  - {plugin_errors[0]}")
-        
+
         # Test that execution fails gracefully
         try:
             execute(ast, validate_first=True)
@@ -284,11 +284,11 @@ design:
             return False
         except ValueError as e:
             print(f"✓ Execution properly failed: {str(e)[:50]}...")
-            
+
     except Exception as e:
         print(f"❌ Plugin validation test failed: {e}")
         return False
-    
+
     return True
 
 
@@ -296,7 +296,7 @@ if __name__ == "__main__":
     # Run comprehensive tests
     ecosystem_success = test_plugin_ecosystem()
     validation_success = test_plugin_validation()
-    
+
     if ecosystem_success and validation_success:
         print("\n🚀 ALL TESTS PASSED - Plugin ecosystem is fully functional!")
         exit(0)

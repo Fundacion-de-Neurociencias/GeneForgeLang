@@ -43,7 +43,7 @@ from .interfaces import (
 __all__ = [
     # Plugin registry core
     "BaseGFLPlugin",
-    "GFLPlugin", 
+    "GFLPlugin",
     "PluginDependency",
     "PluginInfo",
     "PluginPriority",
@@ -54,22 +54,22 @@ __all__ = [
     "get_active_plugins",
     "get_plugin",
     "register_plugin",
-    
+
     # Specialized interfaces
     "GeneratorPlugin",
-    "OptimizerPlugin", 
+    "OptimizerPlugin",
     "PriorsPlugin",
     "SequenceGeneratorPlugin",
     "MoleculeGeneratorPlugin",
     "BayesianOptimizerPlugin",
-    
+
     # Data structures
     "DesignCandidate",
     "ExperimentResult",
     "OptimizationStep",
     "EntityType",
     "OptimizationStrategy",
-    
+
     # Interface utilities
     "register_generator_plugin",
     "register_optimizer_plugin",

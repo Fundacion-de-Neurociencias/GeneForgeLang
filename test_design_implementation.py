@@ -12,7 +12,7 @@ from gfl.models.dummy import DummyGeneModel
 
 def test_protein_design_example():
     """Test a complete protein design workflow."""
-    
+
     # Example 1: Protein design for binding affinity
     protein_design_gfl = """
     metadata:
@@ -25,7 +25,7 @@ def test_protein_design_example():
       # Define what we're designing
       entity: ProteinSequence
 
-      # Specify the generative model plugin  
+      # Specify the generative model plugin
       model: ProteinGeneratorVAE
 
       # Define the optimization objective
@@ -65,18 +65,18 @@ def test_protein_design_example():
 
     print("=== Testing Protein Design Example ===")
     print("Parsing GFL...")
-    
+
     # Parse the GFL
     ast = parse(protein_design_gfl)
     assert ast is not None, "Failed to parse GFL"
     print("✓ Successfully parsed GFL")
-    
+
     # Check structure
     assert "design" in ast, "Design block not found in AST"
     assert "analyze" in ast, "Analyze block not found in AST"
     assert "metadata" in ast, "Metadata block not found in AST"
     print("✓ All expected blocks present")
-    
+
     # Validate the design block structure
     design = ast["design"]
     assert design["entity"] == "ProteinSequence"
@@ -87,7 +87,7 @@ def test_protein_design_example():
     assert design["output"] == "designed_candidates"
     assert len(design["constraints"]) == 4
     print("✓ Design block structure is correct")
-    
+
     # Validate the workflow
     print("Validating workflow...")
     errors = validate(ast)
@@ -96,7 +96,7 @@ def test_protein_design_example():
         return False
     else:
         print("✓ Workflow validation passed")
-    
+
     # Test inference (simulation)
     print("Running inference simulation...")
     try:
@@ -107,13 +107,13 @@ def test_protein_design_example():
     except Exception as e:
         print(f"❌ Inference failed: {e}")
         return False
-        
+
     return True
 
 
 def test_dna_design_example():
     """Test DNA sequence design workflow."""
-    
+
     dna_design_gfl = """
     design:
       entity: DNASequence
@@ -122,7 +122,7 @@ def test_dna_design_example():
         minimize: off_target_effects
       constraints:
         - length(50, 100)
-        - gc_content(0.4, 0.6) 
+        - gc_content(0.4, 0.6)
         - no_restriction_sites
       count: 20
       output: guide_rnas
@@ -135,23 +135,23 @@ def test_dna_design_example():
     """
 
     print("\n=== Testing DNA Design Example ===")
-    
+
     ast = parse(dna_design_gfl)
     assert ast is not None
     print("✓ Successfully parsed DNA design GFL")
-    
+
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
         return False
     print("✓ DNA design validation passed")
-    
+
     return True
 
 
 def test_small_molecule_design_example():
     """Test small molecule design workflow."""
-    
+
     molecule_design_gfl = """
     metadata:
       experiment_id: DRUG_DESIGN_001
@@ -188,30 +188,30 @@ def test_small_molecule_design_example():
     """
 
     print("\n=== Testing Small Molecule Design Example ===")
-    
+
     ast = parse(molecule_design_gfl)
     assert ast is not None
     print("✓ Successfully parsed small molecule design GFL")
-    
+
     # Check the complex workflow
     assert ast["design"]["entity"] == "SmallMolecule"
     assert ast["design"]["count"] == 100
     assert len(ast["design"]["constraints"]) == 4
     assert len(ast["analyze"]["operations"]) == 2
     print("✓ Complex workflow structure is correct")
-    
+
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
         return False
     print("✓ Small molecule design validation passed")
-    
+
     return True
 
 
 def test_multi_objective_design_error():
     """Test that conflicting objectives are properly detected."""
-    
+
     invalid_gfl = """
     design:
       entity: ProteinSequence
@@ -224,18 +224,18 @@ def test_multi_objective_design_error():
     """
 
     print("\n=== Testing Multi-Objective Error Detection ===")
-    
+
     ast = parse(invalid_gfl)
     errors = validate(ast)
-    
+
     # Should have validation errors for conflicting objectives
     assert len(errors) > 0, "Expected validation errors for conflicting objectives"
-    
+
     # Check that the error mentions the conflicting objectives
     error_text = " ".join(errors).lower()
     assert "maximize" in error_text and "minimize" in error_text
     print("✓ Correctly detected conflicting objectives")
-    
+
     return True
 
 
@@ -243,17 +243,17 @@ def run_all_tests():
     """Run all design block tests."""
     print("GeneForgeLang Design Block Implementation Test")
     print("=" * 50)
-    
+
     tests = [
         test_protein_design_example,
         test_dna_design_example,
         test_small_molecule_design_example,
         test_multi_objective_design_error,
     ]
-    
+
     passed = 0
     total = len(tests)
-    
+
     for test_func in tests:
         try:
             if test_func():
@@ -262,10 +262,10 @@ def run_all_tests():
                 print(f"❌ {test_func.__name__} failed")
         except Exception as e:
             print(f"❌ {test_func.__name__} raised exception: {e}")
-    
+
     print(f"\n=== Test Summary ===")
     print(f"Passed: {passed}/{total}")
-    
+
     if passed == total:
         print("🎉 All tests passed! Design block implementation is working correctly.")
         return True

@@ -9,12 +9,13 @@ try:
         get_inference_engine,
         InferenceResult,
     )
-
     HAS_ENHANCED_ENGINE = True
 except ImportError:
     HAS_ENHANCED_ENGINE = False
-    EnhancedInferenceEngine = None
-    InferenceResult = None
+    # Type: ignore for conditional imports
+    EnhancedInferenceEngine = None  # type: ignore
+    get_inference_engine = None  # type: ignore
+    InferenceResult = None  # type: ignore
 
 
 class InferenceEngine:

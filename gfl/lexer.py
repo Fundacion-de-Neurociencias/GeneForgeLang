@@ -37,7 +37,7 @@ class GFLLexer:
         "analyze": "ANALYZE",
         "experiment": "EXPERIMENT",
         "design": "DESIGN",
-        "optimize": "OPTIMIZE", 
+        "optimize": "OPTIMIZE",
         "simulate": "SIMULATE",
         "branch": "BRANCH",
         "using": "USING",

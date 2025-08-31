@@ -21,7 +21,7 @@ Esta capacidad es especialmente valiosa en genómica, donde décadas de investig
 En el contexto de GeneForgeLang, los "priors" pueden tomar múltiples formas:
 
 - **Distribuciones Paramétricas**: Conocimiento sobre rangos típicos de parámetros experimentales
-- **Restricciones Estructurales**: Limitaciones conocidas en el espacio de diseño biológico  
+- **Restricciones Estructurales**: Limitaciones conocidas en el espacio de diseño biológico
 - **Resultados Históricos**: Datos de experimentos previos que informan sobre probabilidades de éxito
 - **Simetrías Biológicas**: Invariancias conocidas en sistemas biológicos
 - **Relaciones Funcionales**: Dependencias conocidas entre variables experimentales
@@ -31,7 +31,7 @@ En el contexto de GeneForgeLang, los "priors" pueden tomar múltiples formas:
 La cláusula `with_priors` se puede asociar con:
 
 - **Bloques `design`**: Para guiar la generación de entidades biológicas
-- **Bloques `optimize`**: Para acelerar la búsqueda en espacios de parámetros  
+- **Bloques `optimize`**: Para acelerar la búsqueda en espacios de parámetros
 - **Bloques `analyze`**: Para incorporar conocimiento en análisis estadísticos
 
 ## Estructura de la Cláusula
@@ -41,23 +41,23 @@ La cláusula `with_priors` se puede asociar con:
 ```yaml
 bloque_principal:
   # ... configuración del bloque ...
-  
+
 with_priors:
   distributions:
     parametro1: tipo_distribucion(parametros)
     parametro2: tipo_distribucion(parametros)
-    
+
   constraints:
     - expresion_restriccion1
     - expresion_restriccion2
-    
+
   historical_data:
     source: ruta_o_referencia
     weight: peso_relativo
-    
+
   symmetries:
     - tipo_simetria(parametros)
-    
+
   domain_knowledge:
     rules:
       - regla1
@@ -111,7 +111,7 @@ with_priors:
       input: ["temp", "conc", "ph"]
       output: "efficiency"
     weight: 0.8                    # Peso relativo vs nuevos datos
-    relevance_filter: 
+    relevance_filter:
       target_gene: "TP53"          # Solo experimentos relevantes
       date_range: "2020-2024"
 ```
@@ -141,7 +141,7 @@ with_priors:
       - "AVOID stop_codons IN coding_sequences"
     confidence_weights:
       literature_backed: 0.9       # Reglas con soporte en literatura
-      expert_opinion: 0.7          # Opiniones de expertos  
+      expert_opinion: 0.7          # Opiniones de expertos
       heuristic: 0.5              # Heurísticas generales
 ```
 
@@ -165,18 +165,18 @@ with_priors:
     sequence_length: normal(150, 25)
     # Distribución de hidrofobicidad típica
     hydrophobicity: beta(0.4, 0.3)
-    
+
   historical_data:
     source: "pdb_ace2_binders.json"
     relevance_score: > 0.8
     weight: 0.7
-    
+
   domain_knowledge:
     rules:
       - "IF has_motif('RGD') THEN binding_score += 0.3"
       - "IF secondary_structure='beta_sheet' THEN stability += 0.2"
       - "AVOID aggregation_prone_regions"
-    
+
   symmetries:
     - binding_site_symmetry(ACE2_interface, bilateral)
 ```
@@ -189,16 +189,16 @@ optimize:
     guide_concentration: range(10, 100)
     temperature: range(25, 42)
     incubation_time: choice([2, 4, 6, 8])
-    
+
   strategy:
     name: BayesianOptimization
-    
+
   objective:
     maximize: editing_efficiency
-    
+
   budget:
     max_experiments: 40
-    
+
   run:
     experiment:
       tool: CRISPR_cas9
@@ -214,14 +214,14 @@ with_priors:
     guide_concentration: lognormal(50, 1.2)
     # Temperaturas con sesgo hacia condiciones fisiológicas
     temperature: normal(37, 3)
-    
+
   historical_data:
     source: "crispr_experiments_2020_2024.csv"
     filters:
       target_type: "tumor_suppressor"
       cell_line: "HEK293T"
     weight: 0.6
-    
+
   domain_knowledge:
     rules:
       - "IF temperature > 40 THEN cell_viability -= 0.2"
@@ -245,12 +245,12 @@ with_priors:
     de_gene_proportion: beta(0.1, 0.9)  # Esperamos ~10% DE genes
     # Prior sobre magnitud de fold changes
     effect_size: normal(0, 1)           # Centrado en 0
-    
+
   historical_data:
     source: "similar_conditions_experiments.json"
     similarity_threshold: 0.8
     weight: 0.5
-    
+
   domain_knowledge:
     rules:
       - "housekeeping_genes: low_variance_expected"
@@ -275,17 +275,17 @@ design:
 with_priors:
   distributions:
     conservation_rate: beta(0.8, 0.2)   # Alta conservación esperada
-    
+
   historical_data:
     source: "ortholog_database.fasta"
     species_pairs: ["mouse_human", "rat_human"]
-    
+
   domain_knowledge:
     rules:
       - "functional_domains: high_conservation_required"
       - "surface_loops: variation_tolerated"
       - "active_sites: strict_conservation"
-      
+
   symmetries:
     - evolutionary_constraint(functional_domains, strict)
 ```
@@ -298,13 +298,13 @@ optimize:
     efficacy_param: range(0, 1)
     safety_param: range(0, 1)
     cost_param: range(0, 1)
-    
+
   strategy:
     name: MultiObjectiveBayesian
-    
+
   objective:
     maximize: composite_score  # Combinación ponderada
-    
+
   budget:
     max_experiments: 60
 
@@ -314,12 +314,12 @@ with_priors:
     efficacy_weight: beta(0.4, 0.2)     # Prioridad a eficacia
     safety_weight: beta(0.3, 0.2)       # Importante pero menor
     cost_weight: beta(0.1, 0.3)         # Menos prioritario
-    
+
   constraints:
     # Restricciones regulatorias
     - P(safety_score > 0.9) > 0.95      # Alta confianza en seguridad
     - efficacy_safety_tradeoff < 0.1     # Limitado trade-off
-    
+
   domain_knowledge:
     rules:
       - "regulatory_approval: safety_first"
@@ -345,7 +345,7 @@ class InformedBayesianOptimizer:
             prior_mean=priors.distributions,
             prior_constraints=priors.constraints
         )
-        
+
     def suggest_next(self, history):
         # Incorporar datos históricos
         augmented_history = combine(history, priors.historical_data)
@@ -373,11 +373,11 @@ with_priors:
     cross_validation:
       folds: 5
       metrics: ["accuracy", "calibration", "coverage"]
-      
+
     sensitivity_analysis:
       parameters: ["historical_weight", "constraint_strength"]
       ranges: [0.1, 0.9]
-      
+
     prior_posterior_checks:
       enable: true
       diagnostics: ["effective_sample_size", "rhat"]
@@ -391,11 +391,11 @@ with_priors:
     drift_detection:
       method: "statistical_distance"
       threshold: 0.1
-      
+
     fairness_metrics:
       - demographic_parity
       - equalized_odds
-      
+
     interpretability:
       feature_importance: true
       prior_contribution: true
@@ -431,7 +431,7 @@ with_priors:
     method: "online_bayesian_update"
     forgetting_factor: 0.95
     update_frequency: "after_each_experiment"
-    
+
   meta_learning:
     cross_experiment_transfer: true
     similarity_metric: "experimental_context"
@@ -447,7 +447,7 @@ with_priors:
         general_biology_rules: {...}
     domain_level:
       distributions:
-        genomics_specific: {...}  
+        genomics_specific: {...}
     experiment_level:
       distributions:
         protocol_specific: {...}
@@ -458,7 +458,7 @@ with_priors:
 La cláusula `with_priors` representa una evolución fundamental en GeneForgeLang, transformando el lenguaje de una herramienta de especificación experimental a una plataforma de **conocimiento científico acumulativo**. Al permitir la incorporación sistemática de conocimiento previo, experiencia del dominio y datos históricos, esta funcionalidad habilita:
 
 - **Ciencia más eficiente**: Aprovechamiento de décadas de investigación previa
-- **Reducción de experimentos**: Convergencia más rápida hacia soluciones óptimas  
+- **Reducción de experimentos**: Convergencia más rápida hacia soluciones óptimas
 - **Mejores decisiones**: Incorporación de incertidumbre y conocimiento experto
 - **Investigación reproducible**: Transparencia en el uso de conocimiento previo
 

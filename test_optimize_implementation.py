@@ -1,8 +1,8 @@
 """
 Comprehensive test of the GeneForgeLang optimize block implementation.
 
-This example demonstrates the new 'optimize' block for intelligent experimental 
-loops, as described in the proposal. It shows how to define parameter search 
+This example demonstrates the new 'optimize' block for intelligent experimental
+loops, as described in the proposal. It shows how to define parameter search
 spaces, optimization strategies, and automated experimentation loops.
 """
 
@@ -12,7 +12,7 @@ from gfl.models.dummy import DummyGeneModel
 
 def test_active_learning_optimization():
     """Test active learning optimization for parameter tuning."""
-    
+
     optimize_gfl = """
     metadata:
       experiment_id: OPTIM_ACTIVE_001
@@ -62,44 +62,44 @@ def test_active_learning_optimization():
 
     print("=== Testing Active Learning Optimization ===")
     print("Parsing GFL...")
-    
+
     # Parse the GFL
     ast = parse(optimize_gfl)
     assert ast is not None, "Failed to parse GFL"
     print("✓ Successfully parsed GFL")
-    
+
     # Check structure
     assert "optimize" in ast, "Optimize block not found in AST"
     assert "metadata" in ast, "Metadata block not found in AST"
     print("✓ All expected blocks present")
-    
+
     # Validate the optimize block structure
     optimize = ast["optimize"]
-    
+
     # Check search space
     search_space = optimize["search_space"]
     assert len(search_space) == 4
     assert search_space["promoter_strength"] == "range(0.1, 1.0)"
     assert search_space["terminator_efficiency"] == "choice([0.8, 0.9, 0.95, 0.99])"
     print("✓ Search space structure is correct")
-    
+
     # Check strategy
     strategy = optimize["strategy"]
     assert strategy["name"] == "ActiveLearning"
     assert strategy["uncertainty_metric"] == "entropy"
     print("✓ Strategy configuration is correct")
-    
+
     # Check objective
     objective = optimize["objective"]
     assert objective["maximize"] == "gene_expression_level"
     print("✓ Objective configuration is correct")
-    
+
     # Check budget
     budget = optimize["budget"]
     assert budget["max_experiments"] == 50
     assert budget["max_time"] == "48h"
     print("✓ Budget configuration is correct")
-    
+
     # Check nested experiment
     run_block = optimize["run"]
     assert "experiment" in run_block
@@ -108,7 +108,7 @@ def test_active_learning_optimization():
     assert experiment["params"]["promoter"] == "${promoter_strength}"
     assert experiment["params"]["terminator"] == "${terminator_efficiency}"
     print("✓ Nested experiment structure is correct")
-    
+
     # Validate the workflow
     print("Validating workflow...")
     errors = validate(ast)
@@ -117,13 +117,13 @@ def test_active_learning_optimization():
         return False
     else:
         print("✓ Workflow validation passed")
-    
+
     return True
 
 
 def test_bayesian_optimization():
     """Test Bayesian optimization for drug discovery."""
-    
+
     bayesian_gfl = """
     optimize:
       search_space:
@@ -159,22 +159,22 @@ def test_bayesian_optimization():
     """
 
     print("\\n=== Testing Bayesian Optimization ===")
-    
+
     ast = parse(bayesian_gfl)
     assert ast is not None
     print("✓ Successfully parsed Bayesian optimization GFL")
-    
+
     # This should fail validation because of conflicting objectives
     errors = validate(ast)
     assert len(errors) > 0, "Expected validation errors for conflicting objectives"
     print("✓ Correctly detected conflicting objectives")
-    
+
     return True
 
 
 def test_genetic_algorithm_optimization():
     """Test genetic algorithm for circuit design."""
-    
+
     genetic_gfl = """
     metadata:
       experiment_id: GA_CIRCUIT_001
@@ -218,30 +218,30 @@ def test_genetic_algorithm_optimization():
     """
 
     print("\\n=== Testing Genetic Algorithm Optimization ===")
-    
+
     ast = parse(genetic_gfl)
     assert ast is not None
     print("✓ Successfully parsed genetic algorithm GFL")
-    
+
     # Check the complex workflow
     optimize = ast["optimize"]
     assert len(optimize["search_space"]) == 4
     assert optimize["strategy"]["name"] == "GeneticAlgorithm"
     assert optimize["strategy"]["population_size"] == 50
     print("✓ Complex genetic algorithm configuration is correct")
-    
+
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
         return False
     print("✓ Genetic algorithm validation passed")
-    
+
     return True
 
 
 def test_optimize_with_analyze_block():
     """Test optimization with analysis in the run block."""
-    
+
     analyze_gfl = """
     optimize:
       search_space:
@@ -275,29 +275,29 @@ def test_optimize_with_analyze_block():
     """
 
     print("\\n=== Testing Optimization with Analysis ===")
-    
+
     ast = parse(analyze_gfl)
     assert ast is not None
     print("✓ Successfully parsed optimization with analysis")
-    
+
     # Check that analyze block is in run
     optimize = ast["optimize"]
     assert "analyze" in optimize["run"]
     assert optimize["run"]["analyze"]["strategy"] == "differential"
     print("✓ Analysis block correctly nested in run")
-    
+
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
         return False
     print("✓ Optimize with analyze validation passed")
-    
+
     return True
 
 
 def test_parameter_injection_validation():
     """Test parameter injection validation."""
-    
+
     # Test with correct parameter references
     correct_gfl = """
     optimize:
@@ -325,32 +325,32 @@ def test_parameter_injection_validation():
     """
 
     print("\\n=== Testing Parameter Injection ===")
-    
+
     ast = parse(correct_gfl)
     assert ast is not None
     print("✓ Successfully parsed parameter injection syntax")
-    
+
     # Check parameter injection
     params = ast["optimize"]["run"]["experiment"]["params"]
     assert params["temperature"] == "${temp}"
     assert params["concentration"] == "${conc}"
     assert params["duration"] == "30m"  # Non-injected parameter
     print("✓ Parameter injection syntax is correct")
-    
+
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
         return False
     print("✓ Parameter injection validation passed")
-    
+
     return True
 
 
 def test_invalid_optimize_blocks():
     """Test various invalid optimize block configurations."""
-    
+
     print("\\n=== Testing Invalid Optimize Block Detection ===")
-    
+
     # Test missing required fields
     invalid_configs = [
         # Missing search_space
@@ -412,12 +412,12 @@ def test_invalid_optimize_blocks():
             }
         }
     ]
-    
+
     for i, invalid_ast in enumerate(invalid_configs, 1):
         errors = validate(invalid_ast)
         assert len(errors) > 0, f"Configuration {i} should have validation errors"
         print(f"✓ Configuration {i}: Correctly detected validation errors")
-    
+
     return True
 
 
@@ -425,7 +425,7 @@ def run_all_tests():
     """Run all optimize block tests."""
     print("GeneForgeLang Optimize Block Implementation Test")
     print("=" * 50)
-    
+
     tests = [
         test_active_learning_optimization,
         test_bayesian_optimization,
@@ -434,10 +434,10 @@ def run_all_tests():
         test_parameter_injection_validation,
         test_invalid_optimize_blocks,
     ]
-    
+
     passed = 0
     total = len(tests)
-    
+
     for test_func in tests:
         try:
             if test_func():
@@ -446,10 +446,10 @@ def run_all_tests():
                 print(f"❌ {test_func.__name__} failed")
         except Exception as e:
             print(f"❌ {test_func.__name__} raised exception: {e}")
-    
+
     print(f"\\n=== Test Summary ===")
     print(f"Passed: {passed}/{total}")
-    
+
     if passed == total:
         print("🎉 All tests passed! Optimize block implementation is working correctly.")
         return True

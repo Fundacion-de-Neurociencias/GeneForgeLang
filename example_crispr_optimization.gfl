@@ -12,7 +12,7 @@ optimize:
   # Define parameter search space
   search_space:
     guide_concentration: range(10, 100)     # nM concentration range
-    temperature: range(25, 42)              # °C temperature range  
+    temperature: range(25, 42)              # °C temperature range
     duration: choice([6, 12, 24, 48])       # hours incubation time
     cas9_ratio: range(0.5, 2.0)             # Cas9:gRNA molar ratio
 
@@ -23,7 +23,7 @@ optimize:
     initial_samples: 5
     batch_size: 3
 
-  # Optimization objective 
+  # Optimization objective
   objective:
     maximize: editing_efficiency
 
@@ -43,7 +43,7 @@ optimize:
         target_gene: TP53
         guide_rna: GGGCCGGGCGGGCTCCCAGA
         guide_concentration: ${guide_concentration}
-        incubation_temp: ${temperature}  
+        incubation_temp: ${temperature}
         duration: ${duration}h
         cas9_ratio: ${cas9_ratio}
         vector: pX458

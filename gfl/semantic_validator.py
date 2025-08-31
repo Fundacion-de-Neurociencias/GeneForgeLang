@@ -241,7 +241,7 @@ class EnhancedSemanticValidator:
             # Skip validation for parameter injection (${...} syntax)
             if isinstance(param_value, str) and param_value.startswith("${") and param_value.endswith("}"):
                 continue
-                
+
             if param_name in type_validations:
                 expected_types = type_validations[param_name]
                 if not isinstance(expected_types, tuple):
@@ -384,7 +384,7 @@ class EnhancedSemanticValidator:
 
         valid_entities = {
             "ProteinSequence",
-            "DNASequence", 
+            "DNASequence",
             "RNASequence",
             "SmallMolecule",
             "Peptide",
@@ -472,7 +472,7 @@ class EnhancedSemanticValidator:
         # Common metrics for different entity types
         valid_metrics = {
             "binding_affinity",
-            "stability", 
+            "stability",
             "solubility",
             "toxicity",
             "activity",
@@ -642,7 +642,7 @@ class EnhancedSemanticValidator:
             # Extract content between parentheses
             content = range_def[6:-1].strip()  # Remove 'range(' and ')'
             parts = [p.strip() for p in content.split(',')]
-            
+
             if len(parts) != 2:
                 error = self.result.add_error(
                     f"Range for '{param_name}' must have exactly 2 values: range(min, max)",
@@ -650,12 +650,12 @@ class EnhancedSemanticValidator:
                 )
                 error.add_fix(f"Use 'range(0.1, 1.0)' format for '{param_name}'")
                 return
-                
+
             # Try to parse as numbers
             try:
                 min_val = float(parts[0])
                 max_val = float(parts[1])
-                
+
                 if min_val >= max_val:
                     error = self.result.add_error(
                         f"Range minimum ({min_val}) must be less than maximum ({max_val}) for '{param_name}'",
@@ -668,7 +668,7 @@ class EnhancedSemanticValidator:
                     ErrorCodes.TYPE_INVALID_TYPE,
                 )
                 error.add_fix(f"Use numeric values like 'range(0.1, 1.0)' for '{param_name}'")
-                
+
         except Exception:
             error = self.result.add_error(
                 f"Invalid range syntax for '{param_name}': {range_def}",
@@ -683,7 +683,7 @@ class EnhancedSemanticValidator:
             # Find the opening [ and closing ]
             start_bracket = choice_def.find('[')
             end_bracket = choice_def.rfind(']')
-            
+
             if start_bracket == -1 or end_bracket == -1 or start_bracket >= end_bracket:
                 error = self.result.add_error(
                     f"Invalid choice syntax for '{param_name}': {choice_def}",
@@ -691,9 +691,9 @@ class EnhancedSemanticValidator:
                 )
                 error.add_fix(f"Use correct format: 'choice([val1, val2, ...])' for '{param_name}'")
                 return
-                
+
             content = choice_def[start_bracket + 1:end_bracket].strip()
-            
+
             if not content:
                 error = self.result.add_error(
                     f"Choice for '{param_name}' cannot be empty",
@@ -701,10 +701,10 @@ class EnhancedSemanticValidator:
                 )
                 error.add_fix(f"Add at least one choice value for '{param_name}'")
                 return
-                
+
             # Simple validation - should contain comma-separated values
             choices = [c.strip() for c in content.split(',') if c.strip()]
-            
+
             if len(choices) < 2:
                 error = self.result.add_error(
                     f"Choice for '{param_name}' should have at least 2 options",
@@ -712,7 +712,7 @@ class EnhancedSemanticValidator:
                     ErrorSeverity.WARNING,
                 )
                 error.add_fix(f"Add more choice options for '{param_name}'")
-                
+
         except Exception:
             error = self.result.add_error(
                 f"Invalid choice syntax for '{param_name}': {choice_def}",
@@ -749,7 +749,7 @@ class EnhancedSemanticValidator:
         # Known optimization strategies
         known_strategies = {
             "ActiveLearning",
-            "BayesianOptimization", 
+            "BayesianOptimization",
             "GeneticAlgorithm",
             "SimulatedAnnealing",
             "RandomSearch",
@@ -816,9 +816,9 @@ class EnhancedSemanticValidator:
 
         # Validate budget constraints
         valid_constraints = {
-            "max_experiments", 
-            "max_time", 
-            "max_cost", 
+            "max_experiments",
+            "max_time",
+            "max_cost",
             "convergence_threshold",
         }
 

@@ -3,7 +3,7 @@
 
 metadata:
   experiment_id: COVID_PROT_DESIGN_001
-  researcher: Dr. Jane Smith  
+  researcher: Dr. Jane Smith
   project: covid19_therapeutics
   description: Design high-affinity ACE2 binding proteins
   date: "2024-01-15"
@@ -15,7 +15,7 @@ design:
   # Specify the generative model plugin
   model: ProteinGeneratorVAE
 
-  # Define the optimization objective  
+  # Define the optimization objective
   objective:
     maximize: binding_affinity
     target: ACE2_receptor

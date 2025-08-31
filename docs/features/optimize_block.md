@@ -7,7 +7,7 @@ El bloque `optimize` representa uno de los avances más significativos en GeneFo
 En lugar de ejecutar experimentos de forma secuencial con parámetros fijos, el bloque `optimize` permite definir **bucles experimentales inteligentes** que:
 
 - **Aprenden** de cada experimento ejecutado
-- **Adaptan** la selección de parámetros basándose en resultados anteriores  
+- **Adaptan** la selección de parámetros basándose en resultados anteriores
 - **Convergen** hacia condiciones experimentales óptimas de forma eficiente
 - **Minimizan** el número de experimentos necesarios para encontrar soluciones
 
@@ -69,7 +69,7 @@ strategy:
   uncertainty_metric: entropy
   initial_samples: 5
 
-# Optimización bayesiana con función de adquisición específica  
+# Optimización bayesiana con función de adquisición específica
 strategy:
   name: BayesianOptimization
   acquisition_function: expected_improvement
@@ -118,7 +118,7 @@ Establece las restricciones y criterios de parada para el bucle de optimización
 **Restricciones Disponibles:**
 
 - **`max_experiments`**: Número máximo de experimentos (entero)
-- **`max_time`**: Tiempo máximo (formato: "24h", "7d", "30m")  
+- **`max_time`**: Tiempo máximo (formato: "24h", "7d", "30m")
 - **`max_cost`**: Presupuesto máximo (número)
 - **`convergence_threshold`**: Umbral de convergencia (0.0 - 1.0)
 
@@ -221,14 +221,14 @@ optimize:
         primer_conc: ${concentracion_primers}
         extension_time: ${tiempo_extension}s
         mgcl2_conc: ${concentracion_mgcl2}
-        
+
         # Parámetros fijos
         template_dna: "template_covid.fasta"
         forward_primer: "ATGACTGCCAAGTATTGGAG"
         reverse_primer: "TCAGATCCTCTTGCTGAAAT"
         cycles: 35
         replicates: 3
-        
+
 # Análisis posterior de todos los resultados
 analyze:
   strategy: comparative
@@ -247,7 +247,7 @@ analyze:
 optimize:
   search_space:
     concentracion_cas9: range(5, 50)          # ng/μL
-    concentracion_guia: range(10, 100)        # nM  
+    concentracion_guia: range(10, 100)        # nM
     tiempo_incubacion: choice([2, 4, 6, 8])   # horas
     temperatura: range(25, 37)                # °C
 
@@ -257,10 +257,10 @@ optimize:
 
   objective:
     maximize: eficiencia_edicion
-    
+
   budget:
     max_experiments: 60
-    
+
   run:
     experiment:
       tool: CRISPR_cas9
@@ -280,24 +280,24 @@ optimize:
   search_space:
     profundidad_secuenciacion: range(10, 50)     # Millones de reads
     longitud_reads: choice([75, 100, 150])       # Nucleótidos
-    protocolo_prep: choice([polyA, ribozero, total]) 
-    
+    protocolo_prep: choice([polyA, ribozero, total])
+
   strategy:
     name: GeneticAlgorithm
     population_size: 20
     mutation_rate: 0.1
-    
+
   objective:
     maximize: calidad_datos
     minimize: costo_por_muestra
-    
+
   budget:
     max_experiments: 40
     max_cost: 25000
-    
+
   run:
     experiment:
-      tool: RNAseq  
+      tool: RNAseq
       type: sequencing
       params:
         depth: ${profundidad_secuenciacion}M
@@ -314,26 +314,26 @@ optimize:
     ph_medio: range(7.0, 7.8)               # pH
     concentracion_oxigeno: range(5, 21)      # %
     densidad_inicial: range(1e4, 1e6)       # células/mL
-    
+
   strategy:
     name: SimulatedAnnealing
     initial_temperature: 100
     cooling_rate: 0.95
-    
+
   objective:
     maximize: tasa_crecimiento
-    
+
   budget:
     max_experiments: 100
     max_time: 14d
-    
+
   run:
     experiment:
       tool: cell_culture
       type: optimization
       params:
         glucose: ${concentracion_glucosa}
-        ph: ${ph_medio}  
+        ph: ${ph_medio}
         oxygen: ${concentracion_oxigeno}
         initial_density: ${densidad_inicial}
 ```
@@ -360,7 +360,7 @@ class CustomOptimizationStrategy(OptimizationStrategy):
     def suggest_experiments(self, history, budget_remaining):
         # Lógica personalizada para sugerir próximos experimentos
         pass
-        
+
     def update_model(self, experiment_results):
         # Actualizar modelo interno con nuevos resultados
         pass
@@ -375,7 +375,7 @@ class CustomOptimizationStrategy(OptimizationStrategy):
 
 ### 2. Selección de Estrategia
 - **ActiveLearning**: Ideal cuando los experimentos son costosos y el espacio es complejo
-- **BayesianOptimization**: Excelente para espacios continuos con ruido experimental  
+- **BayesianOptimization**: Excelente para espacios continuos con ruido experimental
 - **GeneticAlgorithm**: Útil para espacios discretos o con múltiples óptimos locales
 - **RandomSearch**: Buena línea base y para comparaciones
 
@@ -438,10 +438,10 @@ optimize:
     max_experiments: 20
   run: {...}
 
-# Fase 2: Refinamiento fino  
+# Fase 2: Refinamiento fino
 optimize:
   search_space:
-    temp: range(35, 40)      # Rango refinado 
+    temp: range(35, 40)      # Rango refinado
     conc: range(40, 60)      # Rango refinado
   strategy:
     name: BayesianOptimization  # Optimización precisa
