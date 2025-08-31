@@ -404,7 +404,7 @@ def compare_inference_models(
 
 def get_api_info() -> Dict[str, Any]:
     """Get information about the GFL API and available features.
-    
+
     Returns:
         Dictionary containing API version, available features, and system info.
     """
@@ -420,17 +420,18 @@ def get_api_info() -> Dict[str, Any]:
         "available_parsers": ["yaml"],
         "inference_models": ["heuristic"],
     }
-    
+
     if HAS_GRAMMAR_PARSER:
         info["available_parsers"].append("grammar")
-    
+
     try:
         from gfl.enhanced_inference_engine import get_inference_engine
+
         engine = get_inference_engine()
         info["inference_models"] = engine.list_models()
     except ImportError:
         pass
-    
+
     return info
 
 

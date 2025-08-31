@@ -1,0 +1,163 @@
+site_name: GeneForgeLang Documentation
+site_description: Comprehensive documentation for GeneForgeLang - Domain-specific language for genomic workflows
+site_author: Fundación de Neurociencias
+site_url: https://fundacion-de-neurociencias.github.io/GeneForgeLang/
+
+# Repository
+repo_name: Fundacion-de-Neurociencias/GeneForgeLang
+repo_url: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang
+edit_uri: edit/main/docs/
+
+# Configuration
+theme:
+  name: material
+  language: en
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - content.tooltips
+    - header.autohide
+    - navigation.expand
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+
+# Plugins
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+
+
+# Customization
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang
+    - icon: fontawesome/solid/globe
+      link: https://fundacion-neurociencias.org
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+
+# Extensions
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: Fundacion-de-Neurociencias
+      repo: GeneForgeLang
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Page tree
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: installation.md
+    - Tutorial: tutorial.md
+    - Quick Examples: language/examples.md
+  - User Guide:
+    - Language Syntax: language/syntax.md
+    - Best Practices: language/best-practices.md
+    - CLI Tools: cli.md
+    - Troubleshooting: support/troubleshooting.md
+  - Web Platform:
+    - Overview: WEB_API_IMPLEMENTATION_SUMMARY.md
+    - Getting Started: web-interface/getting-started.md
+    - Advanced Features: web-interface/advanced-features.md
+  - API Reference:
+    - REST API: API_REFERENCE.md
+    - Client SDK: api/client-sdk.md
+    - Authentication: api/authentication.md
+  - AI & Machine Learning:
+    - Enhanced Inference: ENHANCED_INFERENCE_SUMMARY.md
+    - Custom Models: inference/custom-models.md
+    - Performance: inference/performance.md
+  - Architecture:
+    - System Overview: architecture/overview.md
+    - Plugin System: architecture/plugins.md
+    - Inference Engine: architecture/inference.md
+  - Security:
+    - Security Advisory: SECURITY_ADVISORY.md
+    - Best Practices: security/best-practices.md
+    - Vulnerability Management: security/vulnerability-management.md
+  - Deployment:
+    - Production Setup: deployment/production.md
+    - Containers: deployment/containers.md
+    - Cloud Deployment: deployment/cloud.md
+  - Development:
+    - Contributing: ../CONTRIBUTING.md
+    - Setup Guide: development/setup.md
+    - Testing: development/testing.md
+  - Project:
+    - Roadmap: PHASE_4_PLANNING.md
+    - Changelog: ../CHANGELOG.md
+    - Research Paper: ../paper.md
+    - Citation: ../CITATION.cff
+
+# Additional CSS
+extra_css:
+  - stylesheets/extra.css
