@@ -30,6 +30,29 @@ server = [
   "starlette>=0.47.2",
   "aiohttp>=3.12.14",
 ]
+test = [
+  "pytest>=7.0",
+  "pytest-cov>=4.0",
+  "pytest-mock>=3.10",
+  "coverage>=7.0",
+]
+qa = [
+  "ruff>=0.1.0",
+  "black>=23.0",
+  "mypy>=1.5",
+  "bandit[toml]>=1.7",
+  "safety>=2.3",
+  "pre-commit>=3.0",
+]
+schema = [
+  "jsonschema>=4.0",
+  "pydantic>=2.0.0",
+]
+docs = [
+  "mkdocs-material>=9.0",
+  "mkdocs>=1.5",
+]
+minimal = []
 full = [
   "gradio>=5.35.0",
   "fastapi>=0.104.0",
@@ -44,6 +67,19 @@ full = [
   "ply>=3.11",
   "torch>=2.3; platform_machine!='arm64'",
   "transformers>=4.40",
+  "pytest>=7.0",
+  "pytest-cov>=4.0",
+  "pytest-mock>=3.10",
+  "coverage>=7.0",
+  "ruff>=0.1.0",
+  "black>=23.0",
+  "mypy>=1.5",
+  "bandit[toml]>=1.7",
+  "safety>=2.3",
+  "pre-commit>=3.0",
+  "jsonschema>=4.0",
+  "mkdocs-material>=9.0",
+  "mkdocs>=1.5",
 ]
 
 [tool.setuptools.packages.find]
@@ -59,6 +95,7 @@ gfl-inference = "gfl.cli_inference:main"
 gfl-server = "gfl.server_launcher:main"
 gfl-web = "gfl.web_interface:launch_web_interface"
 gfl-api = "gfl.api_server:run_server"
+gfl-info = "gfl.cli_utils:info"
 
 # Entry points for GFL plugins
 [project.entry-points."gfl.plugins"]

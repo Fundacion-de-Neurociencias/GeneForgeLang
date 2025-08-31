@@ -1,0 +1,68 @@
+[tool.ruff]
+# Enable specific rule categories
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # Pyflakes
+    "UP", # pyupgrade
+    "B",  # flake8-bugbear
+    "SIM", # flake8-simplify
+    "I",  # isort
+]
+
+# Allow specific violations
+ignore = [
+    "E501",  # Line too long
+    "E731",  # Do not assign a lambda expression
+    "F401",  # Module imported but unused
+    "F403",  # Star import used
+    "F841",  # Local variable assigned but never used
+    "UP007", # Use `X | Y` for type annotations
+    "B008",  # Do not perform function calls in argument defaults
+    "B904",  # raise ... from ... or raise ... from None
+]
+
+# Allow line lengths up to 120 characters
+line-length = 120
+
+# Assume Python 3.9+
+target-version = "py39"
+
+# Exclude common paths
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "site",
+    "docs",
+]
+
+[tool.ruff.per-file-ignores]
+# Allow specific patterns in test files
+"tests/**/*.py" = ["E501", "F401", "F403"]
+# Allow specific patterns in example files
+"examples/**/*.py" = ["E501", "F401", "F403"]
+# Allow all issues in scripts and tools
+"scripts/**/*.py" = ["E", "W", "F", "UP", "B", "SIM", "I"]
+"tools/**/*.py" = ["E", "W", "F", "UP", "B", "SIM", "I"]
+
+[tool.ruff.isort]
+# Use single line between sections
+split-on-trailing-comma = true
