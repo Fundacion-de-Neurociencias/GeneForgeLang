@@ -1,11 +1,15 @@
 # gfl/evaluator.py
 
-import sys
 from collections import deque
+
 from .validation_registry import (
-    VALID_SIMULATION_TARGETS, VALID_ANALYSIS_TOOLS, VALID_EXPERIMENT_TYPES,
-    VALID_ANALYSIS_STRATEGIES, VALID_PARAMS_BY_TOOL_STRATEGY
+    VALID_ANALYSIS_STRATEGIES,
+    VALID_ANALYSIS_TOOLS,
+    VALID_EXPERIMENT_TYPES,
+    VALID_PARAMS_BY_TOOL_STRATEGY,
+    VALID_SIMULATION_TARGETS,
 )
+
 
 class Evaluator:
     def __init__(self):
@@ -20,7 +24,7 @@ class Evaluator:
             if column is not None:
                 location += f", columna {column}"
             location += ")"
-        
+
         full_message = f"ERROR: {message}{location}."
         if suggestion:
             full_message += f" ¿Quizás quiso decir: {suggestion}?"
@@ -33,7 +37,7 @@ class Evaluator:
             if column is not None:
                 location += f", columna {column}"
             location += ")"
-        
+
         full_message = f"ADVERTENCIA: {message}{location}."
         if suggestion:
             full_message += f" {suggestion}"
@@ -49,12 +53,12 @@ class Evaluator:
                 suggestion = "'cell_growth'"
             elif "division" in target_name.lower():
                 suggestion = "'cell_division'"
-            
+
             self._log_error(
                 f"El objetivo de simulación '{target_name}' no es reconocido. Los objetivos válidos son: {valid_targets_str}",
-                line=node_info.get('line'),
-                column=node_info.get('column'),
-                suggestion=suggestion
+                line=node_info.get("line"),
+                column=node_info.get("column"),
+                suggestion=suggestion,
             )
             return False
         return True
@@ -70,9 +74,9 @@ class Evaluator:
 
             self._log_error(
                 f"La herramienta de análisis '{tool_name}' no es reconocida. Las herramientas válidas son: {valid_tools_str}",
-                line=node_info.get('line'),
-                column=node_info.get('column'),
-                suggestion=suggestion
+                line=node_info.get("line"),
+                column=node_info.get("column"),
+                suggestion=suggestion,
             )
             return False
         return True
@@ -80,11 +84,11 @@ class Evaluator:
     def _validate_experiment_type(self, exp_type, node_info):
         if exp_type not in VALID_EXPERIMENT_TYPES:
             valid_types_str = ", ".join(VALID_EXPERIMENT_TYPES)
-            
+
             self._log_error(
                 f"El tipo de experimento '{exp_type}' no es reconocido. Los tipos válidos son: {valid_types_str}",
-                line=node_info.get('line'),
-                column=node_info.get('column')
+                line=node_info.get("line"),
+                column=node_info.get("column"),
             )
             return False
         return True
@@ -94,12 +98,12 @@ class Evaluator:
             valid_strategies_str = ", ".join(VALID_ANALYSIS_STRATEGIES)
             self._log_error(
                 f"La estrategia de análisis '{strategy_name}' no es reconocida. Las estrategias válidas son: {valid_strategies_str}",
-                line=node_info.get('line'),
-                column=node_info.get('column')
+                line=node_info.get("line"),
+                column=node_info.get("column"),
             )
             return False
         return True
-    
+
     def _validate_analysis_params(self, tool, strategy, params, node_info):
         """
         Valida que los parámetros proporcionados sean válidos para la herramienta y estrategia dadas.
@@ -110,17 +114,23 @@ class Evaluator:
             # no podemos validar, pero ya se debería haber generado un error de herramienta.
             # Podríamos loguear una advertencia si se proporcionaron params inesperadamente.
             if params:
-                self._log_warning(f"No hay parámetros definidos para la herramienta '{tool}'. Los parámetros proporcionados serán ignorados o podrían causar errores posteriores.",
-                                  line=node_info.get('line'), column=node_info.get('column'))
-            return True # No hay definición de params, así que no podemos validar más estrictamente
+                self._log_warning(
+                    f"No hay parámetros definidos para la herramienta '{tool}'. Los parámetros proporcionados serán ignorados o podrían causar errores posteriores.",
+                    line=node_info.get("line"),
+                    column=node_info.get("column"),
+                )
+            return True  # No hay definición de params, así que no podemos validar más estrictamente
 
         strategy_params = tool_params.get(strategy)
         if not strategy_params:
             # Si la estrategia no tiene parámetros definidos para la herramienta,
             # lo mismo que arriba.
             if params:
-                self._log_warning(f"No hay parámetros definidos para la estrategia '{strategy}' bajo la herramienta '{tool}'. Los parámetros proporcionados serán ignorados o podrían causar errores posteriores.",
-                                  line=node_info.get('line'), column=node_info.get('column'))
+                self._log_warning(
+                    f"No hay parámetros definidos para la estrategia '{strategy}' bajo la herramienta '{tool}'. Los parámetros proporcionados serán ignorados o podrían causar errores posteriores.",
+                    line=node_info.get("line"),
+                    column=node_info.get("column"),
+                )
             return True
 
         all_params_valid = True
@@ -129,9 +139,11 @@ class Evaluator:
                 valid_param_keys = ", ".join(strategy_params.keys())
                 self._log_error(
                     f"El parámetro '{param_name}' no es válido para la herramienta '{tool}' con estrategia '{strategy}'.",
-                    line=node_info.get('line'),
-                    column=node_info.get('column'),
-                    suggestion=f"Los parámetros válidos son: {valid_param_keys}" if valid_param_keys else "No hay parámetros válidos definidos."
+                    line=node_info.get("line"),
+                    column=node_info.get("column"),
+                    suggestion=f"Los parámetros válidos son: {valid_param_keys}"
+                    if valid_param_keys
+                    else "No hay parámetros válidos definidos.",
                 )
                 all_params_valid = False
             # TODO: Aquí se podría añadir validación de tipo/rango para param_value
@@ -142,64 +154,85 @@ class Evaluator:
 
         return all_params_valid
 
-
     def evaluate(self, node):
-        node_type = node.get('type')
-        node_info = {'line': node.get('line'), 'column': node.get('column')}
+        node_type = node.get("type")
+        node_info = {"line": node.get("line"), "column": node.get("column")}
 
-        if node_type == 'program':
-            for statement in node.get('statements', []):
+        if node_type == "program":
+            for statement in node.get("statements", []):
                 self.evaluate(statement)
-        
-        elif node_type == 'simulate_statement':
-            target = node.get('target')
+
+        elif node_type == "simulate_statement":
+            target = node.get("target")
             if self._validate_target(target, node_info):
                 self.output_buffer.append(f"INFO: Simulación de '{target}' iniciada.")
             else:
-                self.output_buffer.append(f"ERROR: Simulación no válida debido a objetivo inválido.")
+                self.output_buffer.append(
+                    "ERROR: Simulación no válida debido a objetivo inválido."
+                )
 
-        elif node_type == 'analyze_statement':
-            tool = node.get('tool')
-            params = node.get('params', {})
-            strategy = node.get('strategy')
+        elif node_type == "analyze_statement":
+            tool = node.get("tool")
+            params = node.get("params", {})
+            strategy = node.get("strategy")
 
             tool_valid = self._validate_tool(tool, node_info)
             strategy_valid = True
             if strategy:
                 strategy_valid = self._validate_analysis_strategy(strategy, node_info)
 
-            params_valid = self._validate_analysis_params(tool, strategy, params, node_info)
+            params_valid = self._validate_analysis_params(
+                tool, strategy, params, node_info
+            )
 
             if tool_valid and strategy_valid and params_valid:
-                self.output_buffer.append(f"INFO: Análisis usando '{tool}' con estrategia '{strategy}' y parámetros: {params}.")
+                self.output_buffer.append(
+                    f"INFO: Análisis usando '{tool}' con estrategia '{strategy}' y parámetros: {params}."
+                )
             else:
-                self.output_buffer.append(f"ERROR: No se puede realizar el análisis debido a problemas de herramienta, estrategia o parámetros.")
+                self.output_buffer.append(
+                    "ERROR: No se puede realizar el análisis debido a problemas de herramienta, estrategia o parámetros."
+                )
 
-        elif node_type == 'experiment_block':
-            exp_type = node.get('type')
-            block_statements = node.get('statements', [])
-            
+        elif node_type == "experiment_block":
+            exp_type = node.get("type")
+            block_statements = node.get("statements", [])
+
             if self._validate_experiment_type(exp_type, node_info):
-                self.output_buffer.append(f"INFO: Bloque de experimento de tipo '{exp_type}' iniciado.")
+                self.output_buffer.append(
+                    f"INFO: Bloque de experimento de tipo '{exp_type}' iniciado."
+                )
                 for statement in block_statements:
                     self.evaluate(statement)
-                self.output_buffer.append(f"INFO: Bloque de experimento de tipo '{exp_type}' finalizado.")
+                self.output_buffer.append(
+                    f"INFO: Bloque de experimento de tipo '{exp_type}' finalizado."
+                )
             else:
-                self.output_buffer.append(f"ERROR: No se puede ejecutar el bloque de experimento debido a un tipo inválido.")
+                self.output_buffer.append(
+                    "ERROR: No se puede ejecutar el bloque de experimento debido a un tipo inválido."
+                )
 
-        elif node_type == 'branch_statement':
-            condition = node.get('condition')
-            true_block = node.get('true_block', [])
-            false_block = node.get('false_block', [])
+        elif node_type == "branch_statement":
+            condition = node.get("condition")
+            true_block = node.get("true_block", [])
+            node.get("false_block", [])
 
-            self.output_buffer.append(f"INFO: Se encontró una bifurcación con condición: '{condition}'.")
-            
-            self.output_buffer.append(f"INFO: Ejecutando el bloque 'verdadero' de la bifurcación (simulado).")
+            self.output_buffer.append(
+                f"INFO: Se encontró una bifurcación con condición: '{condition}'."
+            )
+
+            self.output_buffer.append(
+                "INFO: Ejecutando el bloque 'verdadero' de la bifurcación (simulado)."
+            )
             for statement in true_block:
                 self.evaluate(statement)
 
         else:
-            self._log_warning(f"Tipo de nodo AST no reconocido: {node_type}", line=node_info.get('line'), column=node_info.get('column'))
+            self._log_warning(
+                f"Tipo de nodo AST no reconocido: {node_type}",
+                line=node_info.get("line"),
+                column=node_info.get("column"),
+            )
 
     def get_output(self):
         output_list = list(self.output_buffer)
@@ -208,4 +241,3 @@ class Evaluator:
 
     def has_errors(self):
         return any("ERROR:" in msg for msg in self.output_buffer)
-

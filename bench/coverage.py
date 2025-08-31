@@ -1,6 +1,8 @@
-﻿import glob
+import glob
 import traceback
-from gfl.parser import GFLParser, GFLParseError
+
+from gfl.parser import GFLParseError, GFLParser
+
 
 def main():
     parser = GFLParser()
@@ -16,13 +18,14 @@ def main():
             success += 1
         except GFLParseError as e:
             failed.append((f, str(e)))
-        except Exception as e:
+        except Exception:
             failed.append((f, "Unexpected: " + traceback.format_exc().splitlines()[-1]))
     print(f"Parsed successfully: {success}/{total} ({success/total*100:.1f}% coverage)")
     if failed:
         print("\n-- Failures --")
         for fn, err in failed:
             print(f"{fn}: {err}")
+
 
 if __name__ == "__main__":
     main()

@@ -1,12 +1,12 @@
-import sys
 import os
+import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+from pprint import pprint
+
+from gfl.adaptive_reasoner import apply_adaptive_rules
 from gfl.lexer import lexer
 from gfl.parser_rules import parser
-from gfl.adaptive_reasoner import apply_adaptive_rules
-from gfl.execution.experiment_runner import run_experiment
-from pprint import pprint
 
 if __name__ == "__main__":
     with open("applications/pipeline_basic_scRNA.gfl") as f:

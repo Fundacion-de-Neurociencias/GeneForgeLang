@@ -1,11 +1,14 @@
 axioms = set()
 rules = []
 
+
 def add_axiom(expr):
     axioms.add(expr)
 
+
 def add_rule(premise, conclusion):
     rules.append((premise, conclusion))
+
 
 def infer():
     new_inferences = True
@@ -15,6 +18,7 @@ def infer():
             if premise in axioms and conclusion not in axioms:
                 axioms.add(conclusion)
                 new_inferences = True
+
 
 def explain():
     print("=== 🔍 Axiomas conocidos ===")

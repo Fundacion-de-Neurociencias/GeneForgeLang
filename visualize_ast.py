@@ -1,4 +1,5 @@
-﻿import json
+import json
+
 import pandas as pd
 
 with open("output_ast.json", encoding="utf-8") as f:

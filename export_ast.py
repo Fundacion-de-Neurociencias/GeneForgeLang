@@ -1,7 +1,9 @@
-﻿import sys
 import json
+import sys
+
 from gfl import parser
 from gfl.semantic_validator import validate_ast
+
 
 def run_export(file_path):
     print(f"\n📤 Exportando AST de: {file_path}")
@@ -19,6 +21,7 @@ def run_export(file_path):
         print("📁 AST exportado a output_ast.json")
     else:
         print("❌ Validación semántica FALLIDA.")
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

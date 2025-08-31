@@ -1,8 +1,8 @@
 # GeneForgeLang Ontology
 
-**Version:** 0.1  
-**Maintainer:** Fundación de Neurociencias  
-**License:** MIT  
+**Version:** 0.1
+**Maintainer:** Fundación de Neurociencias
+**License:** MIT
 **Purpose:** Provide a unified ontological foundation for symbolic reasoning in molecular design, reconciling biological logic and philosophical logic through GeneForgeLang (GFL).
 
 ---
@@ -62,8 +62,8 @@ This ontology enables **deductive**, **inductive**, and **abductive** reasoning 
 From a general GFL rule to a specific output:
 
 ```text
-Rule: Mot(PEST) = Deg  
-Input: ^p:Dom(Kin)-Mot(PEST)  
+Rule: Mot(PEST) = Deg
+Input: ^p:Dom(Kin)-Mot(PEST)
 → Inferred: Degradation likely
 ```
 
@@ -72,7 +72,7 @@ Input: ^p:Dom(Kin)-Mot(PEST)
 From observed patterns to a generalized rule:
 
 ```text
-Observed: MUT@42 → Functional loss  
+Observed: MUT@42 → Functional loss
 → Inferred: All variants at position 42 likely deleterious
 ```
 
@@ -81,7 +81,7 @@ Observed: MUT@42 → Functional loss
 From observed effects to probable cause:
 
 ```text
-Phenotype: Loss of enzyme activity  
+Phenotype: Loss of enzyme activity
 → Candidate phrase: ^p:Dom(Hyd)-[MUT:G>A@123]
 ```
 
@@ -122,10 +122,10 @@ target:
 
 ## 8. Roadmap
 
-- ✅ Integration with GFL Transformer for symbolic → causal simulation  
-- ✅ Export support to OWL and RDF for use in semantic web agents  
-- ✅ Syntax-to-logic validator for consistency enforcement  
-- 🔜 Ontology-driven therapeutic reasoning engine  
+- ✅ Integration with GFL Transformer for symbolic → causal simulation
+- ✅ Export support to OWL and RDF for use in semantic web agents
+- ✅ Syntax-to-logic validator for consistency enforcement
+- 🔜 Ontology-driven therapeutic reasoning engine
 - 🔜 Multi-organism cross-mapping for translational models
 
 ---

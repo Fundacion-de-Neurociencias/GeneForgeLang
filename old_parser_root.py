@@ -1,13 +1,14 @@
-
-import re
 import json
+import re
 
 with open("geneforge_grammar.json", "r", encoding="utf-8") as f:
     grammar = json.load(f)
 
 # Compilar patrones
 regex_prefix = re.compile(r"^([~:\^\*!])([a-z]+):")
-regex_entity = re.compile(r"(DNA|RNA|mRNA|ncRNA|miRNA|Protein|Ribozyme|Enzyme|TF|RegElement|Virus|Plasmid):([^\s]+)(\{[^}]*\})?")
+regex_entity = re.compile(
+    r"(DNA|RNA|mRNA|ncRNA|miRNA|Protein|Ribozyme|Enzyme|TF|RegElement|Virus|Plasmid):([^\s]+)(\{[^}]*\})?"
+)
 regex_mechanism = re.compile(r"(TRANSCRIBE|SPLICE|TRANSLATE|EDIT|INHIBIT)\(([^)]+)\)")
 regex_logic_block = re.compile(r"Ctrl\{([^}]+)\}")
 regex_ptm = re.compile(r"([A-Z])\*([A-Za-z]+)@(\d+)")
@@ -32,6 +33,7 @@ regex_macro = re.compile(r"MACRO:([A-Za-z_0-9]+)=\{(.+?)\}")
 regex_use = re.compile(r"USE:([A-Za-z_0-9]+)")
 regex_localized = re.compile(r"localized\(([^)]+)\)")
 
+
 def parse_metadata_block(block):
     metadata = {}
     block = block.strip("{} ")
@@ -40,6 +42,7 @@ def parse_metadata_block(block):
             key, val = pair.strip().split("=")
             metadata[key.strip()] = val.strip()
     return metadata
+
 
 def parse_geneforge_line(line):
     output = {
@@ -68,7 +71,7 @@ def parse_geneforge_line(line):
         "macros": [],
         "macro_calls": [],
         "localized": [],
-        "errors": []
+        "errors": [],
     }
 
     prefix_match = regex_prefix.match(line)
@@ -79,37 +82,70 @@ def parse_geneforge_line(line):
     structure_symbol, molecule_code = prefix_match.groups()
     output["structure"] = grammar["structures"].get(structure_symbol, "❓ Unknown")
     output["molecule"] = grammar["molecules"].get(molecule_code, "❓ Unknown")
-    content = line[len(prefix_match.group(0)):]
+    content = line[len(prefix_match.group(0)) :]
 
-    output["entities"] = [{"type": m, "target": t, "metadata": parse_metadata_block(md)} for m, t, md in regex_entity.findall(content)]
-    output["mechanisms"] = [{"type": mech, "target": tgt} for mech, tgt in regex_mechanism.findall(content)]
+    output["entities"] = [
+        {"type": m, "target": t, "metadata": parse_metadata_block(md)}
+        for m, t, md in regex_entity.findall(content)
+    ]
+    output["mechanisms"] = [
+        {"type": mech, "target": tgt} for mech, tgt in regex_mechanism.findall(content)
+    ]
     output["logic"] = regex_logic_block.findall(content)
 
     for aa, mod, pos in regex_ptm.findall(content):
-        output["ptms"].append({"notation": "ProForma", "residue": aa, "modification": mod, "position": int(pos)})
+        output["ptms"].append(
+            {
+                "notation": "ProForma",
+                "residue": aa,
+                "modification": mod,
+                "position": int(pos),
+            }
+        )
     for mod, aa, pos in regex_compact_ptm.findall(content):
-        output["ptms"].append({"notation": "GFL", "residue": aa, "modification": mod, "position": int(pos)})
+        output["ptms"].append(
+            {
+                "notation": "GFL",
+                "residue": aa,
+                "modification": mod,
+                "position": int(pos),
+            }
+        )
 
     for origin, f, t, pos in regex_mut_prov.findall(content):
-        output["mutations"].append({"origin": origin, "from": f, "to": t, "position": int(pos)})
+        output["mutations"].append(
+            {"origin": origin, "from": f, "to": t, "position": int(pos)}
+        )
     for f, t, pos in regex_mut_simple.findall(content):
         output["mutations"].append({"from": f, "to": t, "position": int(pos)})
 
-    output["insertions"] = [{"sequence": s, "position": int(pos)} for s, pos in regex_ins.findall(content)]
-    output["deletions"] = [{"start": int(a), "end": int(b)} for a, b in regex_del.findall(content)]
+    output["insertions"] = [
+        {"sequence": s, "position": int(pos)} for s, pos in regex_ins.findall(content)
+    ]
+    output["deletions"] = [
+        {"start": int(a), "end": int(b)} for a, b in regex_del.findall(content)
+    ]
 
     for kind, op, meta in regex_edit.findall(content):
-        output["edits"].append({"type": kind, "operation": op, "metadata": parse_metadata_block(meta) if meta else {}})
-
-    for n, kind, op, meta in regex_dose.findall(content):
-        output["doses"].append({
-            "number": int(n),
-            "edit": {
+        output["edits"].append(
+            {
                 "type": kind,
                 "operation": op,
-                "metadata": parse_metadata_block(meta) if meta else {}
+                "metadata": parse_metadata_block(meta) if meta else {},
             }
-        })
+        )
+
+    for n, kind, op, meta in regex_dose.findall(content):
+        output["doses"].append(
+            {
+                "number": int(n),
+                "edit": {
+                    "type": kind,
+                    "operation": op,
+                    "metadata": parse_metadata_block(meta) if meta else {},
+                },
+            }
+        )
 
     delivery = regex_deliv.search(content)
     if delivery:
@@ -118,26 +154,49 @@ def parse_geneforge_line(line):
     for condition, action in regex_conditional.findall(content):
         output["conditionals"].append({"if": condition.strip(), "then": action.strip()})
 
-    output["effects"] = [{
-        "direction": d, "effect": e.strip(), "time": t.strip() if t else None, "metadata": parse_metadata_block(meta) if meta else None
-    } for d, e, t, meta in regex_effect.findall(content)]
+    output["effects"] = [
+        {
+            "direction": d,
+            "effect": e.strip(),
+            "time": t.strip() if t else None,
+            "metadata": parse_metadata_block(meta) if meta else None,
+        }
+        for d, e, t, meta in regex_effect.findall(content)
+    ]
 
-    output["fitness"] = [{"target": t, "value": float(v)} for t, v in regex_fit.findall(content)]
-    output["probabilities"] = [{"event": ev, "value": float(p)} for ev, p in regex_prob.findall(content)]
-    output["epistasis"] = [{"variants": v, "metadata": parse_metadata_block(meta)} for v, meta in regex_epi.findall(content)]
+    output["fitness"] = [
+        {"target": t, "value": float(v)} for t, v in regex_fit.findall(content)
+    ]
+    output["probabilities"] = [
+        {"event": ev, "value": float(p)} for ev, p in regex_prob.findall(content)
+    ]
+    output["epistasis"] = [
+        {"variants": v, "metadata": parse_metadata_block(meta)}
+        for v, meta in regex_epi.findall(content)
+    ]
     output["localized"] = regex_localized.findall(content)
-    output["hypotheses"] = [{"if": i.strip(), "then": t.strip()} for i, t in regex_hypothesis.findall(content)]
+    output["hypotheses"] = [
+        {"if": i.strip(), "then": t.strip()}
+        for i, t in regex_hypothesis.findall(content)
+    ]
     output["simulations"] = regex_simulate.findall(content)
     output["pathways"] = regex_pathway.findall(content)
-    output["macros"] = [{"name": name, "body": body} for name, body in regex_macro.findall(content)]
+    output["macros"] = [
+        {"name": name, "body": body} for name, body in regex_macro.findall(content)
+    ]
     output["macro_calls"] = regex_use.findall(content)
-    output["timed_events"] = [{"time": time, "event": evt.strip()} for time, evt in regex_time.findall(content)]
+    output["timed_events"] = [
+        {"time": time, "event": evt.strip()}
+        for time, evt in regex_time.findall(content)
+    ]
 
     output["valid"] = True
     return output
 
+
 if __name__ == "__main__":
     import sys
+
     if len(sys.argv) > 1:
         line = sys.argv[1]
         result = parse_geneforge_line(line)

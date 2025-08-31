@@ -1,21 +1,40 @@
 cff-version: 1.2.0
-title: GeneForgeLang: A Symbolic Language for Rational Bio-Design and Clinical Genomic Engineering
+message: "If you use this software, please cite it as below."
+type: software
+title: "GeneForgeLang: A Domain-Specific Language for Genomic Workflows"
 authors:
-  - family-names: Menéndez González
-    given-names: Manuel
-    affiliation: Fundación de Neurociencias
-    orcid: https://orcid.org/0000-0000-0000-0000
-    email: contacto@fundaciondeneurociencias.org
-license: MIT
-message: "If you use GeneForgeLang, please cite this whitepaper."
-repository-code: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang
-url: https://doi.org/10.5281/zenodo.15493559
-doi: 10.5281/zenodo.15493559
-version: 1.1
+  - family-names: "Fundación de Neurociencias"
+    given-names: "Research Team"
+    email: "research@fundacion-neurociencias.org"
+    website: "https://fundacion-neurociencias.org"
+repository-code: "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang"
+url: "https://fundacion-de-neurociencias.github.io/GeneForgeLang/"
+abstract: >-
+  GeneForgeLang (GFL) is a domain-specific language designed for specifying,
+  validating, and reasoning about genomic workflows and experiments. It enables
+  structured representation of biological protocols using a YAML-like syntax,
+  facilitating automation, reproducibility, and integration with AI/ML models
+  in genomics research.
 keywords:
-  - gene editing
-  - symbolic biology
-  - molecular design
-  - cross-modality modeling
-  - synthetic biology
-date-released: 2025-05-23
+  - genomics
+  - domain-specific-language
+  - bioinformatics
+  - workflow-specification
+  - YAML
+  - machine-learning
+  - probabilistic-reasoning
+  - CRISPR
+  - gene-editing
+license: MIT
+version: "1.0.0"
+date-released: "2024-08-31"
+preferred-citation:
+  type: article
+  title: "GeneForgeLang: A Domain-Specific Language for Reproducible Genomic Workflows with AI Integration"
+  authors:
+    - family-names: "Fundación de Neurociencias"
+      given-names: "Research Team"
+  year: 2024
+  journal: "bioRxiv"
+  doi: "10.1101/2024.08.31.geneforgelang"
+  url: "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang"

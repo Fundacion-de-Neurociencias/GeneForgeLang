@@ -15,6 +15,6 @@ if (!(Test-Path "C:\Users\usuario\GeneForge\GeneForgeLang\docs")) { New-Item "C:
 |-------|----|-------------|
 | ector_tropism_match | **3.0** | Tropismo de vector coincide con tejido |
 | epeat_interruption  | **4.0** | Interrupción de tripletes patogénicos |
-| 
+|
 on_equity_governance| **0.5** | Falta valor ético clave |
 | high_offtarget       | **0.4** | Riesgo off‑target > 0.6 |

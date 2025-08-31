@@ -1,17 +1,10 @@
-prime_edit(
-  target = HBB,
-  pegRNA = peg(pbs = "ATCG", rtt = "TTAGG", nick_site = +17),
-  reverse_transcriptase = PEmax
-)
-
-base_edit(
-  target = HBB,
-  deaminase = ABE8e,
-  window = 4
-)
-
-prime_del(
-  target = HBB,
-  pegRNA_left = peg(pbs = "ATCG", rtt = "GCTA", nick_site = +12),
-  pegRNA_right = peg(pbs = "GATC", rtt = "CGAT", nick_site = -8)
-)
+experiment:
+  tool: CRISPR_cas9
+  type: gene_editing
+  params:
+    target_gene: HBB
+analyze:
+  strategy: differential_expression
+  thresholds:
+    p_value: 0.01
+    log2FoldChange: 2.0

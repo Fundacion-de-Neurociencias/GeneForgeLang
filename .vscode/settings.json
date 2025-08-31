@@ -1,0 +1,42 @@
+{
+  "yaml.schemas": {
+    "./schema/gfl.schema.json": [
+      "*.gfl",
+      "*.gfl.yaml",
+      "*.gfl.yml"
+    ]
+  },
+  "yaml.validate": true,
+  "yaml.completion": true,
+  "yaml.hover": true,
+  "yaml.format.enable": true,
+  "yaml.format.singleQuote": false,
+  "yaml.format.bracketSpacing": true,
+  "yaml.format.proseWrap": "preserve",
+  "yaml.customTags": [
+    "!include",
+    "!reference"
+  ],
+  "files.associations": {
+    "*.gfl": "yaml",
+    "*.gfl.yaml": "yaml",
+    "*.gfl.yml": "yaml"
+  },
+  "emmet.includeLanguages": {
+    "gfl": "yaml"
+  },
+  "[yaml]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.autoIndent": "full",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace"
+  },
+  "gfl.validation.enabled": true,
+  "gfl.completion.enabled": true,
+  "gfl.hover.enabled": true
+}

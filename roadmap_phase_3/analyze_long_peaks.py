@@ -17,11 +17,13 @@ with open(bed_file) as f:
 os.makedirs("./results", exist_ok=True)
 
 with open(output_file, "w") as out:
-    out.write("chrom\tn_peaks_gt_2000bp\ttop1_start\ttop1_end\ttop1_length\ttop2_start\ttop2_end\ttop2_length\ttop3_start\ttop3_end\ttop3_length\n")
+    out.write(
+        "chrom\tn_peaks_gt_2000bp\ttop1_start\ttop1_end\ttop1_length\ttop2_start\ttop2_end\ttop2_length\ttop3_start\ttop3_end\ttop3_length\n"
+    )
     for chrom in sorted(chr_peaks):
         peaks = sorted(chr_peaks[chrom], key=lambda x: x[2], reverse=True)
         n = len(peaks)
-        tops = peaks[:3] + [('', '', '')] * (3 - len(peaks))
+        tops = peaks[:3] + [("", "", "")] * (3 - len(peaks))
         tops_flat = [str(x) for peak in tops for x in peak]
         out.write(f"{chrom}\t{n}\t" + "\t".join(tops_flat) + "\n")
 

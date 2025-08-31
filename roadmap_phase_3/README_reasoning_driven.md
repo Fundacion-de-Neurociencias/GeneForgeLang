@@ -48,4 +48,3 @@ TRACE(reasoning="Three strategies compared: Base Editing, Prime Editing, Exon Sk
 ## Impact
 
 This platform delivers AI-powered, explainable, and executable molecular engineering—multiplying the power of LLMs and GFL for next-gen bioengineering, precision medicine, agriculture, and synthetic biology.
-

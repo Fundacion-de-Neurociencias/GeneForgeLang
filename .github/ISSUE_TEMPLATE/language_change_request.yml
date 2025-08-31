@@ -1,0 +1,32 @@
+﻿name: Language Change Request
+about: Propose a new syntax/feature or change to GFL
+labels: enhancement, language
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the motivation, proposed syntax/semantics, and examples.
+  - type: input
+    id: motivation
+    attributes:
+      label: Motivation / Use case
+      placeholder: Why is this needed in GF?
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal (syntax/semantics)
+      placeholder: Show example GFL-YAML and expected AST/behavior
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      placeholder: Backwards compatibility, affected modules, migration plan
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Parser updated
+        - label: Validator/Interpreter updated
+        - label: Tests added
+        - label: Docs updated

@@ -1,5 +1,6 @@
-﻿import torch
+import torch
 import torch.nn as nn
+
 
 class TranslateLSTM(nn.Module):
     """
@@ -8,14 +9,25 @@ class TranslateLSTM(nn.Module):
     - Secuencia CDS inicial (one-hot 4 canales)
     - Features adicionales (GC%, ΔG, #uAUG, #sites RBP, #sites miR)
     """
+
     def __init__(self, utr_length=300, cds_length=100, feature_dim=5, hidden_dim=128):
         super().__init__()
-        self.utr_lstm = nn.LSTM(input_size=4, hidden_size=hidden_dim, num_layers=2,
-                                 bidirectional=True, batch_first=True)
-        self.cds_lstm = nn.LSTM(input_size=4, hidden_size=hidden_dim, num_layers=2,
-                                 bidirectional=True, batch_first=True)
-        self.fc_features = nn.Linear(feature_dim, hidden_dim*2)
-        self.fc_out = nn.Linear(hidden_dim*4 + hidden_dim*2, 1)
+        self.utr_lstm = nn.LSTM(
+            input_size=4,
+            hidden_size=hidden_dim,
+            num_layers=2,
+            bidirectional=True,
+            batch_first=True,
+        )
+        self.cds_lstm = nn.LSTM(
+            input_size=4,
+            hidden_size=hidden_dim,
+            num_layers=2,
+            bidirectional=True,
+            batch_first=True,
+        )
+        self.fc_features = nn.Linear(feature_dim, hidden_dim * 2)
+        self.fc_out = nn.Linear(hidden_dim * 4 + hidden_dim * 2, 1)
 
     def forward(self, utr_seq_onehot, cds_seq_onehot, extra_features):
         # utr_seq_onehot: [batch, utr_len, 4]
@@ -30,5 +42,5 @@ class TranslateLSTM(nn.Module):
         h_feat = torch.relu(self.fc_features(extra_features))  # [batch, hidden_dim*2]
         # concatenar todas las representaciones
         h_comb = torch.cat([h_utr, h_cds, h_feat], dim=1)  # [batch, hidden_dim*6]
-        out = torch.sigmoid(self.fc_out(h_comb))           # [batch, 1]
+        out = torch.sigmoid(self.fc_out(h_comb))  # [batch, 1]
         return out

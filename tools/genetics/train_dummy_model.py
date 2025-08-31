@@ -1,7 +1,8 @@
 import os
 import pickle
-from sklearn.ensemble import RandomForestClassifier
+
 from sklearn.datasets import make_classification
+from sklearn.ensemble import RandomForestClassifier
 
 # Ruta donde guardar el modelo
 model_path = "tools/genetics/genetic_risk_predictor.pkl"

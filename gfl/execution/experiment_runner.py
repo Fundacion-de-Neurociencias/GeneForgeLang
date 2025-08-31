@@ -1,5 +1,6 @@
 import scanpy as sc
 
+
 def run_experiment(node):
     """
     Ejecuta un análisis real de scRNA-seq con Scanpy.
@@ -10,7 +11,9 @@ def run_experiment(node):
 
     # Si solo es imputación, simula o implementa aquí tu método real
     if params.get("imputation"):
-        print("    [Scanpy] Imputación (dummy; implementa aquí MAGIC, ALRA, etc. si quieres)...")
+        print(
+            "    [Scanpy] Imputación (dummy; implementa aquí MAGIC, ALRA, etc. si quieres)..."
+        )
         return {"status": "ok", "note": "Imputation step (no-op in demo)"}
 
     # Carga el archivo de datos
@@ -36,7 +39,9 @@ def run_experiment(node):
         sc.pp.filter_cells(adata, min_genes=min_genes or 0)
         sc.pp.filter_genes(adata, min_cells=min_cells or 0)
         if adata.n_obs == 0 or adata.n_vars == 0:
-            print(f"    [Scanpy][WARN] El filtrado eliminó todos los datos (celdas: {initial_cells}→{adata.n_obs}, genes: {initial_genes}→{adata.n_vars})")
+            print(
+                f"    [Scanpy][WARN] El filtrado eliminó todos los datos (celdas: {initial_cells}→{adata.n_obs}, genes: {initial_genes}→{adata.n_vars})"
+            )
             return {"status": "error", "note": "El filtrado eliminó todos los datos"}
 
     # PCA solo si quedan datos suficientes
@@ -58,5 +63,5 @@ def run_experiment(node):
         "status": "ok",
         "n_obs": adata.n_obs,
         "n_vars": adata.n_vars,
-        "note": "Scanpy real ejecutado"
+        "note": "Scanpy real ejecutado",
     }

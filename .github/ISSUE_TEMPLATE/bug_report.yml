@@ -1,0 +1,25 @@
+﻿name: Bug Report
+about: Report a defect in GeneForgeLang
+labels: bug
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: e.g., 0.2.0
+  - type: textarea
+    id: desc
+    attributes:
+      label: Description
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior

@@ -1,4 +1,5 @@
-﻿import json
+import json
+
 
 def validate_with_rules(ast):
     with open("rules.json", "r", encoding="utf-8-sig") as f:
@@ -12,6 +13,8 @@ def validate_with_rules(ast):
                 print(f"❌ Falta el argumento '{key}' en {operation}.")
                 return False
             if isinstance(expected, list) and args[key] not in expected:
-                print(f"❌ Valor inválido para '{key}' en {operation}: {args[key]}. Esperado: {expected}")
+                print(
+                    f"❌ Valor inválido para '{key}' en {operation}: {args[key]}. Esperado: {expected}"
+                )
                 return False
     return True

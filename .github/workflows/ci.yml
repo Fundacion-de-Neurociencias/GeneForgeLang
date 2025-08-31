@@ -1,0 +1,69 @@
+﻿﻿name: CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Upgrade pip
+        run: python -m pip install -U pip
+      - name: Install package (editable) + tools
+        run: |
+          python -m pip install -e .
+          python -m pip install pytest ruff pre-commit
+      - name: Ruff lint (check only)
+        run: ruff check . --exit-zero
+      - name: Ruff format (check only)
+        run: ruff format --check . --diff
+      - name: Run tests (if any)
+        if: ${{ hashFiles('tests/**') != '' }}
+        run: pytest -q --tb=short
+      - name: Run pre-commit (all files)
+        uses: pre-commit/action@v3.0.1
+        continue-on-error: true
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install security tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install bandit[toml] safety
+      - name: Run Bandit Security Scan
+        run: |
+          bandit -r gfl/ -f json -o bandit-report.json || true
+          bandit -r gfl/ -f txt
+        continue-on-error: true
+      - name: Run Safety Check
+        run: |
+          # Create requirements from pip freeze for safety check
+          pip freeze > frozen-requirements.txt
+          safety check --file frozen-requirements.txt --json || true
+          safety check --file frozen-requirements.txt
+        continue-on-error: true
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports-${{ matrix.os }}-${{ matrix.python-version }}
+          path: |
+            bandit-report.json
+            frozen-requirements.txt

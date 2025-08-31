@@ -1,0 +1,50 @@
+# Pre-commit hooks for GeneForgeLang
+# See https://pre-commit.com for more information
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: check-json
+      - id: check-toml
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.2
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.13.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-PyYAML, types-requests]
+        args: [--ignore-missing-imports, --show-error-codes]
+        files: ^gfl/.*\.py$
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.0
+    hooks:
+      - id: bandit
+        args: ["-c", "pyproject.toml"]
+        additional_dependencies: ["bandit[toml]"]
+        files: ^gfl/.*\.py$
+
+  # Test runner for critical changes
+  - repo: local
+    hooks:
+      - id: pytest-check
+        name: pytest-check
+        entry: python -m pytest tests/unit/ -x --tb=short
+        language: system
+        files: ^(gfl/|tests/).*\.py$
+        stages: [pre-push]
+
+# Configuration
+default_stages: [pre-commit]
+fail_fast: false

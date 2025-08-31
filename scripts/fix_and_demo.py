@@ -1,18 +1,17 @@
-import os
+# Importa las clases GFLLexer y GFLParser
+from gfl.lexer import GFLLexer
+from gfl.parser import GFLParser
 
 # Asegúrate de que el PYTHONPATH esté configurado correctamente para importar desde gfl
 # Esto es manejado por el comando de ejecución 'PYTHONPATH=. python3 scripts/fix_and_demo.py'
 # así que no necesitamos modificar sys.path aquí.
 
-# Importa las clases GFLLexer y GFLParser
-from gfl.lexer import GFLLexer
-from gfl.parser import GFLParser
 
 def run_demo():
     print("--- GFL Parser Demo ---")
 
     # Instancia el lexer y el parser
-    gfl_lexer = GFLLexer()
+    GFLLexer()
     gfl_parser = GFLParser()
 
     # Define los snippets de código GFL para parsear
@@ -139,7 +138,7 @@ analyze using DESeq2 with strategy differential_expression params {
     threshold: 0.05,
     invalid_param: "error_value"
 }
-"""
+""",
     }
 
     for name, code_snippet in snippets.items():
@@ -156,20 +155,24 @@ analyze using DESeq2 with strategy differential_expression params {
                 # Por ahora, solo imprime la estructura del AST o partes relevantes
                 for op_type, *op_details in ast:
                     print(f"  - {op_type.capitalize()} Operation:")
-                    if op_type == 'analyze' or op_type == 'experiment':
+                    if op_type == "analyze" or op_type == "experiment":
                         for key, value in op_details[0].items():
                             print(f"    {key}: {value}")
-                    elif op_type == 'simulate':
+                    elif op_type == "simulate":
                         print(f"    Target: {op_details[0]}")
-                    elif op_type == 'branch':
+                    elif op_type == "branch":
                         print(f"    If: {op_details[0]}")
                         print(f"    Then Block: {op_details[1]}")
                         print(f"    Else Block: {op_details[2]}")
-                    elif op_type == 'analyze_inline':
-                        print(f"    Tool: {op_details[0]}, Strategy: {op_details[1]}, Params: {op_details[2]}")
+                    elif op_type == "analyze_inline":
+                        print(
+                            f"    Tool: {op_details[0]}, Strategy: {op_details[1]}, Params: {op_details[2]}"
+                        )
 
             else:
-                print("Successfully Parsed! No operations generated (empty or only comments).")
+                print(
+                    "Successfully Parsed! No operations generated (empty or only comments)."
+                )
 
         except Exception as e:
             print(f"Error durante el parseo: {e}")
@@ -177,7 +180,10 @@ analyze using DESeq2 with strategy differential_expression params {
         print("\nParsing Errors/Warnings:")
         # Para esta demo, los errores de sintaxis se imprimen directamente desde el parser.
         # Las advertencias de validación de parámetros/herramientas se gestionarían en una capa posterior.
-        print("  - No additional warnings captured at this level in demo (see parser output above for syntax errors/warnings).")
+        print(
+            "  - No additional warnings captured at this level in demo (see parser output above for syntax errors/warnings)."
+        )
+
 
 if __name__ == "__main__":
     run_demo()
