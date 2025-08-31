@@ -195,10 +195,10 @@ class EnhancedValidationResult:
     errors: List[EnhancedValidationError] = field(default_factory=list)
     file_path: Optional[str] = None
     # Dynamic attributes that can be set after construction
-    ast: Optional[Dict[str, Any]] = field(default=None, init=False)
-    syntax_errors: Optional[List[EnhancedValidationError]] = field(default=None, init=False)
-    semantic_errors: Optional[List[EnhancedValidationError]] = field(default=None, init=False)
-    schema_errors: Optional[List[EnhancedValidationError]] = field(default=None, init=False)
+    ast: Optional[Dict[str, Any]] = field(default=None)
+    _syntax_errors: Optional[List[EnhancedValidationError]] = field(default=None, repr=False)
+    _semantic_errors: Optional[List[EnhancedValidationError]] = field(default=None, repr=False)
+    _schema_errors: Optional[List[EnhancedValidationError]] = field(default=None, repr=False)
 
     def add_error(
         self,
@@ -227,12 +227,34 @@ class EnhancedValidationResult:
     @property
     def syntax_errors(self) -> List[EnhancedValidationError]:
         """Get syntax errors only (for backward compatibility)."""
+        if self._syntax_errors is not None:
+            return self._syntax_errors
         return [e for e in self.errors if e.category == ErrorCategory.SYNTAX]
+
+    @syntax_errors.setter
+    def syntax_errors(self, value: List[EnhancedValidationError]) -> None:
+        """Set syntax errors."""
+        self._syntax_errors = value
+        # Also add to main errors list if not already there
+        for error in value:
+            if error not in self.errors:
+                self.errors.append(error)
 
     @property
     def semantic_errors(self) -> List[EnhancedValidationError]:
         """Get semantic errors only."""
+        if self._semantic_errors is not None:
+            return self._semantic_errors
         return [e for e in self.errors if e.severity == ErrorSeverity.ERROR and e.category == ErrorCategory.SEMANTIC]
+
+    @semantic_errors.setter  
+    def semantic_errors(self, value: List[EnhancedValidationError]) -> None:
+        """Set semantic errors."""
+        self._semantic_errors = value
+        # Also add to main errors list if not already there
+        for error in value:
+            if error not in self.errors:
+                self.errors.append(error)
 
     @property
     def warnings(self) -> List[EnhancedValidationError]:
