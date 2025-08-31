@@ -1,9 +1,0 @@
-plan:
-  goal: "Find the protein sequence for the human TP53 gene using a high-level command."
-  steps:
-    - name: get_protein
-      thought: "This is a high-level goal that the reasoner should expand."
-      type: find_protein_sequence
-      attrs:
-        gene: "TP53"
-        organism: "human"

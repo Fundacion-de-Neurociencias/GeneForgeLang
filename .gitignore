@@ -28,3 +28,9 @@ geneforgelang.egg-info/
 dist/
 build/
 GeneForge/
+
+# MkDocs build output
+site/
+
+# Documentation build artifacts
+.mkdocs_cache/

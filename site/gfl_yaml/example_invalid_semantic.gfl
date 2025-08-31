@@ -1,9 +1,0 @@
-plan:
-  goal: "Este plan es semánticamente inválido."
-  steps:
-    - name: design_fly_guides
-      thought: "Design guide RNAs for a fly gene."
-      type: crispr_design
-      attrs:
-        target_gene: "Antp"
-        organism: "drosophila" # <-- Este organismo no está en knowledge_base.yaml

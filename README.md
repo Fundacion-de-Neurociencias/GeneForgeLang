@@ -1,11 +1,20 @@
 GeneForgeLang (GFL)
 
 [![CI](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/actions/workflows/ci.yml/badge.svg)](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/actions/workflows/ci.yml)
+[![Documentation](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/actions/workflows/docs.yml/badge.svg)](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/actions/workflows/docs.yml)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](license)
 [![PyPI](https://img.shields.io/badge/PyPI-coming%20soon-lightgrey)](https://pypi.org/project/geneforgelang/)
 
 GFL is a domain-specific language for specifying, validating, and reasoning about genomic workflows and experiments. It is intended primarily as a library for other applications to embed, with a few small demo apps included.
+
+## 📚 Documentation
+
+- **[Full Documentation](https://fundacion-de-neurociencias.github.io/GeneForgeLang/)** - Complete user guide, API reference, and tutorials
+- **[Getting Started](https://fundacion-de-neurociencias.github.io/GeneForgeLang/installation/)** - Installation and setup guide
+- **[Tutorial](https://fundacion-de-neurociencias.github.io/GeneForgeLang/tutorial/)** - Step-by-step learning guide
+- **[API Reference](https://fundacion-de-neurociencias.github.io/GeneForgeLang/API_REFERENCE/)** - Complete API documentation
+- **[Web Platform](https://fundacion-de-neurociencias.github.io/GeneForgeLang/WEB_API_IMPLEMENTATION_SUMMARY/)** - Web interface guide
 
 What GFL provides
 - Parser: YAML-like DSL parsed into a stable, JSON-serializable AST.

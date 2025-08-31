@@ -1,9 +1,0 @@
-plan:
-  goal: "Design CRISPR guides for the human TP53 gene using a high-level command."
-  steps:
-    - name: design_guides_for_tp53
-      thought: "This is a high-level goal that the reasoner should expand."
-      type: design_crispr_for_gene
-      attrs:
-        gene: "TP53"
-        organism: "human"

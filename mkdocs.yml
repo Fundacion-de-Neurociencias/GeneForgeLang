@@ -70,7 +70,7 @@ extra:
       link: https://fundacion-neurociencias.org
   analytics:
     provider: google
-    property: !ENV GOOGLE_ANALYTICS_KEY
+    property: GOOGLE_ANALYTICS_KEY
 
 # Extensions
 markdown_extensions:
@@ -88,9 +88,7 @@ markdown_extensions:
       smart_enable: all
   - pymdownx.caret
   - pymdownx.details
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.emoji
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
@@ -118,44 +116,25 @@ nav:
   - Getting Started:
     - Installation: installation.md
     - Tutorial: tutorial.md
-    - Quick Examples: language/examples.md
-  - User Guide:
-    - Language Syntax: language/syntax.md
-    - Best Practices: language/best-practices.md
     - CLI Tools: cli.md
-    - Troubleshooting: support/troubleshooting.md
+  - Documentation:
+    - Language Specification: gfl_yaml/SPECIFICATION.md
+    - Examples: reasoning.md
+    - Best Practices: Enhancer_Module_Spec.md
   - Web Platform:
     - Overview: WEB_API_IMPLEMENTATION_SUMMARY.md
-    - Getting Started: web-interface/getting-started.md
-    - Advanced Features: web-interface/advanced-features.md
   - API Reference:
     - REST API: API_REFERENCE.md
-    - Client SDK: api/client-sdk.md
-    - Authentication: api/authentication.md
   - AI & Machine Learning:
     - Enhanced Inference: ENHANCED_INFERENCE_SUMMARY.md
-    - Custom Models: inference/custom-models.md
-    - Performance: inference/performance.md
-  - Architecture:
-    - System Overview: architecture/overview.md
-    - Plugin System: architecture/plugins.md
-    - Inference Engine: architecture/inference.md
   - Security:
     - Security Advisory: SECURITY_ADVISORY.md
-    - Best Practices: security/best-practices.md
-    - Vulnerability Management: security/vulnerability-management.md
-  - Deployment:
-    - Production Setup: deployment/production.md
-    - Containers: deployment/containers.md
-    - Cloud Deployment: deployment/cloud.md
-  - Development:
-    - Contributing: ../CONTRIBUTING.md
-    - Setup Guide: development/setup.md
-    - Testing: development/testing.md
   - Project:
     - Roadmap: PHASE_4_PLANNING.md
+    - Documentation Guide: DOCUMENTATION_EXPORT_GUIDE.md
+    - Deployment Guide: DEPLOYMENT_GUIDE.md
+    - Contributing: ../CONTRIBUTING.md
     - Changelog: ../CHANGELOG.md
-    - Research Paper: ../paper.md
     - Citation: ../CITATION.cff
 
 # Additional CSS
