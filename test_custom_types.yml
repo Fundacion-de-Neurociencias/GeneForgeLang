@@ -1,0 +1,37 @@
+schemas:
+  # Definición de un tipo de datos FASTQ pareado
+  FASTQ_PairedEnd:
+    type: "FASTQ"
+    description: "FASTQ format with paired-end layout"
+    attributes:
+      layout: 
+        type: "string"
+        required: true
+        value: "paired-end"
+
+  # Definición de un tipo BAM más estricto
+  BAM_Indexed:
+    type: "BAM"
+    description: "BAM format that is sorted and indexed"
+    attributes:
+      sorted: 
+        type: "boolean"
+        required: true
+        value: true
+      indexed: 
+        type: "boolean"
+        required: true
+        value: true
+
+  # Definición de un tipo VCF con calidad mínima
+  VCF_HighQuality:
+    type: "VCF"
+    description: "VCF format with minimum quality filter"
+    attributes:
+      min_quality: 
+        type: "number"
+        required: false
+      filtered: 
+        type: "boolean"
+        required: false
+        value: true

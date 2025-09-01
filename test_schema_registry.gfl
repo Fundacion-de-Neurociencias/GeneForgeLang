@@ -1,0 +1,66 @@
+# Test GFL file for Schema Registry
+
+# Import custom schema definitions
+import_schemas:
+  - ./test_custom_types.yml
+
+# Test 1: Valid usage of custom schema types
+experiment:
+  tool: "sequence_aligner"
+  type: "sequencing"
+  input: raw_sequences
+  output: aligned_reads
+  contract:
+    inputs:
+      raw_sequences: 
+        type: "FASTQ_PairedEnd"
+    outputs:
+      aligned_reads: 
+        type: "BAM_Indexed"
+
+analyze:
+  strategy: "variant"
+  input: aligned_reads
+  output: variants
+  contract:
+    inputs:
+      aligned_reads: 
+        type: "BAM_Indexed"
+    outputs:
+      variants: 
+        type: "VCF_HighQuality"
+        attributes:
+          min_quality: 30
+          filtered: true
+
+# Test 2: Invalid usage - missing required attributes
+experiment_invalid:
+  tool: "sequence_aligner"
+  type: "sequencing"
+  input: raw_data
+  output: aligned_data
+  contract:
+    inputs:
+      raw_data: 
+        type: "FASTQ_PairedEnd"
+        # Missing required 'layout: paired-end' attribute
+    outputs:
+      aligned_data: 
+        type: "BAM_Indexed"
+        # Missing required 'sorted: true' and 'indexed: true' attributes
+
+# Test 3: Invalid usage - wrong attribute values
+analyze_invalid:
+  strategy: "variant"
+  input: aligned_data
+  output: results
+  contract:
+    inputs:
+      aligned_data: 
+        type: "BAM_Indexed"
+        attributes:
+          sorted: false  # Should be true
+          indexed: true
+    outputs:
+      results: 
+        type: "VCF_HighQuality"

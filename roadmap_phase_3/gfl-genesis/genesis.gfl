@@ -1,0 +1,54 @@
+# --- Proyecto GFL Genesis: Diseño de gRNA para TP53 ---
+
+# 1. Importar los esquemas de datos personalizados para CRISPR
+import_schemas:
+  - ./schemas/crispr_types.yml
+
+# 2. Definir el ciclo de descubrimiento guiado
+guided_discovery:
+  
+  # Parámetros de Diseño: Cómo generar gRNAs candidatos
+  design_params:
+    design_type: "combinatorial_generation" # Un nuevo tipo para este plugin
+    combinatorial_generation:
+      target_gene: "TP53"
+      target_gene_id: "ENSG00000141510"
+      reference_genome: "GRCh38"
+      pam_sequence: "NGG"
+      candidates_per_cycle: 1000 # Genera 1000 posibles gRNAs en cada ciclo
+    output: generated_grna_candidates
+
+  # Parámetros de Aprendizaje Activo: Cómo seleccionar los mejores candidatos
+  active_learning_params:
+    strategy: "active_learning"
+    active_learning:
+      acquisition_function: "multi_objective_expected_improvement"
+      experiments_per_cycle: 50 # De los 1000, evalúa predictivamente los 50 más informativos
+    surrogate_model: "RandomForestRegressor"
+
+  # Objetivo Multi-Objetivo a Optimizar
+  objective:
+    maximize: "on_target_score"   # Salida del plugin DeepHF
+    minimize: "off_target_risk"  # Salida del plugin CFD/BLAST
+
+  # Criterios de Parada para el Ciclo
+  budget:
+    max_cycles: 20
+    convergence_threshold: 0.005 # Detener si la mejora es mínima
+
+  # Definición del "experimento" virtual a ejecutar en cada ciclo
+  run:
+    analyze:
+      tool: "gfl-crispr-evaluator" # Un plugin que internamente llama a los otros dos
+      input: generated_grna_candidates
+      output: evaluated_grna_scores
+      contract:
+        inputs:
+          generated_grna_candidates: 
+            type: "GRNA_Sequence_List"
+        outputs:
+          evaluated_grna_scores: 
+            type: "GRNA_Evaluation_Table"
+
+  # Variable final con los mejores candidatos encontrados
+  output: top_tp53_grnas

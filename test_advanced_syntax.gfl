@@ -1,0 +1,92 @@
+# Test GFL file for advanced AI workflow syntax
+
+# Test 1: Optimize block with Active Learning strategy
+optimize_active_learning:
+  search_space:
+    learning_rate: range(0.001, 0.1)
+    batch_size: choice([32, 64, 128])
+    optimizer: choice(["adam", "sgd"])
+  strategy:
+    name: ActiveLearning
+    active_learning:
+      acquisition_function: "expected_improvement"
+      initial_experiments: 10
+      max_uncertainty: 0.8
+      convergence_threshold: 0.01
+  objective:
+    maximize: "accuracy"
+  budget:
+    max_experiments: 100
+    convergence_threshold: 0.001
+  surrogate_model: "GaussianProcess"
+  run:
+    experiment:
+      tool: CRISPR_cas9
+      type: gene_editing
+      params:
+        target_gene: ${learning_rate}
+
+# Test 2: Design block with Inverse Design
+design_inverse:
+  design_type: inverse_design
+  entity: ProteinSequence
+  model: ProteinGeneratorVAE
+  objective:
+    maximize: stability
+  count: 50
+  output: designed_proteins
+  inverse_design:
+    target_properties:
+      stability: 0.9
+      binding_affinity: 0.8
+    foundation_model: "ESM2"
+
+# Test 3: Refine data block
+refine_data:
+  refinement_config:
+    refinement_type: "noise_reduction"
+    noise_level: 0.1
+    target_resolution: "high"
+
+# Test 4: Guided discovery block
+guided_discovery:
+  design_params:
+    entity: SmallMolecule
+    model: MoleculeTransformer
+    objective:
+      maximize: binding_affinity
+    count: 20
+    output: candidate_molecules
+    design_type: inverse_design
+    inverse_design:
+      target_properties:
+        binding_affinity: 0.95
+      foundation_model: "ChemBERTa"
+    candidates_per_cycle: 5
+  active_learning_params:
+    search_space:
+      concentration: range(0.1, 1.0)
+      temperature: range(25, 37)
+    strategy:
+      name: ActiveLearning
+      active_learning:
+        acquisition_function: "upper_confidence_bound"
+        initial_experiments: 5
+        max_uncertainty: 0.7
+        convergence_threshold: 0.02
+    objective:
+      maximize: "expression_level"
+    budget:
+      max_experiments: 50
+    surrogate_model: "RandomForest"
+    run:
+      experiment:
+        tool: CRISPR_base_editor
+        type: gene_editing
+        params:
+          target_gene: ${concentration}
+    experiments_per_cycle: 3
+  budget:
+    max_cycles: 10
+    convergence_threshold: 0.05
+  output: discovered_compounds

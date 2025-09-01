@@ -1,0 +1,60 @@
+# Test GFL file for IO Contracts
+
+# Test 1: Valid IO Contracts
+experiment:
+  tool: "sequence_aligner"
+  type: "sequencing"
+  input: raw_sequences
+  output: aligned_reads
+  contract:
+    inputs:
+      raw_sequences: 
+        type: "FASTQ"
+        attributes:
+          layout: "paired-end"
+    outputs:
+      aligned_reads: 
+        type: "BAM"
+        attributes:
+          sorted: true
+
+analyze:
+  strategy: "variant"
+  input: aligned_reads
+  output: variants
+  contract:
+    inputs:
+      aligned_reads: 
+        type: "BAM"
+        attributes:
+          sorted: true
+          indexed: true  # This will cause a compatibility warning
+    outputs:
+      variants: 
+        type: "VCF"
+
+# Test 2: Incompatible contracts
+experiment_incompatible:
+  tool: "sequence_aligner"
+  type: "sequencing"
+  input: raw_data
+  output: aligned_data
+  contract:
+    inputs:
+      raw_data: 
+        type: "CSV"
+    outputs:
+      aligned_data: 
+        type: "JSON"
+
+analyze_incompatible:
+  strategy: "variant"
+  input: aligned_data
+  output: results
+  contract:
+    inputs:
+      aligned_data: 
+        type: "BAM"  # This should cause a contract mismatch error
+    outputs:
+      results: 
+        type: "CSV"
