@@ -14,7 +14,7 @@ select = [
 ignore = [
     "E501",  # Line too long
     "E731",  # Do not assign a lambda expression
-    "F401",  # Module imported but unused
+    "F401",  # Module imported but never used
     "F403",  # Star import used
     "F841",  # Local variable assigned but never used
     "UP007", # Use `X | Y` for type annotations
