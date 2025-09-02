@@ -42,7 +42,7 @@ pip install -e .[server]   # Web server and API
 
 ### Your First GFL Workflow
 
-``python
+```python
 from gfl.api import parse, validate, execute
 
 # Define a protein design workflow with AI-powered generation
