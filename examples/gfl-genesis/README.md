@@ -43,10 +43,10 @@ gfl-genesis/
    # Install each plugin
    cd plugins/gfl-crispr-evaluator
    pip install -e .
-   
+
    cd ../gfl-plugin-offtarget-scorer
    pip install -e .
-   
+
    cd ../gfl-plugin-ontarget-scorer
    pip install -e .
    ```

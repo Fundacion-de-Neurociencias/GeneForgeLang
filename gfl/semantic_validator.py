@@ -152,10 +152,10 @@ class EnhancedSemanticValidator:
         """Validate individual blocks in the AST."""
         # First, collect entity definitions for reference validation
         self._collect_entity_definitions(ast)
-        
+
         # Collect hypothesis definitions for reference validation
         self._collect_hypothesis_definitions(ast)
-        
+
         for block_name, block_content in ast.items():
             self.current_block = block_name
 
@@ -199,10 +199,10 @@ class EnhancedSemanticValidator:
     def _collect_entity_definitions(self, ast: Dict[str, Any]) -> None:
         """Collect pathway and complex definitions for reference validation."""
         self.entity_registry = {}
-        
+
         # Debug: Print AST
         print(f"AST keys: {list(ast.keys())}")
-        
+
         # Collect pathways
         if "pathways" in ast:
             print("Found pathways in AST")
@@ -221,7 +221,7 @@ class EnhancedSemanticValidator:
                             f"Pathway '{pathway_name}' must be a dictionary",
                             ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
                         ).add_fix(f"Format pathway '{pathway_name}' as a dictionary")
-        
+
         # Collect complexes
         if "complexes" in ast:
             print("Found complexes in AST")
@@ -240,10 +240,10 @@ class EnhancedSemanticValidator:
                             f"Complex '{complex_name}' must be a dictionary",
                             ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
                         ).add_fix(f"Format complex '{complex_name}' as a dictionary")
-        
+
         # Debug: Print entity registry contents
         print(f"Collected entity registry: {self.entity_registry}")
-        
+
     def _validate_entity_reference(self, entity_ref: str) -> None:
         """Validate entity reference in parameter values."""
         import re
@@ -257,7 +257,7 @@ class EnhancedSemanticValidator:
             return
 
         entity_type, entity_name = match.groups()
-        
+
         # Check if entity type is supported
         supported_entity_types = {"pathway", "complex"}
         if entity_type not in supported_entity_types:
@@ -273,7 +273,7 @@ class EnhancedSemanticValidator:
             print(f"Entity registry: {self.entity_registry}")
             print(f"Looking for entity type: {entity_type}")
             print(f"Looking for entity name: {entity_name}")
-            
+
             registry_key = entity_type + "s"  # "pathway" -> "pathways", "complex" -> "complexes"
             # Fix for complex -> complexes
             if entity_type == "complex":
@@ -305,7 +305,7 @@ class EnhancedSemanticValidator:
     def _collect_hypothesis_definitions(self, ast: Dict[str, Any]) -> None:
         """Collect hypothesis definitions for reference validation."""
         self.hypothesis_registry = {}
-        
+
         if "hypothesis" in ast:
             hypothesis = ast["hypothesis"]
             if isinstance(hypothesis, dict) and "id" in hypothesis:
@@ -334,7 +334,7 @@ class EnhancedSemanticValidator:
                     f"Rule {i} missing required 'id' field",
                     ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
                 ).add_fix(f"Add 'id: <rule_id>' to rule {i}")
-            
+
             if "if" not in rule:
                 self.result.add_error(
                     f"Rule {i} missing required 'if' field",
@@ -345,7 +345,7 @@ class EnhancedSemanticValidator:
                     f"Rule {i} 'if' field must be a dictionary",
                     ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
                 ).add_fix(f"Format 'if' field as a dictionary in rule {i}")
-            
+
             if "then" not in rule:
                 self.result.add_error(
                     f"Rule {i} missing required 'then' field",
@@ -372,7 +372,7 @@ class EnhancedSemanticValidator:
                 "Hypothesis missing required 'id' field",
                 ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
             ).add_fix("Add 'id: <hypothesis_id>' to hypothesis")
-        
+
         if "description" not in hypothesis_block:
             self.result.add_error(
                 "Hypothesis missing required 'description' field",
@@ -383,7 +383,7 @@ class EnhancedSemanticValidator:
                 "Hypothesis 'description' field must be a string",
                 ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
             ).add_fix("Format 'description' field as a string in hypothesis")
-        
+
         if "if" not in hypothesis_block:
             self.result.add_error(
                 "Hypothesis missing required 'if' field",
@@ -394,7 +394,7 @@ class EnhancedSemanticValidator:
                 "Hypothesis 'if' field must be a list",
                 ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
             ).add_fix("Format 'if' field as a list in hypothesis")
-        
+
         if "then" not in hypothesis_block:
             self.result.add_error(
                 "Hypothesis missing required 'then' field",
@@ -451,7 +451,7 @@ class EnhancedSemanticValidator:
                     f"Timeline event {i} 'at' field must be a string",
                     ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
                 ).add_fix(f"Format 'at' field as a string in timeline event {i}")
-            
+
             if "actions" not in event:
                 self.result.add_error(
                     f"Timeline event {i} missing required 'actions' field",
@@ -720,7 +720,7 @@ class EnhancedSemanticValidator:
         # Validate IO contract if present
         if "contract" in experiment:
             self._validate_io_contract(experiment["contract"])
-            
+
         # Validate hypothesis reference if present
         if "validates_hypothesis" in experiment:
             self._validate_hypothesis_reference(experiment["validates_hypothesis"])
@@ -896,7 +896,7 @@ class EnhancedSemanticValidator:
             return
 
         entity_type, entity_name = match.groups()
-        
+
         # Check if entity type is supported
         supported_entity_types = {"pathway", "complex"}
         if entity_type not in supported_entity_types:
@@ -912,7 +912,7 @@ class EnhancedSemanticValidator:
             print(f"Entity registry: {self.entity_registry}")
             print(f"Looking for entity type: {entity_type}")
             print(f"Looking for entity name: {entity_name}")
-            
+
             registry_key = entity_type + "s"  # "pathway" -> "pathways", "complex" -> "complexes"
             # Fix for complex -> complexes
             if entity_type == "complex":
@@ -986,7 +986,7 @@ class EnhancedSemanticValidator:
         # Validate IO contract if present
         if "contract" in analysis:
             self._validate_io_contract(analysis["contract"])
-            
+
         # Validate hypothesis reference if present
         if "validates_hypothesis" in analysis:
             self._validate_hypothesis_reference(analysis["validates_hypothesis"])
