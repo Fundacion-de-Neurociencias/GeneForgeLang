@@ -12,10 +12,10 @@ experiment:
   output: aligned_reads
   contract:
     inputs:
-      raw_sequences: 
+      raw_sequences:
         type: "FASTQ_PairedEnd"
     outputs:
-      aligned_reads: 
+      aligned_reads:
         type: "BAM_Indexed"
 
 analyze:
@@ -24,10 +24,10 @@ analyze:
   output: variants
   contract:
     inputs:
-      aligned_reads: 
+      aligned_reads:
         type: "BAM_Indexed"
     outputs:
-      variants: 
+      variants:
         type: "VCF_HighQuality"
         attributes:
           min_quality: 30
@@ -41,11 +41,11 @@ experiment_invalid:
   output: aligned_data
   contract:
     inputs:
-      raw_data: 
+      raw_data:
         type: "FASTQ_PairedEnd"
         # Missing required 'layout: paired-end' attribute
     outputs:
-      aligned_data: 
+      aligned_data:
         type: "BAM_Indexed"
         # Missing required 'sorted: true' and 'indexed: true' attributes
 
@@ -56,11 +56,11 @@ analyze_invalid:
   output: results
   contract:
     inputs:
-      aligned_data: 
+      aligned_data:
         type: "BAM_Indexed"
         attributes:
           sorted: false  # Should be true
           indexed: true
     outputs:
-      results: 
+      results:
         type: "VCF_HighQuality"

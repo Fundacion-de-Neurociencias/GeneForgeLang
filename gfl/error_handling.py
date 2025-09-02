@@ -247,7 +247,7 @@ class EnhancedValidationResult:
             return self._semantic_errors
         return [e for e in self.errors if e.severity == ErrorSeverity.ERROR and e.category == ErrorCategory.SEMANTIC]
 
-    @semantic_errors.setter  
+    @semantic_errors.setter
     def semantic_errors(self, value: List[EnhancedValidationError]) -> None:
         """Set semantic errors."""
         self._semantic_errors = value
@@ -363,12 +363,14 @@ class ErrorCodes:
     SEMANTIC_MISSING_EXPERIMENT_BLOCK = "SEMANTIC006"
     SEMANTIC_VARIABLE_REDEFINITION = "SEMANTIC007"
     SEMANTIC_UNDEFINED_VARIABLE = "SEMANTIC008"
-    
+    SEMANTIC_UNDEFINED_HYPOTHESIS = "SEMANTIC009"  # New error code for undefined hypothesis
+    SEMANTIC_UNDEFINED_ENTITY_REFERENCE = "SEMANTIC010"  # New error code for undefined entity references
+
     # IO Contract errors (SEMANTIC100-SEMANTIC199)
     SEMANTIC_INVALID_CONTRACT = "SEMANTIC100"
     SEMANTIC_CONTRACT_MISMATCH = "SEMANTIC101"
     SEMANTIC_MISSING_CONTRACT = "SEMANTIC102"
-    
+
     # Schema Registry errors (SEMANTIC200-SEMANTIC299)
     SEMANTIC_INVALID_SCHEMA_FILE = "SEMANTIC200"
     SEMANTIC_SCHEMA_NOT_FOUND = "SEMANTIC201"

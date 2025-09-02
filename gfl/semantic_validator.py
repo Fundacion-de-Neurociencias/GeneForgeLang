@@ -55,7 +55,7 @@ class EnhancedSemanticValidator:
         try:
             # Load schema imports first
             self._load_schema_imports(ast)
-            
+
             self._validate_root_structure(ast)
             self._validate_blocks(ast)
         except Exception as e:
@@ -70,13 +70,13 @@ class EnhancedSemanticValidator:
 
     def _load_schema_imports(self, ast: Dict[str, Any]) -> None:
         """Load schema imports from the AST.
-        
+
         Args:
             ast: The AST dictionary to process.
         """
         if "import_schemas" not in ast:
             return
-            
+
         import_schemas = ast["import_schemas"]
         if not isinstance(import_schemas, list):
             error = self.result.add_error(
@@ -85,10 +85,10 @@ class EnhancedSemanticValidator:
             )
             error.add_fix("Format import_schemas as a list of schema file paths")
             return
-            
+
         # Resolve file paths relative to the GFL file location
         base_path = os.path.dirname(self.result.file_path) if self.result.file_path else "."
-        
+
         schema_files = []
         for schema_path in import_schemas:
             if not isinstance(schema_path, str):
@@ -98,15 +98,15 @@ class EnhancedSemanticValidator:
                 )
                 error.add_fix("Use string values for schema file paths")
                 continue
-                
+
             # Resolve relative paths
             if not os.path.isabs(schema_path):
                 resolved_path = os.path.join(base_path, schema_path)
             else:
                 resolved_path = schema_path
-                
+
             schema_files.append(resolved_path)
-            
+
         # Load all schema files
         load_schemas_from_files(schema_files, self.result)
 
@@ -121,7 +121,7 @@ class EnhancedSemanticValidator:
             return
 
         # Check for at least one main block
-        main_blocks = {"experiment", "analyze", "simulate", "branch", "design", "optimize", "refine_data", "guided_discovery"}
+        main_blocks = {"experiment", "analyze", "simulate", "branch", "design", "optimize", "refine_data", "guided_discovery", "rules", "hypothesis", "timeline", "pathways", "complexes"}
         found_blocks = set(ast.keys()) & main_blocks
 
         if not found_blocks:
@@ -131,7 +131,7 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', or 'guided_discovery' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'pathways', or 'complexes' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
@@ -150,6 +150,12 @@ class EnhancedSemanticValidator:
 
     def _validate_blocks(self, ast: Dict[str, Any]) -> None:
         """Validate individual blocks in the AST."""
+        # First, collect entity definitions for reference validation
+        self._collect_entity_definitions(ast)
+        
+        # Collect hypothesis definitions for reference validation
+        self._collect_hypothesis_definitions(ast)
+        
         for block_name, block_content in ast.items():
             self.current_block = block_name
 
@@ -177,6 +183,292 @@ class EnhancedSemanticValidator:
                 self._validate_guided_discovery_block(block_content)
             elif block_name == "metadata":
                 self._validate_metadata_block(block_content)
+            elif block_name == "rules":
+                self._validate_rules_block(block_content)
+            elif block_name == "hypothesis":
+                self._validate_hypothesis_block(block_content)
+            elif block_name == "timeline":
+                self._validate_timeline_block(block_content)
+            elif block_name == "pathways":
+                # Pathways are validated during collection
+                pass
+            elif block_name == "complexes":
+                # Complexes are validated during collection
+                pass
+
+    def _collect_entity_definitions(self, ast: Dict[str, Any]) -> None:
+        """Collect pathway and complex definitions for reference validation."""
+        self.entity_registry = {}
+        
+        # Debug: Print AST
+        print(f"AST keys: {list(ast.keys())}")
+        
+        # Collect pathways
+        if "pathways" in ast:
+            print("Found pathways in AST")
+            pathways = ast["pathways"]
+            if not isinstance(pathways, dict):
+                self.result.add_error(
+                    "Pathways block must be a dictionary",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format pathways as a dictionary mapping names to pathway definitions")
+            else:
+                self.entity_registry["pathways"] = pathways
+                # Validate pathway structure
+                for pathway_name, pathway_def in pathways.items():
+                    if not isinstance(pathway_def, dict):
+                        self.result.add_error(
+                            f"Pathway '{pathway_name}' must be a dictionary",
+                            ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                        ).add_fix(f"Format pathway '{pathway_name}' as a dictionary")
+        
+        # Collect complexes
+        if "complexes" in ast:
+            print("Found complexes in AST")
+            complexes = ast["complexes"]
+            if not isinstance(complexes, dict):
+                self.result.add_error(
+                    "Complexes block must be a dictionary",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format complexes as a dictionary mapping names to complex definitions")
+            else:
+                self.entity_registry["complexes"] = complexes
+                # Validate complex structure
+                for complex_name, complex_def in complexes.items():
+                    if not isinstance(complex_def, dict):
+                        self.result.add_error(
+                            f"Complex '{complex_name}' must be a dictionary",
+                            ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                        ).add_fix(f"Format complex '{complex_name}' as a dictionary")
+        
+        # Debug: Print entity registry contents
+        print(f"Collected entity registry: {self.entity_registry}")
+        
+    def _validate_entity_reference(self, entity_ref: str) -> None:
+        """Validate entity reference in parameter values."""
+        import re
+        # Extract entity type and name
+        match = re.match(r'^([a-zA-Z_][a-zA-Z0-9_]*)\(([a-zA-Z_][a-zA-Z0-9_]*)\)$', entity_ref)
+        if not match:
+            self.result.add_error(
+                f"Invalid entity reference format: {entity_ref}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Use format 'entity_type(entity_name)' for entity references")
+            return
+
+        entity_type, entity_name = match.groups()
+        
+        # Check if entity type is supported
+        supported_entity_types = {"pathway", "complex"}
+        if entity_type not in supported_entity_types:
+            self.result.add_error(
+                f"Unsupported entity type '{entity_type}' in reference: {entity_ref}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Use one of the supported entity types: {', '.join(supported_entity_types)}")
+            return
+
+        # Check if entity is defined
+        if hasattr(self, 'entity_registry'):
+            # Debug: Print entity registry contents
+            print(f"Entity registry: {self.entity_registry}")
+            print(f"Looking for entity type: {entity_type}")
+            print(f"Looking for entity name: {entity_name}")
+            
+            registry_key = entity_type + "s"  # "pathway" -> "pathways", "complex" -> "complexes"
+            # Fix for complex -> complexes
+            if entity_type == "complex":
+                registry_key = "complexes"
+            print(f"Registry key: {registry_key}")
+            if registry_key in self.entity_registry:
+                print(f"Found registry key: {registry_key}")
+                print(f"Available entities: {list(self.entity_registry[registry_key].keys())}")
+                if entity_name in self.entity_registry[registry_key]:
+                    print(f"Found entity: {entity_name}")
+                    return  # Valid reference
+                else:
+                    self.result.add_error(
+                        f"Referenced {entity_type} '{entity_name}' is not defined",
+                        ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
+                    ).add_fix(f"Define a {entity_type} with name '{entity_name}' or reference an existing one")
+            else:
+                # Entity type registry doesn't exist
+                self.result.add_error(
+                    f"Referenced {entity_type} '{entity_name}' is not defined (no {entity_type} definitions found)",
+                    ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
+                ).add_fix(f"Add a {entity_type} definition section or reference an existing one")
+        else:
+            self.result.add_error(
+                f"Referenced {entity_type} '{entity_name}' is not defined (no entity definitions found)",
+                ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
+            ).add_fix(f"Add entity definitions or reference an existing one")
+
+    def _collect_hypothesis_definitions(self, ast: Dict[str, Any]) -> None:
+        """Collect hypothesis definitions for reference validation."""
+        self.hypothesis_registry = {}
+        
+        if "hypothesis" in ast:
+            hypothesis = ast["hypothesis"]
+            if isinstance(hypothesis, dict) and "id" in hypothesis:
+                self.hypothesis_registry[hypothesis["id"]] = hypothesis
+
+    def _validate_rules_block(self, rules_block: Any) -> None:
+        """Validate the rules block structure."""
+        if not isinstance(rules_block, list):
+            self.result.add_error(
+                "Rules block must be a list of rule definitions",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format rules as a list of dictionaries, e.g., rules: [{id: 'rule1', ...}]")
+            return
+
+        for i, rule in enumerate(rules_block):
+            if not isinstance(rule, dict):
+                self.result.add_error(
+                    f"Rule {i} must be a dictionary",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix(f"Format rule {i} as a dictionary with id, if, and then fields")
+                continue
+
+            # Validate required fields
+            if "id" not in rule:
+                self.result.add_error(
+                    f"Rule {i} missing required 'id' field",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix(f"Add 'id: <rule_id>' to rule {i}")
+            
+            if "if" not in rule:
+                self.result.add_error(
+                    f"Rule {i} missing required 'if' field",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix(f"Add 'if: <condition>' to rule {i}")
+            elif not isinstance(rule["if"], dict):
+                self.result.add_error(
+                    f"Rule {i} 'if' field must be a dictionary",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix(f"Format 'if' field as a dictionary in rule {i}")
+            
+            if "then" not in rule:
+                self.result.add_error(
+                    f"Rule {i} missing required 'then' field",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix(f"Add 'then: <consequence>' to rule {i}")
+            elif not isinstance(rule["then"], dict):
+                self.result.add_error(
+                    f"Rule {i} 'then' field must be a dictionary",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix(f"Format 'then' field as a dictionary in rule {i}")
+
+    def _validate_hypothesis_block(self, hypothesis_block: Any) -> None:
+        """Validate the hypothesis block structure."""
+        if not isinstance(hypothesis_block, dict):
+            self.result.add_error(
+                "Hypothesis block must be a dictionary",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format hypothesis as a dictionary with id, description, if, and then fields")
+            return
+
+        # Validate required fields
+        if "id" not in hypothesis_block:
+            self.result.add_error(
+                "Hypothesis missing required 'id' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'id: <hypothesis_id>' to hypothesis")
+        
+        if "description" not in hypothesis_block:
+            self.result.add_error(
+                "Hypothesis missing required 'description' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'description: <hypothesis_description>' to hypothesis")
+        elif not isinstance(hypothesis_block["description"], str):
+            self.result.add_error(
+                "Hypothesis 'description' field must be a string",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format 'description' field as a string in hypothesis")
+        
+        if "if" not in hypothesis_block:
+            self.result.add_error(
+                "Hypothesis missing required 'if' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'if: <conditions>' to hypothesis")
+        elif not isinstance(hypothesis_block["if"], list):
+            self.result.add_error(
+                "Hypothesis 'if' field must be a list",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format 'if' field as a list in hypothesis")
+        
+        if "then" not in hypothesis_block:
+            self.result.add_error(
+                "Hypothesis missing required 'then' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'then: <consequences>' to hypothesis")
+        elif not isinstance(hypothesis_block["then"], list):
+            self.result.add_error(
+                "Hypothesis 'then' field must be a list",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format 'then' field as a list in hypothesis")
+
+    def _validate_timeline_block(self, timeline_block: Any) -> None:
+        """Validate the timeline block structure."""
+        if not isinstance(timeline_block, dict):
+            self.result.add_error(
+                "Timeline block must be a dictionary",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format timeline as a dictionary with events field")
+            return
+
+        # Validate required events field
+        if "events" not in timeline_block:
+            self.result.add_error(
+                "Timeline missing required 'events' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'events: []' to timeline")
+            return
+
+        events = timeline_block["events"]
+        if not isinstance(events, list):
+            self.result.add_error(
+                "Timeline 'events' field must be a list",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format 'events' field as a list in timeline")
+            return
+
+        # Validate each event
+        for i, event in enumerate(events):
+            if not isinstance(event, dict):
+                self.result.add_error(
+                    f"Timeline event {i} must be a dictionary",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix(f"Format timeline event {i} as a dictionary with at and actions fields")
+                continue
+
+            # Validate required fields
+            if "at" not in event:
+                self.result.add_error(
+                    f"Timeline event {i} missing required 'at' field",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix(f"Add 'at: <time>' to timeline event {i}")
+            elif not isinstance(event["at"], str):
+                self.result.add_error(
+                    f"Timeline event {i} 'at' field must be a string",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix(f"Format 'at' field as a string in timeline event {i}")
+            
+            if "actions" not in event:
+                self.result.add_error(
+                    f"Timeline event {i} missing required 'actions' field",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix(f"Add 'actions: []' to timeline event {i}")
+            elif not isinstance(event["actions"], list):
+                self.result.add_error(
+                    f"Timeline event {i} 'actions' field must be a list",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix(f"Format 'actions' field as a list in timeline event {i}")
+
+            # Validate optional expectations field
+            if "expectations" in event and not isinstance(event["expectations"], list):
+                self.result.add_error(
+                    f"Timeline event {i} 'expectations' field must be a list",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix(f"Format 'expectations' field as a list in timeline event {i}")
 
     def _store_block_contract(self, block_name: str, contract: Dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
@@ -189,23 +481,23 @@ class EnhancedSemanticValidator:
         # Get producer contract
         if producer_block not in self.symbol_table:
             return  # No contract to check
-            
+
         producer_info = self.symbol_table[producer_block]
         if "contract" not in producer_info or "outputs" not in producer_info["contract"]:
             return  # No output contract to check
-            
+
         producer_outputs = producer_info["contract"]["outputs"]
-        
+
         # Get consumer contract
         if consumer_block not in self.symbol_table:
             return  # No contract to check
-            
+
         consumer_info = self.symbol_table[consumer_block]
         if "contract" not in consumer_info or "inputs" not in consumer_info["contract"]:
             return  # No input contract to check
-            
+
         consumer_inputs = consumer_info["contract"]["inputs"]
-        
+
         # Check compatibility for each input
         for input_name, input_contract in consumer_inputs.items():
             # Check if there's a matching output
@@ -213,7 +505,7 @@ class EnhancedSemanticValidator:
                 output_contract = producer_outputs[input_name]
                 # Check type compatibility
                 if not self._are_contract_types_compatible(
-                    output_contract.get("type"), 
+                    output_contract.get("type"),
                     input_contract.get("type")
                 ):
                     error = self.result.add_error(
@@ -226,7 +518,7 @@ class EnhancedSemanticValidator:
                         f"Ensure {producer_block} output '{input_name}' and "
                         f"{consumer_block} input '{input_name}' have compatible types"
                     )
-                
+
                 # Check attribute compatibility
                 self._check_contract_attributes_compatibility(
                     output_contract.get("attributes", {}),
@@ -275,12 +567,12 @@ class EnhancedSemanticValidator:
     def _validate_schema_attributes(self, definition: Dict[str, Any], schema_def: Any, name: str, section_name: str) -> None:
         """Validate contract attributes against schema definition."""
         attributes = definition.get("attributes", {})
-        
+
         # Check required attributes
         for attr_name, attr_def in schema_def.attributes.items():
             is_required = attr_def.get("required", False)
             expected_value = attr_def.get("value")
-            
+
             if is_required and attr_name not in attributes:
                 error = self.result.add_error(
                     f"Required attribute '{attr_name}' missing in contract {section_name} '{name}' "
@@ -302,18 +594,18 @@ class EnhancedSemanticValidator:
         """Check if two contract types are compatible."""
         if output_type is None or input_type is None:
             return True  # No type specified, assume compatible
-            
+
         if not isinstance(output_type, str) or not isinstance(input_type, str):
             return False
-            
+
         # Exact match
         if output_type == input_type:
             return True
-            
+
         # Check if both types are defined in schema registry
         output_schema = self.schema_loader.get_schema(output_type)
         input_schema = self.schema_loader.get_schema(input_type)
-        
+
         # If both are custom schemas, check base type compatibility
         if output_schema and input_schema:
             output_base = output_schema.base_type or output_type
@@ -327,7 +619,7 @@ class EnhancedSemanticValidator:
             # Input is custom schema, output is primitive
             input_base = input_schema.base_type or input_type
             return self._are_base_types_compatible(output_type, input_base)
-            
+
         # Use existing compatibility rules for primitive types
         return self._are_base_types_compatible(output_type, input_type)
 
@@ -336,7 +628,7 @@ class EnhancedSemanticValidator:
         # Exact match
         if output_base_type == input_base_type:
             return True
-            
+
         # Special compatibility rules
         compatibility_rules = {
             "FASTQ": ["FASTQ", "TEXT"],
@@ -347,16 +639,16 @@ class EnhancedSemanticValidator:
             "CSV": ["CSV", "TEXT"],
             "JSON": ["JSON", "TEXT"],
         }
-        
+
         if output_base_type in compatibility_rules:
             return input_base_type in compatibility_rules[output_base_type]
-            
+
         # Default: assume custom types are compatible if they match exactly
         return output_base_type == input_base_type
 
     def _check_contract_attributes_compatibility(
-        self, 
-        output_attributes: Dict[str, Any], 
+        self,
+        output_attributes: Dict[str, Any],
         input_attributes: Dict[str, Any],
         producer_block: str,
         consumer_block: str,
@@ -424,10 +716,32 @@ class EnhancedSemanticValidator:
             self._validate_tool_type_compatibility(
                 experiment["tool"], experiment["type"]
             )
-            
+
         # Validate IO contract if present
         if "contract" in experiment:
             self._validate_io_contract(experiment["contract"])
+            
+        # Validate hypothesis reference if present
+        if "validates_hypothesis" in experiment:
+            self._validate_hypothesis_reference(experiment["validates_hypothesis"])
+
+
+
+    def _validate_hypothesis_reference(self, hypothesis_id: Any) -> None:
+        """Validate hypothesis reference in experiment or analysis blocks."""
+        if not isinstance(hypothesis_id, str):
+            self.result.add_error(
+                f"Hypothesis reference must be a string, got {type(hypothesis_id).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Use a string for the hypothesis reference")
+            return
+
+        # Check if hypothesis is defined
+        if hasattr(self, 'hypothesis_registry') and hypothesis_id not in self.hypothesis_registry:
+            self.result.add_error(
+                f"Referenced hypothesis '{hypothesis_id}' is not defined",
+                ErrorCodes.SEMANTIC_UNDEFINED_HYPOTHESIS,
+            ).add_fix(f"Define a hypothesis with id '{hypothesis_id}' or reference an existing one")
 
     def _validate_io_contract(self, contract: Any) -> None:
         """Validate IO contract structure."""
@@ -542,6 +856,11 @@ class EnhancedSemanticValidator:
             if isinstance(param_value, str) and param_value.startswith("${") and param_value.endswith("}"):
                 continue
 
+            # Check for entity references (e.g., pathway(UreaCycle))
+            if isinstance(param_value, str) and self._is_entity_reference(param_value):
+                self._validate_entity_reference(param_value)
+                continue
+
             if param_name in type_validations:
                 expected_types = type_validations[param_name]
                 if not isinstance(expected_types, tuple):
@@ -556,6 +875,71 @@ class EnhancedSemanticValidator:
                     error.add_fix(f"Change '{param_name}' to a {type_names} value")
                     error.add_context("parameter", param_name)
                     error.add_context("expected_type", type_names)
+
+    def _is_entity_reference(self, value: str) -> bool:
+        """Check if a string value is an entity reference (e.g., pathway(UreaCycle))."""
+        import re
+        # Pattern for entity references: entity_type(entity_name)
+        pattern = r'^[a-zA-Z_][a-zA-Z0-9_]*\([a-zA-Z_][a-zA-Z0-9_]*\)$'
+        return bool(re.match(pattern, value))
+
+    def _validate_entity_reference(self, entity_ref: str) -> None:
+        """Validate entity reference in parameter values."""
+        import re
+        # Extract entity type and name
+        match = re.match(r'^([a-zA-Z_][a-zA-Z0-9_]*)\(([a-zA-Z_][a-zA-Z0-9_]*)\)$', entity_ref)
+        if not match:
+            self.result.add_error(
+                f"Invalid entity reference format: {entity_ref}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Use format 'entity_type(entity_name)' for entity references")
+            return
+
+        entity_type, entity_name = match.groups()
+        
+        # Check if entity type is supported
+        supported_entity_types = {"pathway", "complex"}
+        if entity_type not in supported_entity_types:
+            self.result.add_error(
+                f"Unsupported entity type '{entity_type}' in reference: {entity_ref}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Use one of the supported entity types: {', '.join(supported_entity_types)}")
+            return
+
+        # Check if entity is defined
+        if hasattr(self, 'entity_registry'):
+            # Debug: Print entity registry contents
+            print(f"Entity registry: {self.entity_registry}")
+            print(f"Looking for entity type: {entity_type}")
+            print(f"Looking for entity name: {entity_name}")
+            
+            registry_key = entity_type + "s"  # "pathway" -> "pathways", "complex" -> "complexes"
+            # Fix for complex -> complexes
+            if entity_type == "complex":
+                registry_key = "complexes"
+            print(f"Registry key: {registry_key}")
+            if registry_key in self.entity_registry:
+                print(f"Found registry key: {registry_key}")
+                print(f"Available entities: {list(self.entity_registry[registry_key].keys())}")
+                if entity_name in self.entity_registry[registry_key]:
+                    print(f"Found entity: {entity_name}")
+                    return  # Valid reference
+                else:
+                    self.result.add_error(
+                        f"Referenced {entity_type} '{entity_name}' is not defined",
+                        ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
+                    ).add_fix(f"Define a {entity_type} with name '{entity_name}' or reference an existing one")
+            else:
+                # Entity type registry doesn't exist
+                self.result.add_error(
+                    f"Referenced {entity_type} '{entity_name}' is not defined (no {entity_type} definitions found)",
+                    ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
+                ).add_fix(f"Add a {entity_type} definition section or reference an existing one")
+        else:
+            self.result.add_error(
+                f"Referenced {entity_type} '{entity_name}' is not defined (no entity definitions found)",
+                ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
+            ).add_fix(f"Add entity definitions or reference an existing one")
 
     def _validate_tool_type_compatibility(self, tool: str, exp_type: str) -> None:
         """Validate tool and type compatibility."""
@@ -602,6 +986,10 @@ class EnhancedSemanticValidator:
         # Validate IO contract if present
         if "contract" in analysis:
             self._validate_io_contract(analysis["contract"])
+            
+        # Validate hypothesis reference if present
+        if "validates_hypothesis" in analysis:
+            self._validate_hypothesis_reference(analysis["validates_hypothesis"])
 
     def _validate_analysis_strategy(self, strategy: Any) -> None:
         """Validate analysis strategy."""
@@ -643,10 +1031,10 @@ class EnhancedSemanticValidator:
 
         # Check for design_type field
         design_type = design.get("design_type", "standard")  # Default to standard design
-        
+
         # Required fields (standard design)
         required_fields = ["entity", "model", "objective", "count", "output"]
-        
+
         # For inverse_design, we may have different requirements
         if design_type == "inverse_design":
             # For inverse_design, we still need most standard fields but also need inverse_design config
@@ -958,7 +1346,7 @@ class EnhancedSemanticValidator:
 
         if "run" in optimize:
             self._validate_optimize_run(optimize["run"])
-            
+
         # Validate surrogate_model if present
         if "surrogate_model" in optimize:
             self._validate_surrogate_model(optimize["surrogate_model"])
@@ -1541,10 +1929,10 @@ class EnhancedSemanticValidator:
         # Save current block context and temporarily set to design
         original_block = self.current_block
         self.current_block = "design"
-        
+
         # Validate as a design block first
         self._validate_design_block(design_params)
-        
+
         # Additional validation for guided discovery specific requirements
         if "candidates_per_cycle" not in design_params:
             error = self.result.add_error(
@@ -1560,7 +1948,7 @@ class EnhancedSemanticValidator:
                     ErrorCodes.TYPE_INVALID_TYPE,
                 )
                 error.add_fix("Use a positive integer for candidates_per_cycle")
-        
+
         # Restore original block context
         self.current_block = original_block
 
@@ -1577,10 +1965,10 @@ class EnhancedSemanticValidator:
         # Save current block context and temporarily set to optimize
         original_block = self.current_block
         self.current_block = "optimize"
-        
+
         # Validate as an optimize block first
         self._validate_optimize_block(active_learning_params)
-        
+
         # Additional validation for guided discovery specific requirements
         if "experiments_per_cycle" not in active_learning_params:
             error = self.result.add_error(
@@ -1596,7 +1984,7 @@ class EnhancedSemanticValidator:
                     ErrorCodes.TYPE_INVALID_TYPE,
                 )
                 error.add_fix("Use a positive integer for experiments_per_cycle")
-        
+
         # Restore original block context
         self.current_block = original_block
 

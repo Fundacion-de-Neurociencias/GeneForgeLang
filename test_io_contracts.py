@@ -13,43 +13,43 @@ from gfl.semantic_validator import EnhancedSemanticValidator
 def test_io_contracts():
     """Test IO Contracts validation."""
     print("Testing IO Contracts validation...")
-    
+
     # Read the test GFL file
     with open("test_io_contracts.gfl", "r") as f:
         gfl_content = f.read()
-    
+
     # Parse the GFL content
     ast = parse(gfl_content)
-    
+
     if ast is None:
         print("ERROR: Failed to parse GFL content")
         return False
-    
+
     print("Parsed AST successfully")
-    
+
     # Validate the AST with enhanced validation
     result = validate(ast, enhanced=True)
-    
+
     print(f"Validation result: {'Valid' if result.is_valid else 'Invalid'}")
-    
+
     if not result.is_valid:
         print(f"Found {len(result.errors)} errors:")
         for error in result.errors:
             print(f"  - {error}")
-    
+
     # Check for specific contract-related errors
     contract_errors = [error for error in result.errors if "contract" in error.message.lower()]
     if contract_errors:
         print(f"Found {len(contract_errors)} contract-related errors:")
         for error in contract_errors:
             print(f"  - {error}")
-    
+
     return True
 
 def test_simple_io_contracts():
     """Test simple IO Contracts validation."""
     print("\nTesting simple IO Contracts validation...")
-    
+
     # Simple valid case
     test_ast = {
         "experiment": {
@@ -85,17 +85,17 @@ def test_simple_io_contracts():
             }
         }
     }
-    
+
     validator = EnhancedSemanticValidator()
     result = validator.validate_ast(test_ast)
-    
+
     print(f"Simple validation result: {'Valid' if result.is_valid else 'Invalid'}")
-    
+
     if not result.is_valid:
         print(f"Found {len(result.errors)} errors:")
         for error in result.errors:
             print(f"  - {error}")
-    
+
     return result.is_valid
 
 if __name__ == "__main__":

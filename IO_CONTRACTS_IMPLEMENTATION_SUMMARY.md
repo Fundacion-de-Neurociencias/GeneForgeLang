@@ -78,12 +78,12 @@ experiment:
   output: aligned_reads
   contract:
     inputs:
-      raw_sequences: 
+      raw_sequences:
         type: "FASTQ"
         attributes:
           layout: "paired-end"
     outputs:
-      aligned_reads: 
+      aligned_reads:
         type: "BAM"
         attributes:
           sorted: true
@@ -94,13 +94,13 @@ analyze:
   output: variants
   contract:
     inputs:
-      aligned_reads: 
+      aligned_reads:
         type: "BAM"
         attributes:
           sorted: true
           indexed: true
     outputs:
-      variants: 
+      variants:
         type: "VCF"
 ```
 

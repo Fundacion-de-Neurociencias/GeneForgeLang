@@ -97,5 +97,5 @@ For support, check out:
 
 ---
 
-**GeneForgeLang Team**  
+**GeneForgeLang Team**
 *Empowering genomic research through structured workflows and AI-powered analysis*

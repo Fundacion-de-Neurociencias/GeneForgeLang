@@ -12,7 +12,7 @@ from gfl.semantic_validator import EnhancedSemanticValidator
 def test_active_learning_optimize():
     """Test optimize block with Active Learning strategy."""
     print("Testing optimize block with Active Learning strategy...")
-    
+
     test_ast = {
         "optimize_active_learning": {
             "search_space": {
@@ -43,10 +43,10 @@ def test_active_learning_optimize():
             }
         }
     }
-    
+
     validator = EnhancedSemanticValidator()
     result = validator.validate_ast(test_ast)
-    
+
     print(f"  Valid: {result.is_valid}")
     if not result.is_valid:
         for error in result.errors:
@@ -56,7 +56,7 @@ def test_active_learning_optimize():
 def test_inverse_design():
     """Test design block with inverse design."""
     print("Testing design block with inverse design...")
-    
+
     test_ast = {
         "design_inverse": {
             "design_type": "inverse_design",
@@ -76,10 +76,10 @@ def test_inverse_design():
             }
         }
     }
-    
+
     validator = EnhancedSemanticValidator()
     result = validator.validate_ast(test_ast)
-    
+
     print(f"  Valid: {result.is_valid}")
     if not result.is_valid:
         for error in result.errors:
@@ -89,7 +89,7 @@ def test_inverse_design():
 def test_refine_data():
     """Test refine_data block."""
     print("Testing refine_data block...")
-    
+
     test_ast = {
         "refine_data": {
             "refinement_config": {
@@ -99,10 +99,10 @@ def test_refine_data():
             }
         }
     }
-    
+
     validator = EnhancedSemanticValidator()
     result = validator.validate_ast(test_ast)
-    
+
     print(f"  Valid: {result.is_valid}")
     if not result.is_valid:
         for error in result.errors:
@@ -112,7 +112,7 @@ def test_refine_data():
 def test_guided_discovery():
     """Test guided_discovery block."""
     print("Testing guided_discovery block...")
-    
+
     test_ast = {
         "guided_discovery": {
             "design_params": {
@@ -159,10 +159,10 @@ def test_guided_discovery():
             "output": "discovered_compounds"
         }
     }
-    
+
     validator = EnhancedSemanticValidator()
     result = validator.validate_ast(test_ast)
-    
+
     print(f"  Valid: {result.is_valid}")
     if not result.is_valid:
         for error in result.errors:
@@ -172,17 +172,17 @@ def test_guided_discovery():
 def main():
     """Run all tests."""
     print("Running comprehensive tests for new GFL features...\n")
-    
+
     tests = [
         test_active_learning_optimize,
         test_inverse_design,
         test_refine_data,
         test_guided_discovery
     ]
-    
+
     passed = 0
     total = len(tests)
-    
+
     for test in tests:
         try:
             if test():
@@ -190,9 +190,9 @@ def main():
             print()
         except Exception as e:
             print(f"  ERROR: {e}\n")
-    
+
     print(f"Tests passed: {passed}/{total}")
-    
+
     if passed == total:
         print("All tests passed! 🎉")
         return True

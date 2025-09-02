@@ -31,7 +31,7 @@ The `refinement_config` section defines the refinement strategy and parameters:
   - `normalization`: Normalize data values
 
 - **noise_level** (float, required): The expected noise level in the data (0.0 to 1.0)
-  
+
 - **target_resolution** (string, required): The desired resolution after refinement
   - `low`: Low resolution (faster processing)
   - `medium`: Medium resolution (balanced)

@@ -43,6 +43,12 @@ Welcome to the comprehensive documentation for GeneForgeLang (GFL), a domain-spe
   - [Custom Models](inference/custom-models.md)
   - [Performance Tuning](inference/performance.md)
 
+### Symbolic Reasoning
+- **[Knowledge Representation](features/symbolic_reasoning.md)**
+  - [Rules and Hypotheses](features/symbolic_reasoning.md#rules-and-hypotheses)
+  - [Temporal Orchestration](features/symbolic_reasoning.md#timeline-blocks)
+  - [Biological Entities](features/symbolic_reasoning.md#biological-entities)
+
 ### Web & API Platform
 - **[Platform Features](platform/)**
   - [Web Interface Overview](WEB_API_IMPLEMENTATION_SUMMARY.md)

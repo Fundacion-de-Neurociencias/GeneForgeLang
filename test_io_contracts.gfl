@@ -8,12 +8,12 @@ experiment:
   output: aligned_reads
   contract:
     inputs:
-      raw_sequences: 
+      raw_sequences:
         type: "FASTQ"
         attributes:
           layout: "paired-end"
     outputs:
-      aligned_reads: 
+      aligned_reads:
         type: "BAM"
         attributes:
           sorted: true
@@ -24,13 +24,13 @@ analyze:
   output: variants
   contract:
     inputs:
-      aligned_reads: 
+      aligned_reads:
         type: "BAM"
         attributes:
           sorted: true
           indexed: true  # This will cause a compatibility warning
     outputs:
-      variants: 
+      variants:
         type: "VCF"
 
 # Test 2: Incompatible contracts
@@ -41,10 +41,10 @@ experiment_incompatible:
   output: aligned_data
   contract:
     inputs:
-      raw_data: 
+      raw_data:
         type: "CSV"
     outputs:
-      aligned_data: 
+      aligned_data:
         type: "JSON"
 
 analyze_incompatible:
@@ -53,8 +53,8 @@ analyze_incompatible:
   output: results
   contract:
     inputs:
-      aligned_data: 
+      aligned_data:
         type: "BAM"  # This should cause a contract mismatch error
     outputs:
-      results: 
+      results:
         type: "CSV"

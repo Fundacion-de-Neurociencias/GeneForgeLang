@@ -125,6 +125,7 @@ nav:
     - Design Block: features/design_block.md
     - Optimize Block: features/optimize_block.md
     - With Priors Clause: features/with_priors_clause.md
+    - Symbolic Reasoning: features/symbolic_reasoning.md
   - Web Platform:
     - Overview: WEB_API_IMPLEMENTATION_SUMMARY.md
   - API Reference:

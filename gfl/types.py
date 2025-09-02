@@ -21,20 +21,20 @@ GFLDict = Dict[str, Any]
 
 class DataType(str, Enum):
     """Valid data types for IO contracts."""
-    
+
     # Sequence data types
     FASTA = "FASTA"
     FASTQ = "FASTQ"
     BAM = "BAM"
     SAM = "SAM"
     VCF = "VCF"
-    
+
     # General data types
     CSV = "CSV"
     JSON = "JSON"
     TEXT = "TEXT"
     BINARY = "BINARY"
-    
+
     # Custom types
     CUSTOM = "CUSTOM"
 
@@ -62,13 +62,13 @@ class AnalysisStrategy(str, Enum):
 @dataclass
 class IOContract:
     """IO Contract definition for data validation."""
-    
+
     # Data type specification
     type: str  # DataType enum value or custom type
-    
+
     # Optional attributes for type specification
     attributes: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
         return {
@@ -80,13 +80,13 @@ class IOContract:
 @dataclass
 class BlockContract:
     """Contract definition for a GFL block's inputs and outputs."""
-    
+
     # Input contracts (data consumed by this block)
     inputs: Dict[str, IOContract] = field(default_factory=dict)
-    
+
     # Output contracts (data produced by this block)
     outputs: Dict[str, IOContract] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
         return {

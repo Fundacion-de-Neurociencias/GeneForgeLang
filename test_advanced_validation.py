@@ -13,25 +13,25 @@ from gfl.semantic_validator import EnhancedSemanticValidator
 def test_advanced_syntax():
     """Test the advanced AI workflow syntax validation."""
     print("Testing advanced GFL syntax validation...")
-    
+
     # Read the test GFL file
     with open("test_advanced_syntax.gfl", "r") as f:
         gfl_content = f.read()
-    
+
     # Parse the GFL content
     ast = parse(gfl_content)
-    
+
     if ast is None:
         print("ERROR: Failed to parse GFL content")
         return False
-    
+
     print("Parsed AST successfully")
-    
+
     # Validate the AST with enhanced validation
     result = validate(ast, enhanced=True)
-    
+
     print(f"Validation result: {'Valid' if result.is_valid else 'Invalid'}")
-    
+
     if not result.is_valid:
         print(f"Found {len(result.errors)} errors:")
         for error in result.errors:

@@ -19,7 +19,7 @@ guided_discovery:
     count: <integer>
     output: <output_name>
     # ... additional design parameters
-  
+
   active_learning_params:
     # Optimize block configuration
     search_space:
@@ -33,11 +33,11 @@ guided_discovery:
       # ... budget constraints
     run:
       # ... experiment or analysis block
-  
+
   budget:
     max_cycles: <integer>
     # ... additional budget constraints
-  
+
   output: <final_output_name>
 ```
 
@@ -92,7 +92,7 @@ guided_discovery:
     constraints:
       - length(50, 200)
       - stability_score > 0.7
-  
+
   active_learning_params:
     search_space:
       temperature: range(25, 42)
@@ -118,11 +118,11 @@ guided_discovery:
           temp: ${temperature}
           ph: ${ph}
     experiments_per_cycle: 3
-  
+
   budget:
     max_cycles: 10
     convergence_threshold: 0.05
-  
+
   output: optimized_proteins
 ```
 
@@ -141,7 +141,7 @@ guided_discovery:
     constraints:
       - off_target_score < 0.1
       - gc_content(40, 60)
-  
+
   active_learning_params:
     search_space:
       mg_concentration: range(5, 20)
@@ -167,11 +167,11 @@ guided_discovery:
           mg_conc: ${mg_concentration}
           incubation: ${incubation_time}
     experiments_per_cycle: 4
-  
+
   budget:
     max_cycles: 8
     target_objective_value: 0.95
-  
+
   output: optimal_guides
 ```
 

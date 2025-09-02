@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Symbolic Reasoning Capabilities:
+  - Implemented `rules` block for conditional biological relationships
+  - Implemented `hypothesis` block for scientific hypothesis expression
+  - Implemented `timeline` block for temporal orchestration
+  - Implemented `pathways` and `complexes` blocks for biological entity definitions
+  - Added entity reference validation in experiment parameters (e.g., pathway(UreaCycle))
+  - Added hypothesis reference validation in experiment and analysis blocks
+  - New error codes for undefined hypothesis and entity references
+  - Comprehensive documentation for symbolic reasoning features
+
 ## [1.0.0] - 2025-08-31
 
 ### Added

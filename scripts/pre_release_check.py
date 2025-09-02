@@ -14,7 +14,7 @@ def run_command(cmd, description):
     """Run a command and return True if successful, False otherwise."""
     print(f"🏃 Running {description}...")
     try:
-        result = subprocess.run(cmd, shell=True, check=True, 
+        result = subprocess.run(cmd, shell=True, check=True,
                               capture_output=True, text=True)
         print(f"✅ {description} passed")
         return True
@@ -27,11 +27,11 @@ def main():
     """Run all pre-release checks."""
     print("🔍 GeneForgeLang v1.0.0 Pre-release Validation")
     print("=" * 50)
-    
+
     # Change to the project root directory
     project_root = Path(__file__).parent.parent
     os.chdir(project_root)
-    
+
     # List of tests to run
     tests = [
         ("python -m pytest tests/test_semantics.py -v", "Semantic validation tests"),
@@ -46,13 +46,13 @@ def main():
         ("gfl-validate test_io_contracts.gfl", "IO Contracts validation"),
         ("gfl-validate test_schema_registry.gfl", "Schema Registry validation"),
     ]
-    
+
     # Run all tests
     all_passed = True
     for cmd, description in tests:
         if not run_command(cmd, description):
             all_passed = False
-    
+
     # Summary
     print("\n" + "=" * 50)
     if all_passed:

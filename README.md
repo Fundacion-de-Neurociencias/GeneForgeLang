@@ -314,7 +314,13 @@ GeneForgeLang/
 │   ├── features/                # NEW: Feature-specific documentation
 │   ├── PLUGIN_ECOSYSTEM.md      # NEW: Plugin development guide
 │   └── PHASE_3_PLUGIN_ECOSYSTEM_SUMMARY.md  # NEW: Implementation summary
-├── examples/                    # Example workflows
+├── examples/                    # Example workflows and projects
+│   ├── gfl-genesis/             # Advanced example project
+│   │   ├── genesis.gfl          # Main workflow definition
+│   │   ├── plugins/             # Custom plugins
+│   │   ├── schemas/             # Schema definitions
+│   │   └── docs/                # Project documentation
+│   └── ...                      # Simple examples
 ├── tests/                       # Test suite
 │   ├── test_new_features.py     # NEW: 24 regression tests
 │   └── test_plugin_interfaces.py # NEW: Plugin interface tests

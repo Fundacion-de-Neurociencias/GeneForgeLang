@@ -34,3 +34,6 @@ site/
 
 # Documentation build artifacts
 .mkdocs_cache/
+
+# Ignorar resúmenes de implementación interna
+*_SUMMARY.md

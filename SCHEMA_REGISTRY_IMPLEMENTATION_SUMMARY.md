@@ -69,7 +69,7 @@ schemas:
     type: "FASTQ"
     description: "FASTQ format with paired-end layout"
     attributes:
-      layout: 
+      layout:
         type: "string"
         required: true
         value: "paired-end"
@@ -79,11 +79,11 @@ schemas:
     type: "BAM"
     description: "BAM format that is sorted and indexed"
     attributes:
-      sorted: 
+      sorted:
         type: "boolean"
         required: true
         value: true
-      indexed: 
+      indexed:
         type: "boolean"
         required: true
         value: true
@@ -102,10 +102,10 @@ experiment:
   output: aligned_reads
   contract:
     inputs:
-      raw_sequences: 
+      raw_sequences:
         type: "FASTQ_PairedEnd" # Uses custom type
     outputs:
-      aligned_reads: 
+      aligned_reads:
         type: "BAM_Indexed" # Uses custom type
 
 analyze:
@@ -115,10 +115,10 @@ analyze:
   contract:
     inputs:
       # Validator now knows that 'BAM_Indexed' must have sorted=true and indexed=true
-      aligned_reads: 
+      aligned_reads:
         type: "BAM_Indexed"
     outputs:
-      variants: 
+      variants:
         type: "VCF"
 ```
 
