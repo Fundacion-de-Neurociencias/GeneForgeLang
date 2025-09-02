@@ -42,7 +42,7 @@ pip install -e .[server]   # Web server and API
 
 ### Your First GFL Workflow
 
-```python
+``python
 from gfl.api import parse, validate, execute
 
 # Define a protein design workflow with AI-powered generation
@@ -116,7 +116,7 @@ print(f"Best experimental conditions: {result['optimize']['best_parameters']}")
 **GeneForgeLang now supports intelligent experimental design with AI-powered plugins:**
 
 #### Design Block - Biological Entity Generation
-```yaml
+``yaml
 design:
   entity: ProteinSequence           # or DNA, RNA, SmallMolecule
   model: ProteinVAEGenerator        # AI plugin for generation
@@ -132,7 +132,7 @@ design:
 ```
 
 #### Optimize Block - Intelligent Parameter Search
-```yaml
+``yaml
 optimize:
   search_space:
     temperature: range(25, 42)      # Continuous parameters
@@ -414,6 +414,18 @@ If you use GeneForgeLang in your research, please cite:
   version={0.1.0}
 }
 ```
+
+## 📚 Publications
+
+### Scientific Papers Using GeneForgeLang
+
+1. **Accelerating Complex Genomic Design Tasks: AI-Guided gRNA Optimization for TP53 with GeneForgeLang**
+   Menendez Gonzalez, M. (2025). *Preprints*. https://doi.org/10.20944/preprints202509.0193.v1
+   This preprint demonstrates how GeneForgeLang was used to optimize guide RNA design for TP53 gene editing, showcasing the language's capabilities in real-world genomic research applications.
+
+2. **GeneForgeLang (GFL): A Symbolic Language for Rational Bio-Design and Clinical Genomic Engineering**
+   Fundación de Neurociencias. (2025). *Zenodo*. https://doi.org/10.5281/zenodo.15493559
+   This whitepaper introduces GeneForgeLang as a symbolic language for representing, analyzing, and simulating biomolecular processes with clarity and logical reasoning, particularly suited for AI interaction and therapeutic prototyping.
 
 ## 📄 License
 
