@@ -12,8 +12,8 @@ authors:
     affiliation: "1"
 affiliations:
  - index: 1
-   name: Fundación de Neurociencias, Spain
-   ror: 01f70dw06
+   name: Universidad de Oviedo, Spain
+   ror: 006gksa02
 date: 24 May 2025
 bibliography: paper.bib
 ---
