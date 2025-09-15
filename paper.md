@@ -116,6 +116,6 @@ EFFECT(↑Tumor_Lysis, ↑T_cell_Persistence)
 
 # Acknowledgements
 
-GFL is developed by the **Fundación de Neurociencias**, supported by [GeneForge](https://geneforge.ai) and clinical applications in precision medicine. Special thanks to the scientific community contributing edge cases, ontological structures, and design critiques.
+GFL is promoted by **Fundación de Neurociencias**. Special thanks to the scientific community for contributing edge cases, ontological structures, and design critiques.
 
 # References
