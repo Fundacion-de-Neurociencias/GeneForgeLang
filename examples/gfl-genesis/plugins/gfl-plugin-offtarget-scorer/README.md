@@ -10,7 +10,7 @@ This plugin identifies and scores potential off-target sites throughout the geno
 
 ## Plugin Interface
 
-Implements the `AnalyzerPlugin` interface from GFL.
+Implements the `BaseGFLPlugin` interface from GFL.
 
 ### Input
 - gRNA sequence (~20-23nt)

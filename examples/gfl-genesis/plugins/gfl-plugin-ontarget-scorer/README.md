@@ -10,7 +10,7 @@ This plugin predicts the on-target cutting efficiency of a given gRNA sequence u
 
 ## Plugin Interface
 
-Implements the `AnalyzerPlugin` interface from GFL.
+Implements the `BaseGFLPlugin` interface from GFL.
 
 ### Input
 - gRNA sequence (~20-23nt)

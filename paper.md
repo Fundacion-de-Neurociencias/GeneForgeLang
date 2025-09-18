@@ -36,16 +36,16 @@ GFL solves this gap by providing a **compact, modular, and logically expressive 
 - Representing epigenetic states and post-translational modifications
 - Encoding delivery routes, dosages, and tissue-specific expression
 - Enabling feedback loops, probabilistic reasoning, and pathway logic
-- Being parsed, validated, and simulated by LLMs and bioinformatics pipelines
+- Being parsed, validated, and simulated by AI models and bioinformatics pipelines
 
 ## Related work
 
 GFL builds upon conceptual and technical precedents:
 
 - SBOL [@Galdzicki2014] provides semantic interoperability but lacks reasoning syntax
-- GenoCAD [@GenoCAD] enables modular design but not dynamic or clinical modeling
+- GenoCAD [@Czar2009] enables modular design but not dynamic or clinical modeling
 - ProForma [@LeDuc2022] formalizes proteoforms but is protein-only and lacks logic
-- Eugene [@Eugene2009] focuses on device constraints, not biological complexity
+- Eugene [@Bilitchenko2011] focuses on device constraints, not biological complexity
 
 GFL merges these paradigms into a **unified language for describing biological reality**, particularly suited for AI interaction, therapeutic prototyping, and knowledge extraction.
 
@@ -79,6 +79,15 @@ A Python script that:
 - Parses into structured JSON
 - Detects semantic errors (e.g., transcription of a protein)
 - Supports conversion to SBOL, FASTA, ProForma
+
+## Plugin System
+
+GFL features an extensible plugin system that allows integration of specialized tools for:
+
+- CRISPR gRNA design and evaluation
+- Protein structure prediction
+- Pathway simulation
+- Experimental optimization
 
 ## GitHub repository
 

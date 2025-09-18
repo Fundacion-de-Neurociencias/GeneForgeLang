@@ -13,7 +13,7 @@ The CRISPR Evaluator plugin serves as an orchestrator that:
 
 ## Plugin Interface
 
-Implements the `AnalyzerPlugin` interface from GFL.
+Implements the `BaseGFLPlugin` interface from GFL.
 
 ### Input
 - List of gRNA sequences
