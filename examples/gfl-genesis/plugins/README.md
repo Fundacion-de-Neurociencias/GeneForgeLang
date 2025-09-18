@@ -12,7 +12,7 @@ Each plugin should follow the GFL plugin development guidelines and implement th
 
 - GeneratorPlugin for design blocks
 - OptimizerPlugin for optimize blocks
-- AnalyzerPlugin for analyze blocks
+- BaseGFLPlugin for analyzer functionality
 
 ## Installation
 
