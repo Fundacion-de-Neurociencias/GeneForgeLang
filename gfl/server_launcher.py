@@ -20,9 +20,7 @@ import time
 from typing import Dict, Optional
 
 # Set up logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -93,9 +91,7 @@ class GFLServerManager:
         self.servers: Dict[str, ServerProcess] = {}
         self.shutdown_requested = False
 
-    def add_api_server(
-        self, host: str = "127.0.0.1", port: int = 8000, reload: bool = False
-    ) -> None:
+    def add_api_server(self, host: str = "127.0.0.1", port: int = 8000, reload: bool = False) -> None:
         """Add API server to management."""
         try:
             from gfl.api_server import run_server
@@ -108,9 +104,7 @@ class GFLServerManager:
             self.servers["api"] = server
             logger.info(f"Configured API server for {host}:{port}")
         except ImportError:
-            logger.error(
-                "Cannot import API server - ensure FastAPI dependencies are installed"
-            )
+            logger.error("Cannot import API server - ensure FastAPI dependencies are installed")
 
     def add_web_interface(
         self,
@@ -136,9 +130,7 @@ class GFLServerManager:
             self.servers["web"] = server
             logger.info(f"Configured web interface for {host}:{port}")
         except ImportError:
-            logger.error(
-                "Cannot import web interface - ensure Gradio dependencies are installed"
-            )
+            logger.error("Cannot import web interface - ensure Gradio dependencies are installed")
 
     def start_all(self) -> bool:
         """Start all configured servers."""
@@ -184,9 +176,7 @@ class GFLServerManager:
         try:
             while not self.shutdown_requested:
                 # Check if any servers have died
-                running_servers = [
-                    name for name, server in self.servers.items() if server.is_running()
-                ]
+                running_servers = [name for name, server in self.servers.items() if server.is_running()]
 
                 if not running_servers:
                     logger.warning("All servers have stopped")
@@ -272,9 +262,7 @@ def print_startup_banner(config: Dict) -> None:
 
     if config.get("api_enabled"):
         print(f"🌐 API Server:     http://{config['api_host']}:{config['api_port']}")
-        print(
-            f"   📚 Docs:        http://{config['api_host']}:{config['api_port']}/docs"
-        )
+        print(f"   📚 Docs:        http://{config['api_host']}:{config['api_port']}/docs")
 
     if config.get("web_enabled"):
         print(f"🖥️  Web Interface: http://{config['web_host']}:{config['web_port']}")
@@ -308,12 +296,8 @@ Examples:
         default=True,
         help="Start both API server and web interface (default)",
     )
-    server_group.add_argument(
-        "--api-only", action="store_true", help="Start only the API server"
-    )
-    server_group.add_argument(
-        "--web-only", action="store_true", help="Start only the web interface"
-    )
+    server_group.add_argument("--api-only", action="store_true", help="Start only the API server")
+    server_group.add_argument("--web-only", action="store_true", help="Start only the web interface")
 
     # Network configuration
     parser.add_argument(
@@ -323,26 +307,18 @@ Examples:
     )
     parser.add_argument("--api-host", help="API server host (overrides --host)")
     parser.add_argument("--web-host", help="Web interface host (overrides --host)")
-    parser.add_argument(
-        "--api-port", type=int, default=8000, help="API server port (default: 8000)"
-    )
-    parser.add_argument(
-        "--web-port", type=int, default=7860, help="Web interface port (default: 7860)"
-    )
+    parser.add_argument("--api-port", type=int, default=8000, help="API server port (default: 8000)")
+    parser.add_argument("--web-port", type=int, default=7860, help="Web interface port (default: 7860)")
 
     # Additional options
-    parser.add_argument(
-        "--reload", action="store_true", help="Enable auto-reload for development"
-    )
+    parser.add_argument("--reload", action="store_true", help="Enable auto-reload for development")
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
     parser.add_argument(
         "--share",
         action="store_true",
         help="Create public share link for web interface",
     )
-    parser.add_argument(
-        "--check-deps", action="store_true", help="Check dependencies and exit"
-    )
+    parser.add_argument("--check-deps", action="store_true", help="Check dependencies and exit")
 
     args = parser.parse_args()
 
@@ -415,9 +391,7 @@ Examples:
         manager.add_api_server(host=api_host, port=args.api_port, reload=args.reload)
 
     if web_enabled:
-        manager.add_web_interface(
-            host=web_host, port=args.web_port, share=args.share, debug=args.debug
-        )
+        manager.add_web_interface(host=web_host, port=args.web_port, share=args.share, debug=args.debug)
 
     # Set up signal handlers
     setup_signal_handlers(manager)

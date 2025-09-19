@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="gfl-plugin-offtarget-scorer",
@@ -12,10 +12,6 @@ setup(
         "pandas>=1.3.0",
         "biopython>=1.79",
     ],
-    entry_points={
-        "gfl.plugins": [
-            "offtarget_scorer = gfl_plugin_offtarget_scorer.plugin:OffTargetScorerPlugin"
-        ]
-    },
+    entry_points={"gfl.plugins": ["offtarget_scorer = gfl_plugin_offtarget_scorer.plugin:OffTargetScorerPlugin"]},
     python_requires=">=3.9",
 )

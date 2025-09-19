@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Test script for IO Contracts validation."""
 
-import sys
 import os
+import sys
 
 # Add the current directory to the path so we can import gfl
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -10,12 +10,13 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from gfl.api import parse, validate
 from gfl.semantic_validator import EnhancedSemanticValidator
 
+
 def test_io_contracts():
     """Test IO Contracts validation."""
     print("Testing IO Contracts validation...")
 
     # Read the test GFL file
-    with open("test_io_contracts.gfl", "r") as f:
+    with open("test_io_contracts.gfl") as f:
         gfl_content = f.read()
 
     # Parse the GFL content
@@ -46,6 +47,7 @@ def test_io_contracts():
 
     return True
 
+
 def test_simple_io_contracts():
     """Test simple IO Contracts validation."""
     print("\nTesting simple IO Contracts validation...")
@@ -56,34 +58,17 @@ def test_simple_io_contracts():
             "tool": "sequence_aligner",
             "type": "sequencing",
             "contract": {
-                "inputs": {
-                    "raw_sequences": {
-                        "type": "FASTQ",
-                        "attributes": {"layout": "paired-end"}
-                    }
-                },
-                "outputs": {
-                    "aligned_reads": {
-                        "type": "BAM",
-                        "attributes": {"sorted": True}
-                    }
-                }
-            }
+                "inputs": {"raw_sequences": {"type": "FASTQ", "attributes": {"layout": "paired-end"}}},
+                "outputs": {"aligned_reads": {"type": "BAM", "attributes": {"sorted": True}}},
+            },
         },
         "analyze": {
             "strategy": "variant",
             "contract": {
-                "inputs": {
-                    "aligned_reads": {
-                        "type": "BAM",
-                        "attributes": {"sorted": True, "indexed": True}
-                    }
-                },
-                "outputs": {
-                    "variants": {"type": "VCF"}
-                }
-            }
-        }
+                "inputs": {"aligned_reads": {"type": "BAM", "attributes": {"sorted": True, "indexed": True}}},
+                "outputs": {"variants": {"type": "VCF"}},
+            },
+        },
     }
 
     validator = EnhancedSemanticValidator()
@@ -97,6 +82,7 @@ def test_simple_io_contracts():
             print(f"  - {error}")
 
     return result.is_valid
+
 
 if __name__ == "__main__":
     success1 = test_io_contracts()

@@ -1,20 +1,21 @@
 """Tests for enhanced plugin system with dependencies and lifecycle hooks."""
 
+from typing import Any, Dict, List
+
 import pytest
-from typing import Dict, Any, List
 
 from gfl.plugins.plugin_registry import (
-    plugin_registry,
     BaseGFLPlugin,
-    PluginInfo,
-    PluginState,
-    PluginPriority,
     PluginDependency,
-    get_plugin,
+    PluginInfo,
+    PluginPriority,
+    PluginState,
     activate_plugin,
+    add_lifecycle_hook,
+    get_plugin,
+    plugin_registry,
     process_with_plugins,
     validate_plugin_dependencies,
-    add_lifecycle_hook,
 )
 
 
@@ -188,9 +189,7 @@ class TestEnhancedRegistry:
         """Test plugin ordering based on dependencies."""
         # Create plugins with dependencies
         base_plugin = MockPlugin("base")
-        dependent_plugin = MockPlugin(
-            "dependent", dependencies=[PluginDependency("base", optional=False)]
-        )
+        dependent_plugin = MockPlugin("dependent", dependencies=[PluginDependency("base", optional=False)])
 
         plugin_registry.register("base", base_plugin)
         plugin_registry.register("dependent", dependent_plugin)
@@ -242,9 +241,7 @@ class TestEnhancedRegistry:
         # Plugin with missing dependency
         bad_plugin = MockPlugin(
             "bad",
-            dependencies=[
-                PluginDependency("nonexistent_package_12345", optional=False)
-            ],
+            dependencies=[PluginDependency("nonexistent_package_12345", optional=False)],
         )
 
         # Plugin with satisfied dependency

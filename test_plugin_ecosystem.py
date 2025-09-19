@@ -3,7 +3,7 @@
 Test the complete plugin ecosystem with real GFL execution.
 """
 
-from gfl.api import parse, validate, execute, list_available_plugins, get_api_info
+from gfl.api import execute, get_api_info, list_available_plugins, parse, validate
 from gfl.plugins.example_implementations import register_example_plugins
 
 
@@ -73,8 +73,8 @@ design:
         print("✓ Design block executed successfully")
 
         # Check results
-        design_result = result['design']
-        candidates = design_result['candidates']
+        design_result = result["design"]
+        candidates = design_result["candidates"]
 
         print(f"✓ Generated {len(candidates)} protein candidates")
         print(f"✓ First candidate: {candidates[0].sequence[:20]}...")
@@ -149,18 +149,18 @@ optimize:
         print("✓ Optimize block executed successfully")
 
         # Check results
-        optimize_result = result['optimize']
-        best_params = optimize_result['best_parameters']
-        best_objective = optimize_result['best_objective_value']
-        total_experiments = optimize_result['total_experiments']
+        optimize_result = result["optimize"]
+        best_params = optimize_result["best_parameters"]
+        best_objective = optimize_result["best_objective_value"]
+        total_experiments = optimize_result["total_experiments"]
 
         print(f"✓ Optimization completed: {total_experiments} experiments")
         print(f"✓ Best objective value: {best_objective:.4f}")
-        print(f"✓ Best parameters:")
+        print("✓ Best parameters:")
         for param, value in best_params.items():
             print(f"    {param}: {value}")
 
-        convergence = optimize_result['convergence_info']
+        convergence = optimize_result["convergence_info"]
         print(f"✓ Convergence status: {convergence['converged']} ({convergence['reason']})")
 
     except Exception as e:
@@ -228,8 +228,8 @@ optimize:
         print("✓ Combined workflow executed successfully")
 
         # Check that both blocks executed
-        assert 'design' in result, "Design block should have executed"
-        assert 'optimize' in result, "Optimize block should have executed"
+        assert "design" in result, "Design block should have executed"
+        assert "optimize" in result, "Optimize block should have executed"
 
         print(f"✓ Design generated {result['design']['count']} molecules")
         print(f"✓ Optimization found best objective: {result['optimize']['best_objective_value']:.4f}")

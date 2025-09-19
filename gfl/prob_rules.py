@@ -7,9 +7,7 @@ from typing import Any, Callable, Dict, List
 class ProbRule:
     """Simple likelihood-ratio rule used by the probabilistic reasoner."""
 
-    def __init__(
-        self, name: str, lr: float, condition: Callable[[Dict[str, Any]], bool]
-    ):
+    def __init__(self, name: str, lr: float, condition: Callable[[Dict[str, Any]], bool]):
         self.name = name
         self.lr = lr
         self.condition = condition
@@ -51,24 +49,19 @@ def default_rules() -> List[ProbRule]:
         ProbRule(
             "vector_tropism_match",
             3.0,
-            lambda n: n.get("type") == "vector"
-            and "tropism=retina" in str(n.get("attrs", {}).get("val", "")),
+            lambda n: n.get("type") == "vector" and "tropism=retina" in str(n.get("attrs", {}).get("val", "")),
         ),
         ProbRule(
             "non_equity_governance",
             0.5,
             lambda n: n.get("type") == "governance"
-            and not any(
-                k in str(n.get("attrs", {}).get("val", ""))
-                for k in ("equity", "transparency", "stewardship")
-            ),
+            and not any(k in str(n.get("attrs", {}).get("val", "")) for k in ("equity", "transparency", "stewardship")),
         ),
         ProbRule(
             "high_offtarget",
             0.4,
             lambda n: n.get("type") == "risk"
-            and _parse_float_after_colon(str(n.get("attrs", {}).get("val", "0:0")))
-            > 0.6,
+            and _parse_float_after_colon(str(n.get("attrs", {}).get("val", "0:0"))) > 0.6,
         ),
         ProbRule("repeat_interruption", 4.0, lambda n: n.get("type") == "repeat_edit"),
     ]

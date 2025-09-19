@@ -121,7 +121,21 @@ class EnhancedSemanticValidator:
             return
 
         # Check for at least one main block
-        main_blocks = {"experiment", "analyze", "simulate", "branch", "design", "optimize", "refine_data", "guided_discovery", "rules", "hypothesis", "timeline", "pathways", "complexes"}
+        main_blocks = {
+            "experiment",
+            "analyze",
+            "simulate",
+            "branch",
+            "design",
+            "optimize",
+            "refine_data",
+            "guided_discovery",
+            "rules",
+            "hypothesis",
+            "timeline",
+            "pathways",
+            "complexes",
+        }
         found_blocks = set(ast.keys()) & main_blocks
 
         if not found_blocks:
@@ -247,8 +261,9 @@ class EnhancedSemanticValidator:
     def _validate_entity_reference(self, entity_ref: str) -> None:
         """Validate entity reference in parameter values."""
         import re
+
         # Extract entity type and name
-        match = re.match(r'^([a-zA-Z_][a-zA-Z0-9_]*)\(([a-zA-Z_][a-zA-Z0-9_]*)\)$', entity_ref)
+        match = re.match(r"^([a-zA-Z_][a-zA-Z0-9_]*)\(([a-zA-Z_][a-zA-Z0-9_]*)\)$", entity_ref)
         if not match:
             self.result.add_error(
                 f"Invalid entity reference format: {entity_ref}",
@@ -268,7 +283,7 @@ class EnhancedSemanticValidator:
             return
 
         # Check if entity is defined
-        if hasattr(self, 'entity_registry'):
+        if hasattr(self, "entity_registry"):
             # Debug: Print entity registry contents
             print(f"Entity registry: {self.entity_registry}")
             print(f"Looking for entity type: {entity_type}")
@@ -300,7 +315,7 @@ class EnhancedSemanticValidator:
             self.result.add_error(
                 f"Referenced {entity_type} '{entity_name}' is not defined (no entity definitions found)",
                 ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-            ).add_fix(f"Add entity definitions or reference an existing one")
+            ).add_fix("Add entity definitions or reference an existing one")
 
     def _collect_hypothesis_definitions(self, ast: Dict[str, Any]) -> None:
         """Collect hypothesis definitions for reference validation."""
@@ -472,9 +487,7 @@ class EnhancedSemanticValidator:
 
     def _store_block_contract(self, block_name: str, contract: Dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
-        self.symbol_table[block_name] = {
-            "contract": contract
-        }
+        self.symbol_table[block_name] = {"contract": contract}
 
     def _check_contract_compatibility(self, producer_block: str, consumer_block: str) -> None:
         """Check compatibility between producer and consumer block contracts."""
@@ -504,10 +517,7 @@ class EnhancedSemanticValidator:
             if input_name in producer_outputs:
                 output_contract = producer_outputs[input_name]
                 # Check type compatibility
-                if not self._are_contract_types_compatible(
-                    output_contract.get("type"),
-                    input_contract.get("type")
-                ):
+                if not self._are_contract_types_compatible(output_contract.get("type"), input_contract.get("type")):
                     error = self.result.add_error(
                         f"Contract type mismatch: {producer_block} output '{input_name}' "
                         f"(type: {output_contract.get('type')}) is incompatible with "
@@ -525,7 +535,7 @@ class EnhancedSemanticValidator:
                     input_contract.get("attributes", {}),
                     producer_block,
                     consumer_block,
-                    input_name
+                    input_name,
                 )
 
     def _validate_contract_definition(self, definition: Any, name: str, section_name: str) -> None:
@@ -564,7 +574,9 @@ class EnhancedSemanticValidator:
                 ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
             ).add_fix(f"Format attributes as a dictionary in contract {section_name} '{name}'")
 
-    def _validate_schema_attributes(self, definition: Dict[str, Any], schema_def: Any, name: str, section_name: str) -> None:
+    def _validate_schema_attributes(
+        self, definition: Dict[str, Any], schema_def: Any, name: str, section_name: str
+    ) -> None:
         """Validate contract attributes against schema definition."""
         attributes = definition.get("attributes", {})
 
@@ -588,7 +600,9 @@ class EnhancedSemanticValidator:
                         f"must have value '{expected_value}' for schema type '{schema_def.name}', got '{actual_value}'",
                         ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                     )
-                    error.add_fix(f"Change '{attr_name}' to '{expected_value}' in contract {section_name} '{name}' attributes")
+                    error.add_fix(
+                        f"Change '{attr_name}' to '{expected_value}' in contract {section_name} '{name}' attributes"
+                    )
 
     def _are_contract_types_compatible(self, output_type: Any, input_type: Any) -> bool:
         """Check if two contract types are compatible."""
@@ -652,7 +666,7 @@ class EnhancedSemanticValidator:
         input_attributes: Dict[str, Any],
         producer_block: str,
         consumer_block: str,
-        data_name: str
+        data_name: str,
     ) -> None:
         """Check compatibility of contract attributes."""
         # Check that all required input attributes are satisfied by output attributes
@@ -713,9 +727,7 @@ class EnhancedSemanticValidator:
 
         # Check tool-type compatibility
         if "tool" in experiment and "type" in experiment:
-            self._validate_tool_type_compatibility(
-                experiment["tool"], experiment["type"]
-            )
+            self._validate_tool_type_compatibility(experiment["tool"], experiment["type"])
 
         # Validate IO contract if present
         if "contract" in experiment:
@@ -724,8 +736,6 @@ class EnhancedSemanticValidator:
         # Validate hypothesis reference if present
         if "validates_hypothesis" in experiment:
             self._validate_hypothesis_reference(experiment["validates_hypothesis"])
-
-
 
     def _validate_hypothesis_reference(self, hypothesis_id: Any) -> None:
         """Validate hypothesis reference in experiment or analysis blocks."""
@@ -737,7 +747,7 @@ class EnhancedSemanticValidator:
             return
 
         # Check if hypothesis is defined
-        if hasattr(self, 'hypothesis_registry') and hypothesis_id not in self.hypothesis_registry:
+        if hasattr(self, "hypothesis_registry") and hypothesis_id not in self.hypothesis_registry:
             self.result.add_error(
                 f"Referenced hypothesis '{hypothesis_id}' is not defined",
                 ErrorCodes.SEMANTIC_UNDEFINED_HYPOTHESIS,
@@ -879,15 +889,17 @@ class EnhancedSemanticValidator:
     def _is_entity_reference(self, value: str) -> bool:
         """Check if a string value is an entity reference (e.g., pathway(UreaCycle))."""
         import re
+
         # Pattern for entity references: entity_type(entity_name)
-        pattern = r'^[a-zA-Z_][a-zA-Z0-9_]*\([a-zA-Z_][a-zA-Z0-9_]*\)$'
+        pattern = r"^[a-zA-Z_][a-zA-Z0-9_]*\([a-zA-Z_][a-zA-Z0-9_]*\)$"
         return bool(re.match(pattern, value))
 
     def _validate_entity_reference(self, entity_ref: str) -> None:
         """Validate entity reference in parameter values."""
         import re
+
         # Extract entity type and name
-        match = re.match(r'^([a-zA-Z_][a-zA-Z0-9_]*)\(([a-zA-Z_][a-zA-Z0-9_]*)\)$', entity_ref)
+        match = re.match(r"^([a-zA-Z_][a-zA-Z0-9_]*)\(([a-zA-Z_][a-zA-Z0-9_]*)\)$", entity_ref)
         if not match:
             self.result.add_error(
                 f"Invalid entity reference format: {entity_ref}",
@@ -907,7 +919,7 @@ class EnhancedSemanticValidator:
             return
 
         # Check if entity is defined
-        if hasattr(self, 'entity_registry'):
+        if hasattr(self, "entity_registry"):
             # Debug: Print entity registry contents
             print(f"Entity registry: {self.entity_registry}")
             print(f"Looking for entity type: {entity_type}")
@@ -939,7 +951,7 @@ class EnhancedSemanticValidator:
             self.result.add_error(
                 f"Referenced {entity_type} '{entity_name}' is not defined (no entity definitions found)",
                 ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-            ).add_fix(f"Add entity definitions or reference an existing one")
+            ).add_fix("Add entity definitions or reference an existing one")
 
     def _validate_tool_type_compatibility(self, tool: str, exp_type: str) -> None:
         """Validate tool and type compatibility."""
@@ -1274,7 +1286,8 @@ class EnhancedSemanticValidator:
 
         # Validate identifier format
         import re
-        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', output):
+
+        if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", output):
             error = self.result.add_error(
                 f"Invalid output identifier '{output}'",
                 ErrorCodes.SEMANTIC_INVALID_PARAMETER,
@@ -1391,7 +1404,8 @@ class EnhancedSemanticValidator:
 
         # Validate parameter name format
         import re
-        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', param_name):
+
+        if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", param_name):
             error = self.result.add_error(
                 f"Invalid parameter name '{param_name}'",
                 ErrorCodes.SEMANTIC_INVALID_PARAMETER,
@@ -1399,9 +1413,9 @@ class EnhancedSemanticValidator:
             error.add_fix("Use valid identifier like 'promoter_strength' or 'temperature'")
 
         # Validate parameter definition syntax
-        if param_def.startswith('range(') and param_def.endswith(')'):
+        if param_def.startswith("range(") and param_def.endswith(")"):
             self._validate_range_syntax(param_name, param_def)
-        elif param_def.startswith('choice([') and param_def.endswith('])'):
+        elif param_def.startswith("choice([") and param_def.endswith("])"):
             self._validate_choice_syntax(param_name, param_def)
         else:
             error = self.result.add_error(
@@ -1415,7 +1429,7 @@ class EnhancedSemanticValidator:
         try:
             # Extract content between parentheses
             content = range_def[6:-1].strip()  # Remove 'range(' and ')'
-            parts = [p.strip() for p in content.split(',')]
+            parts = [p.strip() for p in content.split(",")]
 
             if len(parts) != 2:
                 error = self.result.add_error(
@@ -1455,8 +1469,8 @@ class EnhancedSemanticValidator:
         try:
             # Extract content between square brackets inside choice([...])
             # Find the opening [ and closing ]
-            start_bracket = choice_def.find('[')
-            end_bracket = choice_def.rfind(']')
+            start_bracket = choice_def.find("[")
+            end_bracket = choice_def.rfind("]")
 
             if start_bracket == -1 or end_bracket == -1 or start_bracket >= end_bracket:
                 error = self.result.add_error(
@@ -1466,7 +1480,7 @@ class EnhancedSemanticValidator:
                 error.add_fix(f"Use correct format: 'choice([val1, val2, ...])' for '{param_name}'")
                 return
 
-            content = choice_def[start_bracket + 1:end_bracket].strip()
+            content = choice_def[start_bracket + 1 : end_bracket].strip()
 
             if not content:
                 error = self.result.add_error(
@@ -1477,7 +1491,7 @@ class EnhancedSemanticValidator:
                 return
 
             # Simple validation - should contain comma-separated values
-            choices = [c.strip() for c in content.split(',') if c.strip()]
+            choices = [c.strip() for c in content.split(",") if c.strip()]
 
             if len(choices) < 2:
                 error = self.result.add_error(
@@ -1551,7 +1565,9 @@ class EnhancedSemanticValidator:
                 "ActiveLearning strategy requires 'active_learning' configuration",
                 ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
             )
-            error.add_fix("Add 'active_learning: {...}' with acquisition_function, initial_experiments, max_uncertainty, convergence_threshold")
+            error.add_fix(
+                "Add 'active_learning: {...}' with acquisition_function, initial_experiments, max_uncertainty, convergence_threshold"
+            )
             return
 
         active_learning_config = strategy["active_learning"]
@@ -1567,7 +1583,7 @@ class EnhancedSemanticValidator:
             "acquisition_function": str,
             "initial_experiments": int,
             "max_uncertainty": float,
-            "convergence_threshold": (int, float)
+            "convergence_threshold": (int, float),
         }
 
         for key, expected_type in required_keys.items():
@@ -1580,7 +1596,9 @@ class EnhancedSemanticValidator:
             else:
                 value = active_learning_config[key]
                 if not isinstance(value, expected_type if isinstance(expected_type, tuple) else (expected_type,)):
-                    type_names = " or ".join(t.__name__ for t in (expected_type if isinstance(expected_type, tuple) else (expected_type,)))
+                    type_names = " or ".join(
+                        t.__name__ for t in (expected_type if isinstance(expected_type, tuple) else (expected_type,))
+                    )
                     error = self.result.add_error(
                         f"'{key}' must be {type_names}, got {type(value).__name__}",
                         ErrorCodes.TYPE_INVALID_TYPE,
@@ -1692,7 +1710,8 @@ class EnhancedSemanticValidator:
                 else:
                     # Validate time format
                     import re
-                    if not re.match(r'^\d+[smhd]$', value):
+
+                    if not re.match(r"^\d+[smhd]$", value):
                         error = self.result.add_error(
                             f"Budget constraint '{constraint}' has invalid time format: {value}",
                             ErrorCodes.SEMANTIC_INVALID_PARAMETER,
@@ -1769,13 +1788,13 @@ class EnhancedSemanticValidator:
             else:
                 # Validate parameter name format
                 import re
-                if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', param_name):
+
+                if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", param_name):
                     error = self.result.add_error(
                         f"Invalid parameter name '{param_name}' in injection at {path}",
                         ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                     )
                     error.add_fix("Use valid identifier like ${valid_param_name}")
-
 
     def _validate_simulate_block(self, simulate: Any) -> None:
         """Validate simulate block."""
@@ -1792,9 +1811,7 @@ class EnhancedSemanticValidator:
             self.result.add_error(
                 "Branch block must be a dictionary",
                 ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
-            ).add_fix(
-                "Format the branch block as a YAML dictionary with 'if' and 'then'"
-            )
+            ).add_fix("Format the branch block as a YAML dictionary with 'if' and 'then'")
             return
 
         # Branch blocks need 'if' and 'then'
@@ -1863,11 +1880,7 @@ class EnhancedSemanticValidator:
             return
 
         # Required keys in refinement_config dictionary
-        required_keys = {
-            "refinement_type": str,
-            "noise_level": float,
-            "target_resolution": str
-        }
+        required_keys = {"refinement_type": str, "noise_level": float, "target_resolution": str}
 
         for key, expected_type in required_keys.items():
             if key not in refinement_config:
@@ -2044,12 +2057,14 @@ class EnhancedSemanticValidator:
 
         # Validate identifier format
         import re
-        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', output):
+
+        if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", output):
             error = self.result.add_error(
                 f"Invalid output identifier '{output}'",
                 ErrorCodes.SEMANTIC_INVALID_PARAMETER,
             )
             error.add_fix("Use a valid identifier like 'discovered_candidates' or 'output_results'")
+
 
 # Legacy validator for backward compatibility
 class SemanticValidator:
@@ -2074,9 +2089,7 @@ _validator = SemanticValidator()
 _enhanced_validator = EnhancedSemanticValidator()
 
 
-def validate(
-    ast: Dict[str, Any], enhanced: bool = False
-) -> Union[List[str], EnhancedValidationResult]:
+def validate(ast: Dict[str, Any], enhanced: bool = False) -> Union[List[str], EnhancedValidationResult]:
     """Validate a GFL AST and return validation results.
 
     Args:

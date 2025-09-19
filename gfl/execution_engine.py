@@ -58,12 +58,7 @@ class WorkflowState:
 
     def add_execution_record(self, block_type: str, block_config: Dict[str, Any], result: Any) -> None:
         """Add execution record to history."""
-        record = {
-            "block_type": block_type,
-            "config": block_config,
-            "result": result,
-            "timestamp": time.time()
-        }
+        record = {"block_type": block_type, "config": block_config, "result": result, "timestamp": time.time()}
         self.execution_history.append(record)
 
 
@@ -100,9 +95,7 @@ class GFLExecutionEngine:
             if model_name not in generators:
                 available = ", ".join(generators.keys())
                 raise ExecutionError(
-                    f"Generator model '{model_name}' not found. Available: {available}",
-                    "design",
-                    model_name
+                    f"Generator model '{model_name}' not found. Available: {available}", "design", model_name
                 )
 
             generator = generators[model_name]
@@ -111,10 +104,9 @@ class GFLExecutionEngine:
             if not self._validate_entity_support(generator, entity):
                 supported = [e.value for e in generator.supported_entities]
                 raise ExecutionError(
-                    f"Generator '{model_name}' does not support entity '{entity}'. "
-                    f"Supported: {supported}",
+                    f"Generator '{model_name}' does not support entity '{entity}'. " f"Supported: {supported}",
                     "design",
-                    model_name
+                    model_name,
                 )
 
             # Validate objective and constraints
@@ -129,23 +121,18 @@ class GFLExecutionEngine:
 
             # Execute generation
             start_time = time.time()
-            candidates = generator.generate(
-                entity=entity,
-                objective=objective,
-                constraints=constraints,
-                count=count
-            )
+            candidates = generator.generate(entity=entity, objective=objective, constraints=constraints, count=count)
             execution_time = time.time() - start_time
 
             # Store results in workflow state
             self.state.set_variable(output_var, candidates)
 
             # Record execution
-            self.state.add_execution_record("design", design_config, {
-                "candidate_count": len(candidates),
-                "execution_time": execution_time,
-                "output_variable": output_var
-            })
+            self.state.add_execution_record(
+                "design",
+                design_config,
+                {"candidate_count": len(candidates), "execution_time": execution_time, "output_variable": output_var},
+            )
 
             logger.info(f"Design block completed: generated {len(candidates)} candidates in {execution_time:.2f}s")
 
@@ -195,7 +182,7 @@ class GFLExecutionEngine:
                 raise ExecutionError(
                     f"No optimizer found for strategy '{strategy_name}'. "
                     f"Available strategies: {available_strategies}",
-                    "optimize"
+                    "optimize",
                 )
 
             logger.info(f"Executing optimize block with strategy '{strategy_name}' using {compatible_optimizer.name}")
@@ -226,16 +213,14 @@ class GFLExecutionEngine:
                     result = self._execute_experiment_step(run_config, step.parameters)
                     experiment_history.append(result)
 
-                    logger.debug(f"Optimization iteration {iteration + 1}: "
-                               f"objective = {result.objective_value:.4f}")
+                    logger.debug(
+                        f"Optimization iteration {iteration + 1}: " f"objective = {result.objective_value:.4f}"
+                    )
 
                 except Exception as e:
                     # Record failed experiment
                     failed_result = ExperimentResult(
-                        parameters=step.parameters,
-                        objective_value=0.0,
-                        success=False,
-                        error_message=str(e)
+                        parameters=step.parameters, objective_value=0.0, success=False, error_message=str(e)
                     )
                     experiment_history.append(failed_result)
                     logger.warning(f"Experiment failed at iteration {iteration + 1}: {e}")
@@ -244,7 +229,7 @@ class GFLExecutionEngine:
 
             # Compile optimization results
             if experiment_history:
-                best_result = max(experiment_history, key=lambda r: r.objective_value if r.success else -float('inf'))
+                best_result = max(experiment_history, key=lambda r: r.objective_value if r.success else -float("inf"))
                 convergence_info = self._analyze_convergence(experiment_history)
             else:
                 raise ExecutionError("No successful experiments in optimization", "optimize")
@@ -255,14 +240,16 @@ class GFLExecutionEngine:
                 "total_experiments": len(experiment_history),
                 "successful_experiments": sum(1 for r in experiment_history if r.success),
                 "convergence_info": convergence_info,
-                "experiment_history": experiment_history
+                "experiment_history": experiment_history,
             }
 
             # Record execution
             self.state.add_execution_record("optimize", optimize_config, optimization_results)
 
-            logger.info(f"Optimize block completed: {iteration} experiments, "
-                       f"best objective = {best_result.objective_value:.4f}")
+            logger.info(
+                f"Optimize block completed: {iteration} experiments, "
+                f"best objective = {best_result.objective_value:.4f}"
+            )
 
             return optimization_results
 
@@ -288,11 +275,7 @@ class GFLExecutionEngine:
         # Simulate experiment execution (in practice, this would call actual tools)
         objective_value = self._simulate_experiment_execution(injected_config, parameters)
 
-        return ExperimentResult(
-            parameters=parameters,
-            objective_value=objective_value,
-            success=True
-        )
+        return ExperimentResult(parameters=parameters, objective_value=objective_value, success=True)
 
     def _inject_parameters(self, config: Dict[str, Any], parameters: Dict[str, Any]) -> Dict[str, Any]:
         """Inject optimization parameters into run block configuration."""
@@ -324,8 +307,8 @@ class GFLExecutionEngine:
         This is a placeholder that simulates realistic experimental results.
         In practice, this would dispatch to actual experimental execution systems.
         """
-        import random
         import math
+        import random
 
         # Simulate realistic experimental objective functions
 
@@ -352,7 +335,7 @@ class GFLExecutionEngine:
                     # Normalize to [0, 1] range and compute quadratic
                     normalized = float(value) / 100.0  # Assume typical range 0-100
                     normalized = max(0, min(1, normalized))
-                    objective_value *= (1 - 4 * (normalized - 0.5) ** 2)
+                    objective_value *= 1 - 4 * (normalized - 0.5) ** 2
 
             # Add noise
             noise = random.gauss(0, 0.03)
@@ -414,10 +397,7 @@ def execute_gfl_ast(ast: Dict[str, Any]) -> Dict[str, Any]:
         # Execute design blocks
         if "design" in ast:
             design_result = engine.execute_design_block(ast["design"])
-            results["design"] = {
-                "candidates": design_result,
-                "count": len(design_result)
-            }
+            results["design"] = {"candidates": design_result, "count": len(design_result)}
 
         # Execute optimize blocks
         if "optimize" in ast:
@@ -427,7 +407,7 @@ def execute_gfl_ast(ast: Dict[str, Any]) -> Dict[str, Any]:
         # Add workflow state information
         results["workflow_state"] = {
             "variables": engine.state.variables,
-            "execution_history": engine.state.execution_history
+            "execution_history": engine.state.execution_history,
         }
 
         return results
@@ -477,7 +457,8 @@ def validate_execution_requirements(ast: Dict[str, Any]) -> List[str]:
                 available_strategies = []
                 for optimizer in optimizers.values():
                     available_strategies.extend([s.value for s in optimizer.supported_strategies])
-                errors.append(f"Optimization strategy '{strategy_name}' not supported. "
-                            f"Available: {available_strategies}")
+                errors.append(
+                    f"Optimization strategy '{strategy_name}' not supported. " f"Available: {available_strategies}"
+                )
 
     return errors

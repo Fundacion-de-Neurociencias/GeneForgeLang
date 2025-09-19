@@ -16,9 +16,7 @@ except ImportError:
     HAS_YAML = False
 
 
-def collect_files(
-    file_paths: List[Path], recursive: bool = False, pattern: str = "*.gfl"
-) -> List[Path]:
+def collect_files(file_paths: List[Path], recursive: bool = False, pattern: str = "*.gfl") -> List[Path]:
     """Collect files from paths, optionally recursively."""
     files = []
 
@@ -102,9 +100,9 @@ def check_dependencies() -> Dict[str, bool]:
 def process_file_batch(file_path: Path, action: str, **kwargs) -> Dict[str, Any]:
     """Process a single file for batch operations."""
     try:
-        from gfl.api import parse, validate, infer
+        from gfl.api import infer, parse, validate
 
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
 
         start_time = time.time()
@@ -124,9 +122,7 @@ def process_file_batch(file_path: Path, action: str, **kwargs) -> Dict[str, Any]
             return {
                 "file": str(file_path),
                 "errors": errors,
-                "success": len(errors) == 0
-                if isinstance(errors, list)
-                else errors.is_valid,
+                "success": len(errors) == 0 if isinstance(errors, list) else errors.is_valid,
                 "duration": time.time() - start_time,
             }
 
@@ -223,17 +219,9 @@ def create_sarif_report(results: List[Dict[str, Any]], output_path: Path):
                 if isinstance(error, dict):
                     sarif_result = {
                         "ruleId": error.get("code", "GFL_ERROR"),
-                        "level": "error"
-                        if error.get("severity") == "ERROR"
-                        else "warning",
+                        "level": "error" if error.get("severity") == "ERROR" else "warning",
                         "message": {"text": error.get("message", "Unknown error")},
-                        "locations": [
-                            {
-                                "physicalLocation": {
-                                    "artifactLocation": {"uri": result["file"]}
-                                }
-                            }
-                        ],
+                        "locations": [{"physicalLocation": {"artifactLocation": {"uri": result["file"]}}}],
                     }
 
                     # Add location if available
@@ -243,9 +231,10 @@ def create_sarif_report(results: List[Dict[str, Any]], output_path: Path):
                             try:
                                 line = int(location_parts[0])
                                 column = int(location_parts[1])
-                                sarif_result["locations"][0]["physicalLocation"][
-                                    "region"
-                                ] = {"startLine": line, "startColumn": column}
+                                sarif_result["locations"][0]["physicalLocation"]["region"] = {
+                                    "startLine": line,
+                                    "startColumn": column,
+                                }
                             except ValueError:
                                 pass
 
@@ -259,9 +248,7 @@ def create_sarif_report(results: List[Dict[str, Any]], output_path: Path):
 class CLIUtilsMixin:
     """Mixin class with utility methods for the CLI."""
 
-    def _collect_files(
-        self, file_paths: List[Path], recursive: bool = False, pattern: str = "*.gfl"
-    ) -> List[Path]:
+    def _collect_files(self, file_paths: List[Path], recursive: bool = False, pattern: str = "*.gfl") -> List[Path]:
         """Collect files from paths."""
         return collect_files(file_paths, recursive, pattern)
 
@@ -292,9 +279,7 @@ class CLIUtilsMixin:
                     if "error" in result:
                         self.formatter.print_error(f"  {result['error']}")
 
-    def _display_validation_results(
-        self, results: List[Dict[str, Any]], format_type: str
-    ):
+    def _display_validation_results(self, results: List[Dict[str, Any]], format_type: str):
         """Display validation results."""
         if format_type == "json":
             self.formatter.print_json(results)
@@ -313,9 +298,7 @@ class CLIUtilsMixin:
                         else:
                             self.formatter.print_error(f"  {error}")
 
-    def _write_validation_output(
-        self, results: List[Dict[str, Any]], output_path: Path, format_type: str
-    ):
+    def _write_validation_output(self, results: List[Dict[str, Any]], output_path: Path, format_type: str):
         """Write validation results to file."""
         if format_type == "junit":
             create_junit_report(results, output_path)
@@ -392,10 +375,7 @@ class CLIUtilsMixin:
 
                 # Submit all tasks
                 future_to_file = {
-                    executor.submit(
-                        process_file_batch, file_path, args.action
-                    ): file_path
-                    for file_path in files
+                    executor.submit(process_file_batch, file_path, args.action): file_path for file_path in files
                 }
 
                 # Collect results as they complete
@@ -425,18 +405,17 @@ class CLIUtilsMixin:
 
     def _run_benchmark(self, files: List[Path], iterations: int) -> int:
         """Run performance benchmark."""
-        from gfl.api import parse, validate
         import statistics
 
-        self.formatter.print(
-            f"Running benchmark with {iterations} iterations per file..."
-        )
+        from gfl.api import parse, validate
+
+        self.formatter.print(f"Running benchmark with {iterations} iterations per file...")
 
         benchmark_results = []
 
         for file_path in files:
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     content = f.read()
 
                 parse_times = []
@@ -464,18 +443,14 @@ class CLIUtilsMixin:
                         "median": statistics.median(parse_times),
                         "min": min(parse_times),
                         "max": max(parse_times),
-                        "stdev": statistics.stdev(parse_times)
-                        if len(parse_times) > 1
-                        else 0,
+                        "stdev": statistics.stdev(parse_times) if len(parse_times) > 1 else 0,
                     },
                     "validate": {
                         "mean": statistics.mean(validate_times),
                         "median": statistics.median(validate_times),
                         "min": min(validate_times),
                         "max": max(validate_times),
-                        "stdev": statistics.stdev(validate_times)
-                        if len(validate_times) > 1
-                        else 0,
+                        "stdev": statistics.stdev(validate_times) if len(validate_times) > 1 else 0,
                     },
                 }
 

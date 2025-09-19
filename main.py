@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 def main(gfl_file_path):
     logger.info(f"Starting GFL interpreter for: {gfl_file_path}")
 
-    with open(gfl_file_path, "r") as f:
+    with open(gfl_file_path) as f:
         gfl_code = f.read()
 
     try:

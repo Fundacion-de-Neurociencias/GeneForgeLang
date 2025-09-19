@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from gfl.enhanced_cli import EnhancedCLI, OutputFormatter
 from gfl.cli_utils import collect_files, process_file_batch
+from gfl.enhanced_cli import EnhancedCLI, OutputFormatter
 
 
 class TestOutputFormatter:

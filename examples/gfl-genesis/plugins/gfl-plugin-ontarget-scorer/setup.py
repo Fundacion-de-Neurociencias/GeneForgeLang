@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="gfl-plugin-ontarget-scorer",
@@ -13,10 +13,6 @@ setup(
         "scikit-learn>=1.0.0",
         "biopython>=1.79",
     ],
-    entry_points={
-        "gfl.plugins": [
-            "ontarget_scorer = gfl_plugin_ontarget_scorer.plugin:OnTargetScorerPlugin"
-        ]
-    },
+    entry_points={"gfl.plugins": ["ontarget_scorer = gfl_plugin_ontarget_scorer.plugin:OnTargetScorerPlugin"]},
     python_requires=">=3.9",
 )

@@ -7,15 +7,11 @@ from datasets import Dataset
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 class LanguageTranslator:
-    def __init__(
-        self, model_name="t5-small", fine_tuned_model_path=None, model_revision="main"
-    ):
+    def __init__(self, model_name="t5-small", fine_tuned_model_path=None, model_revision="main"):
         # Security: Pin model revision and use secure downloads
         self.tokenizer = T5Tokenizer.from_pretrained(
             model_name,
@@ -39,24 +35,18 @@ class LanguageTranslator:
                 )  # nosec B614 - weights_only=True ensures safe loading
             )
         else:
-            logger.warning(
-                f"Fine-tuned model not found at {self.fine_tuned_model_path}. Using base model."
-            )
+            logger.warning(f"Fine-tuned model not found at {self.fine_tuned_model_path}. Using base model.")
 
-    def fine_tune_model(
-        self, data_path="data/nlp_training_data.json", num_epochs=3, batch_size=2
-    ):
+    def fine_tune_model(self, data_path="data/nlp_training_data.json", num_epochs=3, batch_size=2):
         logger.info(f"Loading training data from {data_path}")
-        with open(data_path, "r") as f:
+        with open(data_path) as f:
             data = json.load(f)
 
         # Prepare data for Dataset
         input_texts = [item["natural_language"] for item in data]
         target_texts = [item["gfl_code"] for item in data]
 
-        dataset = Dataset.from_dict(
-            {"input_text": input_texts, "target_text": target_texts}
-        )
+        dataset = Dataset.from_dict({"input_text": input_texts, "target_text": target_texts})
 
         def preprocess_function(examples):
             model_inputs = self.tokenizer(
@@ -98,9 +88,7 @@ class LanguageTranslator:
             # Security: Save model state dict securely
             model_path = os.path.join(self.fine_tuned_model_path, "pytorch_model.bin")
             # Validate the path to prevent directory traversal
-            if not os.path.abspath(model_path).startswith(
-                os.path.abspath(self.fine_tuned_model_path)
-            ):
+            if not os.path.abspath(model_path).startswith(os.path.abspath(self.fine_tuned_model_path)):
                 raise ValueError("Invalid model path: directory traversal detected")
             torch.save(
                 self.model.state_dict(),

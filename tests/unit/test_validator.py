@@ -432,9 +432,7 @@ class TestValidationPerformance:
             nested_operations.append(
                 {
                     "type": f"operation_{i}",
-                    "params": {
-                        "nested": {"level": i, "data": [f"item_{j}" for j in range(10)]}
-                    },
+                    "params": {"nested": {"level": i, "data": [f"item_{j}" for j in range(10)]}},
                 }
             )
 

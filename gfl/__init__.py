@@ -11,7 +11,7 @@ __version__ = "0.2.0"
 __api_version__ = "2.0.0"
 
 # New stable API imports
-from .api import infer, parse, validate, parse_enhanced
+from .api import infer, parse, parse_enhanced, validate
 
 # Legacy YAML parser imports for backward compatibility
 from .yaml_lang.parser import GflYamlParseError, YamlParseError
@@ -34,10 +34,18 @@ try:
     HAS_TYPES = True
 except ImportError:
     HAS_TYPES = False
+    GFLAST = None
+    Experiment = None
+    Analysis = None
+    ValidationResult = None
+    ValidationError = None
+    InferenceResult = None
+    ExperimentType = None
+    AnalysisStrategy = None
 
 # Optional grammar parser (requires PLY)
 try:
-    from .grammar_parser import parse_gfl_grammar, create_lexer, create_parser
+    from .grammar_parser import create_lexer, create_parser, parse_gfl_grammar
 
     HAS_GRAMMAR_PARSER = True
 except ImportError:
@@ -45,6 +53,8 @@ except ImportError:
 
 # Plugin system (optional import)
 try:
+    # Auto-register example plugins
+    from .plugins import auto_register
     from .plugins.plugin_registry import plugin_registry
 
     HAS_PLUGINS = True

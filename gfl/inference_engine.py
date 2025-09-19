@@ -6,9 +6,10 @@ from gfl.prob_rules import ProbReasoner, default_rules
 try:
     from gfl.enhanced_inference_engine import (
         EnhancedInferenceEngine,
-        get_inference_engine,
         InferenceResult,
+        get_inference_engine,
     )
+
     HAS_ENHANCED_ENGINE = True
 except ImportError:
     HAS_ENHANCED_ENGINE = False
@@ -31,13 +32,11 @@ class InferenceEngine:
             # Register the legacy model if it has a predict method
             if hasattr(model, "predict"):
                 try:
-                    from gfl.enhanced_inference_engine import ModelConfig, BaseMLModel
+                    from gfl.enhanced_inference_engine import BaseMLModel, ModelConfig
 
                     class LegacyModelWrapper(BaseMLModel):
                         def __init__(self, legacy_model):
-                            config = ModelConfig(
-                                model_name="legacy_model", model_type="heuristic"
-                            )
+                            config = ModelConfig(model_name="legacy_model", model_type="heuristic")
                             super().__init__(config)
                             self.legacy_model = legacy_model
 
@@ -98,14 +97,10 @@ class InferenceEngine:
 
                 explanation_parts = [result.explanation]
                 if post["fired_rules"]:
-                    explanation_parts.append(
-                        f"Rules applied: {', '.join(post['fired_rules'])}"
-                    )
+                    explanation_parts.append(f"Rules applied: {', '.join(post['fired_rules'])}")
 
                 return {
-                    "label": result.prediction
-                    if isinstance(result.prediction, str)
-                    else str(result.prediction),
+                    "label": result.prediction if isinstance(result.prediction, str) else str(result.prediction),
                     "confidence": enhanced_confidence,
                     "explanation": ". ".join(explanation_parts),
                     "enhanced_result": result.to_dict(),
@@ -161,9 +156,7 @@ class InferenceEngine:
             "explanation": "Simple heuristic protein generation",
         }
 
-    def compare_models(
-        self, ast_dict: Dict[str, Any], model_names: Optional[list] = None
-    ) -> Dict[str, Any]:
+    def compare_models(self, ast_dict: Dict[str, Any], model_names: Optional[list] = None) -> Dict[str, Any]:
         """Compare predictions across multiple models."""
         if not self.enhanced_engine:
             return {"error": "Enhanced inference engine not available"}
@@ -236,13 +229,9 @@ class InferenceEngine:
 
         feats["experiment_tool"] = dig(ast, "experiment.tool")
         feats["experiment_type"] = dig(ast, "experiment.type")
-        feats["strategy"] = dig(ast, "analyze.strategy") or dig(
-            ast, "experiment.strategy"
-        )
+        feats["strategy"] = dig(ast, "analyze.strategy") or dig(ast, "experiment.strategy")
         feats["target_gene"] = dig(ast, "experiment.params.target_gene")
         feats["p_value"] = dig(ast, "analyze.thresholds.p_value")
         feats["log2fc"] = dig(ast, "analyze.thresholds.log2FoldChange")
-        feats["simulate"] = (
-            bool(ast.get("simulate")) if isinstance(ast, dict) else False
-        )
+        feats["simulate"] = bool(ast.get("simulate")) if isinstance(ast, dict) else False
         return {k: v for k, v in feats.items() if v is not None}

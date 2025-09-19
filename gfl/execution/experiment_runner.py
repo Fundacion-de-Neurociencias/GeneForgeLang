@@ -11,9 +11,7 @@ def run_experiment(node):
 
     # Si solo es imputación, simula o implementa aquí tu método real
     if params.get("imputation"):
-        print(
-            "    [Scanpy] Imputación (dummy; implementa aquí MAGIC, ALRA, etc. si quieres)..."
-        )
+        print("    [Scanpy] Imputación (dummy; implementa aquí MAGIC, ALRA, etc. si quieres)...")
         return {"status": "ok", "note": "Imputation step (no-op in demo)"}
 
     # Carga el archivo de datos

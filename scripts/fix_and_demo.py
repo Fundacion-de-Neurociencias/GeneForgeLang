@@ -165,14 +165,10 @@ analyze using DESeq2 with strategy differential_expression params {
                         print(f"    Then Block: {op_details[1]}")
                         print(f"    Else Block: {op_details[2]}")
                     elif op_type == "analyze_inline":
-                        print(
-                            f"    Tool: {op_details[0]}, Strategy: {op_details[1]}, Params: {op_details[2]}"
-                        )
+                        print(f"    Tool: {op_details[0]}, Strategy: {op_details[1]}, Params: {op_details[2]}")
 
             else:
-                print(
-                    "Successfully Parsed! No operations generated (empty or only comments)."
-                )
+                print("Successfully Parsed! No operations generated (empty or only comments).")
 
         except Exception as e:
             print(f"Error durante el parseo: {e}")

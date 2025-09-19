@@ -137,7 +137,7 @@ class SchemaLoader:
 
         try:
             # Load YAML content
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 content = yaml.safe_load(f)
 
             if not isinstance(content, dict):

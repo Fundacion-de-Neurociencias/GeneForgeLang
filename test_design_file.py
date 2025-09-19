@@ -12,7 +12,7 @@ def test_real_gfl_file():
     print("Testing real GFL file with design block...")
 
     # Read the GFL file
-    with open("example_protein_design.gfl", "r") as f:
+    with open("example_protein_design.gfl") as f:
         gfl_content = f.read()
 
     print(f"GFL content ({len(gfl_content)} characters):")

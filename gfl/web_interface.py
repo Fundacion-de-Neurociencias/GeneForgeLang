@@ -22,11 +22,11 @@ import gradio as gr
 # Import GFL components with fallbacks
 try:
     from gfl.api import (
-        parse,
-        validate,
-        infer_enhanced,
         compare_inference_models,
         get_api_info,
+        infer_enhanced,
+        parse,
+        validate,
     )
     from gfl.enhanced_inference_engine import get_inference_engine
     from gfl.models.advanced_models import (
@@ -154,9 +154,7 @@ def initialize_inference_engine():
         # Genomic classification model
         try:
             classification_model = create_genomic_classification_model()
-            inference_engine.register_model(
-                "genomic_classification", classification_model
-            )
+            inference_engine.register_model("genomic_classification", classification_model)
             models_registered.append("genomic_classification")
         except Exception as e:
             logger.warning(f"Could not register genomic classification model: {e}")
@@ -188,9 +186,7 @@ def initialize_inference_engine():
         return False, f"❌ Failed to initialize: {str(e)}"
 
 
-def parse_and_validate_gfl(
-    content: str, use_grammar: bool = False
-) -> Tuple[bool, str, Optional[Dict]]:
+def parse_and_validate_gfl(content: str, use_grammar: bool = False) -> Tuple[bool, str, Optional[Dict]]:
     """Parse and validate GFL content."""
     if not content.strip():
         return False, "❌ Empty content", None
@@ -245,9 +241,7 @@ def parse_and_validate_gfl(
         return False, f"❌ Error: {str(e)}", None
 
 
-def run_inference(
-    content: str, model_name: str, explain: bool = True
-) -> Tuple[str, str]:
+def run_inference(content: str, model_name: str, explain: bool = True) -> Tuple[str, str]:
     """Run inference on GFL content."""
     if not content.strip():
         return "❌ No content to analyze", ""
@@ -287,9 +281,7 @@ def run_inference(
         # Add feature information if available
         features_used = result.get("features_used", {})
         if features_used:
-            result_parts.extend(
-                ["", "🔍 **Features Analyzed**:", json.dumps(features_used, indent=2)]
-            )
+            result_parts.extend(["", "🔍 **Features Analyzed**:", json.dumps(features_used, indent=2)])
 
         web_stats["analyses_run"] += 1
 
@@ -325,9 +317,7 @@ def compare_models(content: str, selected_models: List[str]) -> Tuple[str, str]:
             return "❌ No comparison results available", ""
 
         # Sort by confidence
-        sorted_results = sorted(
-            comparisons.items(), key=lambda x: x[1].get("confidence", 0), reverse=True
-        )
+        sorted_results = sorted(comparisons.items(), key=lambda x: x[1].get("confidence", 0), reverse=True)
 
         result_parts = [
             f"🔬 **Model Comparison Results** ({len(sorted_results)} models)",
@@ -364,9 +354,7 @@ def compare_models(content: str, selected_models: List[str]) -> Tuple[str, str]:
             ]
         )
 
-        return "\\n".join(result_parts), json.dumps(
-            comparison_results, indent=2, default=str
-        )
+        return "\\n".join(result_parts), json.dumps(comparison_results, indent=2, default=str)
 
     except Exception as e:
         logger.error(f"Model comparison error: {e}")
@@ -511,12 +499,8 @@ def create_interface() -> gr.Blocks:
                         )
 
                         with gr.Row():
-                            parse_btn = gr.Button(
-                                "🔍 Parse & Validate", variant="primary"
-                            )
-                            use_grammar = gr.Checkbox(
-                                label="Use Grammar Parser", value=False
-                            )
+                            parse_btn = gr.Button("🔍 Parse & Validate", variant="primary")
+                            use_grammar = gr.Checkbox(label="Use Grammar Parser", value=False)
 
                     with gr.Column(scale=2):
                         gr.Markdown("### Validation Results")
@@ -528,9 +512,7 @@ def create_interface() -> gr.Blocks:
                             elem_classes=["status-box"],
                         )
 
-                        ast_output = gr.JSON(
-                            label="AST (Abstract Syntax Tree)", visible=False
-                        )
+                        ast_output = gr.JSON(label="AST (Abstract Syntax Tree)", visible=False)
 
                         show_ast = gr.Checkbox(label="Show AST", value=False)
 
@@ -572,20 +554,14 @@ def create_interface() -> gr.Blocks:
                             )
                             refresh_models_btn = gr.Button("🔄", scale=0)
 
-                        include_explanation = gr.Checkbox(
-                            label="Include Detailed Explanation", value=True
-                        )
+                        include_explanation = gr.Checkbox(label="Include Detailed Explanation", value=True)
 
-                        run_inference_btn = gr.Button(
-                            "🚀 Run Inference", variant="primary"
-                        )
+                        run_inference_btn = gr.Button("🚀 Run Inference", variant="primary")
 
                     with gr.Column(scale=3):
                         gr.Markdown("### Inference Results")
 
-                        inference_output = gr.Textbox(
-                            label="Results", lines=15, interactive=False
-                        )
+                        inference_output = gr.Textbox(label="Results", lines=15, interactive=False)
 
                         raw_results = gr.JSON(label="Raw Results (JSON)", visible=False)
 
@@ -596,9 +572,7 @@ def create_interface() -> gr.Blocks:
                     return gr.update(choices=get_available_models())
 
                 refresh_models_btn.click(refresh_model_list, outputs=[model_selector])
-                show_raw.change(
-                    lambda show: gr.update(visible=show), [show_raw], [raw_results]
-                )
+                show_raw.change(lambda show: gr.update(visible=show), [show_raw], [raw_results])
 
                 run_inference_btn.click(
                     run_inference,
@@ -620,9 +594,7 @@ def create_interface() -> gr.Blocks:
 
                         models_to_compare = gr.CheckboxGroup(
                             choices=get_available_models(),
-                            value=get_available_models()[
-                                :3
-                            ],  # Select first 3 by default
+                            value=get_available_models()[:3],  # Select first 3 by default
                             label="Models to Compare",
                         )
 
@@ -631,17 +603,11 @@ def create_interface() -> gr.Blocks:
                     with gr.Column(scale=3):
                         gr.Markdown("### Comparison Results")
 
-                        comparison_output = gr.Textbox(
-                            label="Comparison Analysis", lines=15, interactive=False
-                        )
+                        comparison_output = gr.Textbox(label="Comparison Analysis", lines=15, interactive=False)
 
-                        comparison_raw = gr.JSON(
-                            label="Detailed Results", visible=False
-                        )
+                        comparison_raw = gr.JSON(label="Detailed Results", visible=False)
 
-                        show_comparison_raw = gr.Checkbox(
-                            label="Show Detailed Results", value=False
-                        )
+                        show_comparison_raw = gr.Checkbox(label="Show Detailed Results", value=False)
 
                 # Event handlers for comparison tab
                 show_comparison_raw.change(
@@ -717,14 +683,10 @@ def create_interface() -> gr.Blocks:
                             label="Model for Batch Processing",
                         )
 
-                        process_batch_btn = gr.Button(
-                            "🔄 Process Batch", variant="primary"
-                        )
+                        process_batch_btn = gr.Button("🔄 Process Batch", variant="primary")
 
                     with gr.Column():
-                        batch_results = gr.Textbox(
-                            label="Batch Results", lines=15, interactive=False
-                        )
+                        batch_results = gr.Textbox(label="Batch Results", lines=15, interactive=False)
 
                 # Batch processing handler (placeholder)
                 def process_batch_files(files, model_name):
@@ -738,19 +700,13 @@ def create_interface() -> gr.Blocks:
 
                     for i, file in enumerate(files, 1):
                         try:
-                            (
-                                file.read().decode("utf-8")
-                                if hasattr(file, "read")
-                                else str(file)
-                            )
+                            (file.read().decode("utf-8") if hasattr(file, "read") else str(file))
                             filename = getattr(file, "name", f"file_{i}")
 
                             # Simulate processing
                             results.append(f"\\n**{i}. {filename}**")
                             results.append("   ✅ Processed successfully")
-                            results.append(
-                                f"   📊 Confidence: {85 + i}%"
-                            )  # Mock result
+                            results.append(f"   📊 Confidence: {85 + i}%")  # Mock result
 
                         except Exception as e:
                             results.append(f"\\n**{i}. Error processing file**")
@@ -819,6 +775,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    launch_web_interface(
-        server_name=args.host, server_port=args.port, share=args.share, debug=args.debug
-    )
+    launch_web_interface(server_name=args.host, server_port=args.port, share=args.share, debug=args.debug)

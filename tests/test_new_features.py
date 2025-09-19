@@ -213,8 +213,7 @@ class TestDesignBlockValidation:
         assert len(errors) > 0, "Conflicting objectives should cause validation error"
 
         error_text = " ".join(str(error) for error in errors).lower()
-        assert "maximize" in error_text and "minimize" in error_text, \
-            "Error should mention conflicting objectives"
+        assert "maximize" in error_text and "minimize" in error_text, "Error should mention conflicting objectives"
 
     def test_design_block_invalid_output_identifier(self):
         """Test that design block with invalid output identifier fails validation."""

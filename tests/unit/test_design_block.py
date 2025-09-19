@@ -233,10 +233,7 @@ class TestDesignBlockValidation:
             "design": {
                 "entity": "ProteinSequence",
                 "model": "ProteinGeneratorVAE",
-                "objective": {
-                    "maximize": "binding_affinity",
-                    "minimize": "toxicity"
-                },
+                "objective": {"maximize": "binding_affinity", "minimize": "toxicity"},
                 "count": 10,
                 "output": "designed_proteins",
             }
@@ -345,7 +342,7 @@ class TestDesignTypeDefinitions:
             model="ProteinGeneratorVAE",
             objective={"maximize": "binding_affinity"},
             count=10,
-            output="designed_proteins"
+            output="designed_proteins",
         )
 
         assert design.entity == "ProteinSequence"
@@ -364,7 +361,7 @@ class TestDesignTypeDefinitions:
             objective={"minimize": "toxicity"},
             count=5,
             output="peptide_designs",
-            constraints=constraints
+            constraints=constraints,
         )
 
         assert design.constraints == constraints
@@ -376,7 +373,7 @@ class TestDesignTypeDefinitions:
             model="DNADesignerGAN",
             objective={"maximize": "stability"},
             count=15,
-            output="dna_sequences"
+            output="dna_sequences",
         )
 
         result = design.to_dict()
@@ -385,7 +382,7 @@ class TestDesignTypeDefinitions:
             "model": "DNADesignerGAN",
             "objective": {"maximize": "stability"},
             "count": 15,
-            "output": "dna_sequences"
+            "output": "dna_sequences",
         }
 
         assert result == expected
@@ -399,7 +396,7 @@ class TestDesignTypeDefinitions:
             objective={"maximize": "stability"},
             count=15,
             output="dna_sequences",
-            constraints=constraints
+            constraints=constraints,
         )
 
         result = design.to_dict()

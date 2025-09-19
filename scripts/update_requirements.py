@@ -44,9 +44,7 @@ def update_requirements(imported_modules):
     else:
         existing = set()
 
-    new_modules = sorted(
-        [m for m in imported_modules if not is_stdlib(m) and m not in existing]
-    )
+    new_modules = sorted([m for m in imported_modules if not is_stdlib(m) and m not in existing])
 
     if new_modules:
         print("[INFO] Adding new packages to requirements.txt:", new_modules)
@@ -54,9 +52,7 @@ def update_requirements(imported_modules):
             for mod in new_modules:
                 f.write(f"{mod}\n")
     else:
-        print(
-            "[OK] requirements.txt already includes all necessary non-stdlib packages."
-        )
+        print("[OK] requirements.txt already includes all necessary non-stdlib packages.")
 
 
 if __name__ == "__main__":

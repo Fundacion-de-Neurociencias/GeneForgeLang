@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """Test script for Schema Registry functionality."""
 
-import sys
 import os
+import sys
 
 # Add the current directory to the path so we can import gfl
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from gfl.api import parse, validate
-from gfl.semantic_validator import EnhancedSemanticValidator
 from gfl.schema_loader import SchemaLoader
+from gfl.semantic_validator import EnhancedSemanticValidator
+
 
 def test_schema_loader():
     """Test the SchemaLoader functionality."""
@@ -50,12 +51,13 @@ def test_schema_loader():
     print("✓ SchemaLoader tests passed")
     return True
 
+
 def test_schema_registry_validation():
     """Test schema registry validation in GFL."""
     print("\nTesting schema registry validation...")
 
     # Read the test GFL file
-    with open("test_schema_registry.gfl", "r") as f:
+    with open("test_schema_registry.gfl") as f:
         gfl_content = f.read()
 
     # Parse the GFL content
@@ -73,7 +75,9 @@ def test_schema_registry_validation():
     print(f"Validation result: {'Valid' if result.is_valid else 'Invalid'}")
 
     # Check for schema-related errors
-    schema_errors = [error for error in result.errors if "schema" in error.message.lower() or "attribute" in error.message.lower()]
+    schema_errors = [
+        error for error in result.errors if "schema" in error.message.lower() or "attribute" in error.message.lower()
+    ]
     if schema_errors:
         print(f"Found {len(schema_errors)} schema-related errors:")
         for error in schema_errors:
@@ -82,6 +86,7 @@ def test_schema_registry_validation():
     # We expect some errors for the invalid test cases
     # But the valid cases should pass
     return True
+
 
 def test_simple_schema_usage():
     """Test simple schema usage validation."""
@@ -94,22 +99,10 @@ def test_simple_schema_usage():
             "tool": "sequence_aligner",
             "type": "sequencing",
             "contract": {
-                "inputs": {
-                    "raw_sequences": {
-                        "type": "FASTQ_PairedEnd"
-                    }
-                },
-                "outputs": {
-                    "aligned_reads": {
-                        "type": "BAM_Indexed",
-                        "attributes": {
-                            "sorted": True,
-                            "indexed": True
-                        }
-                    }
-                }
-            }
-        }
+                "inputs": {"raw_sequences": {"type": "FASTQ_PairedEnd"}},
+                "outputs": {"aligned_reads": {"type": "BAM_Indexed", "attributes": {"sorted": True, "indexed": True}}},
+            },
+        },
     }
 
     validator = EnhancedSemanticValidator(file_path="test.gfl")
@@ -123,6 +116,7 @@ def test_simple_schema_usage():
             print(f"  - {error.message}")
 
     return result.is_valid
+
 
 if __name__ == "__main__":
     success1 = test_schema_loader()

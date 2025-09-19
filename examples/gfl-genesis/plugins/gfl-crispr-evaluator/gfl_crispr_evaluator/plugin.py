@@ -2,9 +2,8 @@
 CRISPR Evaluator Plugin for GFL Genesis Project
 """
 
+import datetime
 from typing import Any
-
-import numpy as np
 
 from gfl.plugins.plugin_registry import BaseGFLPlugin
 
@@ -77,7 +76,7 @@ class CRISPREvaluatorPlugin(BaseGFLPlugin):
             "evaluation_table": evaluation_table,
             "on_target_results": on_target_results,
             "off_target_results": off_target_results,
-            "analysis_date": "2025-08-31",
+            "analysis_date": datetime.datetime.now().strftime("%Y-%m-%d"),
         }
 
     def _combine_results(self, on_target_scores: list, off_target_scores: list) -> list:

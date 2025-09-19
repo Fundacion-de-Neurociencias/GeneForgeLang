@@ -44,43 +44,27 @@ def generate_experiment():
         if random.random() < 0.3:
             params.append(f"target_cluster_count: {random.randint(3, 15)}")
         if random.random() < 0.2:
-            params.append(
-                f"imputation: {str(random.choice(['true', 'false'])).lower()}"
-            )
+            params.append(f"imputation: {str(random.choice(['true', 'false'])).lower()}")
     elif selected_tool == "DESeq2":
         if random.random() < 0.9:
-            params.append(
-                f'condition_group: "{random.choice(["treated", "disease", "mutant"])}"'
-            )
+            params.append(f'condition_group: "{random.choice(["treated", "disease", "mutant"])}"')
         if random.random() < 0.9:
-            params.append(
-                f'control_group: "{random.choice(["untreated", "healthy", "wildtype"])}"'
-            )
+            params.append(f'control_group: "{random.choice(["untreated", "healthy", "wildtype"])}"')
         if random.random() < 0.3:
-            params.append(
-                f"batch_correction: {str(random.choice(['true', 'false'])).lower()}"
-            )
+            params.append(f"batch_correction: {str(random.choice(['true', 'false'])).lower()}")
     elif selected_tool == "seurat":
         if random.random() < 0.7:
             params.append(f"resolution: {round(random.uniform(0.1, 1.5), 2)}")
         if random.random() < 0.5:
-            params.append(
-                f"integrate_datasets: {str(random.choice(['true', 'false'])).lower()}"
-            )
+            params.append(f"integrate_datasets: {str(random.choice(['true', 'false'])).lower()}")
     elif selected_tool == "flowjo":
         if random.random() < 0.8:
-            params.append(
-                f"gating_strategy: \"{random.choice(['T_cells', 'B_cells', 'Macrophages'])}\""
-            )
+            params.append(f"gating_strategy: \"{random.choice(['T_cells', 'B_cells', 'Macrophages'])}\"")
     elif selected_tool == "qiime2":
         if random.random() < 0.8:
-            params.append(
-                f"alpha_diversity_metric: \"{random.choice(['shannon', 'simpson'])}\""
-            )
+            params.append(f"alpha_diversity_metric: \"{random.choice(['shannon', 'simpson'])}\"")
         if random.random() < 0.5:
-            params.append(
-                f"beta_diversity_metric: \"{random.choice(['bray_curtis', 'unifrac'])}"
-            )
+            params.append(f"beta_diversity_metric: \"{random.choice(['bray_curtis', 'unifrac'])}")
 
     params_str = ",\n    ".join(params)
     if params_str:
@@ -115,9 +99,7 @@ def generate_analyze():
             thresholds.append(f"resolution: {round(random.uniform(0.1, 1.5), 2)}")
     elif selected_strategy == "survival_analysis":
         if random.random() < 0.9:
-            thresholds.append(
-                f"hazard_ratio_threshold: {round(random.uniform(1.0, 3.0), 1)}"
-            )
+            thresholds.append(f"hazard_ratio_threshold: {round(random.uniform(1.0, 3.0), 1)}")
 
     thresholds_str = ",\n    ".join(thresholds)
     if thresholds_str:
@@ -139,22 +121,20 @@ def generate_branch():
 
     then_block = "\n    " + "\n    ".join(
         [
-            random.choice(
-                [generate_simulate(), generate_experiment(), generate_analyze()]
-            )
+            random.choice([generate_simulate(), generate_experiment(), generate_analyze()])
             for _ in range(random.randint(1, 2))
         ]
     )
     else_block = "\n    " + "\n    ".join(
         [
-            random.choice(
-                [generate_simulate(), generate_experiment(), generate_analyze()]
-            )
+            random.choice([generate_simulate(), generate_experiment(), generate_analyze()])
             for _ in range(random.randint(1, 2))
         ]
     )
 
-    return f"branch {{\n  if: {random.choice(conditions)}\n  then: {{{then_block}\n  }}\n  else: {{{else_block}\n  }}\n}}"
+    return (
+        f"branch {{\n  if: {random.choice(conditions)}\n  then: {{{then_block}\n  }}\n  else: {{{else_block}\n  }}\n}}"
+    )
 
 
 def generate_random_gfl_block():

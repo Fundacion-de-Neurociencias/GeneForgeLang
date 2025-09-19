@@ -12,9 +12,10 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from .plugin_registry import BaseGFLPlugin, PluginDependency, PluginPriority
 
@@ -132,12 +133,7 @@ class GeneratorPlugin(BaseGFLPlugin):
 
     @abstractmethod
     def generate(
-        self,
-        entity: str,
-        objective: Dict[str, Any],
-        constraints: List[str],
-        count: int,
-        **kwargs
+        self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
     ) -> List[DesignCandidate]:
         """Generate biological entity candidates based on design specification.
 
@@ -231,11 +227,7 @@ class OptimizerPlugin(BaseGFLPlugin):
 
     @abstractmethod
     def setup(
-        self,
-        search_space: Dict[str, str],
-        strategy: Dict[str, Any],
-        objective: Dict[str, Any],
-        budget: Dict[str, Any]
+        self, search_space: Dict[str, str], strategy: Dict[str, Any], objective: Dict[str, Any], budget: Dict[str, Any]
     ) -> None:
         """Initialize the optimization algorithm with problem specification.
 
@@ -274,11 +266,7 @@ class OptimizerPlugin(BaseGFLPlugin):
         """
         pass
 
-    def should_stop(
-        self,
-        experiment_history: List[ExperimentResult],
-        budget: Dict[str, Any]
-    ) -> bool:
+    def should_stop(self, experiment_history: List[ExperimentResult], budget: Dict[str, Any]) -> bool:
         """Determine if optimization should terminate.
 
         Args:
@@ -289,14 +277,14 @@ class OptimizerPlugin(BaseGFLPlugin):
             True if optimization should stop, False to continue
         """
         # Check budget constraints
-        if 'max_experiments' in budget:
-            if len(experiment_history) >= budget['max_experiments']:
+        if "max_experiments" in budget:
+            if len(experiment_history) >= budget["max_experiments"]:
                 return True
 
         # Check convergence if specified
-        if 'convergence_threshold' in budget and len(experiment_history) >= 3:
+        if "convergence_threshold" in budget and len(experiment_history) >= 3:
             recent_values = [r.objective_value for r in experiment_history[-3:]]
-            if max(recent_values) - min(recent_values) < budget['convergence_threshold']:
+            if max(recent_values) - min(recent_values) < budget["convergence_threshold"]:
                 return True
 
         return False
@@ -318,9 +306,7 @@ class OptimizerPlugin(BaseGFLPlugin):
         pass
 
     def estimate_remaining_time(
-        self,
-        experiment_history: List[ExperimentResult],
-        budget: Dict[str, Any]
+        self, experiment_history: List[ExperimentResult], budget: Dict[str, Any]
     ) -> Optional[float]:
         """Estimate remaining optimization time in seconds.
 
@@ -343,12 +329,7 @@ class PriorsPlugin(BaseGFLPlugin):
     """
 
     @abstractmethod
-    def specify_priors(
-        self,
-        parameters: Dict[str, Any],
-        prior_type: str,
-        **kwargs
-    ) -> Dict[str, Any]:
+    def specify_priors(self, parameters: Dict[str, Any], prior_type: str, **kwargs) -> Dict[str, Any]:
         """Specify prior distributions for experimental parameters.
 
         Args:
@@ -362,11 +343,7 @@ class PriorsPlugin(BaseGFLPlugin):
         pass
 
     @abstractmethod
-    def update_posteriors(
-        self,
-        priors: Dict[str, Any],
-        data: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def update_posteriors(self, priors: Dict[str, Any], data: Dict[str, Any]) -> Dict[str, Any]:
         """Update posterior distributions based on observed data.
 
         Args:
@@ -403,25 +380,18 @@ class SequenceGeneratorPlugin(GeneratorPlugin):
 
         for constraint in constraints:
             # Basic constraint syntax validation
-            if constraint.startswith('length(') and not constraint.endswith(')'):
+            if constraint.startswith("length(") and not constraint.endswith(")"):
                 errors.append(f"Invalid length constraint syntax: {constraint}")
-            elif constraint.startswith('gc_content(') and not constraint.endswith(')'):
+            elif constraint.startswith("gc_content(") and not constraint.endswith(")"):
                 errors.append(f"Invalid gc_content constraint syntax: {constraint}")
-            elif constraint.startswith('has_motif(') and not constraint.endswith(')'):
+            elif constraint.startswith("has_motif(") and not constraint.endswith(")"):
                 errors.append(f"Invalid motif constraint syntax: {constraint}")
 
         return errors
 
     def get_supported_constraints(self) -> List[str]:
         """Common sequence constraints."""
-        return [
-            'length',
-            'gc_content',
-            'has_motif',
-            'no_stop_codons',
-            'synthesizability',
-            'secondary_structure'
-        ]
+        return ["length", "gc_content", "has_motif", "no_stop_codons", "synthesizability", "secondary_structure"]
 
 
 class MoleculeGeneratorPlugin(GeneratorPlugin):
@@ -436,9 +406,9 @@ class MoleculeGeneratorPlugin(GeneratorPlugin):
 
         for constraint in constraints:
             # Drug-likeness constraint validation
-            if 'molecular_weight' in constraint and not any(op in constraint for op in ['<', '>', '=']):
+            if "molecular_weight" in constraint and not any(op in constraint for op in ["<", ">", "="]):
                 errors.append(f"Invalid molecular_weight constraint: {constraint}")
-            elif 'logP' in constraint and not any(op in constraint for op in ['<', '>', '=']):
+            elif "logP" in constraint and not any(op in constraint for op in ["<", ">", "="]):
                 errors.append(f"Invalid logP constraint: {constraint}")
 
         return errors
@@ -446,14 +416,14 @@ class MoleculeGeneratorPlugin(GeneratorPlugin):
     def get_supported_constraints(self) -> List[str]:
         """Common molecular constraints."""
         return [
-            'molecular_weight',
-            'logP',
-            'rotatable_bonds',
-            'hbd_count',
-            'hba_count',
-            'drug_likeness',
-            'synthetic_accessibility',
-            'toxicity'
+            "molecular_weight",
+            "logP",
+            "rotatable_bonds",
+            "hbd_count",
+            "hba_count",
+            "drug_likeness",
+            "synthetic_accessibility",
+            "toxicity",
         ]
 
 
@@ -466,21 +436,18 @@ class BayesianOptimizerPlugin(OptimizerPlugin):
     @property
     def supported_strategies(self) -> List[OptimizationStrategy]:
         """Bayesian optimization strategies."""
-        return [
-            OptimizationStrategy.BAYESIAN_OPTIMIZATION,
-            OptimizationStrategy.ACTIVE_LEARNING
-        ]
+        return [OptimizationStrategy.BAYESIAN_OPTIMIZATION, OptimizationStrategy.ACTIVE_LEARNING]
 
     def validate_search_space(self, search_space: Dict[str, str]) -> List[str]:
         """Validate search space for Bayesian optimization."""
         errors = []
 
         for param, definition in search_space.items():
-            if definition.startswith('range('):
+            if definition.startswith("range("):
                 # Validate continuous parameter ranges
                 try:
                     content = definition[6:-1]  # Remove 'range(' and ')'
-                    parts = [p.strip() for p in content.split(',')]
+                    parts = [p.strip() for p in content.split(",")]
                     if len(parts) != 2:
                         errors.append(f"Range for {param} must have exactly 2 values")
                     else:
@@ -488,9 +455,9 @@ class BayesianOptimizerPlugin(OptimizerPlugin):
                         float(parts[1])
                 except (ValueError, IndexError):
                     errors.append(f"Invalid range syntax for parameter {param}: {definition}")
-            elif definition.startswith('choice('):
+            elif definition.startswith("choice("):
                 # Validate discrete parameter choices
-                if definition == 'choice([])':
+                if definition == "choice([])":
                     errors.append(f"Empty choice list for parameter {param}")
 
         return errors
@@ -502,7 +469,7 @@ def register_generator_plugin(
     name: str,
     version: str = "1.0.0",
     priority: PluginPriority = PluginPriority.NORMAL,
-    dependencies: Optional[List[PluginDependency]] = None
+    dependencies: Optional[List[PluginDependency]] = None,
 ) -> None:
     """Convenience function to register a generator plugin.
 
@@ -517,7 +484,7 @@ def register_generator_plugin(
 
     # Validate that class implements GeneratorPlugin
     if not issubclass(plugin_class, GeneratorPlugin):
-        raise TypeError(f"Plugin class must inherit from GeneratorPlugin")
+        raise TypeError("Plugin class must inherit from GeneratorPlugin")
 
     instance = plugin_class()
     plugin_registry.register(name, instance, version)
@@ -528,7 +495,7 @@ def register_optimizer_plugin(
     name: str,
     version: str = "1.0.0",
     priority: PluginPriority = PluginPriority.NORMAL,
-    dependencies: Optional[List[PluginDependency]] = None
+    dependencies: Optional[List[PluginDependency]] = None,
 ) -> None:
     """Convenience function to register an optimizer plugin.
 
@@ -543,7 +510,7 @@ def register_optimizer_plugin(
 
     # Validate that class implements OptimizerPlugin
     if not issubclass(plugin_class, OptimizerPlugin):
-        raise TypeError(f"Plugin class must inherit from OptimizerPlugin")
+        raise TypeError("Plugin class must inherit from OptimizerPlugin")
 
     instance = plugin_class()
     plugin_registry.register(name, instance, version)

@@ -5,9 +5,7 @@ def run_scrna_experiment(params):
     """
     Simula la ejecución de un experimento de scRNA-seq con Scanpy.
     """
-    print(
-        f"\n[SCANPY INTERFACE] Simulando experimento scRNA-seq con parámetros: {params}"
-    )
+    print(f"\n[SCANPY INTERFACE] Simulando experimento scRNA-seq con parámetros: {params}")
     # Simulación de resultados
     simulated_results = {
         "analysis_type": "scRNA_seq",

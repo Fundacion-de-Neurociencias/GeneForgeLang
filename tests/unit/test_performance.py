@@ -38,9 +38,7 @@ class TestIntelligentCache:
 
     def test_lru_eviction(self):
         """Test LRU eviction policy."""
-        cache = IntelligentCache[str, int](
-            max_size=2, eviction_policy=LRUEvictionPolicy()
-        )
+        cache = IntelligentCache[str, int](max_size=2, eviction_policy=LRUEvictionPolicy())
 
         cache.put("key1", 100)
         cache.put("key2", 200)

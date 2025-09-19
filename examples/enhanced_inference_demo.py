@@ -9,11 +9,11 @@ of the GeneForgeLang inference system, including:
 """
 
 import time
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 # Import GFL API
 try:
-    from gfl.api import parse, validate, infer_enhanced, compare_inference_models
+    from gfl.api import compare_inference_models, infer_enhanced, parse, validate
     from gfl.enhanced_inference_engine import get_inference_engine
     from gfl.models.advanced_models import (
         create_genomic_classification_model,
@@ -199,9 +199,7 @@ def demonstrate_basic_inference():
             explanation_lower = result["explanation"].lower()
             detected_features = []
             for feature in sample["expected_features"]:
-                if any(
-                    keyword.lower() in explanation_lower for keyword in feature.split()
-                ):
+                if any(keyword.lower() in explanation_lower for keyword in feature.split()):
                     detected_features.append(feature)
 
             if detected_features:
@@ -244,9 +242,7 @@ analyze:
         if "comparisons" in comparison_results:
             # Sort by confidence for display
             comparisons = comparison_results["comparisons"]
-            sorted_models = sorted(
-                comparisons.items(), key=lambda x: x[1]["confidence"], reverse=True
-            )
+            sorted_models = sorted(comparisons.items(), key=lambda x: x[1]["confidence"], reverse=True)
 
             print(f"{'Model':<25} {'Prediction':<20} {'Confidence':<12} {'Key Points'}")
             print("-" * 80)
@@ -257,15 +253,9 @@ analyze:
 
                 # Extract key points from explanation
                 explanation = result.get("explanation", "")
-                key_points = (
-                    explanation.split(".")[0][:30] + "..."
-                    if len(explanation) > 30
-                    else explanation
-                )
+                key_points = explanation.split(".")[0][:30] + "..." if len(explanation) > 30 else explanation
 
-                print(
-                    f"{model_name:<25} {prediction:<20} {confidence:<12} {key_points}"
-                )
+                print(f"{model_name:<25} {prediction:<20} {confidence:<12} {key_points}")
 
             print(f"\nFeatures used: {comparison_results.get('features_used', {})}")
 
@@ -313,9 +303,7 @@ experiment:
 
             # Try protein generation if model is available
             if "protein_generation" in engine.list_models():
-                result = infer_enhanced(
-                    ast, model_name="protein_generation", explain=True
-                )
+                result = infer_enhanced(ast, model_name="protein_generation", explain=True)
 
                 sequence = result["label"]
                 confidence = result["confidence"]
@@ -334,9 +322,7 @@ experiment:
                             aa_counts[aa] = count
 
                     print(f"Composition: {len(aa_counts)} different amino acids")
-                    most_common = (
-                        max(aa_counts, key=aa_counts.get) if aa_counts else "N/A"
-                    )
+                    most_common = max(aa_counts, key=aa_counts.get) if aa_counts else "N/A"
                     print(f"Most common AA: {most_common}")
 
             else:
@@ -344,9 +330,7 @@ experiment:
                 result = infer_enhanced(ast, model_name="multimodal", explain=True)
                 print(f"Multimodal prediction: {result['label']}")
                 print(f"Confidence: {result['confidence']:.1%}")
-                print(
-                    "Note: Using multimodal model (protein generation model not available)"
-                )
+                print("Note: Using multimodal model (protein generation model not available)")
 
         except Exception as e:
             print(f"Error in protein generation for {sample['name']}: {e}")
@@ -407,9 +391,7 @@ analyze:
         # Display results
         if results:
             print("\nPerformance Results:")
-            print(
-                f"{'Model':<25} {'Avg (ms)':<10} {'Min (ms)':<10} {'Max (ms)':<10} {'Runs'}"
-            )
+            print(f"{'Model':<25} {'Avg (ms)':<10} {'Min (ms)':<10} {'Max (ms)':<10} {'Runs'}")
             print("-" * 70)
 
             # Sort by average time

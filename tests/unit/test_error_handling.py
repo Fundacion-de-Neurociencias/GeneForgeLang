@@ -163,9 +163,7 @@ class TestEnhancedValidationError:
     def test_error_to_dict(self):
         """Test converting error to dictionary."""
         loc = SourceLocation(line=10, column=5, file_path="test.gfl")
-        error = EnhancedValidationError(
-            message="Test error", code="TEST001", location=loc
-        )
+        error = EnhancedValidationError(message="Test error", code="TEST001", location=loc)
         error.add_context("key", "value")
         error.add_fix("Fix description", "replacement", loc)
 
@@ -195,9 +193,7 @@ class TestEnhancedValidationResult:
         """Test adding error to result."""
         result = EnhancedValidationResult()
 
-        error = result.add_error(
-            "Test error", "TEST001", ErrorSeverity.ERROR, ErrorCategory.SEMANTIC
-        )
+        error = result.add_error("Test error", "TEST001", ErrorSeverity.ERROR, ErrorCategory.SEMANTIC)
 
         assert len(result.errors) == 1
         assert result.errors[0] is error
@@ -295,9 +291,7 @@ class TestErrorCreationHelpers:
     def test_create_syntax_error(self):
         """Test creating syntax error."""
         loc = SourceLocation(line=5, column=10)
-        error = create_syntax_error(
-            "Invalid YAML syntax", loc, ErrorCodes.SYNTAX_INVALID_YAML
-        )
+        error = create_syntax_error("Invalid YAML syntax", loc, ErrorCodes.SYNTAX_INVALID_YAML)
 
         assert error.severity == ErrorSeverity.CRITICAL
         assert error.category == ErrorCategory.SYNTAX
@@ -307,9 +301,7 @@ class TestErrorCreationHelpers:
     def test_create_semantic_error(self):
         """Test creating semantic error."""
         loc = SourceLocation(line=5, column=10)
-        error = create_semantic_error(
-            "Missing required field", loc, ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD
-        )
+        error = create_semantic_error("Missing required field", loc, ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD)
 
         assert error.severity == ErrorSeverity.ERROR
         assert error.category == ErrorCategory.SEMANTIC
@@ -319,9 +311,7 @@ class TestErrorCreationHelpers:
     def test_create_warning(self):
         """Test creating warning."""
         loc = SourceLocation(line=5, column=10)
-        error = create_warning(
-            "Unknown tool", loc, ErrorCategory.SEMANTIC, "WARNING001"
-        )
+        error = create_warning("Unknown tool", loc, ErrorCategory.SEMANTIC, "WARNING001")
 
         assert error.severity == ErrorSeverity.WARNING
         assert error.category == ErrorCategory.SEMANTIC

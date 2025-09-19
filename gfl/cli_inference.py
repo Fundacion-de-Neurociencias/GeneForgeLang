@@ -31,11 +31,11 @@ except ImportError:
     HAS_TORCH = False
 
 try:
-    from rich.console import Console
-    from rich.table import Table
-    from rich.panel import Panel
-    from rich.text import Text
     from rich import print as rich_print
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.table import Table
+    from rich.text import Text
 
     HAS_RICH = True
     console = Console()
@@ -62,7 +62,7 @@ def print_output(content: str, style: str = "info") -> None:
 def load_gfl_file(file_path: str) -> Optional[Dict[str, Any]]:
     """Load and parse a GFL file."""
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
 
         ast = parse(content)
@@ -175,9 +175,7 @@ def demo_inference_models():
                 print_output(f"  Error with {model_name}: {e}", "error")
 
 
-def test_inference_file(
-    file_path: str, model_name: Optional[str] = None, output_file: Optional[str] = None
-):
+def test_inference_file(file_path: str, model_name: Optional[str] = None, output_file: Optional[str] = None):
     """Test inference on a specific GFL file."""
     if not HAS_GFL_API:
         print_output("GFL API not available", "error")
@@ -321,9 +319,7 @@ def benchmark_models(iterations: int = 10):
         for model_name, metrics in results.items():
             print_output(f"{model_name}:")
             print_output(f"  Average: {metrics['avg_time']*1000:.2f}ms")
-            print_output(
-                f"  Range: {metrics['min_time']*1000:.2f}-{metrics['max_time']*1000:.2f}ms"
-            )
+            print_output(f"  Range: {metrics['min_time']*1000:.2f}-{metrics['max_time']*1000:.2f}ms")
 
 
 def main():
@@ -341,9 +337,7 @@ def main():
     test_parser.add_argument("--output", "-o", help="Output file for results")
 
     # Benchmark command
-    benchmark_parser = subparsers.add_parser(
-        "benchmark", help="Benchmark model performance"
-    )
+    benchmark_parser = subparsers.add_parser("benchmark", help="Benchmark model performance")
     benchmark_parser.add_argument(
         "--iterations",
         "-i",
@@ -376,9 +370,7 @@ def main():
             for model_name in models:
                 try:
                     info = engine.get_model_info(model_name)
-                    print_output(
-                        f"  {model_name}: {info['type']} ({'loaded' if info['loaded'] else 'not loaded'})"
-                    )
+                    print_output(f"  {model_name}: {info['type']} ({'loaded' if info['loaded'] else 'not loaded'})")
                 except Exception as e:
                     print_output(f"  {model_name}: Error getting info - {e}")
         else:

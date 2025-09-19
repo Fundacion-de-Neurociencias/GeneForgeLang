@@ -7,7 +7,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Load symbolic phrase dictionary
-with open("semillas.json", "r", encoding="utf-8") as f:
+with open("semillas.json", encoding="utf-8") as f:
     diccionario_semillas = json.load(f)
 
 
@@ -48,9 +48,7 @@ def generate_protein_and_props(phrase):
     # Calculate properties
     length = len(seq)
     aa_count = {aa: seq.count(aa) for aa in "ACDEFGHIKLMNPQRSTVWY"}
-    charge = sum([aa_count.get(a, 0) for a in "KR"]) - sum(
-        [aa_count.get(a, 0) for a in "DE"]
-    )
+    charge = sum([aa_count.get(a, 0) for a in "KR"]) - sum([aa_count.get(a, 0) for a in "DE"])
     mw = sum(
         [
             aa_count[a] * w
@@ -82,9 +80,7 @@ def generate_protein_and_props(phrase):
     props = f"🧪 Seed: {seed}\n🧬 Protein: {seq}\n\n🔬 Properties:\n- Length: {length} aa\n- Charge: {charge}\n- MW: {mw:.1f} Da"
 
     # Save to FASTA
-    with tempfile.NamedTemporaryFile(
-        delete=False, suffix=".fasta", mode="w", encoding="utf-8"
-    ) as f:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".fasta", mode="w", encoding="utf-8") as f:
         f.write(f">Generated_Protein\n{seq}\n")
         fasta_path = f.name
 
@@ -108,9 +104,7 @@ def sequence_to_phrase(seq):
         tags.append("Localize(Nucleus)")
     if re.search(r"(AILFL|LAGGAV|LVLL|AAVL)", seq):
         tags.append("Localize(Membrane)")
-    return (
-        "^p:" + "-".join(sorted(set(tags))) if tags else "// No symbolic motifs found"
-    )
+    return "^p:" + "-".join(sorted(set(tags))) if tags else "// No symbolic motifs found"
 
 
 def phrase_to_description(phrase):
@@ -137,14 +131,10 @@ def phrase_to_description(phrase):
 
 with gr.Blocks() as demo:
     gr.Markdown("# 🧬 GeneForgeLang AI Tools")
-    gr.Markdown(
-        "Design, interpret, describe, and export proteins using symbolic language and AI."
-    )
+    gr.Markdown("Design, interpret, describe, and export proteins using symbolic language and AI.")
 
     with gr.Tab("🧠 Phrase → Protein"):
-        inp = gr.Textbox(
-            label="GeneForgeLang Phrase", placeholder="^p:Dom(Kin)-Mot(NLS)*AcK@147"
-        )
+        inp = gr.Textbox(label="GeneForgeLang Phrase", placeholder="^p:Dom(Kin)-Mot(NLS)*AcK@147")
         out = gr.Textbox(label="Protein + Properties")
         fasta = gr.File(label="Download FASTA")
         btn = gr.Button("Generate")
@@ -157,9 +147,7 @@ with gr.Blocks() as demo:
         btn2.click(fn=sequence_to_phrase, inputs=inp2, outputs=out2)
 
     with gr.Tab("🧬 Mutate Protein"):
-        inp4 = gr.Textbox(
-            label="GeneForgeLang Phrase", placeholder="^p:Dom(Kin)-Mot(NLS)*AcK@147"
-        )
+        inp4 = gr.Textbox(label="GeneForgeLang Phrase", placeholder="^p:Dom(Kin)-Mot(NLS)*AcK@147")
         out4 = gr.Textbox(label="Mutated Protein")
         btn4 = gr.Button("Mutate")
         btn4.click(
@@ -169,9 +157,7 @@ with gr.Blocks() as demo:
         )
 
     with gr.Tab("📊 Analyze Protein"):
-        inp5 = gr.Textbox(
-            label="Protein Sequence", placeholder="Paste sequence to analyze"
-        )
+        inp5 = gr.Textbox(label="Protein Sequence", placeholder="Paste sequence to analyze")
         out5 = gr.Image(label="Amino Acid Composition")
         btn5 = gr.Button("Analyze")
 
@@ -182,9 +168,7 @@ with gr.Blocks() as demo:
         btn5.click(fn=analyze_graph, inputs=inp5, outputs=out5)
 
     with gr.Tab("📖 Phrase → Natural Language"):
-        inp3 = gr.Textbox(
-            label="GeneForgeLang Phrase", placeholder="^p:Dom(Kin)-Mot(NLS)*AcK@147"
-        )
+        inp3 = gr.Textbox(label="GeneForgeLang Phrase", placeholder="^p:Dom(Kin)-Mot(NLS)*AcK@147")
         out3 = gr.Textbox(label="Scientific Description")
         btn3 = gr.Button("Describe")
         btn3.click(fn=phrase_to_description, inputs=inp3, outputs=out3)

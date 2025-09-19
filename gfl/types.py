@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Literal, Optional, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union
 
 if TYPE_CHECKING:
     pass
@@ -71,10 +71,7 @@ class IOContract:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
-        return {
-            "type": self.type,
-            "attributes": self.attributes
-        }
+        return {"type": self.type, "attributes": self.attributes}
 
 
 @dataclass
@@ -91,7 +88,7 @@ class BlockContract:
         """Convert to dictionary representation."""
         return {
             "inputs": {name: contract.to_dict() for name, contract in self.inputs.items()},
-            "outputs": {name: contract.to_dict() for name, contract in self.outputs.items()}
+            "outputs": {name: contract.to_dict() for name, contract in self.outputs.items()},
         }
 
 

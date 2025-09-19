@@ -23,7 +23,7 @@ Example:
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Union, Optional
+from typing import Any, Dict, List, Optional, Union, cast
 
 from gfl import parser as _parser
 from gfl.error_handling import EnhancedValidationResult
@@ -35,11 +35,12 @@ from gfl.semantic_validator import validate as _validate
 # Optional execution engine import
 try:
     from gfl.execution_engine import (
-        execute_gfl_ast,
-        validate_execution_requirements,
         ExecutionError,
         GFLExecutionEngine,
+        execute_gfl_ast,
+        validate_execution_requirements,
     )
+
     HAS_EXECUTION_ENGINE = True
 except ImportError:
     HAS_EXECUTION_ENGINE = False
@@ -52,15 +53,20 @@ except ImportError:
 # Optional grammar parser import
 try:
     from gfl.grammar_parser import parse_gfl_grammar
+
     HAS_GRAMMAR_PARSER = True
 except ImportError:
     HAS_GRAMMAR_PARSER = False
     parse_gfl_grammar = None  # type: ignore
 
+# Auto-register example plugins to ensure they're available
+try:
+    from gfl.plugins import auto_register
+except ImportError:
+    pass
 
-def parse(
-    text: str, use_grammar: bool = False, filename: str = "<input>"
-) -> Dict[str, Any]:
+
+def parse(text: str, use_grammar: bool = False, filename: str = "<input>") -> Dict[str, Any]:
     """Parse GFL source into a Python dict AST.
 
     Supports both YAML-based parsing (legacy) and grammar-based parsing (advanced).
@@ -106,10 +112,8 @@ def parse(
     """
     with get_monitor().time_operation("api_parse"):
         if use_grammar:
-            if not HAS_GRAMMAR_PARSER:
-                raise ImportError(
-                    "Grammar parser not available. Install PLY dependency."
-                )
+            if not HAS_GRAMMAR_PARSER or parse_gfl_grammar is None:
+                raise ImportError("Grammar parser not available. Install PLY dependency.")
 
             parse_result = parse_gfl_grammar(text, filename)
 
@@ -126,15 +130,20 @@ def parse(
 
                 raise GFLSyntaxError("\n".join(error_messages))
 
-            return parse_result.ast
+            if parse_result.ast is not None:
+                return cast(Dict[str, Any], parse_result.ast)
+            else:
+                return {}
         else:
-            return _parser.parse_gfl(text)
+            result = _parser.parse_gfl(text)
+            if result is not None:
+                return cast(Dict[str, Any], result)
+            else:
+                return {}
 
 
 @cached(cache_name="schema_validation", ttl=600.0, max_size=500)
-def validate(
-    ast: Dict[str, Any], enhanced: bool = False
-) -> Union[List[str], EnhancedValidationResult]:
+def validate(ast: Dict[str, Any], enhanced: bool = False) -> Union[List[str], EnhancedValidationResult]:
     """Return validation errors for the given AST.
 
     Performs semantic validation on the parsed AST to ensure it follows
@@ -234,9 +243,7 @@ def infer(
 
                 # Use enhanced prediction
                 model_name = model_name or "heuristic"
-                enhanced_result = enhanced_engine.predict(
-                    model_name, features, explain=explain
-                )
+                enhanced_result = enhanced_engine.predict(model_name, features, explain=explain)
 
                 # Return enhanced format
                 return {
@@ -259,9 +266,7 @@ def infer(
         return engine.predict_effect(ast, enhanced=False)
 
 
-def parse_enhanced(
-    text: str, use_grammar: bool = True, filename: str = "<input>"
-) -> EnhancedValidationResult:
+def parse_enhanced(text: str, use_grammar: bool = True, filename: str = "<input>") -> EnhancedValidationResult:
     """Parse GFL source with enhanced error reporting.
 
     This function provides detailed parsing results with rich error information,
@@ -315,7 +320,7 @@ def parse_enhanced(
                     ErrorCategory,
                     ErrorSeverity,
                 )
-                
+
                 error = EnhancedValidationError(
                     message=str(e),
                     code="YAML_PARSE_ERROR",
@@ -330,9 +335,7 @@ def parse_enhanced(
 # Enhanced inference convenience functions
 
 
-def infer_enhanced(
-    ast: Dict[str, Any], model_name: str = "heuristic", explain: bool = True
-) -> Dict[str, Any]:
+def infer_enhanced(ast: Dict[str, Any], model_name: str = "heuristic", explain: bool = True) -> Dict[str, Any]:
     """Enhanced inference using advanced ML models.
 
     Convenience function for enhanced inference without requiring a model instance.
@@ -377,9 +380,7 @@ def infer_enhanced(
         raise ImportError("Enhanced inference engine not available")
 
 
-def compare_inference_models(
-    ast: Dict[str, Any], model_names: Optional[List[str]] = None
-) -> Dict[str, Any]:
+def compare_inference_models(ast: Dict[str, Any], model_names: Optional[List[str]] = None) -> Dict[str, Any]:
     """Compare predictions across multiple inference models.
 
     Args:
@@ -418,9 +419,7 @@ def compare_inference_models(
         raise ImportError("Enhanced inference engine not available")
 
 
-def execute(
-    ast: Dict[str, Any], validate_first: bool = True
-) -> Dict[str, Any]:
+def execute(ast: Dict[str, Any], validate_first: bool = True) -> Dict[str, Any]:
     """Execute a GFL workflow by dispatching to appropriate plugins.
 
     This function orchestrates the execution of design and optimize blocks
@@ -481,25 +480,33 @@ def execute(
         Best parameters: {'temperature': 37.2, 'concentration': 75.5}
     """
     if not HAS_EXECUTION_ENGINE:
-        raise ImportError(
-            "Execution engine not available. Plugin system may not be properly installed."
-        )
+        raise ImportError("Execution engine not available. Plugin system may not be properly installed.")
 
     with get_monitor().time_operation("api_execute"):
         if validate_first:
             # Validate AST first
             validation_errors = validate(ast)
             if validation_errors:
-                error_msg = "; ".join(validation_errors[:3])  # Show first 3 errors
+                # Handle both list and EnhancedValidationResult types
+                if isinstance(validation_errors, EnhancedValidationResult):
+                    error_list = validation_errors.to_legacy_format()
+                else:
+                    error_list = validation_errors
+                error_msg = "; ".join(error_list[:3])  # Show first 3 errors
                 raise ValueError(f"AST validation failed: {error_msg}")
 
             # Validate plugin requirements
-            plugin_errors = validate_execution_requirements(ast)
-            if plugin_errors:
-                error_msg = "; ".join(plugin_errors)
-                raise ValueError(f"Plugin requirements not met: {error_msg}")
+            if validate_execution_requirements is not None:
+                plugin_errors = validate_execution_requirements(ast)
+                if plugin_errors:
+                    error_msg = "; ".join(plugin_errors)
+                    raise ValueError(f"Plugin requirements not met: {error_msg}")
 
-        return execute_gfl_ast(ast)
+        # Execute workflow
+        if execute_gfl_ast is not None:
+            return execute_gfl_ast(ast)
+        else:
+            raise ImportError("Execution engine not properly initialized")
 
 
 def validate_plugins(ast: Dict[str, Any]) -> List[str]:
@@ -527,7 +534,10 @@ def validate_plugins(ast: Dict[str, Any]) -> List[str]:
     if not HAS_EXECUTION_ENGINE:
         return ["Execution engine not available"]
 
-    return validate_execution_requirements(ast)
+    if validate_execution_requirements is not None:
+        return validate_execution_requirements(ast)
+    else:
+        return ["Plugin validation system not available"]
 
 
 def list_available_plugins() -> Dict[str, List[str]]:
@@ -595,36 +605,6 @@ def get_api_info() -> Dict[str, Any]:
             info["available_plugins"] = plugins
         except Exception:
             info["available_plugins"] = {"generators": [], "optimizers": []}
-
-    try:
-        from gfl.enhanced_inference_engine import get_inference_engine
-
-        engine = get_inference_engine()
-        info["inference_models"] = engine.list_models()
-    except ImportError:
-        pass
-
-    return info
-    """Get information about the GFL API and available features.
-
-    Returns:
-        Dictionary containing API version, available features, and system info.
-    """
-    info = {
-        "api_version": "0.1.0",
-        "gfl_version": "0.1.0",
-        "features": {
-            "basic_parsing": True,
-            "grammar_parsing": HAS_GRAMMAR_PARSER,
-            "enhanced_inference": True,
-            "model_comparison": True,
-        },
-        "available_parsers": ["yaml"],
-        "inference_models": ["heuristic"],
-    }
-
-    if HAS_GRAMMAR_PARSER:
-        info["available_parsers"].append("grammar")
 
     try:
         from gfl.enhanced_inference_engine import get_inference_engine

@@ -27,11 +27,7 @@ def frase_a_semilla(frase):
 
 
 if __name__ == "__main__":
-    frase = (
-        sys.argv[1]
-        if len(sys.argv) > 1
-        else "^p:Dom(Kin)'-Mot(NLS)*AcK@147=Localize(Nucleus)"
-    )
+    frase = sys.argv[1] if len(sys.argv) > 1 else "^p:Dom(Kin)'-Mot(NLS)*AcK@147=Localize(Nucleus)"
     semilla = frase_a_semilla(frase)
     print("🧪 Semilla generada desde la frase:", semilla)
 

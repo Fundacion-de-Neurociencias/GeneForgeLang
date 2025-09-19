@@ -10,18 +10,19 @@ import sys
 import os
 from pathlib import Path
 
+
 def run_command(cmd, description):
     """Run a command and return True if successful, False otherwise."""
     print(f"🏃 Running {description}...")
     try:
-        result = subprocess.run(cmd, shell=True, check=True,
-                              capture_output=True, text=True)
+        result = subprocess.run(cmd, shell=True, check=True, capture_output=True, text=True)
         print(f"✅ {description} passed")
         return True
     except subprocess.CalledProcessError as e:
         print(f"❌ {description} failed")
         print(f"Error output: {e.stderr}")
         return False
+
 
 def main():
     """Run all pre-release checks."""
@@ -63,6 +64,7 @@ def main():
         print("❌ Some pre-release checks failed!")
         print("⚠️  Please fix the issues before releasing")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -6,7 +6,7 @@ loops, as described in the proposal. It shows how to define parameter search
 spaces, optimization strategies, and automated experimentation loops.
 """
 
-from gfl.api import parse, validate, infer
+from gfl.api import infer, parse, validate
 from gfl.models.dummy import DummyGeneModel
 
 
@@ -359,7 +359,7 @@ def test_invalid_optimize_blocks():
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 10},
-                "run": {"experiment": {"tool": "PCR", "type": "validation"}}
+                "run": {"experiment": {"tool": "PCR", "type": "validation"}},
             }
         },
         # Empty search_space
@@ -369,7 +369,7 @@ def test_invalid_optimize_blocks():
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 10},
-                "run": {"experiment": {"tool": "PCR", "type": "validation"}}
+                "run": {"experiment": {"tool": "PCR", "type": "validation"}},
             }
         },
         # Missing strategy name
@@ -379,7 +379,7 @@ def test_invalid_optimize_blocks():
                 "strategy": {"uncertainty_metric": "entropy"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 10},
-                "run": {"experiment": {"tool": "PCR", "type": "validation"}}
+                "run": {"experiment": {"tool": "PCR", "type": "validation"}},
             }
         },
         # Conflicting objectives
@@ -389,7 +389,7 @@ def test_invalid_optimize_blocks():
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency", "minimize": "cost"},
                 "budget": {"max_experiments": 10},
-                "run": {"experiment": {"tool": "PCR", "type": "validation"}}
+                "run": {"experiment": {"tool": "PCR", "type": "validation"}},
             }
         },
         # Empty budget
@@ -399,7 +399,7 @@ def test_invalid_optimize_blocks():
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {},
-                "run": {"experiment": {"tool": "PCR", "type": "validation"}}
+                "run": {"experiment": {"tool": "PCR", "type": "validation"}},
             }
         },
         # Missing run block
@@ -408,9 +408,9 @@ def test_invalid_optimize_blocks():
                 "search_space": {"param": "range(0, 10)"},
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
-                "budget": {"max_experiments": 10}
+                "budget": {"max_experiments": 10},
             }
-        }
+        },
     ]
 
     for i, invalid_ast in enumerate(invalid_configs, 1):
@@ -447,7 +447,7 @@ def run_all_tests():
         except Exception as e:
             print(f"❌ {test_func.__name__} raised exception: {e}")
 
-    print(f"\\n=== Test Summary ===")
+    print("\\n=== Test Summary ===")
     print(f"Passed: {passed}/{total}")
 
     if passed == total:

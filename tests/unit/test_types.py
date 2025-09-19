@@ -7,8 +7,9 @@ Tests cover:
 - Backward compatibility with dict-based API
 """
 
+from typing import Any, Dict
+
 import pytest
-from typing import Dict, Any
 
 from gfl.types import (
     GFLAST,
@@ -49,18 +50,14 @@ class TestExperimentParams:
 
     def test_params_extra_dict(self):
         """Test extra parameters dictionary."""
-        params = ExperimentParams(
-            target_gene="TP53", extra={"custom_param": "custom_value", "buffer": "PBS"}
-        )
+        params = ExperimentParams(target_gene="TP53", extra={"custom_param": "custom_value", "buffer": "PBS"})
 
         assert params.extra["custom_param"] == "custom_value"
         assert params.extra["buffer"] == "PBS"
 
     def test_params_to_dict(self):
         """Test conversion of parameters to dictionary."""
-        params = ExperimentParams(
-            target_gene="TP53", concentration=50.0, extra={"custom_param": "value"}
-        )
+        params = ExperimentParams(target_gene="TP53", concentration=50.0, extra={"custom_param": "value"})
 
         result = params.to_dict()
 
@@ -94,9 +91,7 @@ class TestExperiment:
     def test_create_experiment_with_params(self):
         """Test creating experiment with parameters."""
         params = ExperimentParams(target_gene="TP53", concentration=50.0)
-        exp = Experiment(
-            tool="CRISPR_cas9", type="gene_editing", params=params, strategy="knockout"
-        )
+        exp = Experiment(tool="CRISPR_cas9", type="gene_editing", params=params, strategy="knockout")
 
         assert exp.params.target_gene == "TP53"
         assert exp.strategy == "knockout"
@@ -104,9 +99,7 @@ class TestExperiment:
     def test_experiment_to_dict(self):
         """Test experiment conversion to dictionary."""
         params = ExperimentParams(target_gene="TP53")
-        exp = Experiment(
-            tool="CRISPR_cas9", type="gene_editing", params=params, strategy="knockout"
-        )
+        exp = Experiment(tool="CRISPR_cas9", type="gene_editing", params=params, strategy="knockout")
 
         result = exp.to_dict()
 
@@ -155,9 +148,7 @@ class TestAnalysis:
 
     def test_analysis_to_dict(self):
         """Test analysis conversion to dictionary."""
-        analysis = Analysis(
-            strategy="differential", data="results.csv", thresholds={"p_value": 0.05}
-        )
+        analysis = Analysis(strategy="differential", data="results.csv", thresholds={"p_value": 0.05})
 
         result = analysis.to_dict()
 
@@ -340,9 +331,7 @@ class TestValidationTypes:
 
     def test_validation_error_string_representation(self):
         """Test ValidationError string representation."""
-        error = ValidationError(
-            message="Missing required field", location="experiment", code="E001"
-        )
+        error = ValidationError(message="Missing required field", location="experiment", code="E001")
 
         error_str = str(error)
         assert "Missing required field" in error_str
@@ -378,9 +367,7 @@ class TestValidationTypes:
         assert not result_with_errors.is_valid
 
         # Still valid with warnings
-        result_with_warnings = ValidationResult(
-            warnings=[ValidationError(message="Warning", severity="warning")]
-        )
+        result_with_warnings = ValidationResult(warnings=[ValidationError(message="Warning", severity="warning")])
         assert result_with_warnings.is_valid
 
     def test_validation_result_all_messages(self):

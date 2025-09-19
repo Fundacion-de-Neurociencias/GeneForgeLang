@@ -24,13 +24,13 @@ class TestRulesBlockValidation:
                 {
                     "id": "rule1",
                     "if": {"gene": "TP53", "mutation": "R175H"},
-                    "then": {"effect": "increased_risk", "cancer_type": "breast"}
+                    "then": {"effect": "increased_risk", "cancer_type": "breast"},
                 },
                 {
                     "id": "rule2",
                     "if": {"gene": "BRCA1", "expression": "low"},
-                    "then": {"effect": "increased_risk", "cancer_type": "ovarian"}
-                }
+                    "then": {"effect": "increased_risk", "cancer_type": "ovarian"},
+                },
             ]
         }
         errors = validate(ast)
@@ -38,13 +38,7 @@ class TestRulesBlockValidation:
 
     def test_invalid_rules_block_not_list(self):
         """Test validation when rules block is not a list."""
-        ast = {
-            "rules": {
-                "id": "rule1",
-                "if": {"gene": "TP53"},
-                "then": {"effect": "increased_risk"}
-            }
-        }
+        ast = {"rules": {"id": "rule1", "if": {"gene": "TP53"}, "then": {"effect": "increased_risk"}}}
         errors = validate(ast)
         assert len(errors) > 0
         assert any("list" in error.lower() for error in errors)
@@ -74,14 +68,11 @@ class TestHypothesisBlockValidation:
             "hypothesis": {
                 "id": "hypothesis1",
                 "description": "TP53 mutations increase cancer risk",
-                "if": [
-                    {"gene": "TP53", "mutation": "R175H"},
-                    {"expression": "low"}
-                ],
+                "if": [{"gene": "TP53", "mutation": "R175H"}, {"expression": "low"}],
                 "then": [
                     {"effect": "increased_risk", "cancer_type": "breast"},
-                    {"biomarker": "Ki67", "expression": "high"}
-                ]
+                    {"biomarker": "Ki67", "expression": "high"},
+                ],
             }
         }
         errors = validate(ast)
@@ -89,14 +80,7 @@ class TestHypothesisBlockValidation:
 
     def test_invalid_hypothesis_block_not_dict(self):
         """Test validation when hypothesis block is not a dictionary."""
-        ast = {
-            "hypothesis": [
-                {
-                    "id": "hypothesis1",
-                    "description": "TP53 mutations increase cancer risk"
-                }
-            ]
-        }
+        ast = {"hypothesis": [{"id": "hypothesis1", "description": "TP53 mutations increase cancer risk"}]}
         errors = validate(ast)
         assert len(errors) > 0
         assert any("dictionary" in error.lower() for error in errors)
@@ -122,7 +106,7 @@ class TestHypothesisBlockValidation:
                 "id": "hypothesis1",
                 "description": "TP53 mutations increase cancer risk",
                 "if": "not_a_list",  # Should be a list
-                "then": "not_a_list"  # Should be a list
+                "then": "not_a_list",  # Should be a list
             }
         }
         errors = validate(ast)
@@ -140,19 +124,10 @@ class TestTimelineBlockValidation:
                 "events": [
                     {
                         "at": "2024-01-01",
-                        "actions": [
-                            {"type": "sequencing", "sample": "patient1"}
-                        ],
-                        "expectations": [
-                            {"outcome": "high_quality_data"}
-                        ]
+                        "actions": [{"type": "sequencing", "sample": "patient1"}],
+                        "expectations": [{"outcome": "high_quality_data"}],
                     },
-                    {
-                        "at": "2024-01-15",
-                        "actions": [
-                            {"type": "analysis", "data": "sequencing_results"}
-                        ]
-                    }
+                    {"at": "2024-01-15", "actions": [{"type": "analysis", "data": "sequencing_results"}]},
                 ]
             }
         }
@@ -161,13 +136,7 @@ class TestTimelineBlockValidation:
 
     def test_invalid_timeline_block_not_dict(self):
         """Test validation when timeline block is not a dictionary."""
-        ast = {
-            "timeline": [
-                {
-                    "events": []
-                }
-            ]
-        }
+        ast = {"timeline": [{"events": []}]}
         errors = validate(ast)
         assert len(errors) > 0
         assert any("dictionary" in error.lower() for error in errors)
@@ -186,11 +155,7 @@ class TestTimelineBlockValidation:
 
     def test_invalid_timeline_events_not_list(self):
         """Test validation when timeline events is not a list."""
-        ast = {
-            "timeline": {
-                "events": "not_a_list"
-            }
-        }
+        ast = {"timeline": {"events": "not_a_list"}}
         errors = validate(ast)
         assert len(errors) > 0
         assert any("list" in error.lower() for error in errors)
@@ -219,7 +184,7 @@ class TestTimelineBlockValidation:
                 "events": [
                     {
                         "at": 123,  # Should be a string
-                        "actions": "not_a_list"  # Should be a list
+                        "actions": "not_a_list",  # Should be a list
                     }
                 ]
             }
@@ -241,15 +206,13 @@ class TestEntityDefinitionValidation:
                     "description": "Urea cycle metabolic pathway",
                     "genes": ["ASS1", "ASL", "ARG1"],
                     "enzymes": ["ASS", "ASL", "ARG"],
-                    "reactions": [
-                        {"substrate": "ornithine", "product": "citrulline"}
-                    ]
+                    "reactions": [{"substrate": "ornithine", "product": "citrulline"}],
                 },
                 "Glycolysis": {
                     "description": "Glycolysis pathway",
                     "genes": ["HK1", "PGK1", "PKM"],
-                    "enzymes": ["Hexokinase", "Phosphoglycerate kinase", "Pyruvate kinase"]
-                }
+                    "enzymes": ["Hexokinase", "Phosphoglycerate kinase", "Pyruvate kinase"],
+                },
             }
         }
         errors = validate(ast)
@@ -262,13 +225,13 @@ class TestEntityDefinitionValidation:
                 "RNA_POLYMERASE_II": {
                     "description": "RNA polymerase II complex",
                     "subunits": ["POLR2A", "POLR2B", "POLR2C", "POLR2D", "POLR2E"],
-                    "function": "transcription"
+                    "function": "transcription",
                 },
                 "RIBOSOME_80S": {
                     "description": "80S ribosome complex",
                     "subunits": ["RPSA", "RPSB", "RPLA", "RPLB"],
-                    "function": "translation"
-                }
+                    "function": "translation",
+                },
             }
         }
         errors = validate(ast)
@@ -276,30 +239,14 @@ class TestEntityDefinitionValidation:
 
     def test_invalid_pathways_not_dict(self):
         """Test validation when pathways block is not a dictionary."""
-        ast = {
-            "pathways": [
-                {
-                    "UreaCycle": {
-                        "description": "Urea cycle metabolic pathway"
-                    }
-                }
-            ]
-        }
+        ast = {"pathways": [{"UreaCycle": {"description": "Urea cycle metabolic pathway"}}]}
         errors = validate(ast)
         assert len(errors) > 0
         assert any("dictionary" in error.lower() for error in errors)
 
     def test_invalid_complexes_not_dict(self):
         """Test validation when complexes block is not a dictionary."""
-        ast = {
-            "complexes": [
-                {
-                    "RNA_POLYMERASE_II": {
-                        "description": "RNA polymerase II complex"
-                    }
-                }
-            ]
-        }
+        ast = {"complexes": [{"RNA_POLYMERASE_II": {"description": "RNA polymerase II complex"}}]}
         errors = validate(ast)
         assert len(errors) > 0
         assert any("dictionary" in error.lower() for error in errors)
@@ -315,14 +262,14 @@ class TestHypothesisReferenceValidation:
                 "id": "hypothesis1",
                 "description": "TP53 mutations increase cancer risk",
                 "if": [{"gene": "TP53", "mutation": "R175H"}],
-                "then": [{"effect": "increased_risk"}]
+                "then": [{"effect": "increased_risk"}],
             },
             "experiment": {
                 "tool": "CRISPR_cas9",
                 "type": "gene_editing",
                 "params": {"target_gene": "TP53"},
-                "validates_hypothesis": "hypothesis1"
-            }
+                "validates_hypothesis": "hypothesis1",
+            },
         }
         errors = validate(ast)
         assert not errors
@@ -334,13 +281,9 @@ class TestHypothesisReferenceValidation:
                 "id": "hypothesis1",
                 "description": "TP53 mutations increase cancer risk",
                 "if": [{"gene": "TP53", "mutation": "R175H"}],
-                "then": [{"effect": "increased_risk"}]
+                "then": [{"effect": "increased_risk"}],
             },
-            "analyze": {
-                "strategy": "variant",
-                "data": "sequencing_results.csv",
-                "validates_hypothesis": "hypothesis1"
-            }
+            "analyze": {"strategy": "variant", "data": "sequencing_results.csv", "validates_hypothesis": "hypothesis1"},
         }
         errors = validate(ast)
         assert not errors
@@ -352,7 +295,7 @@ class TestHypothesisReferenceValidation:
                 "tool": "CRISPR_cas9",
                 "type": "gene_editing",
                 "params": {"target_gene": "TP53"},
-                "validates_hypothesis": "undefined_hypothesis"
+                "validates_hypothesis": "undefined_hypothesis",
             }
         }
         errors = validate(ast)
@@ -367,7 +310,7 @@ class TestHypothesisReferenceValidation:
                 "tool": "CRISPR_cas9",
                 "type": "gene_editing",
                 "params": {"target_gene": "TP53"},
-                "validates_hypothesis": 123  # Should be a string
+                "validates_hypothesis": 123,  # Should be a string
             }
         }
         errors = validate(ast)
@@ -382,19 +325,13 @@ class TestEntityReferenceValidation:
         """Test validation of pathway reference in experiment parameters."""
         ast = {
             "pathways": {
-                "UreaCycle": {
-                    "description": "Urea cycle metabolic pathway",
-                    "genes": ["ASS1", "ASL", "ARG1"]
-                }
+                "UreaCycle": {"description": "Urea cycle metabolic pathway", "genes": ["ASS1", "ASL", "ARG1"]}
             },
             "experiment": {
                 "tool": "CRISPR_cas9",
                 "type": "gene_editing",
-                "params": {
-                    "target_pathway": "pathway(UreaCycle)",
-                    "concentration": 50.0
-                }
-            }
+                "params": {"target_pathway": "pathway(UreaCycle)", "concentration": 50.0},
+            },
         }
         errors = validate(ast)
         assert not errors
@@ -403,19 +340,13 @@ class TestEntityReferenceValidation:
         """Test validation of complex reference in experiment parameters."""
         ast = {
             "complexes": {
-                "RNA_POLYMERASE_II": {
-                    "description": "RNA polymerase II complex",
-                    "subunits": ["POLR2A", "POLR2B"]
-                }
+                "RNA_POLYMERASE_II": {"description": "RNA polymerase II complex", "subunits": ["POLR2A", "POLR2B"]}
             },
             "experiment": {
                 "tool": "CRISPR_cas9",
                 "type": "gene_editing",
-                "params": {
-                    "target_complex": "complex(RNA_POLYMERASE_II)",
-                    "temperature": 37.0
-                }
-            }
+                "params": {"target_complex": "complex(RNA_POLYMERASE_II)", "temperature": 37.0},
+            },
         }
         errors = validate(ast)
         assert not errors
@@ -426,9 +357,7 @@ class TestEntityReferenceValidation:
             "experiment": {
                 "tool": "CRISPR_cas9",
                 "type": "gene_editing",
-                "params": {
-                    "target_pathway": "pathway(UndefinedPathway)"
-                }
+                "params": {"target_pathway": "pathway(UndefinedPathway)"},
             }
         }
         errors = validate(ast)
@@ -444,7 +373,7 @@ class TestEntityReferenceValidation:
                 "type": "gene_editing",
                 "params": {
                     "target_pathway": "pathway_UreaCycle"  # Wrong format, should be pathway(UreaCycle)
-                }
+                },
             }
         }
         errors = validate(ast)

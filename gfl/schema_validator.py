@@ -37,15 +37,13 @@ def load_schema() -> Optional[Dict[str, Any]]:
         return None
 
     try:
-        with open(schema_path, "r", encoding="utf-8") as f:
+        with open(schema_path, encoding="utf-8") as f:
             return json.load(f)
     except (json.JSONDecodeError, OSError):
         return None
 
 
-def validate_with_schema(
-    data: Dict[str, Any], schema: Optional[Dict[str, Any]] = None
-) -> ValidationResult:
+def validate_with_schema(data: Dict[str, Any], schema: Optional[Dict[str, Any]] = None) -> ValidationResult:
     """Validate GFL data against JSON schema.
 
     Args:
@@ -68,13 +66,7 @@ def validate_with_schema(
     if schema is None:
         schema = load_schema()
         if schema is None:
-            return ValidationResult(
-                errors=[
-                    ValidationError(
-                        message="GFL schema not found", code="SCHEMA_NOT_FOUND"
-                    )
-                ]
-            )
+            return ValidationResult(errors=[ValidationError(message="GFL schema not found", code="SCHEMA_NOT_FOUND")])
 
     try:
         # Create validator
@@ -86,11 +78,7 @@ def validate_with_schema(
 
         for error in validator.iter_errors(data):
             # Determine location
-            location = (
-                ".".join(str(p) for p in error.absolute_path)
-                if error.absolute_path
-                else "root"
-            )
+            location = ".".join(str(p) for p in error.absolute_path) if error.absolute_path else "root"
 
             # Create validation error
             validation_error = ValidationError(
@@ -101,10 +89,7 @@ def validate_with_schema(
             )
 
             # Categorize some errors as warnings
-            if any(
-                keyword in error.message.lower()
-                for keyword in ["additional", "unknown"]
-            ):
+            if any(keyword in error.message.lower() for keyword in ["additional", "unknown"]):
                 warnings.append(validation_error)
             else:
                 errors.append(validation_error)
@@ -395,7 +380,8 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
                         else:
                             # Validate time format
                             import re
-                            if not re.match(r'^\d+[smhd]$', value):
+
+                            if not re.match(r"^\d+[smhd]$", value):
                                 errors.append(
                                     ValidationError(
                                         message=f"Budget constraint '{constraint}' has invalid time format: {value}",

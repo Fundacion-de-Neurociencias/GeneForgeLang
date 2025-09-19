@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Test script for advanced GFL syntax validation."""
 
-import sys
 import os
+import sys
 
 # Add the current directory to the path so we can import gfl
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -10,12 +10,13 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from gfl.api import parse, validate
 from gfl.semantic_validator import EnhancedSemanticValidator
 
+
 def test_advanced_syntax():
     """Test the advanced AI workflow syntax validation."""
     print("Testing advanced GFL syntax validation...")
 
     # Read the test GFL file
-    with open("test_advanced_syntax.gfl", "r") as f:
+    with open("test_advanced_syntax.gfl") as f:
         gfl_content = f.read()
 
     # Parse the GFL content
@@ -40,6 +41,7 @@ def test_advanced_syntax():
     else:
         print("All validations passed!")
         return True
+
 
 if __name__ == "__main__":
     success = test_advanced_syntax()

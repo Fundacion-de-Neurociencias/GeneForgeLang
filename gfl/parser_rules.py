@@ -101,9 +101,7 @@ class GFLParser:
         if len(p) == 2:
             p[0] = [p[1]]
         else:
-            p[0] = (
-                p[1] + [p[3]]
-            )  # p[1] es la lista existente, p[3] es la nueva propiedad después de la coma
+            p[0] = p[1] + [p[3]]  # p[1] es la lista existente, p[3] es la nueva propiedad después de la coma
 
     # Una propiedad individual: un identificador seguido de un valor.
     def p_property(self, p):

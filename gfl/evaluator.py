@@ -167,9 +167,7 @@ class Evaluator:
             if self._validate_target(target, node_info):
                 self.output_buffer.append(f"INFO: Simulación de '{target}' iniciada.")
             else:
-                self.output_buffer.append(
-                    "ERROR: Simulación no válida debido a objetivo inválido."
-                )
+                self.output_buffer.append("ERROR: Simulación no válida debido a objetivo inválido.")
 
         elif node_type == "analyze_statement":
             tool = node.get("tool")
@@ -181,9 +179,7 @@ class Evaluator:
             if strategy:
                 strategy_valid = self._validate_analysis_strategy(strategy, node_info)
 
-            params_valid = self._validate_analysis_params(
-                tool, strategy, params, node_info
-            )
+            params_valid = self._validate_analysis_params(tool, strategy, params, node_info)
 
             if tool_valid and strategy_valid and params_valid:
                 self.output_buffer.append(
@@ -199,14 +195,10 @@ class Evaluator:
             block_statements = node.get("statements", [])
 
             if self._validate_experiment_type(exp_type, node_info):
-                self.output_buffer.append(
-                    f"INFO: Bloque de experimento de tipo '{exp_type}' iniciado."
-                )
+                self.output_buffer.append(f"INFO: Bloque de experimento de tipo '{exp_type}' iniciado.")
                 for statement in block_statements:
                     self.evaluate(statement)
-                self.output_buffer.append(
-                    f"INFO: Bloque de experimento de tipo '{exp_type}' finalizado."
-                )
+                self.output_buffer.append(f"INFO: Bloque de experimento de tipo '{exp_type}' finalizado.")
             else:
                 self.output_buffer.append(
                     "ERROR: No se puede ejecutar el bloque de experimento debido a un tipo inválido."
@@ -217,13 +209,9 @@ class Evaluator:
             true_block = node.get("true_block", [])
             node.get("false_block", [])
 
-            self.output_buffer.append(
-                f"INFO: Se encontró una bifurcación con condición: '{condition}'."
-            )
+            self.output_buffer.append(f"INFO: Se encontró una bifurcación con condición: '{condition}'.")
 
-            self.output_buffer.append(
-                "INFO: Ejecutando el bloque 'verdadero' de la bifurcación (simulado)."
-            )
+            self.output_buffer.append("INFO: Ejecutando el bloque 'verdadero' de la bifurcación (simulado).")
             for statement in true_block:
                 self.evaluate(statement)
 

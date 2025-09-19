@@ -147,29 +147,17 @@ class TestOptimizeBlockValidation:
         """Test that a valid optimize block passes validation."""
         ast = {
             "optimize": {
-                "search_space": {
-                    "parameter1": "range(0, 10)",
-                    "parameter2": "choice([a, b, c])"
-                },
-                "strategy": {
-                    "name": "ActiveLearning"
-                },
-                "objective": {
-                    "maximize": "efficiency"
-                },
-                "budget": {
-                    "max_experiments": 50
-                },
+                "search_space": {"parameter1": "range(0, 10)", "parameter2": "choice([a, b, c])"},
+                "strategy": {"name": "ActiveLearning"},
+                "objective": {"maximize": "efficiency"},
+                "budget": {"max_experiments": 50},
                 "run": {
                     "experiment": {
                         "tool": "CRISPR_cas9",
                         "type": "gene_editing",
-                        "params": {
-                            "param1": "${parameter1}",
-                            "param2": "${parameter2}"
-                        }
+                        "params": {"param1": "${parameter1}", "param2": "${parameter2}"},
                     }
-                }
+                },
             }
         }
         errors = validate(ast)
@@ -183,7 +171,7 @@ class TestOptimizeBlockValidation:
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 50},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
@@ -196,7 +184,7 @@ class TestOptimizeBlockValidation:
                 "search_space": {"param": "range(0, 10)"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 50},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
@@ -209,7 +197,7 @@ class TestOptimizeBlockValidation:
                 "search_space": {"param": "range(0, 10)"},
                 "strategy": {"name": "ActiveLearning"},
                 "budget": {"max_experiments": 50},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
@@ -222,7 +210,7 @@ class TestOptimizeBlockValidation:
                 "search_space": {"param": "range(0, 10)"},
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
@@ -235,7 +223,7 @@ class TestOptimizeBlockValidation:
                 "search_space": {"param": "range(0, 10)"},
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
-                "budget": {"max_experiments": 50}
+                "budget": {"max_experiments": 50},
             }
         }
         errors = validate(ast)
@@ -251,7 +239,7 @@ class TestOptimizeBlockValidation:
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 50},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
@@ -264,7 +252,7 @@ class TestOptimizeBlockValidation:
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 50},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
@@ -277,7 +265,7 @@ class TestOptimizeBlockValidation:
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 50},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
@@ -290,7 +278,7 @@ class TestOptimizeBlockValidation:
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 50},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
@@ -305,7 +293,7 @@ class TestOptimizeBlockValidation:
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 50},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
@@ -337,7 +325,7 @@ class TestOptimizeBlockValidation:
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 50},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
@@ -359,7 +347,7 @@ class TestOptimizeBlockValidation:
                 "strategy": {"uncertainty_metric": "entropy"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 50},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
@@ -385,17 +373,14 @@ class TestOptimizeBlockValidation:
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {},
                 "budget": {"max_experiments": 50},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
         assert len(errors) > 0
 
         # Both maximize and minimize
-        ast["optimize"]["objective"] = {
-            "maximize": "efficiency",
-            "minimize": "cost"
-        }
+        ast["optimize"]["objective"] = {"maximize": "efficiency", "minimize": "cost"}
         errors = validate(ast)
         assert len(errors) > 0
 
@@ -408,7 +393,7 @@ class TestOptimizeBlockValidation:
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {},
-                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+                "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
             }
         }
         errors = validate(ast)
@@ -432,7 +417,7 @@ class TestOptimizeBlockValidation:
                 "strategy": {"name": "ActiveLearning"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 50},
-                "run": {}
+                "run": {},
             }
         }
         errors = validate(ast)
@@ -441,7 +426,7 @@ class TestOptimizeBlockValidation:
         # Multiple nested blocks
         ast["optimize"]["run"] = {
             "experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"},
-            "analyze": {"strategy": "differential"}
+            "analyze": {"strategy": "differential"},
         }
         errors = validate(ast)
         assert len(errors) > 0
@@ -457,7 +442,7 @@ class TestOptimizeTypeDefinitions:
             strategy={"name": "ActiveLearning"},
             objective={"maximize": "efficiency"},
             budget={"max_experiments": 50},
-            run={"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}}
+            run={"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
         )
 
         assert optimize.search_space["param1"] == "range(0, 10)"
@@ -473,7 +458,7 @@ class TestOptimizeTypeDefinitions:
             strategy={"name": "BayesianOptimization"},
             objective={"minimize": "cost"},
             budget={"max_experiments": 30, "max_time": "24h"},
-            run={"experiment": {"tool": "PCR", "type": "validation"}}
+            run={"experiment": {"tool": "PCR", "type": "validation"}},
         )
 
         result = optimize.to_dict()
@@ -482,7 +467,7 @@ class TestOptimizeTypeDefinitions:
             "strategy": {"name": "BayesianOptimization"},
             "objective": {"minimize": "cost"},
             "budget": {"max_experiments": 30, "max_time": "24h"},
-            "run": {"experiment": {"tool": "PCR", "type": "validation"}}
+            "run": {"experiment": {"tool": "PCR", "type": "validation"}},
         }
 
         assert result == expected

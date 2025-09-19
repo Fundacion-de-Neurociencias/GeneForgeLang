@@ -281,9 +281,7 @@ class EnhancedValidationResult:
         """True if there are warnings."""
         return len(self.warnings) > 0
 
-    def get_errors_by_category(
-        self, category: ErrorCategory
-    ) -> List[EnhancedValidationError]:
+    def get_errors_by_category(self, category: ErrorCategory) -> List[EnhancedValidationError]:
         """Get errors by category."""
         return [e for e in self.errors if e.category == category]
 
@@ -300,11 +298,7 @@ class EnhancedValidationResult:
 
     def to_legacy_format(self) -> List[str]:
         """Convert to legacy string list format for backward compatibility."""
-        return [
-            str(error)
-            for error in self.errors
-            if error.severity in (ErrorSeverity.CRITICAL, ErrorSeverity.ERROR)
-        ]
+        return [str(error) for error in self.errors if error.severity in (ErrorSeverity.CRITICAL, ErrorSeverity.ERROR)]
 
     def __str__(self) -> str:
         """Comprehensive string representation."""

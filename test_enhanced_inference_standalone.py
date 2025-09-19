@@ -1,8 +1,8 @@
 """Standalone test for enhanced inference engine to avoid import conflicts."""
 
 import sys
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Dict, Optional
 
 # Add the project root to the path
@@ -41,9 +41,7 @@ class ModelConfig:
 
     def __post_init__(self):
         if self.trust_remote_code:
-            print(
-                "Warning: trust_remote_code=True is a security risk. Setting to False."
-            )
+            print("Warning: trust_remote_code=True is a security risk. Setting to False.")
             self.trust_remote_code = False
 
 
@@ -115,9 +113,7 @@ class EnhancedInferenceEngine:
         self.models[name] = model
         print(f"Registered model: {name}")
 
-    def predict(
-        self, model_name: Optional[str], features: Dict[str, Any]
-    ) -> InferenceResult:
+    def predict(self, model_name: Optional[str], features: Dict[str, Any]) -> InferenceResult:
         model_name = model_name or self.default_model
 
         if model_name not in self.models:
@@ -137,9 +133,7 @@ def test_enhanced_inference():
 
     # Test InferenceResult
     print("1. Testing InferenceResult creation...")
-    result = InferenceResult(
-        prediction="test_prediction", confidence=0.85, explanation="Test explanation"
-    )
+    result = InferenceResult(prediction="test_prediction", confidence=0.85, explanation="Test explanation")
     assert result.prediction == "test_prediction"
     assert result.confidence == 0.85
     print("✓ InferenceResult works correctly")
@@ -161,9 +155,7 @@ def test_enhanced_inference():
 
     assert result.prediction == "edited"
     assert result.confidence > 0.8
-    print(
-        f"✓ HeuristicModel prediction: {result.prediction} (confidence: {result.confidence:.2%})"
-    )
+    print(f"✓ HeuristicModel prediction: {result.prediction} (confidence: {result.confidence:.2%})")
     print(f"  Explanation: {result.explanation}")
 
     # Test EnhancedInferenceEngine
@@ -182,9 +174,7 @@ def test_enhanced_inference():
     }
 
     result = engine.predict("heuristic", test_features)
-    print(
-        f"✓ Engine prediction: {result.prediction} (confidence: {result.confidence:.2%})"
-    )
+    print(f"✓ Engine prediction: {result.prediction} (confidence: {result.confidence:.2%})")
     print(f"  Explanation: {result.explanation}")
 
     # Test multiple samples
@@ -216,9 +206,7 @@ def test_enhanced_inference():
     for sample in test_samples:
         result = engine.predict("heuristic", sample["features"])
         status = "✓" if result.prediction == sample["expected"] else "⚠"
-        print(
-            f"{status} {sample['name']}: {result.prediction} (expected: {sample['expected']})"
-        )
+        print(f"{status} {sample['name']}: {result.prediction} (expected: {sample['expected']})")
 
     print("\n6. Testing error handling...")
     try:

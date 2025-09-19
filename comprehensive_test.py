@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Comprehensive test for all new GFL features."""
 
-import sys
 import os
+import sys
 
 # Add the current directory to the path so we can import gfl
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from gfl.semantic_validator import EnhancedSemanticValidator
+
 
 def test_active_learning_optimize():
     """Test optimize block with Active Learning strategy."""
@@ -15,32 +16,20 @@ def test_active_learning_optimize():
 
     test_ast = {
         "optimize_active_learning": {
-            "search_space": {
-                "learning_rate": "range(0.001, 0.1)",
-                "batch_size": "choice([32, 64, 128])"
-            },
+            "search_space": {"learning_rate": "range(0.001, 0.1)", "batch_size": "choice([32, 64, 128])"},
             "strategy": {
                 "name": "ActiveLearning",
                 "active_learning": {
                     "acquisition_function": "expected_improvement",
                     "initial_experiments": 10,
                     "max_uncertainty": 0.8,
-                    "convergence_threshold": 0.01
-                }
+                    "convergence_threshold": 0.01,
+                },
             },
-            "objective": {
-                "maximize": "accuracy"
-            },
-            "budget": {
-                "max_experiments": 100
-            },
+            "objective": {"maximize": "accuracy"},
+            "budget": {"max_experiments": 100},
             "surrogate_model": "GaussianProcess",
-            "run": {
-                "experiment": {
-                    "tool": "CRISPR_cas9",
-                    "type": "gene_editing"
-                }
-            }
+            "run": {"experiment": {"tool": "CRISPR_cas9", "type": "gene_editing"}},
         }
     }
 
@@ -52,6 +41,7 @@ def test_active_learning_optimize():
         for error in result.errors:
             print(f"    Error: {error.message}")
     return result.is_valid
+
 
 def test_inverse_design():
     """Test design block with inverse design."""
@@ -62,18 +52,13 @@ def test_inverse_design():
             "design_type": "inverse_design",
             "entity": "ProteinSequence",
             "model": "ProteinGeneratorVAE",
-            "objective": {
-                "maximize": "stability"
-            },
+            "objective": {"maximize": "stability"},
             "count": 50,
             "output": "designed_proteins",
             "inverse_design": {
-                "target_properties": {
-                    "stability": 0.9,
-                    "binding_affinity": 0.8
-                },
-                "foundation_model": "ESM2"
-            }
+                "target_properties": {"stability": 0.9, "binding_affinity": 0.8},
+                "foundation_model": "ESM2",
+            },
         }
     }
 
@@ -85,6 +70,7 @@ def test_inverse_design():
         for error in result.errors:
             print(f"    Error: {error.message}")
     return result.is_valid
+
 
 def test_refine_data():
     """Test refine_data block."""
@@ -92,11 +78,7 @@ def test_refine_data():
 
     test_ast = {
         "refine_data": {
-            "refinement_config": {
-                "refinement_type": "noise_reduction",
-                "noise_level": 0.1,
-                "target_resolution": "high"
-            }
+            "refinement_config": {"refinement_type": "noise_reduction", "noise_level": 0.1, "target_resolution": "high"}
         }
     }
 
@@ -108,6 +90,7 @@ def test_refine_data():
         for error in result.errors:
             print(f"    Error: {error.message}")
     return result.is_valid
+
 
 def test_guided_discovery():
     """Test guided_discovery block."""
@@ -118,45 +101,30 @@ def test_guided_discovery():
             "design_params": {
                 "entity": "SmallMolecule",
                 "model": "MoleculeTransformer",
-                "objective": {
-                    "maximize": "binding_affinity"
-                },
+                "objective": {"maximize": "binding_affinity"},
                 "count": 20,
                 "output": "candidate_molecules",
-                "candidates_per_cycle": 5
+                "candidates_per_cycle": 5,
             },
             "active_learning_params": {
-                "search_space": {
-                    "concentration": "range(0.1, 1.0)"
-                },
+                "search_space": {"concentration": "range(0.1, 1.0)"},
                 "strategy": {
                     "name": "ActiveLearning",
                     "active_learning": {
                         "acquisition_function": "upper_confidence_bound",
                         "initial_experiments": 5,
                         "max_uncertainty": 0.7,
-                        "convergence_threshold": 0.02
-                    }
+                        "convergence_threshold": 0.02,
+                    },
                 },
-                "objective": {
-                    "maximize": "expression_level"
-                },
-                "budget": {
-                    "max_experiments": 50
-                },
+                "objective": {"maximize": "expression_level"},
+                "budget": {"max_experiments": 50},
                 "surrogate_model": "RandomForest",
-                "run": {
-                    "experiment": {
-                        "tool": "CRISPR_base_editor",
-                        "type": "gene_editing"
-                    }
-                },
-                "experiments_per_cycle": 3
+                "run": {"experiment": {"tool": "CRISPR_base_editor", "type": "gene_editing"}},
+                "experiments_per_cycle": 3,
             },
-            "budget": {
-                "max_cycles": 10
-            },
-            "output": "discovered_compounds"
+            "budget": {"max_cycles": 10},
+            "output": "discovered_compounds",
         }
     }
 
@@ -169,16 +137,12 @@ def test_guided_discovery():
             print(f"    Error: {error.message}")
     return result.is_valid
 
+
 def main():
     """Run all tests."""
     print("Running comprehensive tests for new GFL features...\n")
 
-    tests = [
-        test_active_learning_optimize,
-        test_inverse_design,
-        test_refine_data,
-        test_guided_discovery
-    ]
+    tests = [test_active_learning_optimize, test_inverse_design, test_refine_data, test_guided_discovery]
 
     passed = 0
     total = len(tests)
@@ -199,6 +163,7 @@ def main():
     else:
         print("Some tests failed. 😞")
         return False
+
 
 if __name__ == "__main__":
     success = main()

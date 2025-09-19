@@ -47,9 +47,7 @@ class Interpreter:
     def visit_invoke_statement(self, node):
         plugin_name = node["plugin"]
         method_name = node["method"]
-        params = {
-            k: self.evaluate_expression(v) for k, v in node.get("params", {}).items()
-        }
+        params = {k: self.evaluate_expression(v) for k, v in node.get("params", {}).items()}
 
         as_var = node.get("as_var")
         try:
@@ -57,9 +55,7 @@ class Interpreter:
             result = plugin.execute(method_name, params, self.symbol_table)
             if as_var:
                 self.symbol_table[as_var] = result
-                logger.info(
-                    f"INVOKED: {plugin_name}.{method_name} (stored in {as_var})"
-                )
+                logger.info(f"INVOKED: {plugin_name}.{method_name} (stored in {as_var})")
             else:
                 logger.info(f"INVOKED: {plugin_name}.{method_name}")
             return result
@@ -146,10 +142,7 @@ class Interpreter:
         if t == "array_literal":
             return [self.evaluate_expression(e) for e in node.get("elements", [])]
         if t == "object_literal":
-            return {
-                k: self.evaluate_expression(v)
-                for k, v in node.get("properties", {}).items()
-            }
+            return {k: self.evaluate_expression(v) for k, v in node.get("properties", {}).items()}
         if t == "access_chain":
             base_value = self.evaluate_expression(node["base"])
             for accessor in node["accessors"]:
@@ -161,9 +154,7 @@ class Interpreter:
                         raise AttributeError(f"Cannot access property '{prop_name}'")
                 elif accessor["type"] == "index_access":
                     index_value = self.evaluate_expression(accessor["index"])
-                    if isinstance(base_value, (list, str)) and isinstance(
-                        index_value, int
-                    ):
+                    if isinstance(base_value, (list, str)) and isinstance(index_value, int):
                         if 0 <= index_value < len(base_value):
                             base_value = base_value[index_value]
                         else:

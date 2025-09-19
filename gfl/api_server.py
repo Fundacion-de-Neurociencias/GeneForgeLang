@@ -19,7 +19,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, Request, UploadFile, File, BackgroundTasks
+from fastapi import BackgroundTasks, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
@@ -28,11 +28,11 @@ from pydantic import BaseModel, Field
 # Import GFL components
 try:
     from gfl.api import (
-        parse,
-        validate,
-        infer_enhanced,
         compare_inference_models,
         get_api_info,
+        infer_enhanced,
+        parse,
+        validate,
     )
     from gfl.enhanced_inference_engine import get_inference_engine
     from gfl.models.advanced_models import (
@@ -49,8 +49,8 @@ except ImportError as e:
 # Optional dependencies
 try:
     from slowapi import Limiter, _rate_limit_exceeded_handler
-    from slowapi.util import get_remote_address
     from slowapi.errors import RateLimitExceeded
+    from slowapi.util import get_remote_address
 
     HAS_RATE_LIMITING = True
 except ImportError:
@@ -58,9 +58,7 @@ except ImportError:
     Limiter = None
 
 # Set up logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 # Global state
@@ -99,30 +97,22 @@ class GFLInferenceRequest(BaseModel):
     """Request model for GFL inference."""
 
     content: str = Field(..., description="GFL source code for inference", min_length=1)
-    model_name: str = Field(
-        default="heuristic", description="Model to use for inference"
-    )
+    model_name: str = Field(default="heuristic", description="Model to use for inference")
     explain: bool = Field(default=True, description="Include detailed explanations")
 
 
 class ModelComparisonRequest(BaseModel):
     """Request model for model comparison."""
 
-    content: str = Field(
-        ..., description="GFL source code for comparison", min_length=1
-    )
-    model_names: Optional[List[str]] = Field(
-        default=None, description="Specific models to compare"
-    )
+    content: str = Field(..., description="GFL source code for comparison", min_length=1)
+    model_names: Optional[List[str]] = Field(default=None, description="Specific models to compare")
 
 
 class WorkflowExecutionRequest(BaseModel):
     """Request model for workflow execution."""
 
     content: str = Field(..., description="GFL workflow to execute", min_length=1)
-    parameters: Dict[str, Any] = Field(
-        default_factory=dict, description="Execution parameters"
-    )
+    parameters: Dict[str, Any] = Field(default_factory=dict, description="Execution parameters")
     dry_run: bool = Field(default=True, description="Perform dry run only")
 
 
@@ -194,16 +184,12 @@ async def lifespan(app: FastAPI):
 
             # Register advanced models
             classification_model = create_genomic_classification_model()
-            inference_engine.register_model(
-                "genomic_classification", classification_model
-            )
+            inference_engine.register_model("genomic_classification", classification_model)
 
             multimodal_model = create_multimodal_genomic_model()
             inference_engine.register_model("multimodal", multimodal_model)
 
-            logger.info(
-                f"Inference engine initialized with models: {inference_engine.list_models()}"
-            )
+            logger.info(f"Inference engine initialized with models: {inference_engine.list_models()}")
         except Exception as e:
             logger.warning(f"Could not initialize enhanced inference engine: {e}")
 
@@ -251,9 +237,7 @@ async def track_requests(request: Request, call_next):
     # Update stats
     api_stats["requests_total"] += 1
     endpoint = f"{request.method} {request.url.path}"
-    api_stats["endpoints_called"][endpoint] = (
-        api_stats["endpoints_called"].get(endpoint, 0) + 1
-    )
+    api_stats["endpoints_called"][endpoint] = api_stats["endpoints_called"].get(endpoint, 0) + 1
 
     try:
         response = await call_next(request)
@@ -281,9 +265,7 @@ def create_error_response(message: str, status_code: int = 400) -> JSONResponse:
     )
 
 
-def create_success_response(
-    data: Any, message: str = "Success", execution_time: float = None
-) -> Dict[str, Any]:
+def create_success_response(data: Any, message: str = "Success", execution_time: float = None) -> Dict[str, Any]:
     """Create standardized success response."""
     return {
         "success": True,
@@ -432,9 +414,7 @@ async def infer_gfl(request: Request, gfl_request: GFLInferenceRequest):
         ast = parse(gfl_request.content)
 
         # Run enhanced inference
-        result = infer_enhanced(
-            ast, model_name=gfl_request.model_name, explain=gfl_request.explain
-        )
+        result = infer_enhanced(ast, model_name=gfl_request.model_name, explain=gfl_request.explain)
 
         execution_time = (time.time() - start_time) * 1000
 
@@ -526,14 +506,10 @@ async def get_model_info(model_name: str):
 
     try:
         if model_name not in inference_engine.list_models():
-            raise HTTPException(
-                status_code=404, detail=f"Model '{model_name}' not found"
-            )
+            raise HTTPException(status_code=404, detail=f"Model '{model_name}' not found")
 
         info = inference_engine.get_model_info(model_name)
-        return create_success_response(
-            info, f"Model {model_name} information retrieved"
-        )
+        return create_success_response(info, f"Model {model_name} information retrieved")
 
     except HTTPException:
         raise
@@ -548,9 +524,7 @@ async def get_model_info(model_name: str):
 async def upload_and_parse(request: Request, file: UploadFile = File(...)):
     """Upload and parse a GFL file."""
     if not file.filename.endswith((".gfl", ".yml", ".yaml", ".txt")):
-        raise HTTPException(
-            status_code=400, detail="Invalid file type. Use .gfl, .yml, .yaml, or .txt"
-        )
+        raise HTTPException(status_code=400, detail="Invalid file type. Use .gfl, .yml, .yaml, or .txt")
 
     try:
         content = await file.read()
@@ -606,9 +580,7 @@ async def get_stats():
 
 # Async workflow execution (placeholder for future enhancement)
 @app.post("/workflow/execute")
-async def execute_workflow(
-    background_tasks: BackgroundTasks, gfl_request: WorkflowExecutionRequest
-):
+async def execute_workflow(background_tasks: BackgroundTasks, gfl_request: WorkflowExecutionRequest):
     """Execute a GFL workflow asynchronously."""
     # For now, this is a placeholder that performs validation and inference
     try:
@@ -616,9 +588,7 @@ async def execute_workflow(
         validation_result = validate(ast)
 
         if isinstance(validation_result, list) and validation_result:
-            raise HTTPException(
-                status_code=400, detail=f"Validation errors: {validation_result}"
-            )
+            raise HTTPException(status_code=400, detail=f"Validation errors: {validation_result}")
 
         # In a real implementation, this would queue the workflow for execution
         workflow_id = f"workflow_{int(time.time())}"
@@ -627,18 +597,14 @@ async def execute_workflow(
             data={
                 "workflow_id": workflow_id,
                 "status": "queued" if not gfl_request.dry_run else "dry_run_complete",
-                "message": "Workflow queued for execution"
-                if not gfl_request.dry_run
-                else "Dry run validation passed",
+                "message": "Workflow queued for execution" if not gfl_request.dry_run else "Dry run validation passed",
             },
             message="Workflow processing initiated",
         )
 
     except Exception as e:
         logger.error(f"Workflow execution error: {e}")
-        raise HTTPException(
-            status_code=500, detail=f"Workflow execution error: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Workflow execution error: {str(e)}")
 
 
 # Error handlers

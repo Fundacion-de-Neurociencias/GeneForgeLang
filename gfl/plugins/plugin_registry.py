@@ -21,15 +21,18 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Protocol, Type
 
 try:
-    from importlib.metadata import entry_points as _entry_points, version
+    from importlib.metadata import entry_points as _entry_points
+    from importlib.metadata import version
 
     HAS_ENTRY_POINTS = True
 except ImportError:
     try:
         from importlib_metadata import (
             entry_points as _entry_points,
-            version,
         )  # Python < 3.8
+        from importlib_metadata import (
+            version,
+        )
 
         HAS_ENTRY_POINTS = True
     except ImportError:
@@ -106,10 +109,7 @@ class PluginDependency:
             current_parts = current.split(".")
             required_parts = required.split(".")
             if len(current_parts) >= 2 and len(required_parts) >= 2:
-                return (
-                    current_parts[0] == required_parts[0]
-                    and current_parts[1] == required_parts[1]
-                )
+                return current_parts[0] == required_parts[0] and current_parts[1] == required_parts[1]
         elif spec.startswith("=="):
             required = spec[2:].strip()
             return current == required
@@ -253,9 +253,7 @@ class PluginInfo:
         for dep in self.dependencies:
             if not dep.is_satisfied():
                 if dep.optional:
-                    logger.warning(
-                        f"Optional dependency {dep.name} not satisfied for plugin {self.name}"
-                    )
+                    logger.warning(f"Optional dependency {dep.name} not satisfied for plugin {self.name}")
                 else:
                     missing.append(f"{dep.name}{dep.version_spec or ''}")
         return missing
@@ -309,9 +307,7 @@ class PluginInfo:
             logger.error(f"Failed to load plugin {self.name}: {e}")
             raise
 
-    def unload(
-        self, registry_hooks: Optional[List[PluginLifecycleHook]] = None
-    ) -> None:
+    def unload(self, registry_hooks: Optional[List[PluginLifecycleHook]] = None) -> None:
         """Unload the plugin instance."""
         if self.state == PluginState.UNLOADED:
             return
@@ -338,9 +334,7 @@ class PluginInfo:
             self._set_error_state(error_msg)
             logger.error(f"Failed to unload plugin {self.name}: {e}")
 
-    def activate(
-        self, registry_hooks: Optional[List[PluginLifecycleHook]] = None
-    ) -> None:
+    def activate(self, registry_hooks: Optional[List[PluginLifecycleHook]] = None) -> None:
         """Activate the plugin."""
         if self.state != PluginState.LOADED:
             raise RuntimeError(f"Plugin {self.name} must be loaded before activation")
@@ -364,9 +358,7 @@ class PluginInfo:
             self._set_error_state(error_msg)
             logger.error(f"Failed to activate plugin {self.name}: {e}")
 
-    def deactivate(
-        self, registry_hooks: Optional[List[PluginLifecycleHook]] = None
-    ) -> None:
+    def deactivate(self, registry_hooks: Optional[List[PluginLifecycleHook]] = None) -> None:
         """Deactivate the plugin."""
         if self.state != PluginState.ACTIVE:
             return
@@ -403,9 +395,7 @@ class PluginInfo:
         if self.instance and hasattr(self.instance, "_set_state"):
             self.instance._set_state(PluginState.ERROR, error_msg)
 
-    def _notify_hooks(
-        self, hooks: Optional[List[PluginLifecycleHook]], state: PluginState
-    ) -> None:
+    def _notify_hooks(self, hooks: Optional[List[PluginLifecycleHook]], state: PluginState) -> None:
         """Notify registry hooks of state change."""
         if not hooks:
             return
@@ -600,11 +590,7 @@ class _Registry:
         if not self._discovered:
             self._discover_plugins()
 
-        return [
-            plugin_info
-            for plugin_info in self._plugins.values()
-            if plugin_info.state == state
-        ]
+        return [plugin_info for plugin_info in self._plugins.values() if plugin_info.state == state]
 
     def validate_all_dependencies(self) -> Dict[str, List[str]]:
         """Validate dependencies for all plugins. Returns dict of plugin_name -> missing_deps."""
@@ -631,13 +617,9 @@ class _Registry:
         if not self._discovered:
             self._discover_plugins()
 
-        return [
-            self._plugins[name] for name in self._plugin_order if name in self._plugins
-        ]
+        return [self._plugins[name] for name in self._plugin_order if name in self._plugins]
 
-    def process_with_plugins(
-        self, data: Dict[str, Any], plugin_names: Optional[List[str]] = None
-    ) -> Dict[str, Any]:
+    def process_with_plugins(self, data: Dict[str, Any], plugin_names: Optional[List[str]] = None) -> Dict[str, Any]:
         """Process data through active plugins in dependency order."""
         if plugin_names is None:
             # Use all active plugins
@@ -682,7 +664,7 @@ class _Registry:
             else:  # Python 3.8-3.9
                 all_entry_points = _entry_points()
                 # Handle both dict-like and list-like entry points APIs
-                if hasattr(all_entry_points, 'get'):
+                if hasattr(all_entry_points, "get"):
                     gfl_plugins = all_entry_points.get("gfl.plugins", [])
                 else:
                     # For newer versions where entry_points() returns a different type
@@ -825,9 +807,7 @@ def deactivate_plugin(name: str) -> None:
     plugin_registry.deactivate_plugin(name)
 
 
-def process_with_plugins(
-    data: Dict[str, Any], plugin_names: Optional[List[str]] = None
-) -> Dict[str, Any]:
+def process_with_plugins(data: Dict[str, Any], plugin_names: Optional[List[str]] = None) -> Dict[str, Any]:
     """Process data through plugins."""
     return plugin_registry.process_with_plugins(data, plugin_names)
 

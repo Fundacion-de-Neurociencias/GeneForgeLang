@@ -27,18 +27,18 @@ from typing import Any, Dict, List, Optional
 # Rich output formatting (optional dependency)
 try:
     from rich.console import Console
-    from rich.table import Table
+    from rich.panel import Panel
     from rich.progress import (
+        BarColumn,
         Progress,
         SpinnerColumn,
-        TextColumn,
-        BarColumn,
         TaskProgressColumn,
+        TextColumn,
     )
-    from rich.panel import Panel
     from rich.syntax import Syntax
-    from rich.tree import Tree
+    from rich.table import Table
     from rich.text import Text
+    from rich.tree import Tree
 
     HAS_RICH = True
 except ImportError:
@@ -46,18 +46,18 @@ except ImportError:
     Console = None
 
 # Import GFL components
-from gfl import __version__, __api_version__
-from gfl.api import parse, validate, infer, parse_enhanced
-from gfl.performance import get_optimizer, get_monitor
+from gfl import __api_version__, __version__
+from gfl.api import infer, parse, parse_enhanced, validate
 from gfl.cli_utils import CLIUtilsMixin
+from gfl.performance import get_monitor, get_optimizer
 
 # Optional imports with fallbacks
 try:
     from gfl.plugins.plugin_registry import (
-        plugin_registry,
-        list_plugins,
         activate_plugin,
         deactivate_plugin,
+        list_plugins,
+        plugin_registry,
         validate_plugin_dependencies,
     )
 
@@ -73,9 +73,7 @@ except ImportError:
     HAS_ENHANCED_SCHEMA = False
 
 # Configure logging
-logging.basicConfig(
-    level=logging.WARNING, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.WARNING, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -115,9 +113,7 @@ class OutputFormatter:
                 print(f"=== {title} ===")
             print(json_str)
 
-    def print_table(
-        self, data: List[Dict[str, Any]], headers: List[str], title: str = None
-    ):
+    def print_table(self, data: List[Dict[str, Any]], headers: List[str], title: str = None):
         """Print data as a table."""
         if self.use_rich:
             table = Table(title=title)
@@ -149,11 +145,7 @@ class OutputFormatter:
 
             # Print rows
             for row in data:
-                print(
-                    " | ".join(
-                        str(row.get(h, "")).ljust(w) for h, w in zip(headers, widths)
-                    )
-                )
+                print(" | ".join(str(row.get(h, "")).ljust(w) for h, w in zip(headers, widths)))
 
     def print_error(self, message: str, error: Exception = None):
         """Print error message."""
@@ -225,7 +217,7 @@ class GFLConfig:
         """Load configuration from file."""
         if self.config_file.exists():
             try:
-                with open(self.config_file, "r", encoding="utf-8") as f:
+                with open(self.config_file, encoding="utf-8") as f:
                     return json.load(f)
             except Exception as e:
                 logger.warning(f"Failed to load config: {e}")
@@ -302,13 +294,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
             default=0,
             help="Increase verbosity (use multiple times)",
         )
-        parser.add_argument(
-            "--quiet", "-q", action="store_true", help="Suppress non-essential output"
-        )
+        parser.add_argument("--quiet", "-q", action="store_true", help="Suppress non-essential output")
         parser.add_argument("--config", type=Path, help="Configuration file path")
-        parser.add_argument(
-            "--no-color", action="store_true", help="Disable colored output"
-        )
+        parser.add_argument("--no-color", action="store_true", help="Disable colored output")
 
         # Create subparsers
         subparsers = parser.add_subparsers(dest="command", help="Available commands")
@@ -336,21 +324,15 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
             default="json",
             help="Output format",
         )
-        parser.add_argument(
-            "--grammar", action="store_true", help="Use grammar-based parser"
-        )
-        parser.add_argument(
-            "--validate", action="store_true", help="Also validate after parsing"
-        )
+        parser.add_argument("--grammar", action="store_true", help="Use grammar-based parser")
+        parser.add_argument("--validate", action="store_true", help="Also validate after parsing")
         parser.add_argument(
             "--recursive",
             "-r",
             action="store_true",
             help="Process directories recursively",
         )
-        parser.add_argument(
-            "--pattern", default="*.gfl", help="File pattern for recursive processing"
-        )
+        parser.add_argument("--pattern", default="*.gfl", help="File pattern for recursive processing")
         parser.set_defaults(func=self.cmd_parse)
 
     def _add_validate_command(self, subparsers):
@@ -364,32 +346,22 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
             default="text",
             help="Output format",
         )
-        parser.add_argument(
-            "--enhanced", action="store_true", help="Use enhanced validation"
-        )
-        parser.add_argument(
-            "--schema", action="store_true", help="Include schema validation"
-        )
+        parser.add_argument("--enhanced", action="store_true", help="Use enhanced validation")
+        parser.add_argument("--schema", action="store_true", help="Include schema validation")
         parser.add_argument(
             "--recursive",
             "-r",
             action="store_true",
             help="Process directories recursively",
         )
-        parser.add_argument(
-            "--fix", action="store_true", help="Apply suggested fixes automatically"
-        )
-        parser.add_argument(
-            "--stop-on-first", action="store_true", help="Stop on first error"
-        )
+        parser.add_argument("--fix", action="store_true", help="Apply suggested fixes automatically")
+        parser.add_argument("--stop-on-first", action="store_true", help="Stop on first error")
         parser.set_defaults(func=self.cmd_validate)
 
     def _add_infer_command(self, subparsers):
         """Add infer subcommand."""
         parser = subparsers.add_parser("infer", help="Run inference on GFL files")
-        parser.add_argument(
-            "files", nargs="+", type=Path, help="GFL files for inference"
-        )
+        parser.add_argument("files", nargs="+", type=Path, help="GFL files for inference")
         parser.add_argument("--model", default="dummy", help="Model to use")
         parser.add_argument("--output", "-o", type=Path, help="Output file")
         parser.add_argument("--format", choices=["json", "yaml"], default="json")
@@ -399,24 +371,16 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
             default=0.5,
             help="Minimum confidence threshold",
         )
-        parser.add_argument(
-            "--explain", action="store_true", help="Include explanations in output"
-        )
+        parser.add_argument("--explain", action="store_true", help="Include explanations in output")
         parser.set_defaults(func=self.cmd_infer)
 
     def _add_format_command(self, subparsers):
         """Add format subcommand."""
         parser = subparsers.add_parser("format", help="Format GFL files")
         parser.add_argument("files", nargs="+", type=Path, help="GFL files to format")
-        parser.add_argument(
-            "--in-place", "-i", action="store_true", help="Modify files in place"
-        )
-        parser.add_argument(
-            "--check", action="store_true", help="Check if files are formatted"
-        )
-        parser.add_argument(
-            "--diff", action="store_true", help="Show formatting differences"
-        )
+        parser.add_argument("--in-place", "-i", action="store_true", help="Modify files in place")
+        parser.add_argument("--check", action="store_true", help="Check if files are formatted")
+        parser.add_argument("--diff", action="store_true", help="Show formatting differences")
         parser.add_argument("--indent", type=int, default=2, help="Indentation level")
         parser.set_defaults(func=self.cmd_format)
 
@@ -426,28 +390,18 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
         plugin_subparsers = parser.add_subparsers(dest="plugin_action")
 
         # List plugins
-        list_parser = plugin_subparsers.add_parser(
-            "list", help="List available plugins"
-        )
-        list_parser.add_argument(
-            "--active-only", action="store_true", help="Show only active plugins"
-        )
+        list_parser = plugin_subparsers.add_parser("list", help="List available plugins")
+        list_parser.add_argument("--active-only", action="store_true", help="Show only active plugins")
 
         # Plugin info
-        info_parser = plugin_subparsers.add_parser(
-            "info", help="Show plugin information"
-        )
+        info_parser = plugin_subparsers.add_parser("info", help="Show plugin information")
         info_parser.add_argument("plugin", help="Plugin name")
 
         # Activate/deactivate plugins
-        activate_parser = plugin_subparsers.add_parser(
-            "activate", help="Activate plugin"
-        )
+        activate_parser = plugin_subparsers.add_parser("activate", help="Activate plugin")
         activate_parser.add_argument("plugin", help="Plugin name")
 
-        deactivate_parser = plugin_subparsers.add_parser(
-            "deactivate", help="Deactivate plugin"
-        )
+        deactivate_parser = plugin_subparsers.add_parser("deactivate", help="Deactivate plugin")
         deactivate_parser.add_argument("plugin", help="Plugin name")
 
         # Validate dependencies
@@ -471,9 +425,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
 
         # Reset config
         reset_parser = config_subparsers.add_parser("reset", help="Reset configuration")
-        reset_parser.add_argument(
-            "--confirm", action="store_true", help="Confirm reset"
-        )
+        reset_parser.add_argument("--confirm", action="store_true", help="Confirm reset")
 
         parser.set_defaults(func=self.cmd_config)
 
@@ -485,29 +437,19 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
             choices=["parse", "validate", "infer", "format"],
             help="Action to perform",
         )
-        parser.add_argument(
-            "--input-dir", "-i", type=Path, required=True, help="Input directory"
-        )
+        parser.add_argument("--input-dir", "-i", type=Path, required=True, help="Input directory")
         parser.add_argument("--output-dir", "-o", type=Path, help="Output directory")
         parser.add_argument("--pattern", default="*.gfl", help="File pattern")
-        parser.add_argument(
-            "--recursive", "-r", action="store_true", help="Process recursively"
-        )
-        parser.add_argument(
-            "--parallel", "-p", action="store_true", help="Process files in parallel"
-        )
-        parser.add_argument(
-            "--workers", type=int, default=4, help="Number of parallel workers"
-        )
+        parser.add_argument("--recursive", "-r", action="store_true", help="Process recursively")
+        parser.add_argument("--parallel", "-p", action="store_true", help="Process files in parallel")
+        parser.add_argument("--workers", type=int, default=4, help="Number of parallel workers")
         parser.set_defaults(func=self.cmd_batch)
 
     def _add_info_command(self, subparsers):
         """Add info subcommand."""
         parser = subparsers.add_parser("info", help="Show system information")
         parser.add_argument("--format", choices=["text", "json"], default="text")
-        parser.add_argument(
-            "--check-deps", action="store_true", help="Check dependencies"
-        )
+        parser.add_argument("--check-deps", action="store_true", help="Check dependencies")
         parser.set_defaults(func=self.cmd_info)
 
     def _add_performance_command(self, subparsers):
@@ -522,15 +464,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
         perf_subparsers.add_parser("clear", help="Clear performance caches")
 
         # Benchmark
-        benchmark_parser = perf_subparsers.add_parser(
-            "benchmark", help="Run performance benchmark"
-        )
-        benchmark_parser.add_argument(
-            "--files", nargs="+", type=Path, help="Files to benchmark"
-        )
-        benchmark_parser.add_argument(
-            "--iterations", type=int, default=10, help="Number of iterations"
-        )
+        benchmark_parser = perf_subparsers.add_parser("benchmark", help="Run performance benchmark")
+        benchmark_parser.add_argument("--files", nargs="+", type=Path, help="Files to benchmark")
+        benchmark_parser.add_argument("--iterations", type=int, default=10, help="Number of iterations")
 
         parser.set_defaults(func=self.cmd_performance)
 
@@ -588,19 +524,15 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
 
                 for file_path in files:
                     try:
-                        with open(file_path, "r", encoding="utf-8") as f:
+                        with open(file_path, encoding="utf-8") as f:
                             content = f.read()
 
                         if args.grammar:
-                            result = parse_enhanced(
-                                content, use_grammar=True, filename=str(file_path)
-                            )
+                            result = parse_enhanced(content, use_grammar=True, filename=str(file_path))
                             if result.is_valid:
                                 ast = result.ast
                             else:
-                                self.formatter.print_error(
-                                    f"Parse failed for {file_path}"
-                                )
+                                self.formatter.print_error(f"Parse failed for {file_path}")
                                 for error in result.syntax_errors:
                                     self.formatter.print_error(f"  {error.message}")
                                 continue
@@ -610,9 +542,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                         if args.validate:
                             validation_result = validate(ast, enhanced=True)
                             if not validation_result.is_valid:
-                                self.formatter.print_warning(
-                                    f"Validation issues in {file_path}"
-                                )
+                                self.formatter.print_warning(f"Validation issues in {file_path}")
 
                         results.append(
                             {
@@ -625,9 +555,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
 
                     except Exception as e:
                         self.formatter.print_error(f"Failed to parse {file_path}: {e}")
-                        results.append(
-                            {"file": str(file_path), "error": str(e), "valid": False}
-                        )
+                        results.append({"file": str(file_path), "error": str(e), "valid": False})
 
                     progress.update(task, advance=1)
 
@@ -667,14 +595,12 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
 
                 for file_path in files:
                     try:
-                        with open(file_path, "r", encoding="utf-8") as f:
+                        with open(file_path, encoding="utf-8") as f:
                             content = f.read()
 
                         # Parse first
                         if self.config.get("use_grammar_parser", False):
-                            parse_result = parse_enhanced(
-                                content, use_grammar=True, filename=str(file_path)
-                            )
+                            parse_result = parse_enhanced(content, use_grammar=True, filename=str(file_path))
                             if not parse_result.is_valid:
                                 # Include syntax errors
                                 results.append(
@@ -702,10 +628,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                         # Validate
                         if args.enhanced:
                             validation_result = validate(ast, enhanced=True)
-                            errors = (
-                                validation_result.semantic_errors
-                                + validation_result.schema_errors
-                            )
+                            errors = validation_result.semantic_errors + validation_result.schema_errors
 
                             results.append(
                                 {
@@ -719,9 +642,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                                             if e.location
                                             else None,
                                             "code": e.code,
-                                            "fixes": [
-                                                f.description for f in e.suggested_fixes
-                                            ],
+                                            "fixes": [f.description for f in e.suggested_fixes],
                                         }
                                         for e in errors
                                     ],
@@ -734,10 +655,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                             results.append(
                                 {
                                     "file": str(file_path),
-                                    "errors": [
-                                        {"message": e, "type": "semantic"}
-                                        for e in errors
-                                    ],
+                                    "errors": [{"message": e, "type": "semantic"} for e in errors],
                                     "valid": len(errors) == 0,
                                 }
                             )
@@ -747,9 +665,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                             break
 
                     except Exception as e:
-                        self.formatter.print_error(
-                            f"Failed to validate {file_path}: {e}"
-                        )
+                        self.formatter.print_error(f"Failed to validate {file_path}: {e}")
                         results.append(
                             {
                                 "file": str(file_path),
@@ -808,7 +724,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
 
                 for file_path in files:
                     try:
-                        with open(file_path, "r", encoding="utf-8") as f:
+                        with open(file_path, encoding="utf-8") as f:
                             content = f.read()
 
                         ast = parse(content)
@@ -816,13 +732,8 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
 
                         # Filter by confidence if specified
                         if "confidence" in inference_result:
-                            if (
-                                inference_result["confidence"]
-                                < args.confidence_threshold
-                            ):
-                                self.formatter.print_warning(
-                                    f"Low confidence result for {file_path}"
-                                )
+                            if inference_result["confidence"] < args.confidence_threshold:
+                                self.formatter.print_warning(f"Low confidence result for {file_path}")
 
                         results.append(
                             {
@@ -833,9 +744,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                         )
 
                     except Exception as e:
-                        self.formatter.print_error(
-                            f"Inference failed for {file_path}: {e}"
-                        )
+                        self.formatter.print_error(f"Inference failed for {file_path}: {e}")
                         results.append({"file": str(file_path), "error": str(e)})
 
                     progress.update(task, advance=1)
@@ -940,9 +849,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                 if issues:
                     self.formatter.print_error("Plugin dependency issues found:")
                     for plugin_name, missing_deps in issues.items():
-                        self.formatter.print_error(
-                            f"  {plugin_name}: {', '.join(missing_deps)}"
-                        )
+                        self.formatter.print_error(f"  {plugin_name}: {', '.join(missing_deps)}")
                     return 1
                 else:
                     self.formatter.print_success("All plugin dependencies satisfied")
@@ -962,9 +869,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                     if value is not None:
                         self.formatter.print_json({args.key: value})
                     else:
-                        self.formatter.print_error(
-                            f"Configuration key '{args.key}' not found"
-                        )
+                        self.formatter.print_error(f"Configuration key '{args.key}' not found")
                         return 1
                 else:
                     self.formatter.print_json(self.config.config, "GFL Configuration")
@@ -1003,27 +908,17 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
         try:
             input_dir = Path(args.input_dir)
             if not input_dir.exists():
-                self.formatter.print_error(
-                    f"Input directory does not exist: {input_dir}"
-                )
+                self.formatter.print_error(f"Input directory does not exist: {input_dir}")
                 return 1
 
             # Collect files
-            files = list(
-                input_dir.rglob(args.pattern)
-                if args.recursive
-                else input_dir.glob(args.pattern)
-            )
+            files = list(input_dir.rglob(args.pattern) if args.recursive else input_dir.glob(args.pattern))
 
             if not files:
-                self.formatter.print_error(
-                    f"No files found matching pattern: {args.pattern}"
-                )
+                self.formatter.print_error(f"No files found matching pattern: {args.pattern}")
                 return 1
 
-            self.formatter.print(
-                f"Processing {len(files)} files with action: {args.action}"
-            )
+            self.formatter.print(f"Processing {len(files)} files with action: {args.action}")
 
             if args.parallel:
                 return self._batch_parallel(files, args)

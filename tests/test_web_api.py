@@ -82,9 +82,7 @@ class TestAPIServer(unittest.TestCase):
         try:
             from gfl.api_server import create_success_response
 
-            response = create_success_response(
-                data={"test": "data"}, message="Test successful"
-            )
+            response = create_success_response(data={"test": "data"}, message="Test successful")
 
             self.assertTrue(response["success"])
             self.assertEqual(response["message"], "Test successful")
@@ -128,9 +126,7 @@ class TestAPIServer(unittest.TestCase):
             from gfl.api_server import GFLParseRequest
 
             # Valid request
-            request = GFLParseRequest(
-                content=SAMPLE_GFL, use_grammar=False, filename="test.gfl"
-            )
+            request = GFLParseRequest(content=SAMPLE_GFL, use_grammar=False, filename="test.gfl")
 
             self.assertEqual(request.content, SAMPLE_GFL)
             self.assertFalse(request.use_grammar)
@@ -148,9 +144,7 @@ class TestAPIServer(unittest.TestCase):
         try:
             from gfl.api_server import GFLInferenceRequest
 
-            request = GFLInferenceRequest(
-                content=SAMPLE_GFL, model_name="heuristic", explain=True
-            )
+            request = GFLInferenceRequest(content=SAMPLE_GFL, model_name="heuristic", explain=True)
 
             self.assertEqual(request.model_name, "heuristic")
             self.assertTrue(request.explain)
@@ -333,9 +327,7 @@ class TestClientSDK(unittest.TestCase):
         try:
             from gfl.client_sdk import GFLClient
 
-            client = GFLClient(
-                base_url="http://test-server:8000", timeout=60.0, retries=5
-            )
+            client = GFLClient(base_url="http://test-server:8000", timeout=60.0, retries=5)
 
             self.assertEqual(client.base_url, "http://test-server:8000")
             self.assertEqual(client.timeout, 60.0)
@@ -401,7 +393,7 @@ class TestClientSDK(unittest.TestCase):
     def test_client_error_handling(self):
         """Test client error handling."""
         try:
-            from gfl.client_sdk import GFLClient, GFLAPIError
+            from gfl.client_sdk import GFLAPIError, GFLClient
 
             client = GFLClient()
 
@@ -423,7 +415,7 @@ class TestClientSDK(unittest.TestCase):
     def test_convenience_functions(self):
         """Test convenience functions for client creation."""
         try:
-            from gfl.client_sdk import create_client, create_async_client
+            from gfl.client_sdk import create_async_client, create_client
 
             sync_client = create_client("http://test:8000")
             self.assertEqual(sync_client.base_url, "http://test:8000")
@@ -527,9 +519,7 @@ class TestServerLauncher(unittest.TestCase):
 
             # Check that all values are boolean
             for dep_name, available in deps.items():
-                self.assertIsInstance(
-                    available, bool, f"Dependency {dep_name} should be boolean"
-                )
+                self.assertIsInstance(available, bool, f"Dependency {dep_name} should be boolean")
 
         except ImportError:
             self.skipTest("Server launcher not available")
@@ -598,16 +588,14 @@ class TestIntegration(unittest.TestCase):
             pass
 
         # At least some components should be testable
-        self.assertGreater(
-            len(workflow_steps), 0, "No workflow components could be tested"
-        )
+        self.assertGreater(len(workflow_steps), 0, "No workflow components could be tested")
 
     def test_error_propagation(self):
         """Test that errors propagate correctly through the system."""
 
         # Test client error classes
         try:
-            from gfl.client_sdk import GFLClientError, GFLConnectionError, GFLAPIError
+            from gfl.client_sdk import GFLAPIError, GFLClientError, GFLConnectionError
 
             # Test basic exception
             with self.assertRaises(GFLClientError):

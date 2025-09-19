@@ -7,15 +7,15 @@ from unittest.mock import patch
 try:
     from gfl.enhanced_inference_engine import (
         EnhancedInferenceEngine,
+        HeuristicModel,
         InferenceResult,
         ModelConfig,
-        HeuristicModel,
         get_inference_engine,
     )
     from gfl.models.advanced_models import (
-        ProteinGenerationModel,
         GenomicClassificationModel,
         MultiModalGenomicModel,
+        ProteinGenerationModel,
     )
 
     HAS_ENHANCED_ENGINE = True
@@ -83,9 +83,7 @@ class TestModelConfig(unittest.TestCase):
         self.assertEqual(config.model_name, "test_model")
         self.assertEqual(config.model_type, "heuristic")
         self.assertEqual(config.device, "cpu")
-        self.assertFalse(
-            config.trust_remote_code
-        )  # Should default to False for security
+        self.assertFalse(config.trust_remote_code)  # Should default to False for security
 
     def test_model_config_security_override(self):
         """Test that trust_remote_code is forced to False for security."""
@@ -175,9 +173,7 @@ class TestTransformersModel(unittest.TestCase):
         if not HAS_ENHANCED_ENGINE:
             self.skipTest("Enhanced inference engine not available")
 
-        config = ModelConfig(
-            model_name="distilbert-base-uncased", model_type="auto", device="cpu"
-        )
+        config = ModelConfig(model_name="distilbert-base-uncased", model_type="auto", device="cpu")
 
         # Don't actually load the model in tests
         with patch("gfl.enhanced_inference_engine.AutoTokenizer"):

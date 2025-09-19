@@ -6,7 +6,7 @@ as described in the paper concept. It shows how to specify the generation of
 new biological sequences or structures, optimizing an objective in a search space.
 """
 
-from gfl.api import parse, validate, infer
+from gfl.api import infer, parse, validate
 from gfl.models.dummy import DummyGeneModel
 
 
@@ -263,7 +263,7 @@ def run_all_tests():
         except Exception as e:
             print(f"❌ {test_func.__name__} raised exception: {e}")
 
-    print(f"\n=== Test Summary ===")
+    print("\n=== Test Summary ===")
     print(f"Passed: {passed}/{total}")
 
     if passed == total:

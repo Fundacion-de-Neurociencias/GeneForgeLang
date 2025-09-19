@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This document outlines the detailed plan for the GFL Genesis project: "Optimización de ARN Guía (gRNA) para la Edición Genómica de TP53 mediante Descubrimiento Guiado por IA con GeneForgeLang."
+This document outlines the detailed plan for the GFL Genesis project: "Optimization of Guide RNA (gRNA) for TP53 Gene Editing through AI-Guided Discovery with GeneForgeLang."
 
 ## Project Timeline
 

@@ -3,13 +3,9 @@
 Test basic plugin functionality without entry point discovery.
 """
 
-from gfl.api import parse, validate, execute, get_api_info
+from gfl.api import execute, get_api_info, parse, validate
 from gfl.plugins import plugin_registry
-from gfl.plugins.example_implementations import (
-    ProteinVAEGenerator,
-    MoleculeTransformerGenerator,
-    BayesianOptimizer
-)
+from gfl.plugins.example_implementations import BayesianOptimizer, MoleculeTransformerGenerator, ProteinVAEGenerator
 
 
 def test_basic_plugin_functionality():
@@ -49,7 +45,7 @@ def test_basic_plugin_functionality():
 
     # 3. Test simple design block execution
     print("\n3. Testing design block execution...")
-    design_gfl = '''
+    design_gfl = """
 metadata:
   experiment_id: BASIC_DESIGN_001
 
@@ -60,7 +56,7 @@ design:
     maximize: stability
   count: 2
   output: designed_proteins
-'''
+"""
 
     try:
         # Parse and validate
@@ -78,7 +74,7 @@ design:
         print("✓ Design block executed successfully")
 
         # Check results
-        candidates = result['design']['candidates']
+        candidates = result["design"]["candidates"]
         print(f"✓ Generated {len(candidates)} candidates")
         print(f"  - First candidate: {candidates[0].sequence[:30]}...")
         print(f"  - Properties: {list(candidates[0].properties.keys())}")
@@ -89,7 +85,7 @@ design:
 
     # 4. Test simple optimize block execution
     print("\n4. Testing optimize block execution...")
-    optimize_gfl = '''
+    optimize_gfl = """
 metadata:
   experiment_id: BASIC_OPTIMIZE_001
 
@@ -114,7 +110,7 @@ optimize:
       params:
         temp: ${temperature}
         conc: ${concentration}
-'''
+"""
 
     try:
         # Parse and validate
@@ -132,7 +128,7 @@ optimize:
         print("✓ Optimize block executed successfully")
 
         # Check results
-        optimize_result = result['optimize']
+        optimize_result = result["optimize"]
         print(f"✓ Completed {optimize_result['total_experiments']} experiments")
         print(f"✓ Best objective: {optimize_result['best_objective_value']:.4f}")
         print(f"✓ Best parameters: {optimize_result['best_parameters']}")

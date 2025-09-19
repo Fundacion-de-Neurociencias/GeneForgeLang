@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="gfl-crispr-evaluator",
@@ -13,10 +13,6 @@ setup(
         "numpy>=1.21.0",
         "pandas>=1.3.0",
     ],
-    entry_points={
-        "gfl.plugins": [
-            "crispr_evaluator = gfl_crispr_evaluator.plugin:CRISPREvaluatorPlugin"
-        ]
-    },
+    entry_points={"gfl.plugins": ["crispr_evaluator = gfl_crispr_evaluator.plugin:CRISPREvaluatorPlugin"]},
     python_requires=">=3.9",
 )

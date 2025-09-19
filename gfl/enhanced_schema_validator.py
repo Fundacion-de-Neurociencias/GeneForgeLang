@@ -60,7 +60,7 @@ class EnhancedSchemaValidator:
             raise FileNotFoundError(f"Schema file not found: {self.schema_path}")
 
         try:
-            with open(self.schema_path, "r", encoding="utf-8") as f:
+            with open(self.schema_path, encoding="utf-8") as f:
                 self._schema = json.load(f)
                 return self._schema
         except json.JSONDecodeError as e:
@@ -73,9 +73,7 @@ class EnhancedSchemaValidator:
             self._validator = Draft202012Validator(schema)
         return self._validator
 
-    def validate(
-        self, data: Dict[str, Any], file_path: Optional[str] = None
-    ) -> EnhancedValidationResult:
+    def validate(self, data: Dict[str, Any], file_path: Optional[str] = None) -> EnhancedValidationResult:
         """Validate GFL data against the JSON schema.
 
         Args:
@@ -116,9 +114,7 @@ class EnhancedSchemaValidator:
 
         return result
 
-    def _convert_json_schema_error(
-        self, json_error: JsonSchemaError, result: EnhancedValidationResult
-    ) -> None:
+    def _convert_json_schema_error(self, json_error: JsonSchemaError, result: EnhancedValidationResult) -> None:
         """Convert JSON Schema validation error to enhanced format."""
         # Build location path
         location_parts = []
@@ -137,11 +133,7 @@ class EnhancedSchemaValidator:
         # Handle specific validation cases
         if json_error.validator == "required":
             code = ErrorCodes.SCHEMA_MISSING_PROPERTY
-            missing_prop = (
-                json_error.message.split("'")[1]
-                if "'" in json_error.message
-                else "unknown"
-            )
+            missing_prop = json_error.message.split("'")[1] if "'" in json_error.message else "unknown"
             message = f"Missing required property '{missing_prop}'"
 
         elif json_error.validator == "enum":
@@ -163,9 +155,7 @@ class EnhancedSchemaValidator:
             code = ErrorCodes.SCHEMA_INVALID_FORMAT
 
         # Add the error
-        error = result.add_error(
-            message, code, severity, ErrorCategory.SCHEMA, location
-        )
+        error = result.add_error(message, code, severity, ErrorCategory.SCHEMA, location)
 
         # Add context and suggestions
         error.add_context("schema_path", location_str)
@@ -180,11 +170,7 @@ class EnhancedSchemaValidator:
                 error.add_fix(f"Use one of: {', '.join(str(v) for v in values)}")
 
             elif json_error.validator == "required":
-                missing_prop = (
-                    json_error.message.split("'")[1]
-                    if "'" in json_error.message
-                    else ""
-                )
+                missing_prop = json_error.message.split("'")[1] if "'" in json_error.message else ""
                 if missing_prop and "properties" in json_error.schema:
                     prop_schema = json_error.schema["properties"].get(missing_prop, {})
                     if "examples" in prop_schema and prop_schema["examples"]:
@@ -201,9 +187,7 @@ class EnhancedSchemaValidator:
                 else:
                     error.add_fix(f"Change value to {expected_type} type")
 
-    def get_completion_suggestions(
-        self, data: Dict[str, Any], cursor_path: List[str]
-    ) -> List[Dict[str, Any]]:
+    def get_completion_suggestions(self, data: Dict[str, Any], cursor_path: List[str]) -> List[Dict[str, Any]]:
         """Get autocompletion suggestions for the given cursor position.
 
         Args:
@@ -224,10 +208,7 @@ class EnhancedSchemaValidator:
 
             # Navigate to the current schema location
             for part in cursor_path:
-                if (
-                    "properties" in current_schema
-                    and part in current_schema["properties"]
-                ):
+                if "properties" in current_schema and part in current_schema["properties"]:
                     current_schema = current_schema["properties"][part]
                 elif "items" in current_schema:
                     current_schema = current_schema["items"]
@@ -271,9 +252,7 @@ class EnhancedSchemaValidator:
 
         return suggestions
 
-    def validate_property(
-        self, value: Any, property_path: List[str]
-    ) -> EnhancedValidationResult:
+    def validate_property(self, value: Any, property_path: List[str]) -> EnhancedValidationResult:
         """Validate a specific property value against its schema.
 
         Args:
@@ -294,10 +273,7 @@ class EnhancedSchemaValidator:
 
             # Navigate to property schema
             for part in property_path:
-                if (
-                    "properties" in current_schema
-                    and part in current_schema["properties"]
-                ):
+                if "properties" in current_schema and part in current_schema["properties"]:
                     current_schema = current_schema["properties"][part]
                 else:
                     # Property not found in schema
@@ -329,9 +305,7 @@ class EnhancedSchemaValidator:
 _schema_validator = EnhancedSchemaValidator()
 
 
-def validate_with_enhanced_schema(
-    data: Dict[str, Any], file_path: Optional[str] = None
-) -> EnhancedValidationResult:
+def validate_with_enhanced_schema(data: Dict[str, Any], file_path: Optional[str] = None) -> EnhancedValidationResult:
     """Validate GFL data with enhanced schema validation.
 
     Args:
@@ -344,9 +318,7 @@ def validate_with_enhanced_schema(
     return _schema_validator.validate(data, file_path)
 
 
-def get_autocompletion_suggestions(
-    data: Dict[str, Any], cursor_path: List[str]
-) -> List[Dict[str, Any]]:
+def get_autocompletion_suggestions(data: Dict[str, Any], cursor_path: List[str]) -> List[Dict[str, Any]]:
     """Get IDE autocompletion suggestions.
 
     Args:
@@ -359,9 +331,7 @@ def get_autocompletion_suggestions(
     return _schema_validator.get_completion_suggestions(data, cursor_path)
 
 
-def validate_property_value(
-    value: Any, property_path: List[str]
-) -> EnhancedValidationResult:
+def validate_property_value(value: Any, property_path: List[str]) -> EnhancedValidationResult:
     """Validate a specific property value.
 
     Args:

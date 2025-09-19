@@ -29,16 +29,11 @@ def _configure_gemini() -> None:
     try:
         api_key = os.environ.get("GOOGLE_API_KEY")
         if not api_key:
-            raise KeyError(
-                "GOOGLE_API_KEY not found in environment (check your .env file)"
-            )
+            raise KeyError("GOOGLE_API_KEY not found in environment (check your .env file)")
         genai.configure(api_key=api_key)
     except (KeyError, AttributeError) as e:
         # Keep message concise but actionable for users
-        print(
-            "ERROR: Google API key not found. Create a .env with GOOGLE_API_KEY='your_key'.\n"
-            f"Detail: {e}"
-        )
+        print("ERROR: Google API key not found. Create a .env with GOOGLE_API_KEY='your_key'.\n" f"Detail: {e}")
         raise
 
 
@@ -83,11 +78,7 @@ def _status_banner_html(status: str) -> str:
     if "success" in status_lower:
         color = "#e7f8ec"  # green-ish
         border = "#2ea44f"
-    elif (
-        "failed" in status_lower
-        or "parse failed" in status_lower
-        or "error" in status_lower
-    ):
+    elif "failed" in status_lower or "parse failed" in status_lower or "error" in status_lower:
         color = "#fdecea"  # red-ish
         border = "#d73a49"
     else:
@@ -187,14 +178,10 @@ def translate_to_gfl(
             code_path = ""
             inf_path = ""
             try:
-                with tempfile.NamedTemporaryFile(
-                    "w", suffix=".gfl", delete=False, encoding="utf-8"
-                ) as f:
+                with tempfile.NamedTemporaryFile("w", suffix=".gfl", delete=False, encoding="utf-8") as f:
                     f.write(code)
                     code_path = f.name
-                with tempfile.NamedTemporaryFile(
-                    "w", suffix=".json", delete=False, encoding="utf-8"
-                ) as f:
+                with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as f:
                     json.dump(inference or {}, f, ensure_ascii=False, indent=2)
                     inf_path = f.name
             except Exception:

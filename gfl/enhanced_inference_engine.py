@@ -107,8 +107,7 @@ class ModelConfig:
         """Validate configuration after initialization."""
         if self.trust_remote_code:
             warnings.warn(
-                "trust_remote_code=True is a security risk. "
-                "Setting to False for safety.",
+                "trust_remote_code=True is a security risk. " "Setting to False for safety.",
                 UserWarning,
             )
             self.trust_remote_code = False
@@ -134,9 +133,7 @@ class BaseMLModel(ABC):
         pass
 
     @abstractmethod
-    def explain_prediction(
-        self, features: Dict[str, Any], result: InferenceResult
-    ) -> str:
+    def explain_prediction(self, features: Dict[str, Any], result: InferenceResult) -> str:
         """Provide explanation for the prediction."""
         pass
 
@@ -254,9 +251,7 @@ class HeuristicModel(BaseMLModel):
                         confidence=rule["confidence"],
                         explanation=f"{rule['explanation']} ({threshold_key}: {value})",
                         raw_output=features,
-                        feature_importance={
-                            threshold_key: abs(value - threshold_value)
-                        },
+                        feature_importance={threshold_key: abs(value - threshold_value)},
                         model_metadata={
                             "model_type": "heuristic",
                             "rule_applied": rule_name,
@@ -266,20 +261,16 @@ class HeuristicModel(BaseMLModel):
 
         return None
 
-    def explain_prediction(
-        self, features: Dict[str, Any], result: InferenceResult
-    ) -> str:
+    def explain_prediction(self, features: Dict[str, Any], result: InferenceResult) -> str:
         """Provide detailed explanation for heuristic predictions."""
         explanation_parts = [result.explanation]
 
         if result.feature_importance:
-            important_features = sorted(
-                result.feature_importance.items(), key=lambda x: x[1], reverse=True
-            )[:3]  # Top 3 features
+            important_features = sorted(result.feature_importance.items(), key=lambda x: x[1], reverse=True)[
+                :3
+            ]  # Top 3 features
 
-            explanation_parts.append(
-                f"Key factors: {', '.join([f'{k} ({v:.2f})' for k, v in important_features])}"
-            )
+            explanation_parts.append(f"Key factors: {', '.join([f'{k} ({v:.2f})' for k, v in important_features])}")
 
         return ". ".join(explanation_parts)
 
@@ -320,9 +311,7 @@ class TransformersModel(BaseMLModel):
                         self.config.model_name,
                         revision=self.config.revision,
                         trust_remote_code=False,
-                        torch_dtype=torch.float16
-                        if self._device.type == "cuda"
-                        else torch.float32,
+                        torch_dtype=torch.float16 if self._device.type == "cuda" else torch.float32,
                     )
                 elif self.config.model_type == "sequence_classification":
                     self._model = AutoModelForSequenceClassification.from_pretrained(
@@ -408,9 +397,7 @@ class TransformersModel(BaseMLModel):
 
         return ". ".join(text_parts) if text_parts else "No text features available"
 
-    def _process_outputs(
-        self, outputs, inputs: Dict[str, Any], features: Dict[str, Any]
-    ) -> InferenceResult:
+    def _process_outputs(self, outputs, inputs: Dict[str, Any], features: Dict[str, Any]) -> InferenceResult:
         """Process model outputs into InferenceResult."""
         if hasattr(outputs, "logits"):
             # Classification or causal LM case
@@ -427,9 +414,7 @@ class TransformersModel(BaseMLModel):
 
             # Generate prediction label
             if hasattr(self._model.config, "id2label"):
-                prediction = self._model.config.id2label.get(
-                    predicted_class, f"class_{predicted_class}"
-                )
+                prediction = self._model.config.id2label.get(predicted_class, f"class_{predicted_class}")
             else:
                 prediction = f"class_{predicted_class}"
 
@@ -437,9 +422,7 @@ class TransformersModel(BaseMLModel):
             attention_weights = None
             if hasattr(outputs, "attentions") and outputs.attentions:
                 # Average attention across heads and layers
-                attention_weights = (
-                    outputs.attentions[-1].mean(dim=1).squeeze().tolist()
-                )
+                attention_weights = outputs.attentions[-1].mean(dim=1).squeeze().tolist()
 
             return InferenceResult(
                 prediction=prediction,
@@ -477,9 +460,7 @@ class TransformersModel(BaseMLModel):
                 },
             )
 
-    def explain_prediction(
-        self, features: Dict[str, Any], result: InferenceResult
-    ) -> str:
+    def explain_prediction(self, features: Dict[str, Any], result: InferenceResult) -> str:
         """Provide explanation for transformers predictions."""
         explanation_parts = [result.explanation]
 
@@ -491,9 +472,7 @@ class TransformersModel(BaseMLModel):
             if len(tokens) == len(result.attention_weights):
                 # Find top 3 attended tokens
                 token_attention = list(zip(tokens, result.attention_weights))
-                top_tokens = sorted(token_attention, key=lambda x: x[1], reverse=True)[
-                    :3
-                ]
+                top_tokens = sorted(token_attention, key=lambda x: x[1], reverse=True)[:3]
 
                 explanation_parts.append(
                     f"Key tokens: {', '.join([f'{token} ({att:.2f})' for token, att in top_tokens])}"
@@ -513,9 +492,7 @@ class EnhancedInferenceEngine:
     def _register_default_models(self) -> None:
         """Register default models."""
         # Register enhanced heuristic model
-        heuristic_config = ModelConfig(
-            model_name="enhanced_heuristic", model_type="heuristic"
-        )
+        heuristic_config = ModelConfig(model_name="enhanced_heuristic", model_type="heuristic")
         self.register_model("heuristic", HeuristicModel(heuristic_config))
         self.register_model("enhanced_heuristic", HeuristicModel(heuristic_config))
 
@@ -524,9 +501,7 @@ class EnhancedInferenceEngine:
         self.models[name] = model
         logger.info(f"Registered model: {name}")
 
-    def load_transformers_model(
-        self, name: str, model_name: str, model_type: str = "auto", **kwargs
-    ) -> None:
+    def load_transformers_model(self, name: str, model_name: str, model_type: str = "auto", **kwargs) -> None:
         """Load a HuggingFace transformers model."""
         if not HAS_ML_DEPS:
             raise ImportError("ML dependencies required for transformers models")
@@ -537,16 +512,12 @@ class EnhancedInferenceEngine:
         self.register_model(name, model)
 
     @cached(cache_name="inference_results", ttl=300.0, max_size=1000)
-    def predict(
-        self, model_name: Optional[str], features: Dict[str, Any], explain: bool = True
-    ) -> InferenceResult:
+    def predict(self, model_name: Optional[str], features: Dict[str, Any], explain: bool = True) -> InferenceResult:
         """Make predictions using specified model."""
         model_name = model_name or self.default_model
 
         if model_name not in self.models:
-            raise ValueError(
-                f"Model '{model_name}' not found. Available: {list(self.models.keys())}"
-            )
+            raise ValueError(f"Model '{model_name}' not found. Available: {list(self.models.keys())}")
 
         model = self.models[model_name]
 
@@ -570,14 +541,9 @@ class EnhancedInferenceEngine:
 
             return result
 
-    def batch_predict(
-        self, model_name: Optional[str], feature_list: List[Dict[str, Any]]
-    ) -> List[InferenceResult]:
+    def batch_predict(self, model_name: Optional[str], feature_list: List[Dict[str, Any]]) -> List[InferenceResult]:
         """Make batch predictions."""
-        return [
-            self.predict(model_name, features, explain=False)
-            for features in feature_list
-        ]
+        return [self.predict(model_name, features, explain=False) for features in feature_list]
 
     def compare_models(
         self, features: Dict[str, Any], model_names: Optional[List[str]] = None

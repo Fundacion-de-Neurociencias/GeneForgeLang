@@ -7,6 +7,23 @@ This package provides:
 4. Plugin registry with dependency management
 """
 
+from .interfaces import (
+    BayesianOptimizerPlugin,
+    DesignCandidate,
+    EntityType,
+    ExperimentResult,
+    GeneratorPlugin,
+    MoleculeGeneratorPlugin,
+    OptimizationStep,
+    OptimizationStrategy,
+    OptimizerPlugin,
+    PriorsPlugin,
+    SequenceGeneratorPlugin,
+    get_available_generators,
+    get_available_optimizers,
+    register_generator_plugin,
+    register_optimizer_plugin,
+)
 from .plugin_registry import (
     BaseGFLPlugin,
     GFLPlugin,
@@ -20,24 +37,6 @@ from .plugin_registry import (
     get_plugin,
     plugin_registry,
     register_plugin,
-)
-
-from .interfaces import (
-    BayesianOptimizerPlugin,
-    DesignCandidate,
-    EntityType,
-    ExperimentResult,
-    GeneratorPlugin,
-    MoleculeGeneratorPlugin,
-    OptimizerPlugin,
-    OptimizationStep,
-    OptimizationStrategy,
-    PriorsPlugin,
-    SequenceGeneratorPlugin,
-    get_available_generators,
-    get_available_optimizers,
-    register_generator_plugin,
-    register_optimizer_plugin,
 )
 
 __all__ = [
@@ -54,7 +53,6 @@ __all__ = [
     "get_active_plugins",
     "get_plugin",
     "register_plugin",
-
     # Specialized interfaces
     "GeneratorPlugin",
     "OptimizerPlugin",
@@ -62,14 +60,12 @@ __all__ = [
     "SequenceGeneratorPlugin",
     "MoleculeGeneratorPlugin",
     "BayesianOptimizerPlugin",
-
     # Data structures
     "DesignCandidate",
     "ExperimentResult",
     "OptimizationStep",
     "EntityType",
     "OptimizationStrategy",
-
     # Interface utilities
     "register_generator_plugin",
     "register_optimizer_plugin",

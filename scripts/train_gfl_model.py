@@ -2,9 +2,7 @@ from datasets import load_dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 
 # 1. Definir el modelo y el tokenizer
-model_name = (
-    "distilgpt2"  # Puedes probar con "distilgpt2" para un entrenamiento más rápido
-)
+model_name = "distilgpt2"  # Puedes probar con "distilgpt2" para un entrenamiento más rápido
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name)
 
@@ -50,8 +48,7 @@ def group_texts(examples):
     total_length = (total_length // block_size) * block_size
     # Dividir por chunks de block_size
     result = {
-        k: [t[i : i + block_size] for i in range(0, total_length, block_size)]
-        for k, t in concatenated_examples.items()
+        k: [t[i : i + block_size] for i in range(0, total_length, block_size)] for k, t in concatenated_examples.items()
     }
     result["labels"] = result["input_ids"].copy()
     return result

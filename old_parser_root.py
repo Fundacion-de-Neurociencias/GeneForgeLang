@@ -1,7 +1,7 @@
 import json
 import re
 
-with open("geneforge_grammar.json", "r", encoding="utf-8") as f:
+with open("geneforge_grammar.json", encoding="utf-8") as f:
     grammar = json.load(f)
 
 # Compilar patrones
@@ -85,12 +85,9 @@ def parse_geneforge_line(line):
     content = line[len(prefix_match.group(0)) :]
 
     output["entities"] = [
-        {"type": m, "target": t, "metadata": parse_metadata_block(md)}
-        for m, t, md in regex_entity.findall(content)
+        {"type": m, "target": t, "metadata": parse_metadata_block(md)} for m, t, md in regex_entity.findall(content)
     ]
-    output["mechanisms"] = [
-        {"type": mech, "target": tgt} for mech, tgt in regex_mechanism.findall(content)
-    ]
+    output["mechanisms"] = [{"type": mech, "target": tgt} for mech, tgt in regex_mechanism.findall(content)]
     output["logic"] = regex_logic_block.findall(content)
 
     for aa, mod, pos in regex_ptm.findall(content):
@@ -113,18 +110,12 @@ def parse_geneforge_line(line):
         )
 
     for origin, f, t, pos in regex_mut_prov.findall(content):
-        output["mutations"].append(
-            {"origin": origin, "from": f, "to": t, "position": int(pos)}
-        )
+        output["mutations"].append({"origin": origin, "from": f, "to": t, "position": int(pos)})
     for f, t, pos in regex_mut_simple.findall(content):
         output["mutations"].append({"from": f, "to": t, "position": int(pos)})
 
-    output["insertions"] = [
-        {"sequence": s, "position": int(pos)} for s, pos in regex_ins.findall(content)
-    ]
-    output["deletions"] = [
-        {"start": int(a), "end": int(b)} for a, b in regex_del.findall(content)
-    ]
+    output["insertions"] = [{"sequence": s, "position": int(pos)} for s, pos in regex_ins.findall(content)]
+    output["deletions"] = [{"start": int(a), "end": int(b)} for a, b in regex_del.findall(content)]
 
     for kind, op, meta in regex_edit.findall(content):
         output["edits"].append(
@@ -164,31 +155,18 @@ def parse_geneforge_line(line):
         for d, e, t, meta in regex_effect.findall(content)
     ]
 
-    output["fitness"] = [
-        {"target": t, "value": float(v)} for t, v in regex_fit.findall(content)
-    ]
-    output["probabilities"] = [
-        {"event": ev, "value": float(p)} for ev, p in regex_prob.findall(content)
-    ]
+    output["fitness"] = [{"target": t, "value": float(v)} for t, v in regex_fit.findall(content)]
+    output["probabilities"] = [{"event": ev, "value": float(p)} for ev, p in regex_prob.findall(content)]
     output["epistasis"] = [
-        {"variants": v, "metadata": parse_metadata_block(meta)}
-        for v, meta in regex_epi.findall(content)
+        {"variants": v, "metadata": parse_metadata_block(meta)} for v, meta in regex_epi.findall(content)
     ]
     output["localized"] = regex_localized.findall(content)
-    output["hypotheses"] = [
-        {"if": i.strip(), "then": t.strip()}
-        for i, t in regex_hypothesis.findall(content)
-    ]
+    output["hypotheses"] = [{"if": i.strip(), "then": t.strip()} for i, t in regex_hypothesis.findall(content)]
     output["simulations"] = regex_simulate.findall(content)
     output["pathways"] = regex_pathway.findall(content)
-    output["macros"] = [
-        {"name": name, "body": body} for name, body in regex_macro.findall(content)
-    ]
+    output["macros"] = [{"name": name, "body": body} for name, body in regex_macro.findall(content)]
     output["macro_calls"] = regex_use.findall(content)
-    output["timed_events"] = [
-        {"time": time, "event": evt.strip()}
-        for time, evt in regex_time.findall(content)
-    ]
+    output["timed_events"] = [{"time": time, "event": evt.strip()} for time, evt in regex_time.findall(content)]
 
     output["valid"] = True
     return output

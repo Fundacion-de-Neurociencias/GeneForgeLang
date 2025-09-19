@@ -21,9 +21,7 @@ replacement = (
 new_code, count = re.subn(pattern, replacement, code)
 
 if count == 0:
-    print(
-        "[WARN] No se encontró la definición clásica de t_STRING. Revisión manual recomendada."
-    )
+    print("[WARN] No se encontró la definición clásica de t_STRING. Revisión manual recomendada.")
 else:
     with open(lexer_path, "w", encoding="utf-8") as f:
         f.write(new_code)

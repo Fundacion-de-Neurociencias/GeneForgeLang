@@ -18,9 +18,7 @@ class AlphaGenomePlugin:
             variants = params.get("variants", [])
 
             if not sequence:
-                raise ValueError(
-                    "Parameter 'sequence' is required for predict_functional_tracks."
-                )
+                raise ValueError("Parameter 'sequence' is required for predict_functional_tracks.")
             if not isinstance(tracks, list) or not tracks:
                 raise ValueError("Parameter 'tracks' must be a non-empty list.")
 
@@ -31,9 +29,7 @@ class AlphaGenomePlugin:
             }
 
             for track in tracks:
-                simulated_results["predicted_tracks"][track] = (
-                    f"Simulated data for {track} on {sequence}"
-                )
+                simulated_results["predicted_tracks"][track] = f"Simulated data for {track} on {sequence}"
 
             for var in variants:
                 pos = var.get("pos")
@@ -47,9 +43,7 @@ class AlphaGenomePlugin:
 
             return simulated_results
 
-        raise NotImplementedError(
-            f"AlphaGenome method '{method_name}' not implemented in simulation."
-        )
+        raise NotImplementedError(f"AlphaGenome method '{method_name}' not implemented in simulation.")
 
 
 __all__ = ["AlphaGenomePlugin"]

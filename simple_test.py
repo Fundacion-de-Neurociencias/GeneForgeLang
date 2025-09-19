@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Simple test for GFL validator."""
 
-import sys
 import os
+import sys
 
 # Add the current directory to the path so we can import gfl
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -14,11 +14,9 @@ test_ast = {
     "design": {
         "entity": "ProteinSequence",
         "model": "ProteinGeneratorVAE",
-        "objective": {
-            "maximize": "stability"
-        },
+        "objective": {"maximize": "stability"},
         "count": 10,
-        "output": "test_output"
+        "output": "test_output",
     }
 }
 

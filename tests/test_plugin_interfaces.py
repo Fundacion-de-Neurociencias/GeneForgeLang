@@ -4,9 +4,15 @@ This module tests the specialized plugin interfaces for design and optimize
 blocks, ensuring they provide proper contracts for external tool integration.
 """
 
-import pytest
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
+import pytest
+
+from gfl.plugins.example_implementations import (
+    BayesianOptimizer,
+    MoleculeTransformerGenerator,
+    ProteinVAEGenerator,
+)
 from gfl.plugins.interfaces import (
     BayesianOptimizerPlugin,
     DesignCandidate,
@@ -14,20 +20,15 @@ from gfl.plugins.interfaces import (
     ExperimentResult,
     GeneratorPlugin,
     MoleculeGeneratorPlugin,
-    OptimizerPlugin,
     OptimizationStep,
     OptimizationStrategy,
+    OptimizerPlugin,
     PriorsPlugin,
     SequenceGeneratorPlugin,
     get_available_generators,
     get_available_optimizers,
     register_generator_plugin,
     register_optimizer_plugin,
-)
-from gfl.plugins.example_implementations import (
-    BayesianOptimizer,
-    MoleculeTransformerGenerator,
-    ProteinVAEGenerator,
 )
 from gfl.plugins.plugin_registry import PluginDependency, PluginPriority
 
@@ -40,7 +41,7 @@ class TestDesignCandidate:
         candidate = DesignCandidate(
             sequence="MKLLVLSLSLVLVAPMAAQAAEITLVPSVKLQIGDRDNRGYYWDGGHWRDHGWHGWRDY",
             properties={"stability": 0.85, "binding_affinity": 0.72},
-            confidence=0.91
+            confidence=0.91,
         )
 
         assert candidate.sequence.startswith("MKLL")
@@ -51,11 +52,7 @@ class TestDesignCandidate:
     def test_design_candidate_with_metadata(self):
         """Test DesignCandidate with metadata."""
         metadata = {"model_version": "v1.2", "temperature": 0.8}
-        candidate = DesignCandidate(
-            sequence="ATCGATCGATCG",
-            properties={"gc_content": 0.5},
-            metadata=metadata
-        )
+        candidate = DesignCandidate(sequence="ATCGATCGATCG", properties={"gc_content": 0.5}, metadata=metadata)
 
         assert candidate.metadata["model_version"] == "v1.2"
         assert candidate.metadata["temperature"] == 0.8
@@ -70,7 +67,7 @@ class TestExperimentResult:
             parameters={"temperature": 25.5, "concentration": 100},
             objective_value=0.87,
             metrics={"efficiency": 0.87, "specificity": 0.92},
-            success=True
+            success=True,
         )
 
         assert result.parameters["temperature"] == 25.5
@@ -81,10 +78,7 @@ class TestExperimentResult:
     def test_experiment_result_failure(self):
         """Test failed experiment result."""
         result = ExperimentResult(
-            parameters={"temperature": 95.0},
-            objective_value=0.0,
-            success=False,
-            error_message="Temperature too high"
+            parameters={"temperature": 95.0}, objective_value=0.0, success=False, error_message="Temperature too high"
         )
 
         assert result.success is False
@@ -97,10 +91,7 @@ class TestOptimizationStep:
 
     def test_optimization_step_basic(self):
         """Test basic OptimizationStep creation."""
-        step = OptimizationStep(
-            parameters={"learning_rate": 0.01, "batch_size": 32},
-            iteration=5
-        )
+        step = OptimizationStep(parameters={"learning_rate": 0.01, "batch_size": 32}, iteration=5)
 
         assert step.parameters["learning_rate"] == 0.01
         assert step.iteration == 5
@@ -108,12 +99,7 @@ class TestOptimizationStep:
 
     def test_optimization_step_with_metrics(self):
         """Test OptimizationStep with acquisition function metrics."""
-        step = OptimizationStep(
-            parameters={"param1": 1.5},
-            iteration=10,
-            expected_improvement=0.25,
-            uncertainty=0.15
-        )
+        step = OptimizationStep(parameters={"param1": 1.5}, iteration=10, expected_improvement=0.25, uncertainty=0.15)
 
         assert step.expected_improvement == 0.25
         assert step.uncertainty == 0.15
@@ -135,12 +121,7 @@ class MockGeneratorPlugin(GeneratorPlugin):
         return [EntityType.PROTEIN_SEQUENCE, EntityType.DNA_SEQUENCE]
 
     def generate(
-        self,
-        entity: str,
-        objective: Dict[str, Any],
-        constraints: List[str],
-        count: int,
-        **kwargs
+        self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
     ) -> List[DesignCandidate]:
         """Generate mock candidates."""
         candidates = []
@@ -150,11 +131,9 @@ class MockGeneratorPlugin(GeneratorPlugin):
             else:
                 sequence = "ATCG" * (10 + i)
 
-            candidates.append(DesignCandidate(
-                sequence=sequence,
-                properties={"mock_property": 0.5 + i * 0.1},
-                confidence=0.8
-            ))
+            candidates.append(
+                DesignCandidate(sequence=sequence, properties={"mock_property": 0.5 + i * 0.1}, confidence=0.8)
+            )
 
         return candidates
 
@@ -184,11 +163,7 @@ class MockOptimizerPlugin(OptimizerPlugin):
         return [OptimizationStrategy.BAYESIAN_OPTIMIZATION, OptimizationStrategy.RANDOM_SEARCH]
 
     def setup(
-        self,
-        search_space: Dict[str, str],
-        strategy: Dict[str, Any],
-        objective: Dict[str, Any],
-        budget: Dict[str, Any]
+        self, search_space: Dict[str, str], strategy: Dict[str, Any], objective: Dict[str, Any], budget: Dict[str, Any]
     ) -> None:
         """Mock setup."""
         self.setup_called = True
@@ -196,10 +171,7 @@ class MockOptimizerPlugin(OptimizerPlugin):
     def suggest_next(self, experiment_history: List[ExperimentResult]) -> OptimizationStep:
         """Mock suggestion."""
         self.iteration += 1
-        return OptimizationStep(
-            parameters={"param1": self.iteration * 0.1},
-            iteration=self.iteration
-        )
+        return OptimizationStep(parameters={"param1": self.iteration * 0.1}, iteration=self.iteration)
 
     def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Process method required by BaseGFLPlugin."""
@@ -223,10 +195,7 @@ class TestGeneratorPlugin:
         generator = MockGeneratorPlugin()
 
         candidates = generator.generate(
-            entity="ProteinSequence",
-            objective={"maximize": "stability"},
-            constraints=["length(20, 50)"],
-            count=3
+            entity="ProteinSequence", objective={"maximize": "stability"}, constraints=["length(20, 50)"], count=3
         )
 
         assert len(candidates) == 3
@@ -283,7 +252,7 @@ class TestOptimizerPlugin:
             search_space={"param1": "range(0, 1)"},
             strategy={"name": "BayesianOptimization"},
             objective={"maximize": "efficiency"},
-            budget={"max_experiments": 50}
+            budget={"max_experiments": 50},
         )
 
         assert optimizer.setup_called is True
@@ -371,7 +340,9 @@ class TestSequenceGeneratorPlugin:
             def supported_entities(self) -> List[EntityType]:
                 return [EntityType.PROTEIN_SEQUENCE]
 
-            def generate(self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs) -> List[DesignCandidate]:
+            def generate(
+                self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
+            ) -> List[DesignCandidate]:
                 return []
 
             def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -405,7 +376,9 @@ class TestSequenceGeneratorPlugin:
             def supported_entities(self) -> List[EntityType]:
                 return [EntityType.PROTEIN_SEQUENCE]
 
-            def generate(self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs) -> List[DesignCandidate]:
+            def generate(
+                self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
+            ) -> List[DesignCandidate]:
                 return []
 
             def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -414,7 +387,14 @@ class TestSequenceGeneratorPlugin:
         generator = MockSequenceGenerator()
         constraints = generator.get_supported_constraints()
 
-        expected_constraints = ['length', 'gc_content', 'has_motif', 'no_stop_codons', 'synthesizability', 'secondary_structure']
+        expected_constraints = [
+            "length",
+            "gc_content",
+            "has_motif",
+            "no_stop_codons",
+            "synthesizability",
+            "secondary_structure",
+        ]
         assert all(c in constraints for c in expected_constraints)
 
 
@@ -437,7 +417,9 @@ class TestMoleculeGeneratorPlugin:
             def supported_entities(self) -> List[EntityType]:
                 return [EntityType.SMALL_MOLECULE]
 
-            def generate(self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs) -> List[DesignCandidate]:
+            def generate(
+                self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
+            ) -> List[DesignCandidate]:
                 return []
 
             def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -471,7 +453,9 @@ class TestMoleculeGeneratorPlugin:
             def supported_entities(self) -> List[EntityType]:
                 return [EntityType.SMALL_MOLECULE]
 
-            def generate(self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs) -> List[DesignCandidate]:
+            def generate(
+                self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
+            ) -> List[DesignCandidate]:
                 return []
 
             def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -480,7 +464,16 @@ class TestMoleculeGeneratorPlugin:
         generator = MockMoleculeGenerator()
         constraints = generator.get_supported_constraints()
 
-        expected_constraints = ['molecular_weight', 'logP', 'rotatable_bonds', 'hbd_count', 'hba_count', 'drug_likeness', 'synthetic_accessibility', 'toxicity']
+        expected_constraints = [
+            "molecular_weight",
+            "logP",
+            "rotatable_bonds",
+            "hbd_count",
+            "hba_count",
+            "drug_likeness",
+            "synthetic_accessibility",
+            "toxicity",
+        ]
         assert all(c in constraints for c in expected_constraints)
 
 
@@ -499,7 +492,13 @@ class TestBayesianOptimizerPlugin:
             def version(self) -> str:
                 return "1.0.0"
 
-            def setup(self, search_space: Dict[str, str], strategy: Dict[str, Any], objective: Dict[str, Any], budget: Dict[str, Any]) -> None:
+            def setup(
+                self,
+                search_space: Dict[str, str],
+                strategy: Dict[str, Any],
+                objective: Dict[str, Any],
+                budget: Dict[str, Any],
+            ) -> None:
                 pass
 
             def suggest_next(self, experiment_history: List[ExperimentResult]) -> OptimizationStep:
@@ -526,7 +525,13 @@ class TestBayesianOptimizerPlugin:
             def version(self) -> str:
                 return "1.0.0"
 
-            def setup(self, search_space: Dict[str, str], strategy: Dict[str, Any], objective: Dict[str, Any], budget: Dict[str, Any]) -> None:
+            def setup(
+                self,
+                search_space: Dict[str, str],
+                strategy: Dict[str, Any],
+                objective: Dict[str, Any],
+                budget: Dict[str, Any],
+            ) -> None:
                 pass
 
             def suggest_next(self, experiment_history: List[ExperimentResult]) -> OptimizationStep:
@@ -538,17 +543,14 @@ class TestBayesianOptimizerPlugin:
         optimizer = MockBayesianOptimizer()
 
         # Test valid search space
-        valid_space = {
-            "param1": "range(0, 1)",
-            "param2": "choice([1, 2, 3])"
-        }
+        valid_space = {"param1": "range(0, 1)", "param2": "choice([1, 2, 3])"}
         errors = optimizer.validate_search_space(valid_space)
         assert errors == []
 
         # Test invalid search space
         invalid_space = {
             "param1": "range(0)",  # Missing second value
-            "param2": "choice([])"  # Empty choice
+            "param2": "choice([])",  # Empty choice
         }
         errors = optimizer.validate_search_space(invalid_space)
         assert len(errors) == 2
@@ -567,10 +569,7 @@ class TestExampleImplementations:
 
         # Test generation
         candidates = generator.generate(
-            entity="ProteinSequence",
-            objective={"maximize": "stability"},
-            constraints=["length(50, 100)"],
-            count=2
+            entity="ProteinSequence", objective={"maximize": "stability"}, constraints=["length(50, 100)"], count=2
         )
 
         assert len(candidates) == 2
@@ -589,7 +588,7 @@ class TestExampleImplementations:
             entity="SmallMolecule",
             objective={"maximize": "binding_affinity"},
             constraints=["molecular_weight < 500"],
-            count=2
+            count=2,
         )
 
         assert len(candidates) == 2
@@ -607,7 +606,7 @@ class TestExampleImplementations:
             search_space={"param1": "range(0, 1)"},
             strategy={"name": "BayesianOptimization"},
             objective={"maximize": "efficiency"},
-            budget={"max_experiments": 10}
+            budget={"max_experiments": 10},
         )
 
         # Test suggestion
@@ -624,11 +623,7 @@ class TestPluginRegistration:
 
         # Test that registration works with valid plugin
         try:
-            register_generator_plugin(
-                MockGeneratorPlugin,
-                "test_generator",
-                version="1.0.0"
-            )
+            register_generator_plugin(MockGeneratorPlugin, "test_generator", version="1.0.0")
         except Exception as e:
             pytest.fail(f"Registration should succeed: {e}")
 
@@ -639,20 +634,13 @@ class TestPluginRegistration:
             pass
 
         with pytest.raises(TypeError):
-            register_generator_plugin(
-                InvalidPlugin,
-                "invalid_generator"
-            )
+            register_generator_plugin(InvalidPlugin, "invalid_generator")
 
     def test_register_optimizer_plugin_valid(self):
         """Test registering a valid optimizer plugin."""
 
         try:
-            register_optimizer_plugin(
-                MockOptimizerPlugin,
-                "test_optimizer",
-                version="1.0.0"
-            )
+            register_optimizer_plugin(MockOptimizerPlugin, "test_optimizer", version="1.0.0")
         except Exception as e:
             pytest.fail(f"Registration should succeed: {e}")
 

@@ -9,7 +9,7 @@ def test_basic_api():
     print("Testing basic GFL API...")
 
     try:
-        from gfl.api import parse, validate, get_api_info
+        from gfl.api import get_api_info, parse, validate
 
         # Test API info
         info = get_api_info()
@@ -57,9 +57,7 @@ experiment:
         ast = parse(gfl_content)
         result = infer_enhanced(ast, model_name="heuristic")
 
-        print(
-            f"✓ Inference successful: {result['label']} (confidence: {result['confidence']:.2%})"
-        )
+        print(f"✓ Inference successful: {result['label']} (confidence: {result['confidence']:.2%})")
         return True
 
     except Exception as e:
@@ -89,9 +87,7 @@ def test_cli_tools():
         import subprocess
 
         # Test gfl-server help
-        result = subprocess.run(
-            ["gfl-server", "--help"], capture_output=True, text=True, timeout=10
-        )
+        result = subprocess.run(["gfl-server", "--help"], capture_output=True, text=True, timeout=10)
 
         if result.returncode == 0:
             print("✓ gfl-server CLI available")

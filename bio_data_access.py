@@ -1,9 +1,11 @@
 from bioservices import UniProt
 
+
 class BioDataAccess:
     """
     A high-level class to simplify bioinformatics database access using bioservices.
     """
+
     def __init__(self):
         self.uniprot = UniProt()
 
@@ -36,33 +38,32 @@ class BioDataAccess:
             if not results:
                 return []
 
-            lines = results.strip().split('\n')
+            lines = results.strip().split("\n")
             if not lines:
                 return []
 
-            header = [h.strip().lower().replace(' ', '_') for h in lines[0].split('\t')]
+            header = [h.strip().lower().replace(" ", "_") for h in lines[0].split("\t")]
             parsed_results = []
             for line in lines[1:]:
-                values = line.split('\t')
+                values = line.split("\t")
                 if len(header) == len(values):
                     parsed_results.append(dict(zip(header, values)))
             return parsed_results
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # Example Usage:
     bio_access = BioDataAccess()
 
     print("--- Testing get_protein_info ---")
-    protein_info = bio_access.get_protein_info('P0DP23') # Example UniProt ID for Human TP53
+    protein_info = bio_access.get_protein_info("P0DP23")  # Example UniProt ID for Human TP53
     print(protein_info)
 
     print("\n--- Testing search_uniprot ---")
     search_results = bio_access.search_uniprot(
-        query='gene:TP53 human',
-        columns='id,entry name,protein names,organism',
-        limit=5
+        query="gene:TP53 human", columns="id,entry name,protein names,organism", limit=5
     )
     if isinstance(search_results, list):
         for entry in search_results:

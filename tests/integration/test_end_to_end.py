@@ -9,7 +9,7 @@ Tests cover:
 
 import pytest
 
-from gfl.api import parse, validate, infer
+from gfl.api import infer, parse, validate
 from gfl.models.dummy import DummyGeneModel
 
 
@@ -500,9 +500,7 @@ class TestExampleFiles:
                     errors = validate(ast)
                     # Examples should be valid
                     if errors:
-                        pytest.fail(
-                            f"Example {gfl_file.name} has validation errors: {errors}"
-                        )
+                        pytest.fail(f"Example {gfl_file.name} has validation errors: {errors}")
 
                     # Try inference
                     result = infer(model, ast)
@@ -543,10 +541,7 @@ class TestExampleFiles:
                     # Key fields should be preserved
                     if "experiment" in ast:
                         assert "experiment" in reconstructed_dict
-                        assert (
-                            ast["experiment"]["tool"]
-                            == reconstructed_dict["experiment"]["tool"]
-                        )
+                        assert ast["experiment"]["tool"] == reconstructed_dict["experiment"]["tool"]
 
                 except ImportError:
                     # Skip if typed AST not available

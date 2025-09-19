@@ -69,17 +69,10 @@ def valid_design_ast() -> Dict[str, Any]:
         "design": {
             "entity": "ProteinSequence",
             "model": "ProteinGeneratorVAE",
-            "objective": {
-                "maximize": "binding_affinity",
-                "target": "ACE2_receptor"
-            },
-            "constraints": [
-                "length(120, 150)",
-                "has_motif('E_box')",
-                "synthesizability > 0.7"
-            ],
+            "objective": {"maximize": "binding_affinity", "target": "ACE2_receptor"},
+            "constraints": ["length(120, 150)", "has_motif('E_box')", "synthesizability > 0.7"],
             "count": 10,
-            "output": "designed_candidates"
+            "output": "designed_candidates",
         }
     }
 
@@ -115,30 +108,17 @@ def complex_design_ast() -> Dict[str, Any]:
         "design": {
             "entity": "SmallMolecule",
             "model": "MoleculeTransformer",
-            "objective": {
-                "maximize": "activity"
-            },
-            "constraints": [
-                "molecular_weight < 500",
-                "logP < 5",
-                "rotatable_bonds < 10"
-            ],
+            "objective": {"maximize": "activity"},
+            "constraints": ["molecular_weight < 500", "logP < 5", "rotatable_bonds < 10"],
             "count": 100,
-            "output": "candidate_molecules"
+            "output": "candidate_molecules",
         },
         "analyze": {
             "strategy": "comparative",
             "data": "candidate_molecules",
-            "thresholds": {
-                "activity_score": 0.7,
-                "toxicity_score": 0.3
-            }
+            "thresholds": {"activity_score": 0.7, "toxicity_score": 0.3},
         },
-        "metadata": {
-            "experiment_id": "DESIGN_001",
-            "researcher": "Dr. Smith",
-            "project": "drug_discovery"
-        }
+        "metadata": {"experiment_id": "DESIGN_001", "researcher": "Dr. Smith", "project": "drug_discovery"},
     }
 
 

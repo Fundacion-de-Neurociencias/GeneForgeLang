@@ -1,6 +1,7 @@
 """
 Test script to validate GFL Genesis project structure
 """
+
 import os
 import sys
 from pathlib import Path
@@ -9,18 +10,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+
 def test_project_structure():
     """Test that all required directories and files exist"""
 
     # Required directories
-    required_dirs = [
-        "schemas",
-        "plugins",
-        "data",
-        "results",
-        "docs",
-        "tests"
-    ]
+    required_dirs = ["schemas", "plugins", "data", "results", "docs", "tests"]
 
     # Required files
     required_files = [
@@ -28,7 +23,7 @@ def test_project_structure():
         "genesis.gfl",
         "requirements.txt",
         "schemas/crispr_types.yml",
-        "docs/project_plan.md"
+        "docs/project_plan.md",
     ]
 
     # Check directories
@@ -44,6 +39,7 @@ def test_project_structure():
         assert file_path.is_file(), f"{file} is not a file"
 
     print("All project structure tests passed!")
+
 
 if __name__ == "__main__":
     test_project_structure()

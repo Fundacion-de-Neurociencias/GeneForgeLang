@@ -120,17 +120,11 @@ class ProteinGenerationModel(TransformersModel):
             return self.protein_seeds["nuclear_localization"]
         elif any(keyword in feature_text for keyword in ["pest", "degradation"]):
             return self.protein_seeds["pest_degradation"]
-        elif any(
-            keyword in feature_text for keyword in ["transcription", "tf", "gata"]
-        ):
+        elif any(keyword in feature_text for keyword in ["transcription", "tf", "gata"]):
             return self.protein_seeds["transcription_factor"]
-        elif any(
-            keyword in feature_text for keyword in ["acetyl", "ack", "acetylation"]
-        ):
+        elif any(keyword in feature_text for keyword in ["acetyl", "ack", "acetylation"]):
             return self.protein_seeds["acetylation_site"]
-        elif any(
-            keyword in feature_text for keyword in ["phosphor", "phospho", "kinase"]
-        ):
+        elif any(keyword in feature_text for keyword in ["phosphor", "phospho", "kinase"]):
             return self.protein_seeds["phosphorylation_site"]
         elif any(keyword in feature_text for keyword in ["membrane", "localize"]):
             return self.protein_seeds["membrane_localization"]
@@ -218,9 +212,7 @@ class ProteinGenerationModel(TransformersModel):
             },
         }
 
-    def explain_prediction(
-        self, features: Dict[str, Any], result: InferenceResult
-    ) -> str:
+    def explain_prediction(self, features: Dict[str, Any], result: InferenceResult) -> str:
         """Explain protein generation prediction."""
         explanation_parts = [result.explanation]
 
@@ -228,17 +220,11 @@ class ProteinGenerationModel(TransformersModel):
             seed = result.raw_output.get("seed_used", "unknown")
             length = result.raw_output.get("sequence_length", 0)
 
-            explanation_parts.append(
-                f"Used seed '{seed}' to generate {length} amino acid sequence"
-            )
+            explanation_parts.append(f"Used seed '{seed}' to generate {length} amino acid sequence")
 
             if result.feature_importance:
-                top_factors = sorted(
-                    result.feature_importance.items(), key=lambda x: x[1], reverse=True
-                )
-                explanation_parts.append(
-                    f"Quality factors: {', '.join([f'{k} ({v:.2f})' for k, v in top_factors])}"
-                )
+                top_factors = sorted(result.feature_importance.items(), key=lambda x: x[1], reverse=True)
+                explanation_parts.append(f"Quality factors: {', '.join([f'{k} ({v:.2f})' for k, v in top_factors])}")
 
         return ". ".join(explanation_parts)
 
@@ -293,9 +279,7 @@ class GenomicClassificationModel(TransformersModel):
             base_result = super().predict(features)
 
             # Enhance with genomic-specific analysis
-            enhanced_result = self._enhance_genomic_classification(
-                features, base_result
-            )
+            enhanced_result = self._enhance_genomic_classification(features, base_result)
 
             return enhanced_result
 
@@ -349,9 +333,7 @@ class GenomicClassificationModel(TransformersModel):
                     matches.append(keyword)
 
             if matches:
-                confidence = rules["confidence_boost"] * (
-                    len(matches) / len(rules["keywords"])
-                )
+                confidence = rules["confidence_boost"] * (len(matches) / len(rules["keywords"]))
                 if confidence > best_confidence:
                     best_category = category
                     best_confidence = confidence
@@ -387,9 +369,7 @@ class GenomicClassificationModel(TransformersModel):
             if matched_keywords and category.lower() in prediction.lower():
                 boost = len(matched_keywords) * 0.1
                 confidence = min(confidence + boost, 1.0)
-                explanation_parts.append(
-                    f"Confidence boosted by genomic keywords: {', '.join(matched_keywords)}"
-                )
+                explanation_parts.append(f"Confidence boosted by genomic keywords: {', '.join(matched_keywords)}")
 
         return InferenceResult(
             prediction=prediction,
@@ -407,9 +387,7 @@ class MultiModalGenomicModel(BaseMLModel):
 
     def __init__(self, config: Optional[ModelConfig] = None):
         if config is None:
-            config = ModelConfig(
-                model_name="multimodal_genomic", model_type="multimodal"
-            )
+            config = ModelConfig(model_name="multimodal_genomic", model_type="multimodal")
         super().__init__(config)
 
         # Initialize component models
@@ -452,26 +430,20 @@ class MultiModalGenomicModel(BaseMLModel):
 
         return combined_result
 
-    def _should_generate_protein(
-        self, features: Dict[str, Any], classification: InferenceResult
-    ) -> bool:
+    def _should_generate_protein(self, features: Dict[str, Any], classification: InferenceResult) -> bool:
         """Determine if protein generation is appropriate."""
         # Generate protein if it's a protein-related experiment
         protein_related = any(
-            keyword in str(features).lower()
-            for keyword in ["protein", "peptide", "amino", "sequence"]
+            keyword in str(features).lower() for keyword in ["protein", "peptide", "amino", "sequence"]
         )
 
         classification_suggests_protein = any(
-            keyword in classification.prediction.lower()
-            for keyword in ["edit", "expression", "functional"]
+            keyword in classification.prediction.lower() for keyword in ["edit", "expression", "functional"]
         )
 
         return protein_related or classification_suggests_protein
 
-    def _combine_results(
-        self, results: Dict[str, InferenceResult], features: Dict[str, Any]
-    ) -> InferenceResult:
+    def _combine_results(self, results: Dict[str, InferenceResult], features: Dict[str, Any]) -> InferenceResult:
         """Combine multiple model results into unified prediction."""
         classification = results["classification"]
 
@@ -489,9 +461,7 @@ class MultiModalGenomicModel(BaseMLModel):
             combined_prediction["generated_protein"] = protein_result.prediction
             combined_prediction["protein_confidence"] = protein_result.confidence
 
-            explanation_parts.append(
-                f"Generated protein sequence of {len(protein_result.prediction)} amino acids"
-            )
+            explanation_parts.append(f"Generated protein sequence of {len(protein_result.prediction)} amino acids")
 
         # Calculate overall confidence
         confidences = [r.confidence for r in results.values()]
@@ -512,9 +482,7 @@ class MultiModalGenomicModel(BaseMLModel):
             },
         )
 
-    def explain_prediction(
-        self, features: Dict[str, Any], result: InferenceResult
-    ) -> str:
+    def explain_prediction(self, features: Dict[str, Any], result: InferenceResult) -> str:
         """Explain multi-modal prediction."""
         explanation_parts = [result.explanation]
 
@@ -523,9 +491,7 @@ class MultiModalGenomicModel(BaseMLModel):
 
             explanation_parts.append("Component model results:")
             for model_name, model_result in individual_results.items():
-                explanation_parts.append(
-                    f"- {model_name}: {model_result['explanation']}"
-                )
+                explanation_parts.append(f"- {model_name}: {model_result['explanation']}")
 
         return "\n".join(explanation_parts)
 

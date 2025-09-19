@@ -1,457 +1,323 @@
-# Orquestación de Experimentos con el Bloque `optimize`
+# Experiment Orchestration with the `optimize` Block
 
-## Introducción
+## Introduction
 
-El bloque `optimize` representa uno de los avances más significativos en GeneForgeLang, transformando el lenguaje de una simple herramienta de especificación a una plataforma completa de **orquestación del descubrimiento científico**. Este bloque automatiza la exploración de espacios de parámetros para encontrar condiciones experimentales óptimas, inspirado en las técnicas de 'AI-driven experimentation' que están revolucionando la investigación genómica.
+The `optimize` block represents one of the most significant advances in GeneForgeLang, transforming the language from a simple specification tool to a complete **scientific discovery orchestration** platform. This block automates the exploration of parameter spaces to find optimal experimental conditions, inspired by 'AI-driven experimentation' techniques that are revolutionizing genomic research.
 
-En lugar de ejecutar experimentos de forma secuencial con parámetros fijos, el bloque `optimize` permite definir **bucles experimentales inteligentes** que:
+Instead of running experiments sequentially with fixed parameters, the `optimize` block allows defining **intelligent experimental loops** that:
 
-- **Aprenden** de cada experimento ejecutado
-- **Adaptan** la selección de parámetros basándose en resultados anteriores
-- **Convergen** hacia condiciones experimentales óptimas de forma eficiente
-- **Minimizan** el número de experimentos necesarios para encontrar soluciones
+- **Learn** from each executed experiment
+- **Adapt** parameter selection based on previous results
+- **Converge** toward optimal experimental conditions efficiently
+- **Minimize** the number of experiments needed to find solutions
 
-Este enfoque es especialmente valioso en genómica, donde los experimentos pueden ser costosos, lentos, y donde el espacio de parámetros es típicamente muy grande y complejo.
+This approach is especially valuable in genomics, where experiments can be costly, slow, and where the parameter space is typically very large and complex.
 
-## Estructura del Bloque
+## Block Structure
 
-El bloque `optimize` se compone de cinco componentes principales que definen completamente un bucle de optimización experimental:
+The `optimize` block consists of five main components that fully define an experimental optimization loop:
 
-### `search_space` - Espacio de Búsqueda
+### `search_space` - Search Space
 
-Define los parámetros que se van a explorar y sus rangos de valores posibles. Cada parámetro puede ser:
+Defines the parameters to be explored and their possible value ranges. Each parameter can be:
 
-- **Continuo**: Usando la sintaxis `range(min, max)` para valores numéricos
-- **Discreto**: Usando la sintaxis `choice([valor1, valor2, ...])` para opciones específicas
+- **Continuous**: Using the syntax `range(min, max)` for numerical values
+- **Discrete**: Using the syntax `choice([value1, value2, ...])` for specific options
 
-**Sintaxis:**
+**Syntax:**
 ```yaml
 search_space:
-  nombre_parametro: range(valor_min, valor_max)
-  otro_parametro: choice([opcion1, opcion2, opcion3])
+  parameter_name: range(min_value, max_value)
+  another_parameter: choice([option1, option2, option3])
 ```
 
-**Ejemplos:**
+**Examples:**
 ```yaml
 search_space:
-  temperatura: range(25, 42)              # Temperatura en °C
-  concentracion_guia: range(10, 100)      # Concentración en nM
-  tiempo_incubacion: choice([6, 12, 24, 48])  # Horas de incubación
-  tipo_buffer: choice([PBS, HEPES, Tris])     # Tipos de buffer
+  temperature: range(25, 42)              # Temperature in °C
+  guide_concentration: range(10, 100)      # Concentration in nM
+  incubation_time: choice([6, 12, 24, 48])  # Hours of incubation
+  buffer_type: choice([PBS, HEPES, Tris])     # Buffer types
 ```
 
-### `strategy` - Estrategia de Optimización
+### `strategy` - Optimization Strategy
 
-Especifica el algoritmo de inteligencia artificial que se utilizará para guiar la exploración del espacio de parámetros. El campo `name` es obligatorio e identifica el plugin de optimización a usar.
+Specifies the artificial intelligence algorithm that will be used to guide the exploration of the parameter space. The `name` field is mandatory and identifies the optimization plugin to use.
 
-**Algoritmos Soportados:**
+**Supported Algorithms:**
 
-- **`ActiveLearning`**: Selecciona experimentos que maximicen la información ganada
-- **`BayesianOptimization`**: Usa procesos gaussianos para modelar el espacio de parámetros
-- **`GeneticAlgorithm`**: Evoluciona poblaciones de configuraciones experimentales
-- **`SimulatedAnnealing`**: Exploración estocástica con enfriamiento gradual
-- **`RandomSearch`**: Selección aleatoria (línea base)
-- **`GridSearch`**: Exploración exhaustiva sistemática
+- **`ActiveLearning`**: Selects experiments that maximize information gained
+- **`BayesianOptimization`**: Uses Gaussian processes to model the parameter space
+- **`GeneticAlgorithm`**: Evolves populations of experimental configurations
+- **`SimulatedAnnealing`**: Stochastic exploration with gradual cooling
+- **`RandomSearch`**: Random selection (baseline)
+- **`GridSearch`**: Systematic exhaustive exploration
 
-**Sintaxis:**
+**Syntax:**
 ```yaml
 strategy:
-  name: NombreAlgoritmo
-  parametro_especifico: valor
-  otro_parametro: valor
+  name: AlgorithmName
+  specific_parameter: value
+  another_parameter: value
 ```
 
-**Ejemplos:**
+**Examples:**
 ```yaml
-# Aprendizaje activo con métrica de incertidumbre
+# Active learning with uncertainty metric
 strategy:
   name: ActiveLearning
   uncertainty_metric: entropy
   initial_samples: 5
 
-# Optimización bayesiana con función de adquisición específica
+# Bayesian optimization with specific acquisition function
 strategy:
   name: BayesianOptimization
   acquisition_function: expected_improvement
   kernel: rbf
 ```
 
-### `objective` - Objetivo de Optimización
+### `objective` - Optimization Objective
 
-Define qué métrica se desea optimizar. Debe contener exactamente una de las siguientes claves:
+Defines which metric to optimize. It must contain exactly one of the following keys:
 
-- **`maximize`**: Para maximizar una métrica (ej: eficiencia, rendimiento)
-- **`minimize`**: Para minimizar una métrica (ej: costo, tiempo, toxicidad)
+- **`maximize`**: To maximize a metric (e.g.: efficiency, performance)
+- **`minimize`**: To minimize a metric (e.g.: cost, time, toxicity)
 
-Opcionalmente puede incluir un campo `target` que especifica el contexto del objetivo.
+Optionally, it can include a `target` field that specifies the objective context.
 
-**Sintaxis:**
+**Syntax:**
 ```yaml
 objective:
-  maximize: nombre_metrica
-  # O alternativamente:
-  minimize: nombre_metrica
-  target: contexto_opcional
+  maximize: metric_name
+  # Or alternatively:
+  minimize: metric_name
+  target: optional_context
 ```
 
-**Ejemplos:**
+**Examples:**
 ```yaml
-# Maximizar eficiencia de edición
+# Maximize editing efficiency
 objective:
-  maximize: eficiencia_edicion
+  maximize: editing_efficiency
 
-# Minimizar efectos fuera del objetivo
+# Minimize off-target effects
 objective:
-  minimize: efectos_off_target
-  target: genoma_completo
+  minimize: off_target_effects
+  target: complete_genome
 
-# Maximizar expresión génica
+# Maximize gene expression
 objective:
-  maximize: nivel_expresion
-  target: proteina_GFP
+  maximize: expression_level
+  target: GFP_protein
 ```
 
-### `budget` - Presupuesto y Criterios de Parada
+### `budget` - Budget and Stopping Criteria
 
-Establece las restricciones y criterios de parada para el bucle de optimización. Debe contener al menos una restricción.
+Establishes constraints and stopping criteria for the optimization loop. It must contain at least one constraint.
 
-**Restricciones Disponibles:**
+**Available Constraints:**
 
-- **`max_experiments`**: Número máximo de experimentos (entero)
-- **`max_time`**: Tiempo máximo (formato: "24h", "7d", "30m")
-- **`max_cost`**: Presupuesto máximo (número)
-- **`convergence_threshold`**: Umbral de convergencia (0.0 - 1.0)
+- **`max_experiments`**: Maximum number of experiments (integer)
+- **`max_time`**: Maximum time (format: "24h", "7d", "30m")
+- **`max_cost`**: Maximum budget (number)
+- **`convergence_threshold`**: Convergence threshold (0.0 - 1.0)
 
-**Sintaxis:**
+**Syntax:**
 ```yaml
 budget:
-  max_experiments: numero
-  max_time: "tiempo_con_unidad"
-  max_cost: cantidad
-  convergence_threshold: umbral
+  max_experiments: number
+  max_time: "time_with_unit"
+  max_cost: amount
+  convergence_threshold: threshold
 ```
 
-**Ejemplos:**
+**Examples:**
 ```yaml
-# Límites múltiples
+# Multiple limits
 budget:
   max_experiments: 100
   max_time: 72h
   max_cost: 15000
   convergence_threshold: 0.01
 
-# Solo límite de experimentos
+# Only experiment limit
 budget:
   max_experiments: 50
 ```
 
-### `run` - Bloque de Ejecución
+### `run` - Execution Block
 
-Define el experimento o análisis que se ejecutará en cada iteración del bucle de optimización. Debe contener exactamente uno de:
+Defines the experiment or analysis that will be executed in each iteration of the optimization loop. It must contain exactly one of:
 
-- **`experiment`**: Un bloque de experimento estándar de GFL
-- **`analyze`**: Un bloque de análisis estándar de GFL
+- **`experiment`**: A standard GFL experiment block
+- **`analyze`**: A standard GFL analysis block
 
-Los parámetros definidos en `search_space` se pueden inyectar usando la sintaxis `${nombre_parametro}`.
+Parameters defined in `search_space` can be injected using the syntax `${parameter_name}`.
 
-**Sintaxis:**
+**Syntax:**
 ```yaml
 run:
   experiment:
-    tool: herramienta
-    type: tipo
+    tool: tool
+    type: type
     params:
-      parametro1: ${parametro_del_search_space}
-      parametro2: valor_fijo
+      parameter1: ${search_space_parameter}
+      parameter2: fixed_value
 
-# O alternativamente:
+# Or alternatively:
 run:
   analyze:
-    strategy: estrategia
-    data: datos
+    strategy: strategy
+    data: data
     thresholds:
-      umbral: ${parametro_del_search_space}
+      threshold: ${search_space_parameter}
 ```
 
-## Ejemplo Completo
+## Complete Example
 
-A continuación se presenta un ejemplo completo de optimización de parámetros para una reacción de PCR:
+The following is a complete example of parameter optimization for a PCR reaction:
 
 ```yaml
 metadata:
   experiment_id: PCR_OPTIM_001
   researcher: Dr. María González
   project: pcr_optimization
-  description: Optimización de condiciones de PCR para maximizar especificidad
+  description: Optimization of PCR conditions to maximize specificity
 
 optimize:
-  # Definir parámetros a explorar
+  # Define parameters to explore
   search_space:
-    temperatura_annealing: range(55, 72)      # Temperatura de alineamiento (°C)
-    concentracion_primers: range(0.1, 1.0)    # Concentración de primers (μM)
-    tiempo_extension: choice([30, 45, 60])     # Tiempo de extensión (segundos)
-    concentracion_mgcl2: range(1.5, 4.0)      # Concentración de MgCl2 (mM)
+    annealing_temperature: range(55, 72)      # Annealing temperature (°C)
+    primer_concentration: range(0.1, 1.0)    # Primer concentration (μM)
+    extension_time: choice([30, 45, 60])     # Extension time (seconds)
+    mgcl2_concentration: range(1.5, 4.0)      # MgCl2 concentration (mM)
 
-  # Estrategia de optimización con aprendizaje activo
+  # Optimization strategy with active learning
   strategy:
     name: ActiveLearning
     uncertainty_metric: entropy
     initial_samples: 8
     batch_size: 4
 
-  # Objetivo: maximizar especificidad de la PCR
+  # Objective: maximize PCR specificity
   objective:
-    maximize: especificidad_pcr
+    maximize: specificity_score
 
-  # Restricciones del experimento
+  # Budget constraints
   budget:
-    max_experiments: 80
+    max_experiments: 32
     max_time: 48h
-    convergence_threshold: 0.02
+    convergence_threshold: 0.005
 
-  # Experimento que se ejecuta en cada iteración
+  # Run PCR experiment in each iteration
   run:
     experiment:
-      tool: PCR
-      type: validation
-      strategy: optimization
+      tool: PCR_amplifier
+      type: thermal_cycling
       params:
-        # Parámetros inyectados desde search_space
-        annealing_temp: ${temperatura_annealing}
-        primer_conc: ${concentracion_primers}
-        extension_time: ${tiempo_extension}s
-        mgcl2_conc: ${concentracion_mgcl2}
+        annealing_temp: ${annealing_temperature}
+        primer_conc: ${primer_concentration}
+        extension_time: ${extension_time}
+        mgcl2_conc: ${mgcl2_concentration}
+      output: pcr_results
 
-        # Parámetros fijos
-        template_dna: "template_covid.fasta"
-        forward_primer: "ATGACTGCCAAGTATTGGAG"
-        reverse_primer: "TCAGATCCTCTTGCTGAAAT"
-        cycles: 35
-        replicates: 3
-
-# Análisis posterior de todos los resultados
-analyze:
-  strategy: comparative
-  data: optimization_results
-  operations:
-    - type: plot_optimization_curve
-    - type: identify_optimal_conditions
-    - type: validate_reproducibility
+  # Store optimized parameters
+  output: optimized_pcr_conditions
 ```
 
-## Casos de Uso Genómicos
+## Advanced Features
 
-### 1. Optimización CRISPR-Cas9
+### Multi-Fidelity Optimization
+
+For complex optimization tasks with different fidelity levels:
 
 ```yaml
 optimize:
   search_space:
-    concentracion_cas9: range(5, 50)          # ng/μL
-    concentracion_guia: range(10, 100)        # nM
-    tiempo_incubacion: choice([2, 4, 6, 8])   # horas
-    temperatura: range(25, 37)                # °C
+    temperature: range(25, 42)
+    concentration: range(10, 100)
 
   strategy:
     name: BayesianOptimization
-    acquisition_function: upper_confidence_bound
+    fidelity_levels: [low, medium, high]
+    fidelity_switching: adaptive
 
   objective:
-    maximize: eficiencia_edicion
+    maximize: efficiency_score
 
   budget:
-    max_experiments: 60
+    max_experiments: 50
+    max_time: 24h
 
   run:
     experiment:
-      tool: CRISPR_cas9
-      type: gene_editing
+      tool: CRISPR_editor
+      fidelity: ${current_fidelity}
       params:
-        cas9_conc: ${concentracion_cas9}
-        guide_rna_conc: ${concentracion_guia}
-        incubation_time: ${tiempo_incubacion}h
-        temperature: ${temperatura}
-        target_gene: TP53
+        temp: ${temperature}
+        conc: ${concentration}
 ```
 
-### 2. Optimización de Secuenciación RNA-seq
+### Multi-Objective Optimization
+
+For scenarios with competing objectives:
 
 ```yaml
 optimize:
   search_space:
-    profundidad_secuenciacion: range(10, 50)     # Millones de reads
-    longitud_reads: choice([75, 100, 150])       # Nucleótidos
-    protocolo_prep: choice([polyA, ribozero, total])
+    temperature: range(25, 42)
+    concentration: range(10, 100)
 
   strategy:
-    name: GeneticAlgorithm
-    population_size: 20
-    mutation_rate: 0.1
+    name: MultiObjectiveBayesian
+    pareto_front: true
 
   objective:
-    maximize: calidad_datos
-    minimize: costo_por_muestra
-
-  budget:
-    max_experiments: 40
-    max_cost: 25000
-
-  run:
-    experiment:
-      tool: RNAseq
-      type: sequencing
-      params:
-        depth: ${profundidad_secuenciacion}M
-        read_length: ${longitud_reads}
-        library_prep: ${protocolo_prep}
-```
-
-### 3. Optimización de Cultivos Celulares
-
-```yaml
-optimize:
-  search_space:
-    concentracion_glucosa: range(2, 25)       # mM
-    ph_medio: range(7.0, 7.8)               # pH
-    concentracion_oxigeno: range(5, 21)      # %
-    densidad_inicial: range(1e4, 1e6)       # células/mL
-
-  strategy:
-    name: SimulatedAnnealing
-    initial_temperature: 100
-    cooling_rate: 0.95
-
-  objective:
-    maximize: tasa_crecimiento
+    maximize:
+      - efficiency
+      - specificity
+    minimize:
+      - cost
+      - time
 
   budget:
     max_experiments: 100
-    max_time: 14d
 
   run:
     experiment:
-      tool: cell_culture
-      type: optimization
+      tool: GeneEditor
       params:
-        glucose: ${concentracion_glucosa}
-        ph: ${ph_medio}
-        oxygen: ${concentracion_oxigeno}
-        initial_density: ${densidad_inicial}
+        temp: ${temperature}
+        conc: ${concentration}
 ```
 
-## Integración con Plugins
+## Integration with Other Blocks
 
-El bloque `optimize` está diseñado para ser completamente extensible a través del sistema de plugins de GeneForgeLang. La clave `strategy.name` hace referencia a plugins específicos de optimización que implementan diferentes algoritmos de inteligencia artificial.
+The `optimize` block seamlessly integrates with other GFL workflow components:
 
-### Plugins de Optimización Disponibles
+- **`design`**: Optimize parameters for generative design processes
+- **`analyze`**: Optimize analysis parameters based on results
+- **`refine`**: Improve candidate quality through iterative optimization
+- **`simulate`**: Optimize simulation parameters for accuracy
 
-Cada plugin de optimización debe implementar la interfaz `OptimizationStrategy` y proporcionar:
+This integration enables sophisticated workflows that combine experimental optimization with generative design and analysis.
 
-- **Inicialización**: Configuración del algoritmo con parámetros específicos
-- **Selección de Experimentos**: Lógica para elegir próximos parámetros a probar
-- **Aprendizaje**: Actualización del modelo interno con resultados experimentales
-- **Criterios de Parada**: Evaluación de convergencia y condiciones de terminación
+## Performance Considerations
 
-### Desarrollo de Nuevos Plugins
+When using the `optimize` block, consider:
 
-Los desarrolladores pueden crear nuevos plugins de optimización siguiendo la especificación del SDK de GeneForgeLang. Esto permite incorporar algoritmos especializados para dominios específicos de la genómica.
+1. **Computational Resources**: Optimization algorithms may require significant computing power
+2. **Strategy Selection**: Choose algorithms appropriate for your specific optimization task
+3. **Budget Constraints**: Define realistic constraints for time and resources
+4. **Convergence Monitoring**: Track optimization progress to ensure effectiveness
+5. **Result Validation**: Always validate optimized parameters experimentally
 
-```python
-class CustomOptimizationStrategy(OptimizationStrategy):
-    def suggest_experiments(self, history, budget_remaining):
-        # Lógica personalizada para sugerir próximos experimentos
-        pass
+## Best Practices
 
-    def update_model(self, experiment_results):
-        # Actualizar modelo interno con nuevos resultados
-        pass
-```
+1. **Start Simple**: Begin with basic optimization tasks and gradually increase complexity
+2. **Define Clear Objectives**: Precise objectives lead to better optimization outcomes
+3. **Set Realistic Budgets**: Include constraints that reflect experimental reality
+4. **Validate Results**: Always experimentally validate optimized parameters
+5. **Iterate**: Use optimization results to refine and improve subsequent iterations
 
-## Mejores Prácticas
-
-### 1. Diseño del Espacio de Búsqueda
-- **Mantén el espacio dimensional manejable**: Evita optimizar demasiados parámetros simultáneamente
-- **Usa conocimiento previo**: Establece rangos realistas basados en la literatura
-- **Considera interacciones**: Algunos parámetros pueden tener efectos combinados
-
-### 2. Selección de Estrategia
-- **ActiveLearning**: Ideal cuando los experimentos son costosos y el espacio es complejo
-- **BayesianOptimization**: Excelente para espacios continuos con ruido experimental
-- **GeneticAlgorithm**: Útil para espacios discretos o con múltiples óptimos locales
-- **RandomSearch**: Buena línea base y para comparaciones
-
-### 3. Definición de Objetivos
-- **Métricas cuantificables**: Asegúrate de que la métrica objetivo sea medible objetivamente
-- **Considera trade-offs**: Usa análisis posterior para evaluar múltiples métricas
-- **Validación robusta**: Incluye replicados para reducir el impacto del ruido experimental
-
-### 4. Gestión de Presupuesto
-- **Múltiples criterios**: Combina límites de experimentos, tiempo y costo
-- **Convergencia inteligente**: Usa umbrales de convergencia para parar automáticamente
-- **Monitoreo continuo**: Revisa el progreso regularmente para ajustar estrategias
-
-## Flujos de Trabajo Avanzados
-
-### Optimización Multi-objetivo
-
-Aunque cada bloque `optimize` tiene un objetivo único, se pueden combinar múltiples bloques para optimización multi-objetivo:
-
-```yaml
-# Primera fase: optimizar eficiencia
-optimize:
-  search_space:
-    param1: range(1, 10)
-  objective:
-    maximize: eficiencia
-  budget:
-    max_experiments: 50
-  run:
-    experiment: {...}
-
-# Segunda fase: optimizar costo manteniendo eficiencia
-optimize:
-  search_space:
-    param2: range(0.1, 1.0)
-  objective:
-    minimize: costo
-  budget:
-    max_experiments: 30
-  run:
-    experiment:
-      params:
-        param1: 7.5  # Valor óptimo de la fase anterior
-        param2: ${param2}
-```
-
-### Optimización Jerárquica
-
-Para espacios de parámetros muy grandes, usa optimización en fases:
-
-```yaml
-# Fase 1: Exploración gruesa
-optimize:
-  search_space:
-    temp: range(20, 50)      # Rango amplio
-    conc: range(1, 100)      # Rango amplio
-  strategy:
-    name: RandomSearch       # Exploración rápida
-  budget:
-    max_experiments: 20
-  run: {...}
-
-# Fase 2: Refinamiento fino
-optimize:
-  search_space:
-    temp: range(35, 40)      # Rango refinado
-    conc: range(40, 60)      # Rango refinado
-  strategy:
-    name: BayesianOptimization  # Optimización precisa
-  budget:
-    max_experiments: 40
-  run: {...}
-```
-
-## Conclusión
-
-El bloque `optimize` transforma GeneForgeLang en una herramienta de **descubrimiento científico automatizado**, permitiendo a los investigadores definir bucles experimentales inteligentes que aprenden y se adaptan. Esta capacidad es especialmente valiosa en genómica, donde la optimización de protocolos experimentales puede marcar la diferencia entre el éxito y el fracaso de un proyecto de investigación.
-
-Al combinar la expresividad de GeneForgeLang con algoritmos de inteligencia artificial avanzados, los científicos pueden explorar espacios de parámetros complejos de manera eficiente, reduciendo significativamente el tiempo y costo del descubrimiento científico.
+The `optimize` block represents a powerful capability for automated experimental design, enabling researchers to harness the power of AI for scientific discovery and innovation.

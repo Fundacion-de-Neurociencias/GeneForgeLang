@@ -103,7 +103,7 @@ def demo_api_server():
     # Check if server components are available
     try:
         from gfl.api_server import create_app
-        from gfl.client_sdk import create_client, GFLClientError
+        from gfl.client_sdk import GFLClientError, create_client
 
         print("✅ API Server components available")
 
@@ -122,9 +122,7 @@ def demo_api_server():
                 print(f"   Models: {len(health.get('available_models', []))}")
 
                 # Test parsing
-                for name, sample in list(DEMO_SAMPLES.items())[
-                    :2
-                ]:  # Test first 2 samples
+                for name, sample in list(DEMO_SAMPLES.items())[:2]:  # Test first 2 samples
                     print(f"\n🧪 Testing: {name}")
 
                     try:
@@ -135,18 +133,14 @@ def demo_api_server():
                         # Validate
                         validation_result = client.validate(sample)
                         status = "✅" if validation_result.is_valid else "❌"
-                        print(
-                            f"   Validate: {status} ({validation_result.execution_time_ms:.1f}ms)"
-                        )
+                        print(f"   Validate: {status} ({validation_result.execution_time_ms:.1f}ms)")
 
                         if validation_result.errors:
                             print(f"   Errors: {len(validation_result.errors)}")
 
                         # Inference
                         inference_result = client.infer(sample, model_name="heuristic")
-                        print(
-                            f"   Inference: {inference_result.prediction} ({inference_result.confidence:.1%})"
-                        )
+                        print(f"   Inference: {inference_result.prediction} ({inference_result.confidence:.1%})")
 
                     except GFLClientError as e:
                         print(f"   ❌ Client Error: {e}")
@@ -170,14 +164,10 @@ def demo_api_server():
                     sample_list = list(DEMO_SAMPLES.values())[:3]
 
                     start_time = time.time()
-                    batch_results = client.batch_inference(
-                        sample_list, model_name="heuristic"
-                    )
+                    batch_results = client.batch_inference(sample_list, model_name="heuristic")
                     batch_time = time.time() - start_time
 
-                    successful = sum(
-                        1 for r in batch_results if r.get("success", False)
-                    )
+                    successful = sum(1 for r in batch_results if r.get("success", False))
                     print(f"   Processed: {successful}/{len(batch_results)} samples")
                     print(f"   Total Time: {batch_time*1000:.1f}ms")
                     print(f"   Avg/Sample: {batch_time*1000/len(sample_list):.1f}ms")
@@ -198,9 +188,7 @@ def demo_api_server():
                     endpoints = stats.get("endpoints_called", {})
                     if endpoints:
                         print("   Top Endpoints:")
-                        for endpoint, count in sorted(
-                            endpoints.items(), key=lambda x: x[1], reverse=True
-                        )[:3]:
+                        for endpoint, count in sorted(endpoints.items(), key=lambda x: x[1], reverse=True)[:3]:
                             print(f"     {endpoint}: {count} calls")
 
                 except Exception as e:
@@ -240,12 +228,12 @@ def demo_web_interface():
 
     try:
         from gfl.web_interface import (
+            SAMPLE_GFL_CONTENT,
             create_interface,
-            initialize_inference_engine,
-            parse_and_validate_gfl,
             get_available_models,
             get_system_stats,
-            SAMPLE_GFL_CONTENT,
+            initialize_inference_engine,
+            parse_and_validate_gfl,
         )
 
         print("✅ Web Interface components available")
@@ -352,9 +340,7 @@ def demo_server_launcher():
             server_proc = ServerProcess(name="demo_server", target_func=dummy_server)
 
             print(f"   ✅ ServerProcess created: {server_proc.name}")
-            print(
-                f"   Initial state: {'Running' if server_proc.is_running() else 'Stopped'}"
-            )
+            print(f"   Initial state: {'Running' if server_proc.is_running() else 'Stopped'}")
 
         except Exception as e:
             print(f"   ❌ ServerProcess error: {e}")
@@ -434,9 +420,7 @@ async def demo_async_client():
                     print(f"   Concurrent requests: {len(tasks)}")
                     print(f"   Successful: {len(successful_results)}")
                     print(f"   Total time: {concurrent_time*1000:.1f}ms")
-                    print(
-                        f"   Avg per request: {concurrent_time*1000/len(tasks):.1f}ms"
-                    )
+                    print(f"   Avg per request: {concurrent_time*1000/len(tasks):.1f}ms")
 
                     # Test async parsing
                     if successful_results:
@@ -444,23 +428,13 @@ async def demo_async_client():
                         sample = list(DEMO_SAMPLES.values())[0]
 
                         parse_result = await client.parse(sample)
-                        print(
-                            f"   Parse result: {'✅' if parse_result.success else '❌'}"
-                        )
-                        print(
-                            f"   Execution time: {parse_result.execution_time_ms:.1f}ms"
-                        )
+                        print(f"   Parse result: {'✅' if parse_result.success else '❌'}")
+                        print(f"   Execution time: {parse_result.execution_time_ms:.1f}ms")
 
                         # Test async inference
-                        inference_result = await client.infer(
-                            sample, model_name="heuristic"
-                        )
-                        print(
-                            f"   Inference: {inference_result.prediction} ({inference_result.confidence:.1%})"
-                        )
-                        print(
-                            f"   Execution time: {inference_result.execution_time_ms:.1f}ms"
-                        )
+                        inference_result = await client.infer(sample, model_name="heuristic")
+                        print(f"   Inference: {inference_result.prediction} ({inference_result.confidence:.1%})")
+                        print(f"   Execution time: {inference_result.execution_time_ms:.1f}ms")
 
             except Exception as e:
                 print(f"❌ Async client testing failed: {e}")

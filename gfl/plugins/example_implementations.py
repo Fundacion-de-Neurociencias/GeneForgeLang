@@ -63,12 +63,7 @@ class ProteinVAEGenerator(SequenceGeneratorPlugin):
         return [EntityType.PROTEIN_SEQUENCE, EntityType.PEPTIDE]
 
     def generate(
-        self,
-        entity: str,
-        objective: Dict[str, Any],
-        constraints: List[str],
-        count: int,
-        **kwargs
+        self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
     ) -> List[DesignCandidate]:
         """Generate protein sequences using VAE-based design."""
 
@@ -95,8 +90,8 @@ class ProteinVAEGenerator(SequenceGeneratorPlugin):
                     "generation_method": "VAE",
                     "model_version": "protein_vae_v1.2",
                     "generation_temperature": kwargs.get("temperature", 0.8),
-                    "iteration": i + 1
-                }
+                    "iteration": i + 1,
+                },
             )
             candidates.append(candidate)
 
@@ -105,9 +100,9 @@ class ProteinVAEGenerator(SequenceGeneratorPlugin):
     def _parse_length_constraint(self, constraints: List[str]) -> tuple:
         """Parse length constraints from constraint list."""
         for constraint in constraints:
-            if constraint.startswith('length('):
+            if constraint.startswith("length("):
                 content = constraint[7:-1]  # Remove 'length(' and ')'
-                parts = [p.strip() for p in content.split(',')]
+                parts = [p.strip() for p in content.split(",")]
                 return (int(parts[0]), int(parts[1]))
 
         # Default length range for proteins
@@ -139,7 +134,7 @@ class ProteinVAEGenerator(SequenceGeneratorPlugin):
             amino_acids = "ACDEFGHIKLMNPQRSTVWY" * 2 + "FYWRHKED" * 3
 
         length = random.randint(*length_range)
-        sequence = ''.join(random.choices(amino_acids, k=length))
+        sequence = "".join(random.choices(amino_acids, k=length))
 
         return sequence
 
@@ -154,9 +149,13 @@ class ProteinVAEGenerator(SequenceGeneratorPlugin):
         aromatic_aa = sum(1 for aa in sequence if aa in "FYW")
 
         properties["stability"] = min(1.0, (hydrophobic_aa / len(sequence)) * 2.0 + random.uniform(-0.2, 0.2))
-        properties["binding_affinity"] = min(1.0, ((aromatic_aa + charged_aa) / len(sequence)) * 1.5 + random.uniform(-0.15, 0.15))
+        properties["binding_affinity"] = min(
+            1.0, ((aromatic_aa + charged_aa) / len(sequence)) * 1.5 + random.uniform(-0.15, 0.15)
+        )
         properties["solubility"] = min(1.0, (charged_aa / len(sequence)) * 3.0 + random.uniform(-0.3, 0.3))
-        properties["aggregation_propensity"] = max(0.0, (hydrophobic_aa / len(sequence)) * 1.2 - 0.4 + random.uniform(-0.1, 0.1))
+        properties["aggregation_propensity"] = max(
+            0.0, (hydrophobic_aa / len(sequence)) * 1.2 - 0.4 + random.uniform(-0.1, 0.1)
+        )
 
         return properties
 
@@ -181,8 +180,13 @@ class ProteinVAEGenerator(SequenceGeneratorPlugin):
         errors = []
 
         valid_metrics = {
-            "stability", "binding_affinity", "solubility", "activity",
-            "selectivity", "expression_level", "aggregation_propensity"
+            "stability",
+            "binding_affinity",
+            "solubility",
+            "activity",
+            "selectivity",
+            "expression_level",
+            "aggregation_propensity",
         }
 
         if "maximize" in objective and objective["maximize"] not in valid_metrics:
@@ -231,12 +235,7 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
         return [EntityType.SMALL_MOLECULE]
 
     def generate(
-        self,
-        entity: str,
-        objective: Dict[str, Any],
-        constraints: List[str],
-        count: int,
-        **kwargs
+        self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
     ) -> List[DesignCandidate]:
         """Generate drug-like molecules using transformer architecture."""
 
@@ -247,7 +246,7 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
         mw_constraint = self._parse_molecular_weight_constraint(constraints)
         logp_constraint = self._parse_logp_constraint(constraints)
         target_properties = objective
-        
+
         candidates = []
 
         for i in range(count):
@@ -264,8 +263,8 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
                     "generation_method": "Transformer",
                     "model_version": "molecule_transformer_v2.1",
                     "sampling_strategy": kwargs.get("sampling", "nucleus"),
-                    "iteration": i + 1
-                }
+                    "iteration": i + 1,
+                },
             )
             candidates.append(candidate)
 
@@ -274,14 +273,14 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
     def _parse_objective(self, objective: Dict[str, Any]) -> Dict[str, Any]:
         """Parse optimization objective."""
         target_props = {}
-        
+
         if "maximize" in objective:
             target_props["maximize"] = objective["maximize"]
         if "minimize" in objective:
             target_props["minimize"] = objective["minimize"]
         if "target" in objective:
             target_props["target"] = objective["target"]
-            
+
         return target_props
 
     def _parse_molecular_weight_constraint(self, constraints: List[str]) -> Optional[tuple]:
@@ -301,10 +300,7 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
         return None
 
     def _generate_smiles(
-        self,
-        mw_constraint: Optional[tuple],
-        logp_constraint: Optional[tuple],
-        target_props: Dict[str, Any]
+        self, mw_constraint: Optional[tuple], logp_constraint: Optional[tuple], target_props: Dict[str, Any]
     ) -> str:
         """Generate SMILES string using transformer model (simulated)."""
 
@@ -323,10 +319,7 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
             base = random.choice(scaffolds)
 
         # Add functional groups (simplified simulation)
-        modifications = [
-            "C", "CC", "CCC", "O", "N", "F", "Cl",
-            "C(=O)N", "S(=O)(=O)N", "C(=O)O"
-        ]
+        modifications = ["C", "CC", "CCC", "O", "N", "F", "Cl", "C(=O)N", "S(=O)(=O)N", "C(=O)O"]
 
         # Simulate transformer generation by adding modifications
         smiles = base
@@ -342,14 +335,18 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
         # In practice, this would use RDKit for actual property calculation
 
         # Estimate properties based on SMILES string characteristics
-        num_carbons = smiles.count('C')
-        num_rings = smiles.count('c') // 6  # Approximate ring count
-        num_nitrogens = smiles.count('N')
-        num_oxygens = smiles.count('O')
+        num_carbons = smiles.count("C")
+        num_rings = smiles.count("c") // 6  # Approximate ring count
+        num_nitrogens = smiles.count("N")
+        num_oxygens = smiles.count("O")
 
         properties = {}
-        properties["molecular_weight"] = num_carbons * 12 + num_nitrogens * 14 + num_oxygens * 16 + random.uniform(50, 100)
-        properties["logP"] = (num_carbons * 0.5 + num_rings * 0.8 - num_oxygens * 0.7 - num_nitrogens * 0.5) + random.uniform(-1, 1)
+        properties["molecular_weight"] = (
+            num_carbons * 12 + num_nitrogens * 14 + num_oxygens * 16 + random.uniform(50, 100)
+        )
+        properties["logP"] = (
+            num_carbons * 0.5 + num_rings * 0.8 - num_oxygens * 0.7 - num_nitrogens * 0.5
+        ) + random.uniform(-1, 1)
         properties["rotatable_bonds"] = max(0, num_carbons - num_rings * 6 - 1) + random.randint(-1, 2)
         properties["hbd_count"] = num_oxygens + num_nitrogens + random.randint(0, 2)
         properties["hba_count"] = num_oxygens + num_nitrogens + random.randint(0, 3)
@@ -413,11 +410,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
         ]
 
     def setup(
-        self,
-        search_space: Dict[str, str],
-        strategy: Dict[str, Any],
-        objective: Dict[str, Any],
-        budget: Dict[str, Any]
+        self, search_space: Dict[str, str], strategy: Dict[str, Any], objective: Dict[str, Any], budget: Dict[str, Any]
     ) -> None:
         """Initialize Bayesian optimization with problem specification."""
 
@@ -463,8 +456,8 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
             metadata={
                 "acquisition_function": self._strategy_config.get("acquisition", "expected_improvement"),
                 "gp_lengthscale": 0.5 + random.uniform(-0.1, 0.1),  # Simulated
-                "exploration_weight": self._strategy_config.get("exploration_weight", 0.1)
-            }
+                "exploration_weight": self._strategy_config.get("exploration_weight", 0.1),
+            },
         )
 
     def _parse_search_space(self, search_space: Dict[str, str]) -> Dict[str, Dict[str, Any]]:
@@ -472,23 +465,17 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
         parsed_space = {}
 
         for param, definition in search_space.items():
-            if definition.startswith('range('):
+            if definition.startswith("range("):
                 # Continuous parameter
                 content = definition[6:-1]
-                parts = [float(p.strip()) for p in content.split(',')]
-                parsed_space[param] = {
-                    "type": "continuous",
-                    "bounds": (parts[0], parts[1])
-                }
-            elif definition.startswith('choice('):
+                parts = [float(p.strip()) for p in content.split(",")]
+                parsed_space[param] = {"type": "continuous", "bounds": (parts[0], parts[1])}
+            elif definition.startswith("choice("):
                 # Discrete parameter
                 content = definition[7:-1]  # Remove 'choice(' and ')'
                 # Simple parsing - in practice would use ast.literal_eval
-                choices = [x.strip().strip("'\"") for x in content.strip('[]').split(',')]
-                parsed_space[param] = {
-                    "type": "discrete",
-                    "choices": choices
-                }
+                choices = [x.strip().strip("'\"") for x in content.strip("[]").split(",")]
+                parsed_space[param] = {"type": "discrete", "choices": choices}
 
         return parsed_space
 
@@ -515,7 +502,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
 
         # Simulate acquisition function optimization
         best_params = None
-        best_acquisition = -float('inf')
+        best_acquisition = -float("inf")
 
         # Sample multiple candidates and pick best
         for _ in range(100):
@@ -529,9 +516,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
         return best_params
 
     def _evaluate_acquisition_function(
-        self,
-        parameters: Dict[str, Any],
-        experiment_history: List[ExperimentResult]
+        self, parameters: Dict[str, Any], experiment_history: List[ExperimentResult]
     ) -> float:
         """Evaluate acquisition function for given parameters (simulated)."""
 
@@ -547,7 +532,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
                 if param in result.parameters:
                     if isinstance(value, (int, float)):
                         distance += abs(value - result.parameters[param]) ** 2
-            distances.append(distance ** 0.5)
+            distances.append(distance**0.5)
 
         # Expected improvement simulation
         min_distance = min(distances) if distances else 1.0
@@ -558,9 +543,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
         return exploitation + exploration_weight * exploration + random.uniform(-0.1, 0.1)
 
     def _calculate_expected_improvement(
-        self,
-        parameters: Dict[str, Any],
-        experiment_history: List[ExperimentResult]
+        self, parameters: Dict[str, Any], experiment_history: List[ExperimentResult]
     ) -> float:
         """Calculate expected improvement for suggested parameters."""
         if not experiment_history:
@@ -572,9 +555,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
         return max(0.0, random.uniform(0.1, 0.8) - (current_best * 0.1))
 
     def _estimate_parameter_uncertainty(
-        self,
-        parameters: Dict[str, Any],
-        experiment_history: List[ExperimentResult]
+        self, parameters: Dict[str, Any], experiment_history: List[ExperimentResult]
     ) -> float:
         """Estimate uncertainty in parameter region."""
 
@@ -583,12 +564,9 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
             return random.uniform(0.5, 0.9)
 
         # Distance-based uncertainty simulation
-        min_distance = float('inf')
+        min_distance = float("inf")
         for result in experiment_history:
-            distance = sum(
-                abs(parameters.get(p, 0) - result.parameters.get(p, 0)) ** 2
-                for p in parameters
-            ) ** 0.5
+            distance = sum(abs(parameters.get(p, 0) - result.parameters.get(p, 0)) ** 2 for p in parameters) ** 0.5
             min_distance = min(min_distance, distance)
 
         # Normalize uncertainty based on exploration
@@ -606,7 +584,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
             "iteration_count": self._iteration_count,
             "search_space": self._search_space,
             "strategy_config": self._strategy_config,
-            "gp_model_state": {"params": "serialized_model_params"}
+            "gp_model_state": {"params": "serialized_model_params"},
         }
 
     def load_optimization_state(self, state: Dict[str, Any]) -> None:
@@ -622,9 +600,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
         return {"plugin_type": "optimizer", "strategies": [s.value for s in self.supported_strategies]}
 
     def estimate_remaining_time(
-        self,
-        experiment_history: List[ExperimentResult],
-        budget: Dict[str, Any]
+        self, experiment_history: List[ExperimentResult], budget: Dict[str, Any]
     ) -> Optional[float]:
         """Estimate remaining optimization time."""
 
@@ -649,25 +625,19 @@ def register_example_plugins():
     try:
         # Register generator plugins
         register_generator_plugin(
-            ProteinVAEGenerator,
-            "protein_vae_generator",
-            version="1.2.0",
-            priority=PluginPriority.HIGH
+            ProteinVAEGenerator, "protein_vae_generator", version="1.2.0", priority=PluginPriority.HIGH
         )
 
         register_generator_plugin(
             MoleculeTransformerGenerator,
             "molecule_transformer_generator",
             version="2.1.0",
-            priority=PluginPriority.HIGH
+            priority=PluginPriority.HIGH,
         )
 
         # Register optimizer plugin
         register_optimizer_plugin(
-            BayesianOptimizer,
-            "bayesian_optimizer",
-            version="1.5.0",
-            priority=PluginPriority.NORMAL
+            BayesianOptimizer, "bayesian_optimizer", version="1.5.0", priority=PluginPriority.NORMAL
         )
 
         logger.info("Successfully registered example plugins")
