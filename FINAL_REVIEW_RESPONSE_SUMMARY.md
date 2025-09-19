@@ -18,12 +18,13 @@ This document summarizes all the improvements made to address the reviewer conce
 - ✅ Position-specific mismatch penalties correctly implemented
 - ✅ Documentation clearly explains the scientific basis
 
-#### DeepHF Implementation (On-Target Scoring)
-- ✅ Correctly references Wang et al. (2019) Nature Communications paper
-- ✅ Implementation captures key principles of the DeepHF model:
-  - RNN (LSTM) for sequence order and contextual relationships
-  - Biological features like GC content and dinucleotide frequencies
-  - Models long-term dependencies in sgRNA sequences
+#### Rule Set 2 Implementation (On-Target Scoring)
+- ✅ Correctly references Doench et al. (2016) Nature Biotechnology paper
+- ✅ Implementation captures key principles of the Rule Set 2 model:
+  - Position-specific weights for each nucleotide at each position
+  - GC content as a feature
+  - Linear combination of features with learned weights
+  - Logistic transformation to get probability scores
 - ✅ Documentation clearly explains the scientific basis
 
 ### 3. Plugin System Fixes
@@ -58,9 +59,8 @@ All functionality has been verified through comprehensive testing:
 
 All references in the codebase now point to real, valid scientific papers:
 
-1. **Doench et al. (2016)** - Nature Biotechnology - CFD scoring algorithm
-2. **Wang et al. (2019)** - Nature Communications - DeepHF model
-3. **Supplementary Table 19** - From Doench et al. (2016) paper for CFD score matrix
+1. **Doench et al. (2016)** - Nature Biotechnology - Rule Set 2 and CFD scoring algorithms
+2. **Supplementary Table 19** - From Doench et al. (2016) paper for CFD score matrix
 
 ## Plugin Availability
 
@@ -68,7 +68,7 @@ All required plugins are now properly registered and available:
 - ProteinVAEGenerator
 - MoleculeTransformerGenerator
 - BayesianOptimizer
-- ontarget_scorer (DeepHF-based)
+- ontarget_scorer (Rule Set 2-based)
 - offtarget_scorer (CFD-based)
 - crispr_evaluator (orchestrator)
 
