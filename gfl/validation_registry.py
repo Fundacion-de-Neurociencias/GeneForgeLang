@@ -1,7 +1,7 @@
 # gfl/validation_registry.py
 
 # Este módulo define todos los valores válidos y reconocidos por GeneForgeLang
-# para objetivos de simulación, herramientas de análisis, tipos de experimento, parámetros, etc.
+# para objetivos de simulación, herramientas de análisis, tipos de experimento, parameters, etc.
 
 # --- Objetivos de Simulación Válidos ---
 VALID_SIMULATION_TARGETS = {
@@ -37,7 +37,7 @@ VALID_ANALYSIS_STRATEGIES = [
 
 # --- Parámetros Válidos por Herramienta y Estrategia ---
 # Define un mapeo de herramienta -> estrategia -> {parametro: descripcion_tipo}
-# Esto nos permite validar que solo se usen parámetros relevantes para cada combinación.
+# Esto nos permite validar que solo se usen parameters relevantes para cada combinación.
 VALID_PARAMS_BY_TOOL_STRATEGY = {
     "DESeq2": {
         "differential_expression": {
@@ -67,5 +67,5 @@ VALID_PARAMS_BY_TOOL_STRATEGY = {
             "permutation_type": "string (ej. 'phenotype', 'gene_set')",
         },
     },
-    # Añadir más herramientas y sus parámetros válidos aquí
+    # Añadir más herramientas y sus parameters válidos aquí
 }

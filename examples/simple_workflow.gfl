@@ -1,0 +1,31 @@
+# Simple GFL Workflow Example
+# This demonstrates the basic syntax and capabilities
+
+design:
+  entity: ProteinSequence
+  model: ProteinVAEGenerator
+  objective:
+    maximize: stability
+  count: 10
+  length: 100
+  output: designed_proteins
+
+optimize:
+  search_space:
+    temperature: "range(25, 42)"
+    pH: "range(6.0, 8.0)"
+    concentration: "range(10, 100)"
+  strategy:
+    name: BayesianOptimization
+  objective:
+    maximize: efficiency
+  budget:
+    max_experiments: 20
+  run:
+    experiment:
+      tool: protein_assay
+      type: efficiency_measurement
+      params:
+        temp: "${temperature}"
+        pH: "${pH}"
+        conc: "${concentration}"

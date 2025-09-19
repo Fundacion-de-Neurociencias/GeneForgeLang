@@ -1,128 +1,155 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "geneforgelang"
 version = "1.0.0"
-description = "GeneForgeLang: a DSL for genomic workflows"
+description = "A professional DSL for genomic workflows and bioinformatics"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-authors = [{ name = "GeneForgeLang Team" }]
+authors = [
+    { name = "GeneForgeLang Team", email = "team@geneforgelang.org" }
+]
+maintainers = [
+    { name = "GeneForgeLang Team", email = "team@geneforgelang.org" }
+]
+keywords = ["genomics", "bioinformatics", "dsl", "workflow", "language"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research", 
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Software Development :: Languages",
+]
+
 dependencies = [
-  "PyYAML>=6.0",
+    "PyYAML>=6.0",
+    "pydantic>=2.0.0",
+    "typing-extensions>=4.0.0",
 ]
 
 [project.optional-dependencies]
-lexer = ["ply>=3.11"]
-apps = ["gradio>=5.35.0", "python-dotenv>=1.0", "google-generativeai>=0.7"]
+web = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0", 
+    "httpx>=0.25.0",
+    "slowapi>=0.1.7",
+    "starlette>=0.47.2",
+    "aiohttp>=3.12.14",
+]
+cli = [
+    "click>=8.0.0",
+    "rich>=13.0.0",
+    "typer>=0.9.0",
+]
 ml = [
-  "torch>=2.3; platform_machine!='arm64'",
-  "transformers>=4.40",
+    "torch>=2.0.0",
+    "transformers>=4.30.0",
+    "scikit-learn>=1.3.0",
+    "numpy>=1.24.0",
 ]
-server = [
-  "fastapi>=0.104.0",
-  "uvicorn[standard]>=0.24.0",
-  "httpx>=0.25.0",
-  "slowapi>=0.1.7",
-  "pydantic>=2.0.0",
-  "starlette>=0.47.2",
-  "aiohttp>=3.12.14",
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0", 
+    "pytest-mock>=3.10",
+    "ruff>=0.1.0",
+    "black>=23.0",
+    "mypy>=1.5",
+    "pre-commit>=3.0",
 ]
-test = [
-  "pytest>=7.0",
-  "pytest-cov>=4.0",
-  "pytest-mock>=3.10",
-  "coverage>=7.0",
-]
-qa = [
-  "ruff>=0.1.0",
-  "black>=23.0",
-  "mypy>=1.5",
-  "bandit[toml]>=1.7",
-  "safety>=2.3",
-  "pre-commit>=3.0",
-]
-schema = [
-  "jsonschema>=4.0",
-  "pydantic>=2.0.0",
-]
-docs = [
-  "mkdocs-material>=9.0",
-  "mkdocs>=1.5",
-]
-minimal = []
-full = [
-  "gradio>=5.35.0",
-  "fastapi>=0.104.0",
-  "uvicorn[standard]>=0.24.0",
-  "httpx>=0.25.0",
-  "slowapi>=0.1.7",
-  "pydantic>=2.0.0",
-  "starlette>=0.47.2",
-  "aiohttp>=3.12.14",
-  "python-dotenv>=1.0",
-  "google-generativeai>=0.7",
-  "ply>=3.11",
-  "torch>=2.3; platform_machine!='arm64'",
-  "transformers>=4.40",
-  "pytest>=7.0",
-  "pytest-cov>=4.0",
-  "pytest-mock>=3.10",
-  "coverage>=7.0",
-  "ruff>=0.1.0",
-  "black>=23.0",
-  "mypy>=1.5",
-  "bandit[toml]>=1.7",
-  "safety>=2.3",
-  "pre-commit>=3.0",
-  "jsonschema>=4.0",
-  "mkdocs-material>=9.0",
-  "mkdocs>=1.5",
+all = [
+    "geneforgelang[web,cli,ml,dev]"
 ]
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["gfl*", "gf*"]
+[project.urls]
+Homepage = "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang"
+Documentation = "https://geneforgelang.readthedocs.io"
+Repository = "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang"
+Issues = "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues"
 
 [project.scripts]
-gfl = "gfl.cli_main:main"
-gfl-parse = "gfl.cli:cmd_parse"
-gfl-validate = "gfl.cli:cmd_validate"
-gfl-enhanced = "gfl.enhanced_cli:main"
-gfl-inference = "gfl.cli_inference:main"
-gfl-server = "gfl.server_launcher:main"
-gfl-web = "gfl.web_interface:launch_web_interface"
-gfl-api = "gfl.api_server:run_server"
-gfl-info = "gfl.cli_utils:info"
+gfl = "geneforgelang.cli.main:main"
+geneforgelang = "geneforgelang.cli.main:main"
 
-# Entry points for GFL plugins
-[project.entry-points."gfl.plugins"]
-alpha_genome = "gfl.plugins.alpha_genome:AlphaGenomePlugin"
-variant_sim = "gfl.plugins.variant_sim:VariantSimulationPlugin"
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["geneforgelang*"]
 
-# Entry points for GFL validators
-[project.entry-points."gfl.validators"]
-semantic = "gfl.semantic_validator:SemanticValidator"
-schema = "gfl.enhanced_schema_validator:EnhancedSchemaValidator"
+[tool.setuptools.package-data]
+geneforgelang = ["py.typed", "*.json", "*.yaml", "*.yml"]
 
-# Entry points for GFL parsers
-[project.entry-points."gfl.parsers"]
-yaml_parser = "gfl.yaml_lang.parser:YamlParser"
-default_parser = "gfl.parser:parse_gfl"
-grammar_parser = "gfl.grammar_parser:parse_gfl_grammar"
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config", 
+    "--cov=src/geneforgelang",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
 
-# Security tool configurations
-[tool.bandit]
-# Skip certain security checks that are acceptable in this context
-# B101: assert used - OK in development and debugging code
-# B110: try/except pass - OK for graceful degradation
-# B112: try/except continue - OK for robust iteration
-# B311: random module - OK for non-cryptographic uses in scripts
-# B403: pickle imports - Documented risk in genetics tools
-# B404: subprocess imports - OK for development scripts
-skips = ["B101", "B110", "B112", "B311", "B403", "B404", "B603", "B607"]
-exclude_dirs = ["tests", "docs", "examples", "scripts", "tools", "bench"]
-confidence = "MEDIUM"
-severity = "MEDIUM"
+[tool.coverage.run]
+source = ["src/geneforgelang"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+]
+
+[tool.mypy]
+python_version = "3.9"
+packages = ["src/geneforgelang"]
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",  # pycodestyle
+    "F",       # Pyflakes  
+    "UP",      # pyupgrade
+    "B",       # flake8-bugbear
+    "SIM",     # flake8-simplify
+    "I",       # isort
+    "N",       # pep8-naming
+    "D",       # pydocstyle
+    "S",       # bandit
+    "C4",      # flake8-comprehensions
+    "ICN",     # flake8-import-conventions
+    "T20",     # flake8-print
+]
+ignore = [
+    "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107",  # Missing docstrings
+    "S101",  # Use of assert
+    "S603",  # subprocess call
+    "S607",  # Starting a process with a partial executable path
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "D", "T20"]
+"tools/**/*.py" = ["T20", "S"]
+
+[tool.black]
+line-length = 100
+target-version = ['py39']
+include = '\.pyi?$'

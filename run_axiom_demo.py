@@ -11,9 +11,9 @@ with open(example_path, encoding="utf-8") as f:
 # Parsear el archivo usando el parser de GFL
 ast = parser.parser.parse(source)
 
-print("🧠 AST generado:\n", ast)
+print("🧠 Generated AST:\n", ast)
 
-# Registrar axiomas desde el AST
+# Register axioms from el AST
 register_axiom_candidates(ast)
 
 print("\n📘 Axiomas actuales:")

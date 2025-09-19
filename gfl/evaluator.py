@@ -106,16 +106,16 @@ class Evaluator:
 
     def _validate_analysis_params(self, tool, strategy, params, node_info):
         """
-        Valida que los parámetros proporcionados sean válidos para la herramienta y estrategia dadas.
+        Valida que los parameters proporcionados sean válidos para la herramienta y estrategia dadas.
         """
         tool_params = VALID_PARAMS_BY_TOOL_STRATEGY.get(tool)
         if not tool_params:
-            # Si la herramienta no tiene parámetros definidos en el registro,
+            # Si la herramienta no tiene parameters definidos en el registro,
             # no podemos validar, pero ya se debería haber generado un error de herramienta.
             # Podríamos loguear una advertencia si se proporcionaron params inesperadamente.
             if params:
                 self._log_warning(
-                    f"No hay parámetros definidos para la herramienta '{tool}'. Los parámetros proporcionados serán ignorados o podrían causar errores posteriores.",
+                    f"No hay parameters definidos para la herramienta '{tool}'. Los parameters proporcionados serán ignorados o podrían causar errores posteriores.",
                     line=node_info.get("line"),
                     column=node_info.get("column"),
                 )
@@ -123,11 +123,11 @@ class Evaluator:
 
         strategy_params = tool_params.get(strategy)
         if not strategy_params:
-            # Si la estrategia no tiene parámetros definidos para la herramienta,
+            # Si la estrategia no tiene parameters definidos para la herramienta,
             # lo mismo que arriba.
             if params:
                 self._log_warning(
-                    f"No hay parámetros definidos para la estrategia '{strategy}' bajo la herramienta '{tool}'. Los parámetros proporcionados serán ignorados o podrían causar errores posteriores.",
+                    f"No hay parameters definidos para la estrategia '{strategy}' bajo la herramienta '{tool}'. Los parameters proporcionados serán ignorados o podrían causar errores posteriores.",
                     line=node_info.get("line"),
                     column=node_info.get("column"),
                 )
@@ -141,9 +141,9 @@ class Evaluator:
                     f"El parámetro '{param_name}' no es válido para la herramienta '{tool}' con estrategia '{strategy}'.",
                     line=node_info.get("line"),
                     column=node_info.get("column"),
-                    suggestion=f"Los parámetros válidos son: {valid_param_keys}"
+                    suggestion=f"Los parameters válidos son: {valid_param_keys}"
                     if valid_param_keys
-                    else "No hay parámetros válidos definidos.",
+                    else "No hay parameters válidos definidos.",
                 )
                 all_params_valid = False
             # TODO: Aquí se podría añadir validación de tipo/rango para param_value
@@ -183,11 +183,11 @@ class Evaluator:
 
             if tool_valid and strategy_valid and params_valid:
                 self.output_buffer.append(
-                    f"INFO: Análisis usando '{tool}' con estrategia '{strategy}' y parámetros: {params}."
+                    f"INFO: Análisis usando '{tool}' con estrategia '{strategy}' y parameters: {params}."
                 )
             else:
                 self.output_buffer.append(
-                    "ERROR: No se puede realizar el análisis debido a problemas de herramienta, estrategia o parámetros."
+                    "ERROR: No se puede realizar el análisis debido a problemas de herramienta, estrategia o parameters."
                 )
 
         elif node_type == "experiment_block":
@@ -209,9 +209,9 @@ class Evaluator:
             true_block = node.get("true_block", [])
             node.get("false_block", [])
 
-            self.output_buffer.append(f"INFO: Se encontró una bifurcación con condición: '{condition}'.")
+            self.output_buffer.append(f"INFO: Found a branch with condition: '{condition}'.")
 
-            self.output_buffer.append("INFO: Ejecutando el bloque 'verdadero' de la bifurcación (simulado).")
+            self.output_buffer.append("INFO: Executing the 'true' block of the branch (simulated).")
             for statement in true_block:
                 self.evaluate(statement)
 

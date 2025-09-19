@@ -1,35 +1,37 @@
-# GeneForgeLang Examples
+# GFL Examples
 
-This directory contains example projects and use cases demonstrating the capabilities of GeneForgeLang (GFL).
+This directory contains example GFL workflows demonstrating the language syntax and capabilities.
 
-## Available Examples
+## simple_workflow.gfl
 
-### [GFL Genesis](gfl-genesis/)
-A comprehensive example project showcasing advanced GFL features including:
-- Custom plugins
-- Schema definitions
-- Complex workflow designs
-- Testing frameworks
+A basic example showing:
+- Protein sequence design using a generator plugin
+- Parameter optimization using search strategies
+- Workflow variable substitution
 
-This project serves as a template for building sophisticated genomic workflows with GFL.
+## Running Examples
 
-### Simple Examples
-- [example1.gfl](example1.gfl) - Basic GFL workflow example
-- [example2.gfl](example2.gfl) - Simple design and optimization workflow
-- [example_crispr_optimization.gfl](../example_crispr_optimization.gfl) - CRISPR optimization workflow
-- [example_protein_design.gfl](../example_protein_design.gfl) - Protein design workflow
+```python
+from gfl.api import parse, validate, execute
 
-## Usage
+# Load and parse a GFL file
+with open('examples/simple_workflow.gfl', 'r') as f:
+    gfl_code = f.read()
 
-Each example can be executed using the GFL CLI tools:
+ast = parse(gfl_code)
+errors = validate(ast)
 
-```bash
-# Parse and validate a GFL file
-gfl-parse example1.gfl
-gfl-validate example1.gfl
-
-# Execute a GFL workflow
-gfl-execute example1.gfl
+if not errors:
+    result = execute(ast)
+    print("Workflow completed successfully!")
+else:
+    print(f"Validation errors: {errors}")
 ```
 
-For the GFL Genesis project, refer to its specific documentation in the [gfl-genesis/](gfl-genesis/) directory.
+## Plugin Requirements
+
+The examples use these plugins:
+- `ProteinVAEGenerator`: Simple protein sequence generator (maps to SimpleProteinGenerator)
+- `BayesianOptimization`: Parameter optimization (maps to SimpleOptimizer)
+
+These are baseline implementations provided for demonstration. For production use, integrate established computational biology tools through the plugin system.

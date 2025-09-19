@@ -14,8 +14,8 @@ def run_experiment(node):
         print("    [Scanpy] Imputación (dummy; implementa aquí MAGIC, ALRA, etc. si quieres)...")
         return {"status": "ok", "note": "Imputation step (no-op in demo)"}
 
-    # Carga el archivo de datos
-    print(f"    [Scanpy] Cargando datos desde {h5ad_path} ...")
+    # Load data file
+    print(f"    [Scanpy] Loading data from {h5ad_path} ...")
     try:
         adata = sc.read_h5ad(h5ad_path)
     except Exception as e:

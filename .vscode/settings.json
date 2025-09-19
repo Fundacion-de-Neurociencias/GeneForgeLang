@@ -1,42 +1,30 @@
 {
-  "yaml.schemas": {
-    "./schema/gfl.schema.json": [
-      "*.gfl",
-      "*.gfl.yaml",
-      "*.gfl.yml"
-    ]
-  },
-  "yaml.validate": true,
-  "yaml.completion": true,
-  "yaml.hover": true,
-  "yaml.format.enable": true,
-  "yaml.format.singleQuote": false,
-  "yaml.format.bracketSpacing": true,
-  "yaml.format.proseWrap": "preserve",
-  "yaml.customTags": [
-    "!include",
-    "!reference"
-  ],
-  "files.associations": {
-    "*.gfl": "yaml",
-    "*.gfl.yaml": "yaml",
-    "*.gfl.yml": "yaml"
-  },
-  "emmet.includeLanguages": {
-    "gfl": "yaml"
-  },
-  "[yaml]": {
-    "editor.insertSpaces": true,
-    "editor.tabSize": 2,
-    "editor.autoIndent": "full",
-    "editor.quickSuggestions": {
-      "other": true,
-      "comments": false,
-      "strings": true
+    "python.defaultInterpreterPath": "./venv/bin/python",
+    "python.linting.enabled": true,
+    "python.linting.ruffEnabled": true,
+    "python.linting.mypyEnabled": true,
+    "python.formatting.provider": "black",
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/*.pyc": true,
+        ".pytest_cache": true,
+        ".mypy_cache": true,
+        ".ruff_cache": true,
+        "*.egg-info": true
     },
-    "editor.suggest.insertMode": "replace"
-  },
-  "gfl.validation.enabled": true,
-  "gfl.completion.enabled": true,
-  "gfl.hover.enabled": true
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
+    }
 }
