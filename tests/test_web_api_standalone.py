@@ -152,7 +152,7 @@ def test_client_sdk_components():
 
         @dataclass
         class ParseResult:
-            ast: Dict[str, Any]
+            ast: dict[str, Any]
             success: bool
             message: str
             execution_time_ms: float
@@ -248,7 +248,7 @@ def test_server_launcher_components():
         # Test GFLServerManager class structure
         class GFLServerManager:
             def __init__(self):
-                self.servers: Dict[str, ServerProcess] = {}
+                self.servers: dict[str, ServerProcess] = {}
                 self.shutdown_requested = False
 
             def add_server(self, name: str, server: ServerProcess):

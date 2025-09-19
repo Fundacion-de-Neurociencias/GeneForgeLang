@@ -1,12 +1,13 @@
 """Basic functionality tests for GeneForgeLang."""
 
 import pytest
-from geneforgelang import parse, validate, execute
+from geneforgelang import execute, parse, validate
 
 
 def test_package_import():
     """Test that the package can be imported."""
     import geneforgelang
+
     assert geneforgelang.__version__ == "1.0.0"
 
 
@@ -19,7 +20,7 @@ experiment:
   params:
     target_gene: TP53
 """
-    
+
     ast = parse(gfl_code)
     assert isinstance(ast, dict)
     assert "experiment" in ast
@@ -35,10 +36,10 @@ experiment:
   params:
     target_gene: TP53
 """
-    
+
     ast = parse(gfl_code)
     errors = validate(ast)
-    
+
     # Should be a list (even if empty)
     assert isinstance(errors, list)
 
@@ -73,17 +74,17 @@ optimize:
         temp: "${temperature}"
         conc: "${concentration}"
 """
-    
+
     # Parse
     ast = parse(gfl_code)
     assert isinstance(ast, dict)
     assert "design" in ast
     assert "optimize" in ast
-    
+
     # Validate
     errors = validate(ast)
     assert isinstance(errors, list)
-    
+
     # Execute (if no validation errors)
     if not errors:
         try:

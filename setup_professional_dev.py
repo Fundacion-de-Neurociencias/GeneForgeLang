@@ -9,9 +9,10 @@ import subprocess
 from pathlib import Path
 from typing import Dict, List
 
+
 def create_pre_commit_config():
     """Create professional pre-commit configuration."""
-    
+
     config = """# Professional pre-commit configuration for GeneForgeLang
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -61,19 +62,20 @@ repos:
         always_run: true
         args: [--tb=short, -q]
 """
-    
+
     print("🔧 Creating pre-commit configuration...")
-    with open(".pre-commit-config.yaml", "w", encoding='utf-8') as f:
+    with open(".pre-commit-config.yaml", "w", encoding="utf-8") as f:
         f.write(config)
     print("  ✓ Created .pre-commit-config.yaml")
 
+
 def create_github_workflows():
     """Create GitHub Actions workflows for CI/CD."""
-    
+
     # Create .github/workflows directory
     workflows_dir = Path(".github/workflows")
     workflows_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Main CI workflow
     ci_workflow = """name: CI
 
@@ -92,32 +94,32 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -e .[dev]
-    
+
     - name: Lint with ruff
       run: |
         ruff check src tests
         ruff format --check src tests
-    
+
     - name: Type check with mypy
       run: mypy src/geneforgelang
-    
+
     - name: Security check with bandit
       run: bandit -r src/geneforgelang -c pyproject.toml
-    
+
     - name: Test with pytest
       run: |
         pytest --cov=src/geneforgelang --cov-report=xml
-    
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
@@ -126,26 +128,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: test
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.11"
-    
+
     - name: Install build dependencies
       run: |
         python -m pip install --upgrade pip
         pip install build twine
-    
+
     - name: Build package
       run: python -m build
-    
+
     - name: Check package
       run: twine check dist/*
-    
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -154,31 +156,31 @@ jobs:
 
   docs:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.11"
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -e .[dev]
         pip install mkdocs-material
-    
+
     - name: Build documentation
       run: mkdocs build --strict
-    
+
     - name: Upload docs artifacts
       uses: actions/upload-artifact@v3
       with:
         name: docs
         path: site/
 """
-    
+
     # Release workflow
     release_workflow = """name: Release
 
@@ -190,29 +192,29 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.11"
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install build twine
-    
+
     - name: Build package
       run: python -m build
-    
+
     - name: Publish to PyPI
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: twine upload dist/*
-    
+
     - name: Create GitHub Release
       uses: actions/create-release@v1
       env:
@@ -223,23 +225,24 @@ jobs:
         draft: false
         prerelease: false
 """
-    
+
     print("🚀 Creating GitHub Actions workflows...")
-    
-    with open(workflows_dir / "ci.yml", "w", encoding='utf-8') as f:
+
+    with open(workflows_dir / "ci.yml", "w", encoding="utf-8") as f:
         f.write(ci_workflow)
     print("  ✓ Created .github/workflows/ci.yml")
-    
-    with open(workflows_dir / "release.yml", "w", encoding='utf-8') as f:
+
+    with open(workflows_dir / "release.yml", "w", encoding="utf-8") as f:
         f.write(release_workflow)
     print("  ✓ Created .github/workflows/release.yml")
 
+
 def create_vscode_settings():
     """Create VS Code settings for consistent development."""
-    
+
     vscode_dir = Path(".vscode")
     vscode_dir.mkdir(exist_ok=True)
-    
+
     settings = """{
     "python.defaultInterpreterPath": "./venv/bin/python",
     "python.linting.enabled": true,
@@ -270,7 +273,7 @@ def create_vscode_settings():
         }
     }
 }"""
-    
+
     extensions = """{
     "recommendations": [
         "ms-python.python",
@@ -282,20 +285,21 @@ def create_vscode_settings():
         "ms-vscode.vscode-json"
     ]
 }"""
-    
+
     print("💻 Creating VS Code configuration...")
-    
-    with open(vscode_dir / "settings.json", "w", encoding='utf-8') as f:
+
+    with open(vscode_dir / "settings.json", "w", encoding="utf-8") as f:
         f.write(settings)
     print("  ✓ Created .vscode/settings.json")
-    
-    with open(vscode_dir / "extensions.json", "w", encoding='utf-8') as f:
+
+    with open(vscode_dir / "extensions.json", "w", encoding="utf-8") as f:
         f.write(extensions)
     print("  ✓ Created .vscode/extensions.json")
 
+
 def create_makefile():
     """Create Makefile for common development tasks."""
-    
+
     makefile = """# GeneForgeLang Development Makefile
 
 .PHONY: help install dev-install test lint format type-check security clean build docs serve-docs
@@ -371,15 +375,16 @@ dev: dev-install  ## Alias for dev-install
 check: ci  ## Alias for ci
 fmt: format  ## Alias for format
 """
-    
+
     print("🔨 Creating Makefile...")
-    with open("Makefile", "w", encoding='utf-8') as f:
+    with open("Makefile", "w", encoding="utf-8") as f:
         f.write(makefile)
     print("  ✓ Created Makefile")
 
+
 def create_gitignore():
     """Create comprehensive .gitignore file."""
-    
+
     gitignore = """# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -553,15 +558,16 @@ generar_*.py
 *_interactivo.py
 *_desde_*.py
 """
-    
+
     print("🚫 Creating .gitignore...")
-    with open(".gitignore", "w", encoding='utf-8') as f:
+    with open(".gitignore", "w", encoding="utf-8") as f:
         f.write(gitignore)
     print("  ✓ Created .gitignore")
 
+
 def create_editorconfig():
     """Create .editorconfig for consistent formatting."""
-    
+
     editorconfig = """# EditorConfig is awesome: https://EditorConfig.org
 
 root = true
@@ -586,15 +592,16 @@ trim_trailing_whitespace = false
 [Makefile]
 indent_style = tab
 """
-    
+
     print("📝 Creating .editorconfig...")
-    with open(".editorconfig", "w", encoding='utf-8') as f:
+    with open(".editorconfig", "w", encoding="utf-8") as f:
         f.write(editorconfig)
     print("  ✓ Created .editorconfig")
 
+
 def create_mkdocs_config():
     """Create MkDocs configuration for documentation."""
-    
+
     mkdocs_config = """site_name: GeneForgeLang Documentation
 site_description: Professional DSL for genomic workflows
 site_url: https://geneforgelang.readthedocs.io
@@ -671,16 +678,17 @@ extra:
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/geneforgelang/
 """
-    
+
     print("📚 Creating MkDocs configuration...")
-    with open("mkdocs.yml", "w", encoding='utf-8') as f:
+    with open("mkdocs.yml", "w", encoding="utf-8") as f:
         f.write(mkdocs_config)
     print("  ✓ Created mkdocs.yml")
+
 
 def main():
     """Main setup function."""
     print("🔧 Setting up professional development environment for GeneForgeLang...")
-    
+
     create_pre_commit_config()
     create_github_workflows()
     create_vscode_settings()
@@ -688,7 +696,7 @@ def main():
     create_gitignore()
     create_editorconfig()
     create_mkdocs_config()
-    
+
     print("\n✅ Professional development environment setup completed!")
     print("\nNext steps:")
     print("1. Install pre-commit hooks: pre-commit install")
@@ -696,7 +704,7 @@ def main():
     print("3. Run initial checks: make ci")
     print("4. Set up your IDE with the provided configurations")
     print("5. Start developing with professional tooling!")
-    
+
     print("\nAvailable make commands:")
     print("  make help          - Show all available commands")
     print("  make dev-install   - Install development dependencies")
@@ -704,6 +712,7 @@ def main():
     print("  make lint          - Run linting")
     print("  make format        - Format code")
     print("  make ci            - Run all CI checks")
+
 
 if __name__ == "__main__":
     main()

@@ -52,7 +52,7 @@ experiment:
   params:
     target_gene: TP53
     guide_rna: GCACTGCCATGGAGGAGCCG
-    
+
 analysis:
   type: efficiency_prediction
   model: cas9_efficiency_v2
@@ -102,7 +102,7 @@ analysis:
   algorithm: cas_offinder
   params:
     max_mismatches: 3
-    
+
 validation:
   type: experimental
   replicates: 3
@@ -160,7 +160,7 @@ from geneforgelang.plugins import BasePlugin
 class CustomAnalysisPlugin(BasePlugin):
     name = "custom_analysis"
     version = "1.0.0"
-    
+
     def execute(self, params: dict) -> dict:
         # Custom analysis logic
         return {"result": "analysis_complete"}
@@ -189,7 +189,7 @@ Features:
 ### Core Functions
 
 - `parse(text: str) -> Dict`: Parse GFL text into AST
-- `validate(ast: Dict) -> List[str]`: Validate AST semantics  
+- `validate(ast: Dict) -> List[str]`: Validate AST semantics
 - `execute(ast: Dict) -> Dict`: Execute workflow
 - `infer(model, ast: Dict) -> Dict`: Run ML inference
 
@@ -244,7 +244,7 @@ GeneForgeLang/
 ## Documentation
 
 - [User Guide](docs/user-guide/) - Complete usage documentation
-- [API Reference](docs/api/) - Detailed API documentation  
+- [API Reference](docs/api/) - Detailed API documentation
 - [Architecture](docs/architecture/) - System design and decisions
 - [Examples](examples/) - Practical workflow examples
 

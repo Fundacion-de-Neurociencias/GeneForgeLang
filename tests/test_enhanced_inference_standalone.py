@@ -17,10 +17,10 @@ class InferenceResult:
     prediction: Any
     confidence: float
     explanation: str
-    raw_output: Optional[Dict[str, Any]] = None
-    feature_importance: Optional[Dict[str, float]] = None
+    raw_output: Optional[dict[str, Any]] = None
+    feature_importance: Optional[dict[str, float]] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "prediction": self.prediction,
             "confidence": self.confidence,
@@ -70,7 +70,7 @@ class HeuristicModel:
     def is_loaded(self) -> bool:
         return self._model is not None
 
-    def predict(self, features: Dict[str, Any]) -> InferenceResult:
+    def predict(self, features: dict[str, Any]) -> InferenceResult:
         """Make heuristic predictions."""
         if not self.is_loaded():
             self.load_model()
@@ -101,7 +101,7 @@ class EnhancedInferenceEngine:
     """Test version of EnhancedInferenceEngine."""
 
     def __init__(self):
-        self.models: Dict[str, HeuristicModel] = {}
+        self.models: dict[str, HeuristicModel] = {}
         self.default_model = "heuristic"
         self._register_default_models()
 
@@ -113,7 +113,7 @@ class EnhancedInferenceEngine:
         self.models[name] = model
         print(f"Registered model: {name}")
 
-    def predict(self, model_name: Optional[str], features: Dict[str, Any]) -> InferenceResult:
+    def predict(self, model_name: Optional[str], features: dict[str, Any]) -> InferenceResult:
         model_name = model_name or self.default_model
 
         if model_name not in self.models:

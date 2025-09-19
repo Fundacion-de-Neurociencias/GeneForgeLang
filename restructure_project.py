@@ -9,19 +9,20 @@ import shutil
 from pathlib import Path
 from typing import Dict, List
 
+
 def create_professional_structure():
     """Create the new professional directory structure."""
-    
+
     # New directory structure
     directories = [
         "src/geneforgelang",
         "src/geneforgelang/core",
-        "src/geneforgelang/plugins", 
+        "src/geneforgelang/plugins",
         "src/geneforgelang/web",
         "src/geneforgelang/cli",
         "src/geneforgelang/utils",
         "tests/unit",
-        "tests/integration", 
+        "tests/integration",
         "tests/fixtures",
         "docs/architecture",
         "docs/user-guide",
@@ -31,18 +32,19 @@ def create_professional_structure():
         "tools/development",
         "scripts/maintenance",
     ]
-    
+
     print("📁 Creating professional directory structure...")
     for directory in directories:
         Path(directory).mkdir(parents=True, exist_ok=True)
         print(f"  ✓ Created {directory}/")
 
+
 def move_core_files():
     """Move core GFL files to src/geneforgelang/core/."""
-    
+
     core_files = {
         "gfl/__init__.py": "src/geneforgelang/__init__.py",
-        "gfl/api.py": "src/geneforgelang/core/api.py", 
+        "gfl/api.py": "src/geneforgelang/core/api.py",
         "gfl/parser.py": "src/geneforgelang/core/parser.py",
         "gfl/semantic_validator.py": "src/geneforgelang/core/validator.py",
         "gfl/types.py": "src/geneforgelang/core/types.py",
@@ -51,7 +53,7 @@ def move_core_files():
         "gfl/execution_engine.py": "src/geneforgelang/core/execution.py",
         "gfl/performance.py": "src/geneforgelang/core/performance.py",
     }
-    
+
     print("\n🔧 Moving core files...")
     for src, dst in core_files.items():
         if Path(src).exists():
@@ -59,20 +61,21 @@ def move_core_files():
             shutil.copy2(src, dst)
             print(f"  ✓ {src} -> {dst}")
 
+
 def move_plugin_files():
     """Move plugin-related files to src/geneforgelang/plugins/."""
-    
+
     plugin_files = {
         "gfl/plugins/": "src/geneforgelang/plugins/",
         "alphagenome_plugin.py": "src/geneforgelang/plugins/alphafold.py",
         "variant_simulation_plugin.py": "src/geneforgelang/plugins/variant_sim.py",
     }
-    
+
     print("\n🔌 Moving plugin files...")
     for src, dst in plugin_files.items():
         src_path = Path(src)
         dst_path = Path(dst)
-        
+
         if src_path.exists():
             if src_path.is_dir():
                 if dst_path.exists():
@@ -84,22 +87,23 @@ def move_plugin_files():
                 shutil.copy2(src_path, dst_path)
                 print(f"  ✓ {src} -> {dst}")
 
+
 def move_web_files():
     """Move web interface files to src/geneforgelang/web/."""
-    
+
     web_files = {
         "gfl/web_interface.py": "src/geneforgelang/web/interface.py",
-        "gfl/api_server.py": "src/geneforgelang/web/server.py", 
+        "gfl/api_server.py": "src/geneforgelang/web/server.py",
         "gfl/server_launcher.py": "src/geneforgelang/web/launcher.py",
         "applications/": "src/geneforgelang/web/apps/",
         "web-interface/": "src/geneforgelang/web/static/",
     }
-    
+
     print("\n🌐 Moving web files...")
     for src, dst in web_files.items():
         src_path = Path(src)
         dst_path = Path(dst)
-        
+
         if src_path.exists():
             dst_path.parent.mkdir(parents=True, exist_ok=True)
             if src_path.is_dir():
@@ -110,9 +114,10 @@ def move_web_files():
                 shutil.copy2(src_path, dst_path)
             print(f"  ✓ {src} -> {dst}")
 
+
 def move_cli_files():
     """Move CLI files to src/geneforgelang/cli/."""
-    
+
     cli_files = {
         "gfl/cli.py": "src/geneforgelang/cli/main.py",
         "gfl/cli_main.py": "src/geneforgelang/cli/commands.py",
@@ -120,7 +125,7 @@ def move_cli_files():
         "gfl/cli_inference.py": "src/geneforgelang/cli/inference.py",
         "gfl/enhanced_cli.py": "src/geneforgelang/cli/enhanced.py",
     }
-    
+
     print("\n💻 Moving CLI files...")
     for src, dst in cli_files.items():
         if Path(src).exists():
@@ -128,9 +133,10 @@ def move_cli_files():
             shutil.copy2(src, dst)
             print(f"  ✓ {src} -> {dst}")
 
+
 def move_utility_files():
     """Move utility files to src/geneforgelang/utils/."""
-    
+
     util_files = {
         "gfl/schema_loader.py": "src/geneforgelang/utils/schema.py",
         "gfl/validation_pipeline.py": "src/geneforgelang/utils/validation.py",
@@ -138,7 +144,7 @@ def move_utility_files():
         "sanitize_identifiers.py": "src/geneforgelang/utils/sanitize.py",
         "bio_data_access.py": "src/geneforgelang/utils/bio_data.py",
     }
-    
+
     print("\n🛠️ Moving utility files...")
     for src, dst in util_files.items():
         if Path(src).exists():
@@ -146,34 +152,35 @@ def move_utility_files():
             shutil.copy2(src, dst)
             print(f"  ✓ {src} -> {dst}")
 
+
 def move_documentation():
     """Move and organize documentation files."""
-    
+
     doc_moves = {
         "README.md": "docs/user-guide/README.md",
-        "CONTRIBUTING.md": "docs/user-guide/CONTRIBUTING.md", 
+        "CONTRIBUTING.md": "docs/user-guide/CONTRIBUTING.md",
         "docs/": "docs/user-guide/",
         "PHASE_4_PLANNING.md": "docs/architecture/phase4-planning.md",
         "REPOSITORY_ORGANIZATION.md": "docs/architecture/organization.md",
         "SECURITY_ADVISORY.md": "docs/architecture/security.md",
         "CHANGELOG.md": "docs/user-guide/CHANGELOG.md",
     }
-    
+
     print("\n📚 Organizing documentation...")
-    
+
     # Keep original README in root, copy to docs
     if Path("README.md").exists():
         shutil.copy2("README.md", "docs/user-guide/README.md")
         print("  ✓ README.md -> docs/user-guide/README.md (copied)")
-    
+
     # Move other docs
     for src, dst in doc_moves.items():
         if src == "README.md":  # Skip README, already handled
             continue
-            
+
         src_path = Path(src)
         dst_path = Path(dst)
-        
+
         if src_path.exists() and src != "docs/":
             dst_path.parent.mkdir(parents=True, exist_ok=True)
             if src_path.is_dir():
@@ -184,18 +191,19 @@ def move_documentation():
                 shutil.copy2(src_path, dst_path)
             print(f"  ✓ {src} -> {dst}")
 
+
 def move_examples():
     """Move example files to examples/ directory."""
-    
+
     example_files = {
         "example1.gfl": "examples/basic/simple_workflow.gfl",
-        "example_crispr_optimization.gfl": "examples/advanced/crispr_optimization.gfl", 
+        "example_crispr_optimization.gfl": "examples/advanced/crispr_optimization.gfl",
         "example_protein_design.gfl": "examples/advanced/protein_design.gfl",
         "gfl_example.gfl": "examples/basic/basic_syntax.gfl",
         "gfl_examples.gfl": "examples/basic/multiple_examples.gfl",
         "examples/": "examples/",  # Merge existing examples
     }
-    
+
     print("\n📋 Moving example files...")
     for src, dst in example_files.items():
         src_path = Path(src)
@@ -204,9 +212,10 @@ def move_examples():
             shutil.copy2(src_path, dst)
             print(f"  ✓ {src} -> {dst}")
 
+
 def move_development_tools():
     """Move development tools and scripts."""
-    
+
     tool_moves = {
         "scripts/": "tools/development/",
         "tools/": "tools/",
@@ -216,12 +225,12 @@ def move_development_tools():
         "visualize_ast.py": "tools/development/visualize_ast.py",
         "summarize_ast.py": "tools/development/summarize_ast.py",
     }
-    
+
     print("\n🔧 Moving development tools...")
     for src, dst in tool_moves.items():
         src_path = Path(src)
         dst_path = Path(dst)
-        
+
         if src_path.exists():
             dst_path.parent.mkdir(parents=True, exist_ok=True)
             if src_path.is_dir():
@@ -236,10 +245,11 @@ def move_development_tools():
                 shutil.copy2(src_path, dst_path)
             print(f"  ✓ {src} -> {dst}")
 
+
 def update_pyproject_toml():
     """Update pyproject.toml for new structure."""
-    
-    new_pyproject = '''[build-system]
+
+    new_pyproject = """[build-system]
 requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
@@ -259,7 +269,7 @@ maintainers = [
 keywords = ["genomics", "bioinformatics", "dsl", "workflow", "language"]
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Intended Audience :: Science/Research", 
+    "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
@@ -279,7 +289,7 @@ dependencies = [
 [project.optional-dependencies]
 web = [
     "fastapi>=0.104.0",
-    "uvicorn[standard]>=0.24.0", 
+    "uvicorn[standard]>=0.24.0",
     "httpx>=0.25.0",
     "slowapi>=0.1.7",
     "starlette>=0.47.2",
@@ -298,7 +308,7 @@ ml = [
 ]
 dev = [
     "pytest>=7.0",
-    "pytest-cov>=4.0", 
+    "pytest-cov>=4.0",
     "pytest-mock>=3.10",
     "ruff>=0.1.0",
     "black>=23.0",
@@ -333,7 +343,7 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = [
     "--strict-markers",
-    "--strict-config", 
+    "--strict-config",
     "--cov=src/geneforgelang",
     "--cov-report=term-missing",
     "--cov-report=html",
@@ -367,7 +377,7 @@ src = ["src", "tests"]
 [tool.ruff.lint]
 select = [
     "E", "W",  # pycodestyle
-    "F",       # Pyflakes  
+    "F",       # Pyflakes
     "UP",      # pyupgrade
     "B",       # flake8-bugbear
     "SIM",     # flake8-simplify
@@ -394,19 +404,20 @@ ignore = [
 line-length = 100
 target-version = ['py39']
 include = '\\.pyi?$'
-'''
-    
+"""
+
     print("\n📝 Updating pyproject.toml...")
     with open("pyproject.toml", "w") as f:
         f.write(new_pyproject)
     print("  ✓ Updated pyproject.toml with professional configuration")
 
+
 def create_init_files():
     """Create __init__.py files for proper Python packages."""
-    
+
     init_files = [
         "src/__init__.py",
-        "src/geneforgelang/__init__.py", 
+        "src/geneforgelang/__init__.py",
         "src/geneforgelang/core/__init__.py",
         "src/geneforgelang/plugins/__init__.py",
         "src/geneforgelang/web/__init__.py",
@@ -416,7 +427,7 @@ def create_init_files():
         "tests/unit/__init__.py",
         "tests/integration/__init__.py",
     ]
-    
+
     print("\n📦 Creating package __init__.py files...")
     for init_file in init_files:
         init_path = Path(init_file)
@@ -424,14 +435,15 @@ def create_init_files():
             init_path.touch()
             print(f"  ✓ Created {init_file}")
 
+
 def main():
     """Main restructuring function."""
     print("🏗️ Starting GeneForgeLang project restructuring...")
     print("This will create a professional Python package structure.\n")
-    
+
     create_professional_structure()
     move_core_files()
-    move_plugin_files() 
+    move_plugin_files()
     move_web_files()
     move_cli_files()
     move_utility_files()
@@ -440,11 +452,11 @@ def main():
     move_development_tools()
     create_init_files()
     update_pyproject_toml()
-    
+
     print("\n✅ Project restructuring completed!")
     print("\nNew structure created:")
     print("  📁 src/geneforgelang/     - Main package")
-    print("  📁 tests/                - Test suite") 
+    print("  📁 tests/                - Test suite")
     print("  📁 docs/                 - Documentation")
     print("  📁 examples/             - Usage examples")
     print("  📁 tools/                - Development tools")
@@ -453,6 +465,7 @@ def main():
     print("2. Run tests to verify everything works")
     print("3. Update CI/CD configuration")
     print("4. Install in development mode: pip install -e .")
+
 
 if __name__ == "__main__":
     main()

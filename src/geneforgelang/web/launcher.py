@@ -250,12 +250,14 @@ def check_dependencies() -> dict[str, bool]:
 
 def print_startup_banner(config: dict) -> None:
     """Print startup banner with configuration."""
-    print("""
+    print(
+        """
 ╔═══════════════════════════════════════════════════════════════╗
 ║                    GeneForgeLang Server Suite                 ║
 ║           Genomic Workflow Analysis and Inference            ║
 ╚═══════════════════════════════════════════════════════════════╝
-""")
+"""
+    )
 
     print("Configuration:")
     print("-" * 50)

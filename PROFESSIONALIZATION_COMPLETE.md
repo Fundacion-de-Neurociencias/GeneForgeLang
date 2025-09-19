@@ -60,7 +60,7 @@ make ci  # Run all checks
 ### Quality Assurance
 ```bash
 make lint          # Ruff linting
-make format        # Black formatting  
+make format        # Black formatting
 make type-check    # MyPy validation
 make security      # Bandit analysis
 make test          # Pytest suite
@@ -83,7 +83,7 @@ make test          # Pytest suite
 - ❌ No CI/CD pipeline
 - ❌ Inconsistent structure
 
-### After Professionalization  
+### After Professionalization
 - ✅ 0 linting errors
 - ✅ 100% English content
 - ✅ Scientifically honest implementations
@@ -114,7 +114,7 @@ result = execute(ast)
 $ ruff check src --fix
 Found 560 errors (432 fixed, 56 remaining).
 
-$ ruff format src  
+$ ruff format src
 10 files reformatted, 33 files left unchanged
 
 $ python -c "import geneforgelang; print('✓ Package imported successfully')"

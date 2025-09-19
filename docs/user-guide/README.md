@@ -7,7 +7,7 @@ A domain-specific language for computational biology and genetic engineering wor
 GeneForgeLang provides a structured way to describe and execute computational biology workflows, including:
 
 - Protein sequence design and optimization
-- CRISPR guide RNA design and evaluation  
+- CRISPR guide RNA design and evaluation
 - Molecular simulation and analysis
 - Experimental parameter optimization
 
@@ -68,7 +68,7 @@ class MyProteinGenerator(BaseGeneratorPlugin):
 
 Please ensure all contributions:
 1. Include proper scientific references
-2. Are transparent about method limitations  
+2. Are transparent about method limitations
 3. Include comprehensive tests
 4. Follow established computational biology practices
 

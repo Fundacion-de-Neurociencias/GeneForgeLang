@@ -460,7 +460,8 @@ def create_interface() -> gr.Blocks:
         .success-text { color: #2e7d32; }
         """,
     ) as interface:
-        gr.Markdown("""
+        gr.Markdown(
+            """
         # 🧬 GeneForgeLang Web Interface
 
         **Interactive platform for genomic workflow design, validation, and analysis**
@@ -470,7 +471,8 @@ def create_interface() -> gr.Blocks:
         - 🤖 **Inference**: Run AI/ML models on your workflows for predictions and insights
         - 🔬 **Analysis**: Compare multiple models and analyze results
         - 📊 **Management**: Monitor models, system status, and performance metrics
-        """)
+        """
+        )
 
         with gr.Row():
             gr.Markdown(f"**System Status**: {engine_status}")
@@ -724,7 +726,8 @@ def create_interface() -> gr.Blocks:
                 )
 
         # Footer
-        gr.Markdown("""
+        gr.Markdown(
+            """
         ---
 
         **GeneForgeLang Web Interface v1.0** |
@@ -733,7 +736,8 @@ def create_interface() -> gr.Blocks:
         🐛 [Report Issues](https://github.com/geneforg/geneforg/issues)
 
         *Powered by Gradio, FastAPI, and the Enhanced GeneForgeLang Inference Engine*
-        """)
+        """
+        )
 
     return interface
 

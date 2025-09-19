@@ -10,7 +10,7 @@ All critical issues raised by the JOSS reviewer have been systematically address
 
 **Before**: Code claimed to implement CFD (Doench et al. 2016) and DeepHF (Wang et al. 2019) but actually contained placeholder code with incorrect algorithms.
 
-**After**: 
+**After**:
 - Removed all files containing false scientific claims
 - Deleted `examples/` directory with problematic plugin implementations
 - Removed response documents that contained incorrect references
