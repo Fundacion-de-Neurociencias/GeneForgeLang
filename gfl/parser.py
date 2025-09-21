@@ -1,6 +1,6 @@
 import hashlib
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import yaml
 
@@ -10,18 +10,12 @@ logger = logging.getLogger(__name__)
 
 
 @cached(cache_name="ast_parse", ttl=300.0, max_size=100)
-def parse_gfl(gfl_string: str) -> Optional[Dict[str, Any]]:
+def parse_gfl(gfl_string: str) -> Optional[dict[str, Any]]:
     """
-    Parses a GFL string (in YAML format) into a Python dictionary.
+    Parse GFL YAML into a dictionary.
 
-    This function is cached for performance - identical GFL strings
-    will return cached results for up to 5 minutes.
-
-    Args:
-        gfl_string: The GFL source code as a string.
-
-    Returns:
-        Parsed AST as a dictionary, or None if parsing fails.
+    Cached for performance - same input returns cached result for 5 minutes.
+    This is the main entry point for parsing GFL workflows.
     """
     with get_monitor().time_operation("gfl_parse"):
         try:
@@ -44,7 +38,7 @@ def parse_gfl(gfl_string: str) -> Optional[Dict[str, Any]]:
             return None
 
 
-def parse_gfl_with_schema_imports(gfl_string: str, base_path: Optional[str] = None) -> Optional[Dict[str, Any]]:
+def parse_gfl_with_schema_imports(gfl_string: str, base_path: Optional[str] = None) -> Optional[dict[str, Any]]:
     """
     Parses a GFL string with schema import support.
 

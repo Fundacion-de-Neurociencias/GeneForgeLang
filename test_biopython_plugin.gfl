@@ -1,0 +1,16 @@
+# Test script for biopython_tools plugin
+
+run:
+  - plugin: "biopython_tools"
+    operation: "translate"
+    sequence: "ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG"
+    as_var: "protein_sequence"
+
+  - plugin: "biopython_tools"
+    operation: "gc_content"
+    sequence: "ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG"
+    as_var: "gc_percentage"
+
+output:
+  - translated_protein: "${protein_sequence}"
+  - gc_content_percent: "${gc_percentage}"

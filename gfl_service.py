@@ -19,7 +19,12 @@ from pydantic import BaseModel
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 # Import GFL core functionality
+from importlib.metadata import entry_points
+
 from gfl.parser import parse_gfl
+
+# Import plugin registry for dynamic plugin discovery
+from gfl.plugins.plugin_registry import plugin_registry
 
 app = FastAPI(
     title="GeneForgeLang Service",
@@ -36,40 +41,40 @@ class ParseRequest(BaseModel):
 class ParseResponse(BaseModel):
     success: bool
     message: str = ""
-    ast: Dict[str, Any] = None
+    ast: dict[str, Any] = None
 
 
 class ValidateRequest(BaseModel):
-    ast: Dict[str, Any]
+    ast: dict[str, Any]
     detailed: bool = True
 
 
 class ValidateResponse(BaseModel):
     success: bool
     message: str = ""
-    validation_result: Dict[str, Any] = None
+    validation_result: dict[str, Any] = None
 
 
 class InferRequest(BaseModel):
-    ast: Dict[str, Any]
-    context: Dict[str, Any] = {}
+    ast: dict[str, Any]
+    context: dict[str, Any] = {}
 
 
 class InferResponse(BaseModel):
     success: bool
     message: str = ""
-    inference_result: Dict[str, Any] = None
+    inference_result: dict[str, Any] = None
 
 
 class ExecuteRequest(BaseModel):
-    ast: Dict[str, Any]
-    context: Dict[str, Any] = {}
+    ast: dict[str, Any]
+    context: dict[str, Any] = {}
 
 
 class ExecuteResponse(BaseModel):
     success: bool
     message: str = ""
-    result: Dict[str, Any] = None
+    result: dict[str, Any] = None
 
 
 @app.get("/health")
@@ -135,7 +140,43 @@ async def execute_ast(request: ExecuteRequest):
 @app.get("/api/v2/plugins")
 async def list_plugins():
     """List available plugins"""
-    plugins = [
+    # Discover plugins dynamically using entry points
+    discovered_plugins = []
+
+    # Get built-in plugins
+    for name, plugin_class in plugin_registry._plugins.items():
+        discovered_plugins.append(
+            {
+                "name": name,
+                "version": getattr(plugin_class, "version", "1.0.0"),
+                "description": getattr(plugin_class, "description", f"{name} plugin"),
+                "capabilities": ["process_data"],
+                "status": "active",
+            }
+        )
+
+    # Get external plugins from entry points
+    try:
+        eps = entry_points(group="gfl.plugins")
+        for ep in eps:
+            try:
+                plugin_class = ep.load()
+                discovered_plugins.append(
+                    {
+                        "name": ep.name,
+                        "version": getattr(plugin_class, "version", "1.0.0"),
+                        "description": getattr(plugin_class, "description", f"{ep.name} plugin"),
+                        "capabilities": ["process_data"],
+                        "status": "active",
+                    }
+                )
+            except Exception as e:
+                print(f"Failed to load plugin {ep.name}: {e}")
+    except Exception as e:
+        print(f"Failed to discover entry point plugins: {e}")
+
+    # Add hardcoded plugins for compatibility
+    hardcoded_plugins = [
         {
             "name": "crispr_design",
             "version": "1.0.0",
@@ -159,7 +200,10 @@ async def list_plugins():
         },
     ]
 
-    return {"success": True, "plugins": plugins}
+    # Combine all plugins
+    all_plugins = discovered_plugins + hardcoded_plugins
+
+    return {"success": True, "plugins": all_plugins}
 
 
 if __name__ == "__main__":

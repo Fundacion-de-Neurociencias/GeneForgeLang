@@ -3,14 +3,12 @@
 [![PyPI version](https://badge.fury.io/py/geneforgelang.svg)](https://badge.fury.io/py/geneforgelang)
 [![Python Support](https://img.shields.io/pypi/pyversions/geneforgelang.svg)](https://pypi.org/project/geneforgelang/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-A professional domain-specific language (DSL) for genomic workflows and bioinformatics applications.
+A domain-specific language for genomic workflows and bioinformatics applications.
 
-## Overview
+## What is GeneForgeLang?
 
-GeneForgeLang (GFL) is a declarative language designed for specifying, validating, and executing genomic workflows. It provides a clean, YAML-like syntax for describing complex bioinformatics pipelines with built-in validation, type safety, and extensibility.
+GeneForgeLang (GFL) is a declarative language for specifying genomic workflows. It uses a YAML-like syntax to describe bioinformatics pipelines with validation and extensibility built-in.
 
 ## Key Features
 
