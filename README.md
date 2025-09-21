@@ -1,7 +1,5 @@
 # GeneForgeLang
 
-[![PyPI version](https://badge.fury.io/py/geneforgelang.svg)](https://badge.fury.io/py/geneforgelang)
-[![Python Support](https://img.shields.io/pypi/pyversions/geneforgelang.svg)](https://pypi.org/project/geneforgelang/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A domain-specific language for genomic workflows and bioinformatics applications.
