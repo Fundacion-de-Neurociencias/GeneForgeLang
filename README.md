@@ -16,12 +16,13 @@ GeneForgeLang (GFL) is a declarative language for specifying genomic workflows. 
 - **Web Interface**: Modern web UI for workflow creation and management
 - **CLI Tools**: Comprehensive command-line interface for automation
 - **API Integration**: RESTful API for programmatic access
+- **Container Execution**: Reproducible execution using Docker containers
 
 ## Quick Start
 
 ### Installation
 
-```bash
+```
 # Basic installation
 pip install geneforgelang
 
@@ -31,13 +32,16 @@ pip install geneforgelang[web]
 # With CLI tools
 pip install geneforgelang[cli]
 
+# With container support
+pip install geneforgelang[containers]
+
 # Full installation
 pip install geneforgelang[all]
 ```
 
 ### Basic Usage
 
-```python
+```
 from geneforgelang import parse, validate, execute
 
 # Define a workflow
@@ -66,7 +70,7 @@ if not errors:
 
 ### Command Line Interface
 
-```bash
+```
 # Parse and validate a workflow
 gfl validate workflow.gfl
 
@@ -84,7 +88,7 @@ gfl --help
 
 ### CRISPR Gene Editing
 
-```yaml
+```
 experiment:
   tool: CRISPR_cas9
   type: gene_editing
@@ -107,7 +111,7 @@ validation:
 
 ### Protein Design
 
-```yaml
+```
 design:
   entity: ProteinSequence
   objective:
@@ -150,7 +154,7 @@ src/geneforgelang/
 
 GeneForgeLang supports custom plugins for extending functionality:
 
-```python
+```
 from geneforgelang.plugins import BasePlugin
 
 class CustomAnalysisPlugin(BasePlugin):
@@ -170,7 +174,7 @@ register_plugin(CustomAnalysisPlugin())
 
 Launch the web interface for interactive workflow development:
 
-```bash
+```
 gfl web --host 0.0.0.0 --port 8080
 ```
 
@@ -200,7 +204,7 @@ Features:
 
 ### Setup Development Environment
 
-```bash
+```
 # Clone repository
 git clone https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git
 cd GeneForgeLang
@@ -213,6 +217,25 @@ pre-commit install
 
 # Run tests
 pytest
+```
+
+### Container-Based Execution
+
+GeneForgeLang now supports container-based plugin execution for enhanced reproducibility:
+
+1. Plugins can specify Docker container images through the `gfl.plugin_containers` entry point
+2. The execution engine automatically detects and uses container images when available
+3. Volume mounting is handled automatically for file I/O
+4. Falls back to local execution when Docker is not available
+
+To enable container execution during development:
+
+```
+# Install with container support
+pip install -e .[containers]
+
+# Or install docker package directly
+pip install docker
 ```
 
 ### Project Structure
@@ -252,7 +275,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you use GeneForgeLang in your research, please cite:
 
-```bibtex
+```
 @software{geneforgelang2025,
   title={GeneForgeLang: A Professional DSL for Genomic Workflows},
   author={GeneForgeLang Development Team},

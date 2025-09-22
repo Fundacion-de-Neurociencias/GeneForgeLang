@@ -2,6 +2,7 @@
 
 from typing import Any, Dict, List
 
+from gfl.container_executor import ContainerExecutionError, ContainerExecutor
 from gfl.plugins.plugin_registry import plugin_registry
 
 
@@ -16,6 +17,7 @@ class GFLExecutionEngine:
 
     def __init__(self):
         self.workflow_state = {}
+        self.container_executor = ContainerExecutor()
 
     def execute_design_block(self, design_block: dict[str, Any]) -> dict[str, Any]:
         """Execute a design block."""
@@ -24,7 +26,9 @@ class GFLExecutionEngine:
             raise ExecutionError("Design block missing 'model' parameter")
 
         try:
-            generator = plugin_registry.get_generator(model_name)
+            # Check if there's a container image for this plugin
+            container_image = plugin_registry.get_container_image(model_name)
+
             params = {
                 "count": design_block.get("count", 10),
                 "entity": design_block.get("entity", "ProteinSequence"),
@@ -32,7 +36,22 @@ class GFLExecutionEngine:
                 "length": design_block.get("length", 100),
             }
 
-            result = generator.generate(params)
+            if container_image and self.container_executor.is_container_execution_available():
+                # Execute in container
+                try:
+                    result = self.container_executor.execute_plugin_method_in_container(
+                        container_image, "generator", "generate", params
+                    )
+                    if "parsed_result" in result:
+                        result = result["parsed_result"]
+                    else:
+                        raise ExecutionError(f"Failed to parse container execution result: {result}")
+                except ContainerExecutionError as e:
+                    raise ExecutionError(f"Container execution failed: {e}")
+            else:
+                # Execute locally
+                generator = plugin_registry.get_generator(model_name)
+                result = generator.generate(params)
 
             # Store in workflow state if output specified
             output_var = design_block.get("output")
@@ -54,7 +73,9 @@ class GFLExecutionEngine:
             raise ExecutionError("Optimize block missing strategy name")
 
         try:
-            optimizer = plugin_registry.get_optimizer(strategy_name)
+            # Check if there's a container image for this plugin
+            container_image = plugin_registry.get_container_image(strategy_name)
+
             params = {
                 "search_space": optimize_block.get("search_space", {}),
                 "objective": optimize_block.get("objective", {}),
@@ -62,7 +83,23 @@ class GFLExecutionEngine:
                 "max_iterations": optimize_block.get("budget", {}).get("max_experiments", 10),
             }
 
-            result = optimizer.optimize(params)
+            if container_image and self.container_executor.is_container_execution_available():
+                # Execute in container
+                try:
+                    result = self.container_executor.execute_plugin_method_in_container(
+                        container_image, "optimizer", "optimize", params
+                    )
+                    if "parsed_result" in result:
+                        result = result["parsed_result"]
+                    else:
+                        raise ExecutionError(f"Failed to parse container execution result: {result}")
+                except ContainerExecutionError as e:
+                    raise ExecutionError(f"Container execution failed: {e}")
+            else:
+                # Execute locally
+                optimizer = plugin_registry.get_optimizer(strategy_name)
+                result = optimizer.optimize(params)
+
             return result
 
         except ValueError as e:

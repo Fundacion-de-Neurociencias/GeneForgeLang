@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Container-Based Plugin Execution:
+  - Implemented container image discovery through `gfl.plugin_containers` entry points
+  - Added `ContainerExecutor` for Docker-based plugin execution
+  - Modified `PluginRegistry` to store and retrieve container image associations
+  - Updated `GFLExecutionEngine` to automatically use containers when available
+  - Added automatic volume mounting for file I/O in containers
+  - Implemented fallback to local execution when Docker is unavailable
+  - Added `containers` optional dependency for Docker integration
+  - Enhanced plugin examples with container entry points
 - Symbolic Reasoning Capabilities:
   - Implemented `rules` block for conditional biological relationships
   - Implemented `hypothesis` block for scientific hypothesis expression

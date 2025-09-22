@@ -1,5 +1,6 @@
 """Plugin registry for managing GFL plugins."""
 
+import importlib.metadata
 from typing import Any, Dict, List, Type
 
 from gfl.plugins.base import BaseGeneratorPlugin, BaseGFLPlugin, BaseOptimizerPlugin
@@ -12,9 +13,12 @@ class PluginRegistry:
         self._generators: dict[str, type[BaseGeneratorPlugin]] = {}
         self._optimizers: dict[str, type[BaseOptimizerPlugin]] = {}
         self._plugins: dict[str, type[BaseGFLPlugin]] = {}
+        self._container_images: dict[str, str] = {}  # Maps plugin names to container images
 
         # Auto-register builtin plugins
         self._register_builtin_plugins()
+        # Auto-discover external plugins
+        self._discover_plugins()
 
     def _register_builtin_plugins(self):
         """Register builtin plugins."""
@@ -27,6 +31,33 @@ class PluginRegistry:
 
         except ImportError:
             pass  # Builtin plugins not available
+
+    def _discover_plugins(self):
+        """Discover and register external plugins via entry points."""
+        # Discover regular plugins
+        for entry_point in importlib.metadata.entry_points().get("gfl.plugins", []):
+            try:
+                plugin_class = entry_point.load()
+                self._register_plugin(entry_point.name, plugin_class)
+            except Exception:
+                pass  # Skip plugins that fail to load
+
+        # Discover container images for plugins
+        for entry_point in importlib.metadata.entry_points().get("gfl.plugin_containers", []):
+            try:
+                container_image = entry_point.load() if callable(entry_point.load) else entry_point.value
+                self._container_images[entry_point.name] = container_image
+            except Exception:
+                pass  # Skip container images that fail to load
+
+    def _register_plugin(self, name: str, plugin_class: type[BaseGFLPlugin]):
+        """Register a plugin by name."""
+        if issubclass(plugin_class, BaseGeneratorPlugin):
+            self.register_generator(name, plugin_class)
+        elif issubclass(plugin_class, BaseOptimizerPlugin):
+            self.register_optimizer(name, plugin_class)
+        else:
+            self._plugins[name] = plugin_class
 
     def register_generator(self, name: str, plugin_class: type[BaseGeneratorPlugin]):
         """Register a generator plugin."""
@@ -49,6 +80,10 @@ class PluginRegistry:
         if name not in self._optimizers:
             raise ValueError(f"Optimizer '{name}' not found")
         return self._optimizers[name]()
+
+    def get_container_image(self, plugin_name: str) -> str | None:
+        """Get the container image for a plugin, if available."""
+        return self._container_images.get(plugin_name)
 
     def list_generators(self) -> list[str]:
         """List available generator plugins."""

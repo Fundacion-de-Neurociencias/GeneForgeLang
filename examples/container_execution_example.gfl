@@ -1,0 +1,28 @@
+# Example GFL workflow demonstrating container-based execution
+
+# This workflow will execute the samtools plugin within a container
+# if a container image is specified, or locally if not
+
+design:
+  model: samtools
+  entity: AlignmentFile
+  count: 5
+  objective:
+    quality: high
+    coverage: deep
+  output: alignment_samples
+
+optimize:
+  strategy:
+    name: BayesianOptimization
+    parameters:
+      max_iterations: 100
+  search_space:
+    alignment_parameters:
+      min_mapping_quality: [0, 60]
+      min_base_quality: [10, 40]
+  objective:
+    maximize: alignment_accuracy
+    minimize: processing_time
+  budget:
+    max_experiments: 50

@@ -7,6 +7,7 @@ for the GeneForge system to interact with the GFL core functionality.
 """
 
 import json
+import logging
 import os
 import sys
 from typing import Any, Dict
@@ -15,6 +16,9 @@ import yaml
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
+# Configure logging
+logger = logging.getLogger(__name__)
+
 # Add the project root to the Python path
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
@@ -22,6 +26,7 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from importlib.metadata import entry_points
 
 from gfl.parser import parse_gfl
+from gfl.staging import DataStagingManager
 
 # Import plugin registry for dynamic plugin discovery
 from gfl.plugins.plugin_registry import plugin_registry
@@ -69,6 +74,7 @@ class InferResponse(BaseModel):
 class ExecuteRequest(BaseModel):
     ast: dict[str, Any]
     context: dict[str, Any] = {}
+    data_manifest: dict[str, str] = {}
 
 
 class ExecuteResponse(BaseModel):
@@ -126,15 +132,52 @@ async def infer_ast(request: InferRequest):
 
 @app.post("/api/v2/execute", response_model=ExecuteResponse)
 async def execute_ast(request: ExecuteRequest):
-    """Execute AST"""
+    """Execute AST with data staging support"""
+    data_staging_manager = None
     try:
-        # For simplicity, we're just returning a basic execution result
-        # In a full implementation, this would execute the GFL workflow
-        result = {"status": "success", "output": "GFL execution completed", "metrics": {}}
+        # Initialize data staging manager if data manifest is provided
+        if request.data_manifest:
+            data_staging_manager = DataStagingManager()
+            logger.info(f"Data staging enabled with {len(request.data_manifest)} files in manifest")
+        
+        # Extract plugin parameters from AST
+        plugin_params = {}
+        if "experiment" in request.ast and "params" in request.ast["experiment"]:
+            plugin_params.update(request.ast["experiment"]["params"])
+        if "analyze" in request.ast and "params" in request.ast["analyze"]:
+            plugin_params.update(request.ast["analyze"]["params"])
+        
+        # Stage files if data staging manager is available
+        if data_staging_manager and plugin_params:
+            try:
+                plugin_params = data_staging_manager.stage_files(plugin_params, request.data_manifest)
+                logger.info(f"Staged {len(data_staging_manager.staged_files)} files for execution")
+            except Exception as e:
+                logger.error(f"Data staging failed: {e}")
+                return ExecuteResponse(success=False, message=f"Data staging failed: {str(e)}")
+        
+        # Execute the workflow with staged parameters
+        # For now, we're returning a basic execution result
+        # In a full implementation, this would execute the GFL workflow with the staged files
+        result = {
+            "status": "success", 
+            "output": "GFL execution completed", 
+            "metrics": {},
+            "staged_files": list(data_staging_manager.staged_files.keys()) if data_staging_manager else [],
+            "plugin_params": plugin_params
+        }
 
         return ExecuteResponse(success=True, result=result)
     except Exception as e:
         return ExecuteResponse(success=False, message=f"Error executing AST: {str(e)}")
+    finally:
+        # Clean up staged files
+        if data_staging_manager:
+            try:
+                data_staging_manager.cleanup()
+                logger.info("Data staging cleanup completed")
+            except Exception as e:
+                logger.error(f"Data staging cleanup failed: {e}")
 
 
 @app.get("/api/v2/plugins")
