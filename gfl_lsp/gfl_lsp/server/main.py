@@ -1,8 +1,8 @@
 import asyncio
 from typing import List
 from lsprotocol.types import (
-    Diagnostic, Position, Range, CompletionItem, CompletionItemKind, 
-    CompletionList, CompletionOptions, DiagnosticSeverity, Hover, 
+    Diagnostic, Position, Range, CompletionItem, CompletionItemKind,
+    CompletionList, CompletionOptions, DiagnosticSeverity, Hover,
     MarkupContent, MarkupKind
 )
 from pygls.server import LanguageServer
@@ -29,17 +29,17 @@ def _validate(ls: LanguageServer, params):
     try:
         # 1. Parsear el código fuente
         ast = parse(source)
-        
+
         # 2. Validar el AST con resultado mejorado
         validation_result = validate(ast, enhanced=True)
-        
+
         # 3. Convertir los errores de GFL a Diagnósticos de LSP
         if isinstance(validation_result, EnhancedValidationResult):
             # Procesar errores sintácticos
             for error in validation_result.syntax_errors:
                 line = error.location.line - 1 if error.location and error.location.line > 0 else 0
                 col = error.location.column - 1 if error.location and error.location.column > 0 else 0
-                
+
                 d = Diagnostic(
                     range=Range(
                         start=Position(line=line, character=col),
@@ -49,12 +49,12 @@ def _validate(ls: LanguageServer, params):
                     severity=DiagnosticSeverity.Error
                 )
                 diagnostics.append(d)
-            
+
             # Procesar errores semánticos
             for error in validation_result.semantic_errors:
                 line = error.location.line - 1 if error.location and error.location.line > 0 else 0
                 col = error.location.column - 1 if error.location and error.location.column > 0 else 0
-                
+
                 # Determinar severidad
                 severity = DiagnosticSeverity.Error  # Error por defecto
                 if error.severity == ErrorSeverity.WARNING:
@@ -63,7 +63,7 @@ def _validate(ls: LanguageServer, params):
                     severity = DiagnosticSeverity.Information
                 elif error.severity == ErrorSeverity.HINT:
                     severity = DiagnosticSeverity.Hint
-                
+
                 d = Diagnostic(
                     range=Range(
                         start=Position(line=line, character=col),
@@ -97,7 +97,7 @@ def _validate(ls: LanguageServer, params):
                 severity=DiagnosticSeverity.Error
         )
         diagnostics.append(d)
-    
+
     # 4. Publicar los diagnósticos en el editor
     ls.publish_diagnostics(text_doc.uri, diagnostics)
 
@@ -113,28 +113,28 @@ def completions(params):
     items = []
     document = server.workspace.get_document(params.text_document.uri)
     current_line = document.lines[params.position.line].strip()
-    
+
     try:
         # Parsear el documento completo para obtener el AST
         source = document.source
         ast = parse(source)
-        
+
         # A. Autocompletado de Bloques de Alto Nivel
         # Si la línea actual está vacía o tiene indentación cero
         if not document.lines[params.position.line].startswith('  '):
             keywords = [
-                'import_schemas', 'rules', 'hypothesis', 'timeline', 
-                'pathways', 'complexes', 'experiment', 'analyze', 
+                'import_schemas', 'rules', 'hypothesis', 'timeline',
+                'pathways', 'complexes', 'experiment', 'analyze',
                 'guided_discovery', 'refine_data', 'optimize', 'simulate'
             ]
             for keyword in keywords:
                 items.append(CompletionItem(
-                    label=keyword, 
+                    label=keyword,
                     kind=CompletionItemKind.KEYWORD,
                     detail=f"GFL block: {keyword}",
                     documentation=f"Define a {keyword} block in your GFL workflow"
                 ))
-        
+
         # B. Autocompletado de Tipos de Esquemas
         elif 'type:' in current_line:
             # Buscar esquemas importados
@@ -146,7 +146,7 @@ def completions(params):
                             # Cargar esquemas usando el schema loader
                             from gfl.schema_loader import load_schemas_from_files
                             schemas = load_schemas_from_files([schema_file])
-                            
+
                             for schema_name, schema_def in schemas.items():
                                 if isinstance(schema_def, dict) and 'type' in schema_def:
                                     items.append(CompletionItem(
@@ -158,7 +158,7 @@ def completions(params):
                         except Exception:
                             # Si no se puede cargar el esquema, continuar
                             continue
-        
+
         # C. Autocompletado de Entidades Biológicas
         elif 'pathway(' in current_line or current_line.endswith('pathway('):
             # Buscar pathways definidos en el documento
@@ -172,7 +172,7 @@ def completions(params):
                             detail=f"Pathway: {pathway_name}",
                             documentation=f"Use defined pathway {pathway_name}"
                         ))
-        
+
         elif 'complex(' in current_line or current_line.endswith('complex('):
             # Buscar complexes definidos en el documento
             if isinstance(ast, dict) and 'complexes' in ast:
@@ -185,7 +185,7 @@ def completions(params):
                             detail=f"Complex: {complex_name}",
                             documentation=f"Use defined complex {complex_name}"
                         ))
-        
+
         # D. Autocompletado de herramientas comunes
         elif 'tool:' in current_line:
             common_tools = [
@@ -201,7 +201,7 @@ def completions(params):
                     detail=f"Tool: {tool}",
                     documentation=f"Use {tool} as experimental tool"
                 ))
-        
+
         # E. Autocompletado de tipos de experimento
         elif 'type:' in current_line and 'tool:' in current_line:
             experiment_types = [
@@ -216,7 +216,7 @@ def completions(params):
                     detail=f"Experiment type: {exp_type}",
                     documentation=f"Use {exp_type} as experiment type"
                 ))
-        
+
         # F. Autocompletado de métodos de análisis
         elif 'method:' in current_line:
             analysis_methods = [
@@ -231,11 +231,11 @@ def completions(params):
                     detail=f"Analysis method: {method}",
                     documentation=f"Use {method} for data analysis"
                 ))
-    
+
     except Exception as e:
         # Si hay error en el parsing, devolver lista vacía
         pass
-    
+
     return CompletionList(is_incomplete=False, items=items)
 
 
@@ -246,28 +246,28 @@ def hover(params):
     """
     document = server.workspace.get_document(params.text_document.uri)
     pos = params.position
-    
+
     # Obtener la palabra/token debajo del cursor
     word = document.word_at_position(pos)
-    
+
     if not word:
         return None
-    
+
     try:
         # Parsear el documento para obtener el AST
         source = document.source
         ast = parse(source)
-        
+
         # A. Hover sobre IDs de Hipótesis
         if 'hypothesis' in ast and isinstance(ast['hypothesis'], dict):
             hypothesis = ast['hypothesis']
             if hypothesis.get('id') == word:
                 description = hypothesis.get('description', 'No description available.')
                 return Hover(contents=MarkupContent(
-                    kind=MarkupKind.Markdown, 
+                    kind=MarkupKind.Markdown,
                     value=f"**Hypothesis: {word}**\n\n---\n\n{description}"
                 ))
-        
+
         # B. Hover sobre Tipos de Esquemas
         if 'type:' in document.lines[pos.line]:
             # Buscar esquemas importados
@@ -277,39 +277,39 @@ def hover(params):
                     try:
                         from gfl.schema_loader import load_schemas_from_files
                         loaded_schemas = load_schemas_from_files([schema_file])
-                        
+
                         if word in loaded_schemas:
                             schema_def = loaded_schemas[word]
                             contents_md = f"**Schema: `{word}`**\n\n---\n\n"
                             contents_md += f"**Base Type:** `{schema_def.get('type', 'unknown')}`\n\n"
-                            
+
                             if 'description' in schema_def:
                                 contents_md += f"**Description:** {schema_def['description']}\n\n"
-                            
+
                             if 'attributes' in schema_def:
                                 contents_md += "**Attributes:**\n"
                                 for attr, props in schema_def['attributes'].items():
                                     required = props.get('required', False)
                                     attr_type = props.get('type', 'unknown')
                                     contents_md += f"- `{attr}`: (type: `{attr_type}`, required: `{required}`)\n"
-                            
+
                             return Hover(contents=MarkupContent(
-                                kind=MarkupKind.Markdown, 
+                                kind=MarkupKind.Markdown,
                                 value=contents_md
                             ))
                     except Exception:
                         continue
-        
+
         # C. Hover sobre Entidades Biológicas (Pathways)
         if 'pathways' in ast and isinstance(ast['pathways'], dict):
             pathways = ast['pathways']
             if word in pathways:
                 pathway_def = pathways[word]
                 contents_md = f"**Pathway: {word}**\n\n---\n\n"
-                
+
                 if 'description' in pathway_def:
                     contents_md += f"**Description:** {pathway_def['description']}\n\n"
-                
+
                 if 'genes' in pathway_def:
                     genes = pathway_def['genes']
                     if isinstance(genes, list):
@@ -318,22 +318,22 @@ def hover(params):
                             contents_md += f"- `{gene}`\n"
                         if len(genes) > 10:
                             contents_md += f"- ... and {len(genes) - 10} more genes\n"
-                
+
                 return Hover(contents=MarkupContent(
-                    kind=MarkupKind.Markdown, 
+                    kind=MarkupKind.Markdown,
                     value=contents_md
                 ))
-        
+
         # D. Hover sobre Entidades Biológicas (Complexes)
         if 'complexes' in ast and isinstance(ast['complexes'], dict):
             complexes = ast['complexes']
             if word in complexes:
                 complex_def = complexes[word]
                 contents_md = f"**Complex: {word}**\n\n---\n\n"
-                
+
                 if 'description' in complex_def:
                     contents_md += f"**Description:** {complex_def['description']}\n\n"
-                
+
                 if 'subunits' in complex_def:
                     subunits = complex_def['subunits']
                     if isinstance(subunits, list):
@@ -342,12 +342,12 @@ def hover(params):
                             contents_md += f"- `{subunit}`\n"
                         if len(subunits) > 10:
                             contents_md += f"- ... and {len(subunits) - 10} more subunits\n"
-                
+
                 return Hover(contents=MarkupContent(
-                    kind=MarkupKind.Markdown, 
+                    kind=MarkupKind.Markdown,
                     value=contents_md
                 ))
-        
+
         # E. Hover sobre Herramientas Experimentales
         if 'tool:' in document.lines[pos.line]:
             tool_descriptions = {
@@ -364,13 +364,13 @@ def hover(params):
                 'Microscopy': 'Microscopy techniques for cellular and molecular imaging',
                 'Mass_spectrometry': 'Mass spectrometry for protein and metabolite analysis'
             }
-            
+
             if word in tool_descriptions:
                 return Hover(contents=MarkupContent(
-                    kind=MarkupKind.Markdown, 
+                    kind=MarkupKind.Markdown,
                     value=f"**Tool: {word}**\n\n---\n\n{tool_descriptions[word]}"
                 ))
-        
+
         # F. Hover sobre Tipos de Experimento
         if 'type:' in document.lines[pos.line] and 'tool:' in document.lines[pos.line]:
             experiment_type_descriptions = {
@@ -383,13 +383,13 @@ def hover(params):
                 'drug_screening': 'Testing of compounds for biological activity',
                 'phenotype_analysis': 'Analysis of observable characteristics or traits'
             }
-            
+
             if word in experiment_type_descriptions:
                 return Hover(contents=MarkupContent(
-                    kind=MarkupKind.Markdown, 
+                    kind=MarkupKind.Markdown,
                     value=f"**Experiment Type: {word}**\n\n---\n\n{experiment_type_descriptions[word]}"
                 ))
-        
+
         # G. Hover sobre Métodos de Análisis
         if 'method:' in document.lines[pos.line]:
             method_descriptions = {
@@ -402,17 +402,17 @@ def hover(params):
                 'machine_learning': 'Use ML algorithms to find patterns in data',
                 'time_series_analysis': 'Analyze data points collected over time'
             }
-            
+
             if word in method_descriptions:
                 return Hover(contents=MarkupContent(
-                    kind=MarkupKind.Markdown, 
+                    kind=MarkupKind.Markdown,
                     value=f"**Analysis Method: {word}**\n\n---\n\n{method_descriptions[word]}"
                 ))
-    
+
     except Exception as e:
         # Si hay error, devolver None
         pass
-    
+
     return None
 
 

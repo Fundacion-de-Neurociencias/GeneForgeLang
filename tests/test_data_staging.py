@@ -275,4 +275,3 @@ class TestDataStagingIntegration:
         assert "params" in request.ast["experiment"]
         assert "sample.sam" in request.data_manifest
         assert "hg38.fasta" in request.data_manifest
-

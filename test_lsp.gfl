@@ -20,4 +20,3 @@ experiment:
 # This should trigger validation errors
 invalid_block:
   missing_required_field: true
-

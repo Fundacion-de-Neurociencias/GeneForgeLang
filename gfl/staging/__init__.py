@@ -7,4 +7,3 @@ to local temporary directories before plugin execution.
 from .manager import DataStagingManager
 
 __all__ = ["DataStagingManager"]
-

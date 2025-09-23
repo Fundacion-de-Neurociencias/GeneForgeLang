@@ -267,5 +267,3 @@ class TestDataStagingIntegration:
             assert "description" in plugin
             assert "capabilities" in plugin
             assert "status" in plugin
-
-
