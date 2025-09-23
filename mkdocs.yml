@@ -1,49 +1,32 @@
-site_name: GeneForgeLang Documentation
-site_description: Professional DSL for genomic workflows
-site_url: https://geneforgelang.readthedocs.io
+site_name: GeneForgeLang (GFL)
+site_description: 'A Symbolic Language for Rational Bio-Design.'
 repo_url: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang
-repo_name: GeneForgeLang
-
 theme:
   name: material
   palette:
-    - scheme: default
-      primary: blue
-      accent: blue
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - scheme: slate
-      primary: blue
-      accent: blue
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
-  features:
-    - navigation.tabs
-    - navigation.sections
-    - navigation.expand
-    - navigation.top
-    - search.highlight
-    - search.share
-    - content.code.copy
-
+    scheme: slate
+    primary: indigo
+    accent: blue
 nav:
-  - Home: index.md
-  - User Guide:
-    - Installation: user-guide/installation.md
-    - Quick Start: user-guide/quickstart.md
-    - Workflow Syntax: user-guide/syntax.md
-    - Examples: user-guide/examples.md
-  - API Reference:
-    - Core API: api/core.md
-    - CLI Commands: api/cli.md
-    - Plugin System: api/plugins.md
-  - Architecture:
-    - Overview: architecture/overview.md
-    - Design Decisions: architecture/decisions.md
-    - Plugin Development: architecture/plugins.md
-
+  - 'Home': index.md
+  - 'Getting Started':
+    - 'Installation': getting_started/installation.md
+    - 'User Quickstart': getting_started/quickstart_user.md
+  - 'Plugin Ecosystem':
+    - 'Overview': ecosystem/plugins_overview.md
+    - 'Core Plugins':
+      - 'BLAST': ecosystem/core_plugins/blast.md
+      - 'GATK': ecosystem/core_plugins/gatk.md
+      - 'SAMtools': ecosystem/core_plugins/samtools.md
+      - 'Biopython Tools': ecosystem/core_plugins/biopython.md
+    - 'Genesis Plugins':
+      - 'On-Target Scorer': ecosystem/genesis_plugins/ontarget_scorer.md
+      - 'Off-Target Scorer': ecosystem/genesis_plugins/offtarget_scorer.md
+      - 'CRISPR Evaluator': ecosystem/genesis_plugins/evaluator.md
+      - 'CRISPR Visualizer': ecosystem/genesis_plugins/visualizer.md
+  - 'For Developers':
+    - 'Contributing': development/contributing.md
+    - 'Creating a Plugin': development/creating_plugins.md
 plugins:
   - search
   - mkdocstrings:
@@ -53,7 +36,6 @@ plugins:
           options:
             docstring_style: google
             show_source: true
-
 markdown_extensions:
   - admonition
   - pymdownx.details
@@ -66,7 +48,6 @@ markdown_extensions:
       alternate_style: true
   - toc:
       permalink: true
-
 extra:
   social:
     - icon: fontawesome/brands/github

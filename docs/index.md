@@ -1,136 +1,102 @@
-# GeneForgeLang Documentation
+# GeneForgeLang (GFL) Documentation
 
-Welcome to the comprehensive documentation for GeneForgeLang (GFL), a domain-specific language for genomic workflow specification, validation, and AI-powered analysis.
+Welcome to the official documentation for GeneForgeLang (GFL), a symbolic language for rational bio-design. GFL empowers researchers and developers to create, optimize, and analyze biological entities through structured workflows and AI-powered analysis.
 
-🧬 **Now live on GitHub Pages!**
+## 🧬 What is GeneForgeLang?
+
+GeneForgeLang is a domain-specific language designed for genomic workflow specification, validation, and execution. It provides a powerful framework for integrating AI/ML tools, experimental systems, and computational biology techniques into reproducible and shareable workflows.
 
 ## 🚀 Quick Start
 
-- **[Installation Guide](installation.md)** - Get started with GeneForgeLang
-- **[Getting Started Tutorial](tutorial.md)** - Your first GFL workflow
-- **[API Reference](API_REFERENCE.md)** - Complete API documentation
-- **[CLI Tools Guide](cli.md)** - Command-line interface usage
+Get up and running with GeneForgeLang quickly:
 
-## 📖 Core Documentation
+- **[Installation Guide](getting_started/installation.md)** - Install GFL and its dependencies
+- **[User Quickstart](getting_started/quickstart_user.md)** - Create your first workflow
+- **[Plugin Ecosystem](ecosystem/plugins_overview.md)** - Explore available plugins
 
-### User Guides
-- **[Language Specification](language/)**
-  - [GFL Syntax Reference](language/syntax.md)
-  - [Workflow Examples](language/examples.md)
-  - [Best Practices](language/best-practices.md)
+## 📚 Documentation Structure
 
-- **[Web Interface](web-interface/)**
-  - [Getting Started](web-interface/getting-started.md)
-  - [Advanced Features](web-interface/advanced-features.md)
-  - [Troubleshooting](web-interface/troubleshooting.md)
+### For Users
+- **[Getting Started](getting_started/)** - Installation and basic usage
+- **[Plugin Ecosystem](ecosystem/)** - Available plugins and their capabilities
+- **[Tutorials](tutorials/)** - Step-by-step guides for common tasks
 
-### Developer Documentation
-- **[API Documentation](api/)**
-  - [REST API Reference](API_REFERENCE.md)
-  - [Client SDK](api/client-sdk.md)
-  - [Authentication](api/authentication.md)
+### For Developers
+- **[Development Guide](development/)** - Contributing to GFL
+- **[Creating Plugins](development/creating_plugins.md)** - Build custom plugins
+- **[API Reference](api/)** - Technical documentation
 
-- **[Architecture](architecture/)**
-  - [System Overview](architecture/overview.md)
-  - [Plugin System](architecture/plugins.md)
-  - [Inference Engine](architecture/inference.md)
+### Advanced Topics
+- **[Architecture](architecture/)** - System design and components
+- **[Language Specification](gfl_yaml/)** - GFL syntax and semantics
+- **[Security](security/)** - Best practices and advisories
 
-## 🔬 Advanced Features
+## 🔧 Core Features
 
-### AI & Machine Learning
-- **[Enhanced Inference Engine](inference/)**
-  - [Model Integration](ENHANCED_INFERENCE_SUMMARY.md)
-  - [Custom Models](inference/custom-models.md)
-  - [Performance Tuning](inference/performance.md)
+### Workflow Orchestration
+- Declarative workflow specification
+- Automatic dependency resolution
+- Parallel execution optimization
+- Error handling and recovery
 
-### Symbolic Reasoning
-- **[Knowledge Representation](features/symbolic_reasoning.md)**
-  - [Rules and Hypotheses](features/symbolic_reasoning.md#rules-and-hypotheses)
-  - [Temporal Orchestration](features/symbolic_reasoning.md#timeline-blocks)
-  - [Biological Entities](features/symbolic_reasoning.md#biological-entities)
+### AI/ML Integration
+- Plugin system for external tools
+- Bayesian optimization support
+- Machine learning model integration
+- Automated parameter tuning
 
-### Web & API Platform
-- **[Platform Features](platform/)**
-  - [Web Interface Overview](WEB_API_IMPLEMENTATION_SUMMARY.md)
-  - [Server Deployment](platform/deployment.md)
-  - [Monitoring & Analytics](platform/monitoring.md)
+### Biological Entity Design
+- Protein sequence generation
+- DNA/RNA sequence design
+- Molecular structure prediction
+- Experimental validation frameworks
 
-## 🔒 Security & Operations
+## 🌐 Plugin Ecosystem
 
-- **[Security](security/)**
-  - [Security Advisory](SECURITY_ADVISORY.md)
-  - [Best Practices](security/best-practices.md)
-  - [Vulnerability Management](security/vulnerability-management.md)
+GFL's extensible plugin system allows integration with a wide range of tools:
 
-- **[Deployment](deployment/)**
-  - [Production Setup](deployment/production.md)
-  - [Docker & Kubernetes](deployment/containers.md)
-  - [Cloud Deployment](deployment/cloud.md)
+### Core Plugins
+- **[BLAST](ecosystem/core_plugins/blast.md)** - Sequence alignment searches
+- **[GATK](ecosystem/core_plugins/gatk.md)** - Genomic analysis toolkit
+- **[SAMtools](ecosystem/core_plugins/samtools.md)** - Sequence alignment manipulation
+- **[Biopython Tools](ecosystem/core_plugins/biopython.md)** - Bioinformatics utilities
 
-## 🛣️ Roadmap & Development
+### Genesis Plugins
+- **[On-Target Scorer](ecosystem/genesis_plugins/ontarget_scorer.md)** - CRISPR efficiency prediction
+- **[Off-Target Scorer](ecosystem/genesis_plugins/offtarget_scorer.md)** - CRISPR risk assessment
+- **[CRISPR Evaluator](ecosystem/genesis_plugins/evaluator.md)** - Combined scoring system
+- **[CRISPR Visualizer](ecosystem/genesis_plugins/visualizer.md)** - Results visualization
 
-- **[Development](development/)**
-  - [Contributing Guide](../CONTRIBUTING.md)
-  - [Development Setup](development/setup.md)
-  - [Testing Guide](development/testing.md)
+## 🎯 Use Cases
 
-- **[Roadmap](roadmap/)**
-  - [Phase 4 Planning](PHASE_4_PLANNING.md)
-  - [Feature Requests](roadmap/feature-requests.md)
-  - [Release Notes](../CHANGELOG.md)
+### Genomics Research
+- CRISPR gene editing design and validation
+- RNA-seq analysis workflows
+- Variant calling and annotation
+- Genome assembly and annotation
 
-## 📚 Reference Materials
+### Drug Discovery
+- Protein engineering pipelines
+- Molecular docking simulations
+- Pharmacogenomics analysis
+- Target identification and validation
 
-### Academic & Research
-- **[Research Paper](../paper.md)** - Academic publication
-- **[Citations](../CITATION.cff)** - How to cite GeneForgeLang
-- **[Bibliography](../paper.bib)** - Related research
+### Agricultural Biotechnology
+- Crop improvement workflows
+- Marker-assisted selection
+- Genomic selection models
+- Trait prediction and optimization
 
-### Technical Specifications
-- **[Schema Reference](../schema/)** - JSON Schema definitions
-- **[Examples Collection](../examples/)** - Code examples and demos
-- **[Testing Suite](../tests/)** - Comprehensive test examples
+## 🤝 Community & Support
 
-## 🎯 Use Cases & Applications
+- **[GitHub Repository](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang)** - Source code and issue tracking
+- **[Contributing Guide](development/contributing.md)** - How to contribute to the project
+- **[Discussion Forum](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/discussions)** - Community discussions
+- **[Security Policy](SECURITY_ADVISORY.md)** - Reporting vulnerabilities
 
-### Genomics Applications
-- **CRISPR Gene Editing** - Design and validate CRISPR experiments
-- **RNA-seq Analysis** - Differential expression workflows
-- **Variant Analysis** - Genomic variant interpretation
-- **Protein Analysis** - Structure prediction and analysis
+## 📄 License
 
-### Industry Solutions
-- **Clinical Genomics** - Diagnostic workflow automation
-- **Agricultural Genomics** - Crop improvement pipelines
-- **Pharmaceutical Research** - Drug discovery workflows
-- **Research Collaboration** - Standardized workflow sharing
-
-## 🆘 Support & Community
-
-- **[FAQ](support/faq.md)** - Frequently asked questions
-- **[Troubleshooting](support/troubleshooting.md)** - Common issues and solutions
-- **[Community](support/community.md)** - Forums, discussions, and help
-- **[Contact](support/contact.md)** - Get in touch with the team
-
----
-
-## Version Information
-
-- **Current Version**: 0.1.0
-- **Documentation Version**: 2025.1
-- **Last Updated**: {{ current_date }}
-- **License**: [MIT License](../license)
-
-## Quick Navigation
-
-| Component | Documentation | Status |
-|-----------|---------------|--------|
-| 🔤 Language Core | [Syntax](language/syntax.md) | ✅ Stable |
-| 🌐 Web Interface | [Platform Docs](WEB_API_IMPLEMENTATION_SUMMARY.md) | ✅ Production Ready |
-| 🤖 AI Engine | [Inference Docs](ENHANCED_INFERENCE_SUMMARY.md) | ✅ Advanced Features |
-| 🔧 CLI Tools | [CLI Guide](cli.md) | ✅ Full Featured |
-| 📡 REST API | [API Reference](API_REFERENCE.md) | ✅ Complete |
-| 🔌 Plugin System | [Plugin Guide](architecture/plugins.md) | ✅ Extensible |
+GeneForgeLang is released under the MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ---
 
