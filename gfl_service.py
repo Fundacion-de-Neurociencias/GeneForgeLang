@@ -26,10 +26,10 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from importlib.metadata import entry_points
 
 from gfl.parser import parse_gfl
-from gfl.staging import DataStagingManager
 
 # Import plugin registry for dynamic plugin discovery
 from gfl.plugins.plugin_registry import plugin_registry
+from gfl.staging import DataStagingManager
 
 app = FastAPI(
     title="GeneForgeLang Service",
@@ -139,32 +139,36 @@ async def execute_ast(request: ExecuteRequest):
         if request.data_manifest:
             data_staging_manager = DataStagingManager()
             logger.info(f"Data staging enabled with {len(request.data_manifest)} files in manifest")
-        
+
         # Extract plugin parameters from AST
         plugin_params = {}
         if "experiment" in request.ast and "params" in request.ast["experiment"]:
             plugin_params.update(request.ast["experiment"]["params"])
         if "analyze" in request.ast and "params" in request.ast["analyze"]:
             plugin_params.update(request.ast["analyze"]["params"])
-        
+
         # Stage files if data staging manager is available
         if data_staging_manager and plugin_params:
             try:
-                plugin_params = data_staging_manager.stage_files(plugin_params, request.data_manifest)
+                plugin_params = data_staging_manager.stage_files(
+                    plugin_params, request.data_manifest
+                )
                 logger.info(f"Staged {len(data_staging_manager.staged_files)} files for execution")
             except Exception as e:
                 logger.error(f"Data staging failed: {e}")
                 return ExecuteResponse(success=False, message=f"Data staging failed: {str(e)}")
-        
+
         # Execute the workflow with staged parameters
         # For now, we're returning a basic execution result
         # In a full implementation, this would execute the GFL workflow with the staged files
         result = {
-            "status": "success", 
-            "output": "GFL execution completed", 
+            "status": "success",
+            "output": "GFL execution completed",
             "metrics": {},
-            "staged_files": list(data_staging_manager.staged_files.keys()) if data_staging_manager else [],
-            "plugin_params": plugin_params
+            "staged_files": (
+                list(data_staging_manager.staged_files.keys()) if data_staging_manager else []
+            ),
+            "plugin_params": plugin_params,
         }
 
         return ExecuteResponse(success=True, result=result)

@@ -1,0 +1,71 @@
+# Ejemplo de archivo GFL para probar autocompletado y hover
+# Intenta escribir en las líneas vacías para ver las sugerencias
+# Pasa el ratón sobre las palabras para ver información contextual
+
+# Definir hipótesis para probar hover
+hypothesis:
+  id: H1
+  description: "CRISPR-Cas9 editing of TP53 will increase apoptosis in cancer cells"
+  variables:
+    independent: "TP53 gene editing"
+    dependent: "Apoptosis rate"
+
+# Definir pathways y complexes para autocompletado y hover
+pathways:
+  UreaCycle:
+    description: "Urea cycle pathway for nitrogen metabolism"
+    genes: ["CPS1", "OTC", "ASS1", "ASL", "ARG1", "NAGS", "NAGL"]
+  
+  Glycolysis:
+    description: "Glycolytic pathway for glucose metabolism"
+    genes: ["HK1", "PFKM", "ALDOA", "TPI1", "GAPDH", "PGK1", "PGAM1"]
+
+complexes:
+  Ribosome_80S:
+    description: "80S ribosome complex for protein synthesis"
+    subunits: ["RPS1", "RPS2", "RPL1", "RPL2", "RPS3", "RPL3"]
+  
+  Proteasome_26S:
+    description: "26S proteasome complex for protein degradation"
+    subunits: ["PSMA1", "PSMA2", "PSMB1", "PSMB2", "PSMC1", "PSMD1"]
+
+# Bloque de experimento - prueba autocompletado aquí
+experiment:
+  tool: CRISPR_cas9
+  type: gene_editing
+  params:
+    target_gene: TP53
+    guide_rna: "GGCGCCATCTACAAGCAGTCACAG"
+    delivery_method: lentiviral_vector
+  
+  metadata:
+    researcher: "Dr. Smith"
+    date: "2024-01-15"
+    protocol_version: "v2.1"
+
+# Bloque de análisis - prueba autocompletado aquí
+analyze:
+  method: differential_expression
+  input_data:
+    control_samples: ["sample1.gene_counts.txt", "sample2.gene_counts.txt"]
+    treatment_samples: ["sample3.gene_counts.txt", "sample4.gene_counts.txt"]
+  
+  parameters:
+    statistical_test: "DESeq2"
+    p_value_threshold: 0.05
+    fold_change_threshold: 2.0
+
+# Bloque de simulación - prueba autocompletado aquí
+simulate:
+  model: gene_regulation_network
+  parameters:
+    network_size: 1000
+    simulation_time: 100
+    time_step: 0.1
+  
+  output:
+    format: "csv"
+    filename: "simulation_results.csv"
+
+# Ejemplo de uso de pathways y complexes
+# Prueba escribir: pathway( o complex( para ver autocompletado

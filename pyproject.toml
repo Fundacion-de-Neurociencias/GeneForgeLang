@@ -62,6 +62,9 @@ containers = [
 staging = [
     "google-cloud-storage>=2.0.0",
 ]
+lsp = [
+    "pygls>=1.0.0",
+]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",

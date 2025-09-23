@@ -1,0 +1,18 @@
+[project]
+name = "gfl-lsp"
+version = "0.1.0"
+description = "A Language Server for GeneForgeLang (GFL)."
+dependencies = [
+    "pygls>=1.0.0",
+    "PyYAML>=6.0",
+    "pydantic>=2.0.0",
+    "typing-extensions>=4.0.0"
+]
+
+[project.scripts]
+# Define el punto de entrada para ejecutar el servidor
+gfl-lsp-server = "gfl_lsp.server.main:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

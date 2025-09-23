@@ -1,0 +1,23 @@
+# Test GFL file for LSP server validation
+experiment:
+  tool: blast
+  type: sequence_search
+  params:
+    query: "ATCGATCG"
+    database: "nr"
+  contract:
+    inputs:
+      query_sequence:
+        type: sequence
+        attributes:
+          format: fasta
+    outputs:
+      results:
+        type: alignment_results
+        attributes:
+          format: blast_xml
+
+# This should trigger validation errors
+invalid_block:
+  missing_required_field: true
+
