@@ -1,0 +1,146 @@
+# GFL Spatial Genomic Complex Example: Multi-Gene Regulatory Network
+# This example demonstrates advanced spatial genomic reasoning with multiple genes
+
+# Define multiple genomic loci for a regulatory network
+loci {
+    id: "Oct4_GeneLocus",
+    chromosome: "chr6",
+    start: 31107016,
+    end: 31107216,
+    elements: [
+        {
+            id: "Oct4_Promoter",
+            type: "promoter"
+        },
+        {
+            id: "Oct4_GeneBody",
+            type: "gene"
+        }
+    ]
+}
+
+loci {
+    id: "Oct4_EnhancerLocus", 
+    chromosome: "chr6",
+    start: 31120000,
+    end: 31125000,
+    elements: [
+        {
+            id: "Oct4_Enhancer",
+            type: "enhancer"
+        }
+    ]
+}
+
+loci {
+    id: "Nanog_GeneLocus",
+    chromosome: "chr12", 
+    start: 7785547,
+    end: 7785747,
+    elements: [
+        {
+            id: "Nanog_Promoter",
+            type: "promoter"
+        },
+        {
+            id: "Nanog_GeneBody",
+            type: "gene"
+        }
+    ]
+}
+
+loci {
+    id: "Nanog_EnhancerLocus",
+    chromosome: "chr12",
+    start: 7800000,
+    end: 7805000, 
+    elements: [
+        {
+            id: "Nanog_Enhancer",
+            type: "enhancer"
+        }
+    ]
+}
+
+# Define complex spatial rules for the regulatory network
+rules {
+    id: "Oct4_Self_Regulation",
+    description: "Oct4 se auto-regula cuando su promotor y enhancer están en contacto 3D",
+    if: is_within(Oct4_Promoter, Oct4_GeneLocus) AND is_within(Oct4_Enhancer, Oct4_EnhancerLocus) AND is_in_contact(Oct4_Promoter, Oct4_Enhancer, using: "embryonic_stem_cell_hic.cool"),
+    then: set_activity(Oct4_GeneBody, level: "high")
+}
+
+rules {
+    id: "Nanog_Self_Regulation",
+    description: "Nanog se auto-regula cuando su promotor y enhancer están en contacto 3D", 
+    if: is_within(Nanog_Promoter, Nanog_GeneLocus) AND is_within(Nanog_Enhancer, Nanog_EnhancerLocus) AND is_in_contact(Nanog_Promoter, Nanog_Enhancer, using: "embryonic_stem_cell_hic.cool"),
+    then: set_activity(Nanog_GeneBody, level: "high")
+}
+
+rules {
+    id: "Cross_Chromosome_Interaction",
+    description: "Oct4 y Nanog pueden interactuar a través de cromosomas si están en contacto 3D",
+    if: is_in_contact(Oct4_Promoter, Nanog_Promoter, using: "embryonic_stem_cell_hic.cool"),
+    then: [
+        set_activity(Oct4_GeneBody, level: "enhanced"),
+        set_activity(Nanog_GeneBody, level: "enhanced")
+    ]
+}
+
+rules {
+    id: "Distance_Penalty_Oct4",
+    description: "La actividad de Oct4 decae si su enhancer está muy lejos",
+    if: distance_between(Oct4_Promoter, Oct4_Enhancer) > 200000,
+    then: set_activity(Oct4_GeneBody, level: "low")
+}
+
+rules {
+    id: "Distance_Penalty_Nanog", 
+    description: "La actividad de Nanog decae si su enhancer está muy lejos",
+    if: distance_between(Nanog_Promoter, Nanog_Enhancer) > 200000,
+    then: set_activity(Nanog_GeneBody, level: "low")
+}
+
+# Complex simulation scenarios
+simulate {
+    name: "Chromosomal_Translocation_Experiment",
+    description: "¿Qué pasa si translocamos el locus de Oct4 a otro cromosoma?",
+    action: move(Oct4_GeneLocus, to: "chr15:50000000"),
+    query: [
+        get_activity(Oct4_GeneBody),
+        get_activity(Nanog_GeneBody)
+    ]
+}
+
+simulate {
+    name: "Enhancer_Deletion_Cascade",
+    description: "¿Qué pasa si eliminamos ambos enhancers simultáneamente?",
+    action: [
+        move(Oct4_Enhancer, to: "deleted"),
+        move(Nanog_Enhancer, to: "deleted")
+    ],
+    query: [
+        get_activity(Oct4_GeneBody),
+        get_activity(Nanog_GeneBody)
+    ]
+}
+
+simulate {
+    name: "Optimal_Network_Configuration",
+    description: "Verificar la configuración óptima de la red regulatoria",
+    action: null,
+    query: [
+        get_activity(Oct4_GeneBody),
+        get_activity(Nanog_GeneBody)
+    ]
+}
+
+simulate {
+    name: "HiC_Map_Sensitivity_Analysis",
+    description: "Analizar sensibilidad a diferentes mapas de contacto 3D",
+    action: null,
+    query: [
+        get_activity(Oct4_GeneBody, level: "high"),
+        get_activity(Nanog_GeneBody, level: "high")
+    ]
+}

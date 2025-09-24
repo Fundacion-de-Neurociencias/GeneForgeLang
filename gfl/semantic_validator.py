@@ -6,7 +6,7 @@ reporting, including location tracking, error codes, and suggested fixes.
 
 import logging
 import os
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, Set
 
 from gfl.error_handling import (
     EnhancedValidationResult,
@@ -15,8 +15,49 @@ from gfl.error_handling import (
     SourceLocation,
 )
 from gfl.schema_loader import get_global_schema_loader, load_schemas_from_files
+from gfl.capability_system import (
+    GFLFeature,
+    EngineCapabilityChecker,
+    GFLValidationWarning,
+    CAPABILITY_DEFINITIONS
+)
 
 logger = logging.getLogger(__name__)
+
+
+def validate(ast: Dict[str, Any], file_path: Optional[str] = None, 
+             engine_capabilities: Optional[Set[GFLFeature]] = None) -> EnhancedValidationResult:
+    """Convenience function for GFL validation with capability checking.
+    
+    Args:
+        ast: The GFL AST dictionary to validate.
+        file_path: Optional path to the file being validated for error reporting.
+        engine_capabilities: Set of GFL features supported by the target engine.
+                            If None, no capability checking is performed.
+                            
+    Returns:
+        EnhancedValidationResult with detailed error information and capability warnings.
+    """
+    validator = EnhancedSemanticValidator(file_path, engine_capabilities)
+    return validator.validate_ast(ast)
+
+
+def validate_with_engine_type(ast: Dict[str, Any], engine_type: str, 
+                             file_path: Optional[str] = None) -> EnhancedValidationResult:
+    """Validate GFL AST with a predefined engine type.
+    
+    Args:
+        ast: The GFL AST dictionary to validate.
+        engine_type: Type of engine ("basic", "standard", "advanced", "experimental").
+        file_path: Optional path to the file being validated for error reporting.
+        
+    Returns:
+        EnhancedValidationResult with detailed error information and capability warnings.
+    """
+    from gfl.capability_system import get_engine_capabilities
+    
+    capabilities = get_engine_capabilities(engine_type)
+    return validate(ast, file_path, capabilities)
 
 
 class EnhancedSemanticValidator:
@@ -26,17 +67,22 @@ class EnhancedSemanticValidator:
     including location tracking, error codes, and suggested fixes.
     """
 
-    def __init__(self, file_path: Optional[str] = None):
+    def __init__(self, file_path: Optional[str] = None, 
+                 engine_capabilities: Optional[Set[GFLFeature]] = None):
         """Initialize validator.
 
         Args:
             file_path: Optional path to the file being validated for error reporting.
+            engine_capabilities: Set of GFL features supported by the target engine.
+                                If None, no capability checking is performed.
         """
         self.symbol_table: Dict[str, Dict[str, Any]] = {}
         self.result = EnhancedValidationResult(file_path=file_path)
         self.current_block: Optional[str] = None
         self.nested_level = 0
         self.schema_loader = get_global_schema_loader()
+        self.capability_checker = EngineCapabilityChecker(engine_capabilities or set())
+        self.engine_capabilities = engine_capabilities
 
     def validate_ast(self, ast: Dict[str, Any]) -> EnhancedValidationResult:
         """Validate a GFL AST and return enhanced validation result.
@@ -67,6 +113,51 @@ class EnhancedSemanticValidator:
             error.add_context("exception_type", type(e).__name__)
 
         return self.result
+
+    def _check_capability(self, feature: GFLFeature, block_name: str = None) -> bool:
+        """Check if a feature is supported by the engine.
+        
+        Args:
+            feature: The GFL feature to check.
+            block_name: Optional name of the block being validated.
+            
+        Returns:
+            True if the feature is supported, False otherwise.
+        """
+        if not self.engine_capabilities:
+            return True  # No capability checking if no engine specified
+            
+        if not self.capability_checker.supports_feature(feature):
+            block_desc = f" in block '{block_name}'" if block_name else ""
+            capability_info = self.capability_checker.get_capability_info(feature)
+            
+            message = f"Feature '{feature.value}' is not supported by the target engine{block_desc}"
+            if capability_info:
+                message += f". {capability_info.description}"
+            
+            warning = self.result.add_warning(message, feature)
+            logger.warning(f"Capability warning: {warning}")
+            return False
+            
+        # Check dependencies
+        missing_deps = self.capability_checker.check_dependencies(feature)
+        if missing_deps:
+            dep_names = [dep.value for dep in missing_deps]
+            warning = self.result.add_warning(
+                f"Feature '{feature.value}' requires unsupported dependencies: {', '.join(dep_names)}",
+                feature,
+                f"Ensure all dependencies are supported: {', '.join(dep_names)}"
+            )
+            logger.warning(f"Dependency warning: {warning}")
+            return False
+            
+        return True
+
+    def _add_capability_warning(self, message: str, feature: GFLFeature, 
+                               suggestion: str = None) -> None:
+        """Add a capability warning to the validation result."""
+        warning = self.result.add_warning(message, feature, suggestion)
+        logger.warning(f"Capability warning: {warning}")
 
     def _load_schema_imports(self, ast: Dict[str, Any]) -> None:
         """Load schema imports from the AST.
@@ -174,35 +265,50 @@ class EnhancedSemanticValidator:
             self.current_block = block_name
 
             if block_name == "experiment":
-                self._validate_experiment_block(block_content)
+                if self._check_capability(GFLFeature.EXPERIMENT_BLOCK, block_name):
+                    self._validate_experiment_block(block_content)
                 # Store contract for compatibility checking
                 if isinstance(block_content, dict) and "contract" in block_content:
                     self._store_block_contract(block_name, block_content["contract"])
             elif block_name == "analyze":
-                self._validate_analysis_block(block_content)
+                if self._check_capability(GFLFeature.ANALYZE_BLOCK, block_name):
+                    self._validate_analysis_block(block_content)
                 # Store contract for compatibility checking
                 if isinstance(block_content, dict) and "contract" in block_content:
                     self._store_block_contract(block_name, block_content["contract"])
             elif block_name == "design":
-                self._validate_design_block(block_content)
+                if self._check_capability(GFLFeature.DESIGN_BLOCK, block_name):
+                    self._validate_design_block(block_content)
             elif block_name == "optimize":
-                self._validate_optimize_block(block_content)
+                if self._check_capability(GFLFeature.OPTIMIZE_BLOCK, block_name):
+                    self._validate_optimize_block(block_content)
             elif block_name == "simulate":
-                self._validate_simulate_block(block_content)
+                if self._check_capability(GFLFeature.SIMULATE_BLOCK, block_name):
+                    self._validate_simulate_block(block_content)
             elif block_name == "branch":
-                self._validate_branch_block(block_content)
+                if self._check_capability(GFLFeature.BRANCH_BLOCK, block_name):
+                    self._validate_branch_block(block_content)
             elif block_name == "refine_data":
-                self._validate_refine_data_block(block_content)
+                if self._check_capability(GFLFeature.REFINE_DATA_BLOCK, block_name):
+                    self._validate_refine_data_block(block_content)
             elif block_name == "guided_discovery":
-                self._validate_guided_discovery_block(block_content)
+                if self._check_capability(GFLFeature.GUIDED_DISCOVERY_BLOCK, block_name):
+                    self._validate_guided_discovery_block(block_content)
             elif block_name == "metadata":
-                self._validate_metadata_block(block_content)
+                if self._check_capability(GFLFeature.METADATA_BLOCK, block_name):
+                    self._validate_metadata_block(block_content)
             elif block_name == "rules":
-                self._validate_rules_block(block_content)
+                if self._check_capability(GFLFeature.RULES_BLOCK, block_name):
+                    self._validate_rules_block(block_content)
             elif block_name == "hypothesis":
-                self._validate_hypothesis_block(block_content)
+                if self._check_capability(GFLFeature.HYPOTHESIS_BLOCK, block_name):
+                    self._validate_hypothesis_block(block_content)
             elif block_name == "timeline":
-                self._validate_timeline_block(block_content)
+                if self._check_capability(GFLFeature.TIMELINE_BLOCK, block_name):
+                    self._validate_timeline_block(block_content)
+            elif block_name == "loci":
+                if self._check_capability(GFLFeature.LOCI_BLOCK, block_name):
+                    self._validate_loci_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -371,6 +477,80 @@ class EnhancedSemanticValidator:
                     f"Rule {i} 'then' field must be a dictionary",
                     ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
                 ).add_fix(f"Format 'then' field as a dictionary in rule {i}")
+
+            # Check for spatial predicates if present
+            if "if" in rule:
+                self._validate_rule_conditions(rule["if"], f"rule {i}")
+
+    def _validate_rule_conditions(self, conditions: Any, context: str) -> None:
+        """Validate rule conditions including spatial predicates."""
+        if isinstance(conditions, list):
+            # Multiple conditions (AND logic)
+            for i, condition in enumerate(conditions):
+                self._validate_single_condition(condition, f"{context}, condition {i}")
+        else:
+            # Single condition
+            self._validate_single_condition(conditions, context)
+
+    def _validate_single_condition(self, condition: Any, context: str) -> None:
+        """Validate a single rule condition."""
+        if not isinstance(condition, dict):
+            return  # Skip validation if not a dictionary
+
+        condition_type = condition.get("type")
+        
+        if condition_type == "is_within":
+            self._validate_spatial_predicate(condition, context, GFLFeature.SPATIAL_PREDICATES)
+        elif condition_type == "distance_between":
+            self._validate_spatial_predicate(condition, context, GFLFeature.SPATIAL_PREDICATES)
+        elif condition_type == "is_in_contact":
+            self._validate_spatial_predicate(condition, context, GFLFeature.HIC_INTEGRATION)
+        elif condition_type == "not":
+            # Recursively validate nested condition
+            if "condition" in condition:
+                self._validate_single_condition(condition["condition"], f"{context}, not condition")
+        elif condition_type == "logical":
+            # Validate logical operators
+            if "left" in condition:
+                self._validate_single_condition(condition["left"], f"{context}, left operand")
+            if "right" in condition:
+                self._validate_single_condition(condition["right"], f"{context}, right operand")
+
+    def _validate_spatial_predicate(self, condition: Dict[str, Any], context: str, feature: GFLFeature) -> None:
+        """Validate spatial predicates and check capabilities."""
+        if not self._check_capability(feature, context):
+            return  # Skip validation if feature not supported
+
+        # Validate predicate-specific fields
+        if condition["type"] == "is_within":
+            required_fields = ["element", "locus"]
+            for field in required_fields:
+                if field not in condition:
+                    error = self.result.add_error(
+                        f"{context}: is_within predicate missing required field '{field}'",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    )
+                    error.add_fix(f"Add '{field}' field to is_within predicate")
+                    
+        elif condition["type"] == "distance_between":
+            required_fields = ["element_a", "element_b"]
+            for field in required_fields:
+                if field not in condition:
+                    error = self.result.add_error(
+                        f"{context}: distance_between predicate missing required field '{field}'",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    )
+                    error.add_fix(f"Add '{field}' field to distance_between predicate")
+                    
+        elif condition["type"] == "is_in_contact":
+            required_fields = ["element_a", "element_b", "hic_map"]
+            for field in required_fields:
+                if field not in condition:
+                    error = self.result.add_error(
+                        f"{context}: is_in_contact predicate missing required field '{field}'",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    )
+                    error.add_fix(f"Add '{field}' field to is_in_contact predicate")
 
     def _validate_hypothesis_block(self, hypothesis_block: Any) -> None:
         """Validate the hypothesis block structure."""
@@ -1798,12 +1978,159 @@ class EnhancedSemanticValidator:
 
     def _validate_simulate_block(self, simulate: Any) -> None:
         """Validate simulate block."""
-        if not isinstance(simulate, bool):
+        if not isinstance(simulate, dict):
             error = self.result.add_error(
-                f"Simulate must be a boolean, got {type(simulate).__name__}",
+                f"simulate block must be a dictionary, got {type(simulate).__name__}",
                 ErrorCodes.TYPE_INVALID_TYPE,
             )
-            error.add_fix("Use 'true' or 'false' for the simulate value")
+            error.add_fix("Use a dictionary structure for simulate block")
+            return
+
+        # Check if this is a spatial simulation (new format)
+        if "name" in simulate and "action" in simulate and "query" in simulate:
+            # This is the new spatial simulation format
+            if not self._check_capability(GFLFeature.SPATIAL_SIMULATE, "simulate"):
+                return  # Skip validation if spatial simulate not supported
+                
+            self._validate_spatial_simulate_block(simulate)
+        elif "target" in simulate:
+            # This is the legacy simulate format
+            if not self._check_capability(GFLFeature.SIMULATE_BLOCK, "simulate"):
+                return  # Skip validation if basic simulate not supported
+                
+            self._validate_legacy_simulate_block(simulate)
+        else:
+            error = self.result.add_error(
+                "simulate block must have either 'target' (legacy) or 'name', 'action', 'query' (spatial)",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            )
+            error.add_fix("Add required fields for simulate block")
+
+    def _validate_spatial_simulate_block(self, simulate: Dict[str, Any]) -> None:
+        """Validate spatial simulation block."""
+        # Validate required fields
+        required_fields = ["name", "action", "query"]
+        for field in required_fields:
+            if field not in simulate:
+                error = self.result.add_error(
+                    f"spatial simulate block missing required field: {field}",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                )
+                error.add_fix(f"Add '{field}' field to spatial simulate block")
+
+        # Validate action structure
+        if "action" in simulate:
+            action = simulate["action"]
+            if isinstance(action, dict) and "type" in action:
+                if action["type"] == "move":
+                    if "element" not in action or "destination" not in action:
+                        error = self.result.add_error(
+                            "move action requires 'element' and 'destination' fields",
+                            ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                        )
+                        error.add_fix("Add 'element' and 'destination' to move action")
+                elif action["type"] == "set_activity":
+                    if "element" not in action or "level" not in action:
+                        error = self.result.add_error(
+                            "set_activity action requires 'element' and 'level' fields",
+                            ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                        )
+                        error.add_fix("Add 'element' and 'level' to set_activity action")
+
+        # Validate query structure
+        if "query" in simulate:
+            query = simulate["query"]
+            if not isinstance(query, list):
+                error = self.result.add_error(
+                    "query field must be a list",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix("Use a list for query field")
+            else:
+                for i, query_item in enumerate(query):
+                    if isinstance(query_item, dict) and "type" in query_item:
+                        if query_item["type"] == "get_activity":
+                            if "element" not in query_item:
+                                error = self.result.add_error(
+                                    f"get_activity query {i} requires 'element' field",
+                                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                                )
+                                error.add_fix("Add 'element' field to get_activity query")
+
+    def _validate_legacy_simulate_block(self, simulate: Dict[str, Any]) -> None:
+        """Validate legacy simulate block."""
+        # Validate required fields
+        required_fields = ["target"]
+        for field in required_fields:
+            if field not in simulate:
+                error = self.result.add_error(
+                    f"legacy simulate block missing required field: {field}",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                )
+                error.add_fix(f"Add '{field}' field to legacy simulate block")
+
+    def _validate_loci_block(self, loci: Any) -> None:
+        """Validate loci block for genomic coordinates."""
+        if not isinstance(loci, list):
+            error = self.result.add_error(
+                f"loci block must be a list, got {type(loci).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            )
+            error.add_fix("Use a list of locus definitions for loci block")
+            return
+
+        for i, locus in enumerate(loci):
+            if not isinstance(locus, dict):
+                error = self.result.add_error(
+                    f"locus {i} must be a dictionary",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix(f"Use dictionary structure for locus {i}")
+                continue
+
+            # Validate required fields
+            required_fields = ["id", "chromosome", "start", "end"]
+            for field in required_fields:
+                if field not in locus:
+                    error = self.result.add_error(
+                        f"locus {i} missing required field: {field}",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    )
+                    error.add_fix(f"Add '{field}' field to locus {i}")
+
+            # Validate coordinate types
+            if "start" in locus and not isinstance(locus["start"], int):
+                error = self.result.add_error(
+                    f"locus {i} start coordinate must be an integer",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix(f"Use integer value for start coordinate in locus {i}")
+
+            if "end" in locus and not isinstance(locus["end"], int):
+                error = self.result.add_error(
+                    f"locus {i} end coordinate must be an integer",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix(f"Use integer value for end coordinate in locus {i}")
+
+            # Validate elements if present
+            if "elements" in locus:
+                elements = locus["elements"]
+                if not isinstance(elements, list):
+                    error = self.result.add_error(
+                        f"locus {i} elements must be a list",
+                        ErrorCodes.TYPE_INVALID_TYPE,
+                    )
+                    error.add_fix(f"Use list structure for elements in locus {i}")
+                else:
+                    for j, element in enumerate(elements):
+                        if isinstance(element, dict):
+                            if "id" not in element or "type" not in element:
+                                error = self.result.add_error(
+                                    f"element {j} in locus {i} missing required fields",
+                                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                                )
+                                error.add_fix("Add 'id' and 'type' fields to element")
 
     def _validate_branch_block(self, branch: Any) -> None:
         """Validate branch block."""

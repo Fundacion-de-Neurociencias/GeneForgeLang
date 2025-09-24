@@ -24,6 +24,14 @@ class GFLLexer:
         "RCURLY",  # }
         "LBRACKET",  # [
         "RBRACKET",  # ]
+        "LPAREN",  # (
+        "RPAREN",  # )
+        "EQUALS",  # ==
+        "NOT_EQUALS",  # !=
+        "LT",  # <
+        "GT",  # >
+        "LTE",  # <=
+        "GTE",  # >=
         "STRATEGY",  # Token explícito para "strategy" (case-insensitive)
         "PARAMS",  # Token explícito para "params" (case-insensitive)
     ]
@@ -46,6 +54,30 @@ class GFLLexer:
         "false": "BOOLEAN",  # BOOLEAN se define aquí
         "and": "AND",  # Añadido para expresiones lógicas
         "or": "OR",  # Añadido para expresiones lógicas
+        # New spatial genomic keywords
+        "loci": "LOCI",
+        "locus": "LOCUS",
+        "rules": "RULES",
+        "is_within": "IS_WITHIN",
+        "distance_between": "DISTANCE_BETWEEN",
+        "is_in_contact": "IS_IN_CONTACT",
+        "set_activity": "SET_ACTIVITY",
+        "get_activity": "GET_ACTIVITY",
+        "move": "MOVE",
+        "to": "TO",
+        "level": "LEVEL",
+        "chromosome": "CHROMOSOME",
+        "start": "START",
+        "end": "END",
+        "elements": "ELEMENTS",
+        "type": "TYPE",
+        "promoter": "PROMOTER",
+        "enhancer": "ENHANCER",
+        "gene": "GENE",
+        "action": "ACTION",
+        "query": "QUERY",
+        "name": "NAME",
+        "description": "DESCRIPTION",
     }
 
     # Agrega los valores del diccionario de palabras reservadas a la lista de tokens
@@ -61,6 +93,14 @@ class GFLLexer:
     t_RCURLY = r"}"
     t_LBRACKET = r"\["
     t_RBRACKET = r"\]"
+    t_LPAREN = r"\("
+    t_RPAREN = r"\)"
+    t_EQUALS = r"=="
+    t_NOT_EQUALS = r"!="
+    t_LT = r"<"
+    t_GT = r">"
+    t_LTE = r"<="
+    t_GTE = r">="
 
     # Regla para números (enteros o flotantes)
     def t_NUMBER(self, t):

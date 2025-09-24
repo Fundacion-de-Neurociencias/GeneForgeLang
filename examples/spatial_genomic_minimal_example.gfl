@@ -1,0 +1,36 @@
+# GFL Spatial Genomic Minimal Example
+# Simple demonstration of the new spatial genomic capabilities
+
+loci:
+  - id: "MyGene_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "MyGene_Promoter"
+        type: "promoter"
+      - id: "MyGene_Body"
+        type: "gene"
+
+rules:
+  - id: "BasicSpatialRule"
+    description: "El gen está activo cuando su promotor está en su locus nativo"
+    if:
+      - type: "is_within"
+        element: "MyGene_Promoter"
+        locus: "MyGene_Locus"
+    then:
+      - type: "set_activity"
+        element: "MyGene_Body"
+        level: "active"
+
+simulate:
+  name: "Basic_Relocation_Test"
+  description: "¿Qué pasa si movemos el promotor?"
+  action:
+    type: "move"
+    element: "MyGene_Promoter"
+    destination: "chr1:2000000"
+  query:
+    - type: "get_activity"
+      element: "MyGene_Body"

@@ -1,0 +1,96 @@
+# GFL Spatial Genomic Example: Sox2 Gene Regulation
+# This example demonstrates the new spatial genomic capabilities of GFL
+# Based on the paper findings about Sox2 promoter-enhancer interactions
+
+loci:
+  - id: "Sox2_GeneLocus"
+    chromosome: "chr3"
+    start: 181708858
+    end: 181711758
+    elements:
+      - id: "Sox2_Promoter"
+        type: "promoter"
+      - id: "Sox2_GeneBody"
+        type: "gene"
+
+  - id: "Sox2_EnhancerLocus"
+    chromosome: "chr3"
+    start: 181844000
+    end: 181849000
+    elements:
+      - id: "Sox2_Enhancer"
+        type: "enhancer"
+
+rules:
+  - id: "GatekeeperRule"
+    description: "Un promotor es regulado eficientemente por su enhancer solo si ambos están en sus loci nativos y en contacto 3D."
+    if:
+      - type: "is_within"
+        element: "Sox2_Promoter"
+        locus: "Sox2_GeneLocus"
+      - type: "is_within"
+        element: "Sox2_Enhancer"
+        locus: "Sox2_EnhancerLocus"
+      - type: "is_in_contact"
+        element_a: "Sox2_Promoter"
+        element_b: "Sox2_Enhancer"
+        hic_map: "embryonic_stem_cell_hic.cool"
+    then:
+      - type: "set_activity"
+        element: "Sox2_GeneBody"
+        level: "high"
+
+  - id: "RelocationPenaltyRule"
+    description: "Si un promotor es relocalizado fuera de su 'sweet spot', su actividad decae drásticamente."
+    if:
+      - type: "not"
+        condition:
+          type: "is_within"
+          element: "Sox2_Promoter"
+          locus: "Sox2_GeneLocus"
+    then:
+      - type: "set_activity"
+        element: "Sox2_GeneBody"
+        level: "low_or_off"
+
+  - id: "DistanceDependentRule"
+    description: "La actividad del gen decae con la distancia entre promotor y enhancer."
+    if:
+      - type: "distance_between"
+        element_a: "Sox2_Promoter"
+        element_b: "Sox2_Enhancer"
+        threshold: 100000
+    then:
+      - type: "set_activity"
+        element: "Sox2_GeneBody"
+        level: "reduced"
+
+simulate:
+  name: "Sox2_Promoter_Relocation_Experiment"
+  description: "¿Qué pasa con la actividad de Sox2 si movemos su promotor a otra parte?"
+  action:
+    type: "move"
+    element: "Sox2_Promoter"
+    destination: "chr3:190000000"
+  query:
+    - type: "get_activity"
+      element: "Sox2_GeneBody"
+
+simulate:
+  name: "Sox2_Enhancer_Deletion_Experiment"
+  description: "¿Qué pasa si eliminamos el enhancer de Sox2?"
+  action:
+    type: "move"
+    element: "Sox2_Enhancer"
+    destination: "deleted"
+  query:
+    - type: "get_activity"
+      element: "Sox2_GeneBody"
+
+simulate:
+  name: "Sox2_Optimal_Configuration_Test"
+  description: "Verificar que la configuración nativa es óptima"
+  action: null
+  query:
+    - type: "get_activity"
+      element: "Sox2_GeneBody"
