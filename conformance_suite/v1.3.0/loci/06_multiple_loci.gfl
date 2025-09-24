@@ -1,0 +1,42 @@
+# GFL Conformance Test: Multiple Loci Definitions
+# Test Case: 06_multiple_loci.gfl
+# Purpose: Test multiple locus definitions in single block
+# Expected: Should parse and validate successfully
+
+loci:
+  - id: "GeneA_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "GeneA_Promoter"
+        type: "promoter"
+      - id: "GeneA_Body"
+        type: "gene"
+
+  - id: "GeneB_Locus"
+    chromosome: "chr2"
+    start: 2000000
+    end: 2001500
+    elements:
+      - id: "GeneB_Promoter"
+        type: "promoter"
+      - id: "GeneB_Enhancer"
+        type: "enhancer"
+      - id: "GeneB_Body"
+        type: "gene"
+
+  - id: "GeneC_Locus"
+    chromosome: "chrX"
+    start: 500000
+    end: 500500
+    elements:
+      - id: "GeneC_Promoter"
+        type: "promoter"
+
+# This test validates that the parser and semantic validator can handle
+# multiple loci definitions within a single loci block, including:
+# - Different chromosomes (chr1, chr2, chrX)
+# - Different coordinate ranges
+# - Different numbers of elements per locus
+# - Various element types (promoter, enhancer, gene)

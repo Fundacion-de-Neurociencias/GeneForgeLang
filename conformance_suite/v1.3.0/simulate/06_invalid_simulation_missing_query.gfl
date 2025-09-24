@@ -1,0 +1,39 @@
+# GFL Conformance Test: Invalid Simulation - Missing Query
+# Test Case: 06_invalid_simulation_missing_query.gfl
+# Purpose: Test validation of simulate block missing query field
+# Expected: Should be rejected by semantic validator
+
+loci:
+  - id: "TestGene_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "TestGene_Promoter"
+        type: "promoter"
+
+rules:
+  - id: "TestRule"
+    description: "Test rule for validation"
+    if:
+      - type: "is_within"
+        element: "TestGene_Promoter"
+        locus: "TestGene_Locus"
+    then:
+      - type: "set_activity"
+        element: "TestGene_Promoter"
+        level: "active"
+
+simulate:
+  name: "Missing_Query_Test"
+  description: "Simulation missing required query field"
+  action:
+    type: "move"
+    element: "TestGene_Promoter"
+    destination: "chr1:1500000"
+  # query:  # MISSING REQUIRED FIELD
+
+# This test validates that the semantic validator correctly identifies
+# missing query field in simulate block. The query field is required
+# to specify what information should be retrieved after the simulation
+# action is performed and rules are applied.

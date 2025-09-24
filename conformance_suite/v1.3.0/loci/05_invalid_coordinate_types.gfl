@@ -1,0 +1,17 @@
+# GFL Conformance Test: Invalid Locus - Wrong Coordinate Data Types
+# Test Case: 05_invalid_coordinate_types.gfl
+# Purpose: Test validation of incorrect coordinate data types
+# Expected: Should be rejected by semantic validator with type error
+
+loci:
+  - id: "TestGene_Locus"
+    chromosome: "chr1"
+    start: "1000000"  # INVALID: Should be integer, not string
+    end: "1001000"    # INVALID: Should be integer, not string
+    elements:
+      - id: "TestGene_Promoter"
+        type: "promoter"
+
+# This test validates that the semantic validator correctly identifies
+# incorrect data types for coordinates. Start and end coordinates must
+# be integers to enable proper spatial calculations and comparisons.

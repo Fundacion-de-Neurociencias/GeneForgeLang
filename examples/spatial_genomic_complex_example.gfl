@@ -20,7 +20,7 @@ loci {
 }
 
 loci {
-    id: "Oct4_EnhancerLocus", 
+    id: "Oct4_EnhancerLocus",
     chromosome: "chr6",
     start: 31120000,
     end: 31125000,
@@ -34,7 +34,7 @@ loci {
 
 loci {
     id: "Nanog_GeneLocus",
-    chromosome: "chr12", 
+    chromosome: "chr12",
     start: 7785547,
     end: 7785747,
     elements: [
@@ -53,7 +53,7 @@ loci {
     id: "Nanog_EnhancerLocus",
     chromosome: "chr12",
     start: 7800000,
-    end: 7805000, 
+    end: 7805000,
     elements: [
         {
             id: "Nanog_Enhancer",
@@ -72,7 +72,7 @@ rules {
 
 rules {
     id: "Nanog_Self_Regulation",
-    description: "Nanog se auto-regula cuando su promotor y enhancer están en contacto 3D", 
+    description: "Nanog se auto-regula cuando su promotor y enhancer están en contacto 3D",
     if: is_within(Nanog_Promoter, Nanog_GeneLocus) AND is_within(Nanog_Enhancer, Nanog_EnhancerLocus) AND is_in_contact(Nanog_Promoter, Nanog_Enhancer, using: "embryonic_stem_cell_hic.cool"),
     then: set_activity(Nanog_GeneBody, level: "high")
 }
@@ -95,7 +95,7 @@ rules {
 }
 
 rules {
-    id: "Distance_Penalty_Nanog", 
+    id: "Distance_Penalty_Nanog",
     description: "La actividad de Nanog decae si su enhancer está muy lejos",
     if: distance_between(Nanog_Promoter, Nanog_Enhancer) > 200000,
     then: set_activity(Nanog_GeneBody, level: "low")

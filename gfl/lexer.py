@@ -78,6 +78,22 @@ class GFLLexer:
         "query": "QUERY",
         "name": "NAME",
         "description": "DESCRIPTION",
+        # Multi-omic keywords v2.0
+        "transcripts": "TRANSCRIPTS",
+        "transcript": "TRANSCRIPT",
+        "proteins": "PROTEINS",
+        "protein": "PROTEIN",
+        "metabolites": "METABOLITES",
+        "metabolite": "METABOLITE",
+        "gene_source": "GENE_SOURCE",
+        "exons": "EXONS",
+        "exon": "EXON",
+        "translates_from": "TRANSLATES_FROM",
+        "domains": "DOMAINS",
+        "domain": "DOMAIN",
+        "formula": "FORMULA",
+        "identifiers": "IDENTIFIERS",
+        "identifier": "IDENTIFIER",
     }
 
     # Agrega los valores del diccionario de palabras reservadas a la lista de tokens

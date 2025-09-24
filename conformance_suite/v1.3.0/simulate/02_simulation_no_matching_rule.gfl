@@ -1,0 +1,70 @@
+# GFL Conformance Test: Simulation with No Matching Rules
+# Test Case: 02_simulation_no_matching_rule.gfl
+# Purpose: Test simulation where action doesn't trigger any rules
+# Expected: Should parse successfully with no rule application
+# Description for GF Engine: "The reasoning engine must not infer any state changes."
+
+loci:
+  - id: "TestGene_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "TestGene_Promoter"
+        type: "promoter"
+      - id: "TestGene_Body"
+        type: "gene"
+
+  - id: "Unrelated_Locus"
+    chromosome: "chr2"
+    start: 2000000
+    end: 2001000
+    elements:
+      - id: "UnrelatedElement"
+        type: "enhancer"
+
+rules:
+  - id: "SpecificRule"
+    description: "Rule that only applies to specific conditions not met in this simulation"
+    if:
+      - type: "is_within"
+        element: "UnrelatedElement"
+        locus: "Unrelated_Locus"
+      - type: "distance_between"
+        element_a: "TestGene_Promoter"
+        element_b: "UnrelatedElement"
+        threshold: 1000000
+    then:
+      - type: "set_activity"
+        element: "TestGene_Body"
+        level: "affected"
+
+  - id: "AnotherSpecificRule"
+    description: "Another rule that doesn't match the simulation scenario"
+    if:
+      - type: "is_within"
+        element: "TestGene_Promoter"
+        locus: "TestGene_Locus"
+    then:
+      - type: "set_activity"
+        element: "TestGene_Body"
+        level: "normal"
+
+simulate:
+  name: "No_Matching_Rule_Test"
+  description: "Simulation that doesn't trigger any rules"
+  action:
+    type: "move"
+    element: "TestGene_Promoter"
+    destination: "chr1:1500000"  # Move to different position on same chromosome
+  query:
+    - type: "get_activity"
+      element: "TestGene_Body"
+
+# This test validates that the simulation engine correctly handles scenarios
+# where the hypothetical action doesn't match any rule conditions:
+# 1. The move action relocates TestGene_Promoter to chr1:1500000
+# 2. SpecificRule doesn't apply (TestGene_Promoter is not within Unrelated_Locus)
+# 3. AnotherSpecificRule doesn't apply (TestGene_Promoter is not within TestGene_Locus after move)
+# 4. No rules are triggered, so no activity changes are inferred
+# 5. The query should return the default or unchanged activity level

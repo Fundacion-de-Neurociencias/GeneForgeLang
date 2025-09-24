@@ -1,0 +1,47 @@
+# GFL Conformance Test: Edge Cases for Coordinate Validation
+# Test Case: 08_edge_coordinates.gfl
+# Purpose: Test edge cases for coordinate validation
+# Expected: Should parse and validate successfully
+
+loci:
+  - id: "Minimal_Locus"
+    chromosome: "chr1"
+    start: 1
+    end: 1
+    elements:
+      - id: "MinimalElement"
+        type: "promoter"
+
+  - id: "Small_Locus"
+    chromosome: "chr2"
+    start: 100
+    end: 200
+    elements:
+      - id: "SmallElement"
+        type: "enhancer"
+
+  - id: "Large_Locus"
+    chromosome: "chr3"
+    start: 100000000
+    end: 200000000
+    elements:
+      - id: "LargeElement1"
+        type: "gene"
+      - id: "LargeElement2"
+        type: "gene"
+
+  - id: "Boundary_Locus"
+    chromosome: "chrX"
+    start: 156040895  # Near end of chrX
+    end: 156040895
+    elements:
+      - id: "BoundaryElement"
+        type: "promoter"
+
+# This test validates that the parser and semantic validator can handle
+# edge cases for coordinate validation, including:
+# - Minimal coordinate ranges (start == end)
+# - Small coordinate ranges (100 bp)
+# - Large coordinate ranges (100 Mb)
+# - Boundary coordinates (near chromosome ends)
+# - Single-nucleotide loci (start == end == 1)

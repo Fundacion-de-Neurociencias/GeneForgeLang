@@ -1,0 +1,53 @@
+# GFL Conformance Test: Invalid Predicate - Unknown Type
+# Test Case: 07_invalid_predicate_unknown_type.gfl
+# Purpose: Test validation of unknown spatial predicate types
+# Expected: Should be rejected by semantic validator
+
+loci:
+  - id: "TestGene_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "TestGene_Promoter"
+        type: "promoter"
+
+rules:
+  - id: "InvalidPredicateTypeRule"
+    description: "Test rule with unknown spatial predicate type"
+    if:
+      - type: "unknown_spatial_predicate"  # INVALID PREDICATE TYPE
+        element: "TestGene_Promoter"
+        locus: "TestGene_Locus"
+    then:
+      - type: "set_activity"
+        element: "TestGene_Promoter"
+        level: "active"
+
+  - id: "InvalidPredicateTypeRule2"
+    description: "Test rule with typo in spatial predicate type"
+    if:
+      - type: "is_witin"  # TYPO: Should be "is_within"
+        element: "TestGene_Promoter"
+        locus: "TestGene_Locus"
+    then:
+      - type: "set_activity"
+        element: "TestGene_Promoter"
+        level: "active"
+
+  - id: "InvalidPredicateTypeRule3"
+    description: "Test rule with completely invalid predicate type"
+    if:
+      - type: "not_a_spatial_predicate"
+        random_field: "random_value"
+    then:
+      - type: "set_activity"
+        element: "TestGene_Promoter"
+        level: "active"
+
+# This test validates that the semantic validator correctly identifies
+# invalid or unknown spatial predicate types and generates appropriate
+# error messages. Only the following predicate types are valid:
+# - is_within
+# - distance_between
+# - is_in_contact

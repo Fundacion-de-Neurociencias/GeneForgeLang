@@ -80,6 +80,7 @@ async def parse_gfl_endpoint(request: ParseRequest):
     try:
         # Parse the GFL code using YAML parser
         import yaml
+
         ast = yaml.safe_load(request.code)
 
         if ast is None:

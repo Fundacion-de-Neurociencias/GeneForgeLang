@@ -4,7 +4,7 @@ def main():
     gfl_script_path = "genesis.gfl"
     print(f"Cargando script GFL desde: {gfl_script_path}")
 
-    with open(gfl_script_path, 'r') as f:
+    with open(gfl_script_path) as f:
         gfl_script_content = f.read()
 
     # TODO: Descomentar y adaptar cuando el motor de GF esté listo.
@@ -22,6 +22,7 @@ def main():
 
     print("\n[MODO DE PREPARACIÓN] El script principal está listo.")
     print("La llamada al motor de GeneForge está comentada hasta que la implementación de GF esté finalizada.")
+
 
 if __name__ == "__main__":
     main()

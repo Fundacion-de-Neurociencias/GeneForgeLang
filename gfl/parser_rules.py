@@ -34,7 +34,10 @@ class GFLParser:
         | simulate_statement
         | branch_statement
         | loci_statement
-        | rules_statement"""
+        | rules_statement
+        | transcripts_statement
+        | proteins_statement
+        | metabolites_statement"""
         p[0] = p[1]
 
     # Sentencia ANALYZE
@@ -313,6 +316,157 @@ class GFLParser:
             p[0] = {"type": "set_activity", "element": p[3], "level": p[6]}
         elif p[1] == "move":
             p[0] = {"type": "move", "element": p[3], "destination": p[6]}
+
+    # Multi-omic statements v2.0
+    def p_transcripts_statement(self, p):
+        """transcripts_statement : TRANSCRIPTS LBRACE transcript_list RBRACE"""
+        p[0] = {"node_type": "transcripts", "transcripts": p[3]}
+
+    def p_transcript_list(self, p):
+        """transcript_list : transcript_definition
+        | transcript_list COMMA transcript_definition"""
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[0] = p[1] + [p[3]]
+
+    def p_transcript_definition(self, p):
+        """transcript_definition : ID COLON LBRACE transcript_properties RBRACE"""
+        p[0] = {"id": p[1], "properties": p[4]}
+
+    def p_transcript_properties(self, p):
+        """transcript_properties : transcript_property
+        | transcript_properties COMMA transcript_property"""
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[0] = p[1] + [p[3]]
+
+    def p_transcript_property(self, p):
+        """transcript_property : GENE_SOURCE COLON STRING
+        | EXONS COLON LBRACKET exon_list RBRACKET
+        | IDENTIFIERS COLON LBRACE identifier_dict RBRACE"""
+        if p[1] == "gene_source":
+            p[0] = {"type": "gene_source", "value": p[3]}
+        elif p[1] == "exons":
+            p[0] = {"type": "exons", "value": p[4]}
+        elif p[1] == "identifiers":
+            p[0] = {"type": "identifiers", "value": p[4]}
+
+    def p_exon_list(self, p):
+        """exon_list : NUMBER
+        | exon_list COMMA NUMBER"""
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[0] = p[1] + [p[3]]
+
+    def p_proteins_statement(self, p):
+        """proteins_statement : PROTEINS LBRACE protein_list RBRACE"""
+        p[0] = {"node_type": "proteins", "proteins": p[3]}
+
+    def p_protein_list(self, p):
+        """protein_list : protein_definition
+        | protein_list COMMA protein_definition"""
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[0] = p[1] + [p[3]]
+
+    def p_protein_definition(self, p):
+        """protein_definition : ID COLON LBRACE protein_properties RBRACE"""
+        p[0] = {"id": p[1], "properties": p[4]}
+
+    def p_protein_properties(self, p):
+        """protein_properties : protein_property
+        | protein_properties COMMA protein_property"""
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[0] = p[1] + [p[3]]
+
+    def p_protein_property(self, p):
+        """protein_property : TRANSLATES_FROM COLON TRANSCRIPT LPAREN ID RPAREN
+        | DOMAINS COLON LBRACKET domain_list RBRACKET
+        | IDENTIFIERS COLON LBRACE identifier_dict RBRACE"""
+        if p[1] == "translates_from":
+            p[0] = {"type": "translates_from", "value": p[5]}
+        elif p[1] == "domains":
+            p[0] = {"type": "domains", "value": p[4]}
+        elif p[1] == "identifiers":
+            p[0] = {"type": "identifiers", "value": p[4]}
+
+    def p_domain_list(self, p):
+        """domain_list : domain_definition
+        | domain_list COMMA domain_definition"""
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[0] = p[1] + [p[3]]
+
+    def p_domain_definition(self, p):
+        """domain_definition : LBRACE domain_properties RBRACE"""
+        p[0] = p[2]
+
+    def p_domain_properties(self, p):
+        """domain_properties : domain_property
+        | domain_properties COMMA domain_property"""
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[0] = p[1] + [p[3]]
+
+    def p_domain_property(self, p):
+        """domain_property : ID COLON STRING
+        | START COLON NUMBER
+        | END COLON NUMBER"""
+        if p[1] == "id":
+            p[0] = {"type": "id", "value": p[3]}
+        elif p[1] == "start":
+            p[0] = {"type": "start", "value": p[3]}
+        elif p[1] == "end":
+            p[0] = {"type": "end", "value": p[3]}
+
+    def p_metabolites_statement(self, p):
+        """metabolites_statement : METABOLITES LBRACE metabolite_list RBRACE"""
+        p[0] = {"node_type": "metabolites", "metabolites": p[3]}
+
+    def p_metabolite_list(self, p):
+        """metabolite_list : metabolite_definition
+        | metabolite_list COMMA metabolite_definition"""
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[0] = p[1] + [p[3]]
+
+    def p_metabolite_definition(self, p):
+        """metabolite_definition : ID COLON LBRACE metabolite_properties RBRACE"""
+        p[0] = {"id": p[1], "properties": p[4]}
+
+    def p_metabolite_properties(self, p):
+        """metabolite_properties : metabolite_property
+        | metabolite_properties COMMA metabolite_property"""
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[0] = p[1] + [p[3]]
+
+    def p_metabolite_property(self, p):
+        """metabolite_property : FORMULA COLON STRING
+        | IDENTIFIERS COLON LBRACE identifier_dict RBRACE"""
+        if p[1] == "formula":
+            p[0] = {"type": "formula", "value": p[3]}
+        elif p[1] == "identifiers":
+            p[0] = {"type": "identifiers", "value": p[4]}
+
+    def p_identifier_dict(self, p):
+        """identifier_dict : ID COLON STRING
+        | identifier_dict COMMA ID COLON STRING"""
+        if len(p) == 4:
+            p[0] = {p[1]: p[3]}
+        else:
+            p[0] = p[1]
+            p[0][p[3]] = p[5]
 
     # Manejo de errores de sintaxis.
     def p_error(self, p):

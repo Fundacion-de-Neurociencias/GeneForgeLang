@@ -71,8 +71,8 @@ rules {
 rules {
     id: "GatekeeperRule",
     description: "Promoter is efficiently regulated by enhancer only if both are in native loci and in 3D contact",
-    if: is_within(Sox2_Promoter, Sox2_GeneLocus) AND 
-        is_within(Sox2_Enhancer, Sox2_EnhancerLocus) AND 
+    if: is_within(Sox2_Promoter, Sox2_GeneLocus) AND
+        is_within(Sox2_Enhancer, Sox2_EnhancerLocus) AND
         is_in_contact(Sox2_Promoter, Sox2_Enhancer, using: "embryonic_stem_cell_hic.cool"),
     then: set_activity(Sox2_GeneBody, level: "high")
 }

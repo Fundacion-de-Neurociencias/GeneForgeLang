@@ -1,0 +1,76 @@
+# GFL Conformance Test: Edge Case - Same Coordinates
+# Test Case: 08_edge_case_same_coordinates.gfl
+# Purpose: Test edge cases with elements at same coordinates
+# Expected: Should parse successfully and handle edge cases
+
+loci:
+  - id: "SamePosition_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1000000  # Single nucleotide locus
+    elements:
+      - id: "ElementAtStart"
+        type: "promoter"
+
+  - id: "Overlapping_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "ElementAtSamePosition"
+        type: "enhancer"
+
+  - id: "Adjacent_Locus"
+    chromosome: "chr1"
+    start: 1000001
+    end: 1001001
+    elements:
+      - id: "AdjacentElement"
+        type: "gene"
+
+rules:
+  - id: "SamePositionRule"
+    description: "Test rule with elements at exactly the same coordinates"
+    if:
+      - type: "is_within"
+        element: "ElementAtStart"
+        locus: "SamePosition_Locus"
+      - type: "is_within"
+        element: "ElementAtSamePosition"
+        locus: "SamePosition_Locus"
+    then:
+      - type: "set_activity"
+        element: "ElementAtStart"
+        level: "coincident"
+
+  - id: "ZeroDistanceRule"
+    description: "Test rule with zero distance between elements"
+    if:
+      - type: "distance_between"
+        element_a: "ElementAtStart"
+        element_b: "ElementAtSamePosition"
+        threshold: 0
+    then:
+      - type: "set_activity"
+        element: "ElementAtStart"
+        level: "zero_distance"
+
+  - id: "AdjacentDistanceRule"
+    description: "Test rule with adjacent elements (distance = 1)"
+    if:
+      - type: "distance_between"
+        element_a: "ElementAtStart"
+        element_b: "AdjacentElement"
+        threshold: 1
+    then:
+      - type: "set_activity"
+        element: "AdjacentElement"
+        level: "adjacent"
+
+# This test validates that the engine correctly handles edge cases for
+# spatial predicates, including:
+# - Elements at exactly the same coordinates (distance = 0)
+# - Single nucleotide loci (start == end)
+# - Adjacent elements (distance = 1)
+# - Overlapping loci with elements at same positions
+# - Zero-distance calculations and comparisons

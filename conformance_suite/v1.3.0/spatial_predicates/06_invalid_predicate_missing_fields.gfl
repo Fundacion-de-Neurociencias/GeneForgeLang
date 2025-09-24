@@ -1,0 +1,55 @@
+# GFL Conformance Test: Invalid Predicate - Missing Fields
+# Test Case: 06_invalid_predicate_missing_fields.gfl
+# Purpose: Test validation of spatial predicates with missing required fields
+# Expected: Should be rejected by semantic validator
+
+loci:
+  - id: "TestGene_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "TestGene_Promoter"
+        type: "promoter"
+
+rules:
+  - id: "InvalidIsWithinRule"
+    description: "Test rule with is_within predicate missing element field"
+    if:
+      - type: "is_within"
+        # element: "TestGene_Promoter"  # MISSING REQUIRED FIELD
+        locus: "TestGene_Locus"
+    then:
+      - type: "set_activity"
+        element: "TestGene_Promoter"
+        level: "active"
+
+  - id: "InvalidDistanceRule"
+    description: "Test rule with distance_between predicate missing element_b field"
+    if:
+      - type: "distance_between"
+        element_a: "TestGene_Promoter"
+        # element_b: "AnotherElement"  # MISSING REQUIRED FIELD
+    then:
+      - type: "set_activity"
+        element: "TestGene_Promoter"
+        level: "active"
+
+  - id: "InvalidContactRule"
+    description: "Test rule with is_in_contact predicate missing hic_map field"
+    if:
+      - type: "is_in_contact"
+        element_a: "TestGene_Promoter"
+        element_b: "TestGene_Promoter"
+        # hic_map: "test_hic.cool"  # MISSING REQUIRED FIELD
+    then:
+      - type: "set_activity"
+        element: "TestGene_Promoter"
+        level: "active"
+
+# This test validates that the semantic validator correctly identifies
+# missing required fields in spatial predicates and generates appropriate
+# error messages for each predicate type:
+# - is_within requires both element and locus fields
+# - distance_between requires both element_a and element_b fields
+# - is_in_contact requires element_a, element_b, and hic_map fields

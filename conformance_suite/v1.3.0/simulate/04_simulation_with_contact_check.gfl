@@ -1,0 +1,98 @@
+# GFL Conformance Test: Simulation with Contact Check
+# Test Case: 04_simulation_with_contact_check.gfl
+# Purpose: Test simulation involving Hi-C contact data
+# Expected: Should parse successfully and evaluate 3D contact conditions
+
+loci:
+  - id: "Sox2_GeneLocus"
+    chromosome: "chr3"
+    start: 181708858
+    end: 181711758
+    elements:
+      - id: "Sox2_Promoter"
+        type: "promoter"
+      - id: "Sox2_GeneBody"
+        type: "gene"
+
+  - id: "Sox2_EnhancerLocus"
+    chromosome: "chr3"
+    start: 181844000
+    end: 181849000
+    elements:
+      - id: "Sox2_Enhancer"
+        type: "enhancer"
+
+  - id: "Alternative_EnhancerLocus"
+    chromosome: "chr3"
+    start: 182000000
+    end: 182005000
+    elements:
+      - id: "Alternative_Enhancer"
+        type: "enhancer"
+
+rules:
+  - id: "ContactDependentRule"
+    description: "Gene activity depends on promoter-enhancer 3D contact"
+    if:
+      - type: "is_within"
+        element: "Sox2_Promoter"
+        locus: "Sox2_GeneLocus"
+      - type: "is_within"
+        element: "Sox2_Enhancer"
+        locus: "Sox2_EnhancerLocus"
+      - type: "is_in_contact"
+        element_a: "Sox2_Promoter"
+        element_b: "Sox2_Enhancer"
+        hic_map: "embryonic_stem_cell_hic.cool"
+    then:
+      - type: "set_activity"
+        element: "Sox2_GeneBody"
+        level: "high"
+
+  - id: "AlternativeContactRule"
+    description: "Alternative enhancer contact rule"
+    if:
+      - type: "is_within"
+        element: "Sox2_Promoter"
+        locus: "Sox2_GeneLocus"
+      - type: "is_within"
+        element: "Alternative_Enhancer"
+        locus: "Alternative_EnhancerLocus"
+      - type: "is_in_contact"
+        element_a: "Sox2_Promoter"
+        element_b: "Alternative_Enhancer"
+        hic_map: "embryonic_stem_cell_hic.cool"
+    then:
+      - type: "set_activity"
+        element: "Sox2_GeneBody"
+        level: "medium"
+
+  - id: "NoContactRule"
+    description: "Rule for when no contact is detected"
+    if:
+      - type: "is_within"
+        element: "Sox2_Promoter"
+        locus: "Sox2_GeneLocus"
+    then:
+      - type: "set_activity"
+        element: "Sox2_GeneBody"
+        level: "basal"
+
+simulate:
+  name: "Contact_Dependent_Simulation"
+  description: "Test simulation with 3D contact dependencies"
+  action:
+    type: "move"
+    element: "Sox2_Enhancer"
+    destination: "chr3:182000000"  # Move to alternative enhancer location
+  query:
+    - type: "get_activity"
+      element: "Sox2_GeneBody"
+
+# This test validates that the simulation engine correctly handles 3D contact dependencies:
+# 1. Move Sox2_Enhancer to chr3:182000000 (alternative enhancer location)
+# 2. ContactDependentRule should NOT apply (enhancer is no longer in native locus)
+# 3. AlternativeContactRule should apply (enhancer is in alternative locus, contact check with Hi-C)
+# 4. NoContactRule should apply as fallback
+# 5. The final activity level depends on Hi-C contact data between promoter and alternative enhancer
+# 6. Query result should show activity level based on 3D contact evaluation

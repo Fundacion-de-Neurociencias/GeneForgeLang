@@ -1,0 +1,42 @@
+# GFL Conformance Test: Complex Element Definitions
+# Test Case: 07_complex_elements.gfl
+# Purpose: Test complex element definitions within loci
+# Expected: Should parse and validate successfully
+
+loci:
+  - id: "ComplexGene_Locus"
+    chromosome: "chr3"
+    start: 181708858
+    end: 181711758
+    elements:
+      - id: "ComplexGene_Promoter"
+        type: "promoter"
+      - id: "ComplexGene_Enhancer1"
+        type: "enhancer"
+      - id: "ComplexGene_Enhancer2"
+        type: "enhancer"
+      - id: "ComplexGene_Exon1"
+        type: "exon"
+      - id: "ComplexGene_Intron1"
+        type: "intron"
+      - id: "ComplexGene_Exon2"
+        type: "exon"
+      - id: "ComplexGene_Body"
+        type: "gene"
+
+  - id: "SimpleGene_Locus"
+    chromosome: "chr4"
+    start: 50000000
+    end: 50001000
+    elements:
+      - id: "SimpleGene_Promoter"
+        type: "promoter"
+      - id: "SimpleGene_Body"
+        type: "gene"
+
+# This test validates that the parser and semantic validator can handle
+# complex element hierarchies within loci, including:
+# - Multiple elements of the same type (multiple enhancers)
+# - Various genomic element types (promoter, enhancer, exon, intron, gene)
+# - Different levels of complexity (simple vs complex gene structures)
+# - Real genomic coordinates (Sox2 gene coordinates)

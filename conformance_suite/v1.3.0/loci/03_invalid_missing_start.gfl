@@ -1,0 +1,17 @@
+# GFL Conformance Test: Invalid Locus - Missing Start Coordinate
+# Test Case: 03_invalid_missing_start.gfl
+# Purpose: Test validation of missing start coordinate
+# Expected: Should be rejected by semantic validator with error message
+
+loci:
+  - id: "TestGene_Locus"
+    chromosome: "chr1"
+    # start: 1000000  # MISSING REQUIRED FIELD
+    end: 1001000
+    elements:
+      - id: "TestGene_Promoter"
+        type: "promoter"
+
+# This test validates that the semantic validator correctly identifies
+# missing start coordinate. The start field is required to define the
+# beginning of the genomic region and enable spatial calculations.

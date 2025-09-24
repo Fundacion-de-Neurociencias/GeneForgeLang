@@ -1,0 +1,55 @@
+# GFL Conformance Test: is_in_contact Predicate
+# Test Case: 04_is_in_contact.gfl
+# Purpose: Test is_in_contact predicate with Hi-C data reference
+# Expected: Should parse successfully and check 3D contact
+# Description for GF Engine: "The engine must check 3D contact using Hi-C data."
+
+loci:
+  - id: "Sox2_GeneLocus"
+    chromosome: "chr3"
+    start: 181708858
+    end: 181711758
+    elements:
+      - id: "Sox2_Promoter"
+        type: "promoter"
+      - id: "Sox2_GeneBody"
+        type: "gene"
+
+  - id: "Sox2_EnhancerLocus"
+    chromosome: "chr3"
+    start: 181844000
+    end: 181849000
+    elements:
+      - id: "Sox2_Enhancer"
+        type: "enhancer"
+
+rules:
+  - id: "ContactRule"
+    description: "Test rule using is_in_contact predicate with Hi-C data"
+    if:
+      - type: "is_in_contact"
+        element_a: "Sox2_Promoter"
+        element_b: "Sox2_Enhancer"
+        hic_map: "embryonic_stem_cell_hic.cool"
+    then:
+      - type: "set_activity"
+        element: "Sox2_GeneBody"
+        level: "high"
+
+  - id: "NoContactRule"
+    description: "Test rule for elements not in contact"
+    if:
+      - type: "is_in_contact"
+        element_a: "Sox2_Promoter"
+        element_b: "Sox2_Enhancer"
+        hic_map: "different_cell_type_hic.cool"
+    then:
+      - type: "set_activity"
+        element: "Sox2_GeneBody"
+        level: "low"
+
+# This test validates that the is_in_contact predicate correctly queries
+# Hi-C data to determine 3D chromatin contact between elements.
+# The Sox2 promoter and enhancer are known to be in contact in embryonic
+# stem cells, so ContactRule should evaluate based on Hi-C data from
+# embryonic_stem_cell_hic.cool, while NoContactRule tests different cell type data.

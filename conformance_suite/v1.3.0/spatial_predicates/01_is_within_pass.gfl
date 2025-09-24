@@ -1,0 +1,31 @@
+# GFL Conformance Test: is_within Predicate - Should Pass
+# Test Case: 01_is_within_pass.gfl
+# Purpose: Test is_within predicate that should evaluate to true
+# Expected: Should parse successfully and evaluate to true
+# Description for GF Engine: "The engine must evaluate this condition as true."
+
+loci:
+  - id: "TestGene_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "TestGene_Promoter"
+        type: "promoter"
+
+rules:
+  - id: "IsWithinTestRule"
+    description: "Test rule to verify is_within predicate evaluates correctly"
+    if:
+      - type: "is_within"
+        element: "TestGene_Promoter"
+        locus: "TestGene_Locus"
+    then:
+      - type: "set_activity"
+        element: "TestGene_Promoter"
+        level: "active"
+
+# This test validates that the is_within predicate correctly evaluates to true
+# when an element's coordinates fall within the specified locus bounds.
+# The TestGene_Promoter should be considered within TestGene_Locus since
+# both are defined in the same coordinate range (1000000-1001000 on chr1).

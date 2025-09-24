@@ -1,0 +1,139 @@
+# GFL Conformance Test: Complex Nested Simulation
+# Test Case: 08_complex_nested_simulation.gfl
+# Purpose: Test complex nested simulation scenarios
+# Expected: Should parse successfully and handle complex dependencies
+
+loci:
+  - id: "MasterGene_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "MasterGene_Promoter"
+        type: "promoter"
+      - id: "MasterGene_Body"
+        type: "gene"
+
+  - id: "Enhancer1_Locus"
+    chromosome: "chr1"
+    start: 1500000
+    end: 1501000
+    elements:
+      - id: "Enhancer1"
+        type: "enhancer"
+
+  - id: "Enhancer2_Locus"
+    chromosome: "chr1"
+    start: 2000000
+    end: 2001000
+    elements:
+      - id: "Enhancer2"
+        type: "enhancer"
+
+  - id: "TargetGene_Locus"
+    chromosome: "chr1"
+    start: 2500000
+    end: 2501000
+    elements:
+      - id: "TargetGene_Promoter"
+        type: "promoter"
+      - id: "TargetGene_Body"
+        type: "gene"
+
+rules:
+  - id: "Enhancer1_ActivationRule"
+    description: "Enhancer1 becomes active when in its locus"
+    if:
+      - type: "is_within"
+        element: "Enhancer1"
+        locus: "Enhancer1_Locus"
+    then:
+      - type: "set_activity"
+        element: "Enhancer1"
+        level: "active"
+
+  - id: "Enhancer2_ActivationRule"
+    description: "Enhancer2 becomes active when in its locus"
+    if:
+      - type: "is_within"
+        element: "Enhancer2"
+        locus: "Enhancer2_Locus"
+    then:
+      - type: "set_activity"
+        element: "Enhancer2"
+        level: "active"
+
+  - id: "MasterGene_Enhancer1Rule"
+    description: "MasterGene is enhanced by Enhancer1"
+    if:
+      - type: "is_within"
+        element: "MasterGene_Promoter"
+        locus: "MasterGene_Locus"
+      - type: "distance_between"
+        element_a: "MasterGene_Promoter"
+        element_b: "Enhancer1"
+        threshold: 600000
+    then:
+      - type: "set_activity"
+        element: "MasterGene_Body"
+        level: "enhanced_by_e1"
+
+  - id: "MasterGene_Enhancer2Rule"
+    description: "MasterGene is enhanced by Enhancer2"
+    if:
+      - type: "is_within"
+        element: "MasterGene_Promoter"
+        locus: "MasterGene_Locus"
+      - type: "distance_between"
+        element_a: "MasterGene_Promoter"
+        element_b: "Enhancer2"
+        threshold: 1000000
+    then:
+      - type: "set_activity"
+        element: "MasterGene_Body"
+        level: "enhanced_by_e2"
+
+  - id: "TargetGene_MasterRule"
+    description: "TargetGene is activated by active MasterGene"
+    if:
+      - type: "is_within"
+        element: "TargetGene_Promoter"
+        locus: "TargetGene_Locus"
+      - type: "distance_between"
+        element_a: "MasterGene_Promoter"
+        element_b: "TargetGene_Promoter"
+        threshold: 2000000
+    then:
+      - type: "set_activity"
+        element: "TargetGene_Body"
+        level: "activated_by_master"
+
+simulate:
+  name: "Complex_Nested_Simulation"
+  description: "Test complex nested simulation with multiple dependencies"
+  action:
+    type: "move"
+    element: "Enhancer1"
+    destination: "chr1:1200000"  # Move Enhancer1 closer to MasterGene
+  query:
+    - type: "get_activity"
+      element: "MasterGene_Body"
+    - type: "get_activity"
+      element: "TargetGene_Body"
+    - type: "get_activity"
+      element: "Enhancer1"
+    - type: "get_activity"
+      element: "Enhancer2"
+
+# This test validates that the simulation engine correctly handles complex nested scenarios:
+# 1. Move Enhancer1 to chr1:1200000 (closer to MasterGene)
+# 2. Enhancer1_ActivationRule should apply (enhancer is still in its locus)
+# 3. MasterGene_Enhancer1Rule should apply (distance < 600000)
+# 4. MasterGene_Enhancer2Rule should NOT apply (distance > 1000000)
+# 5. TargetGene_MasterRule should apply (distance < 2000000)
+# 6. Query results should show:
+#    - MasterGene_Body: "enhanced_by_e1"
+#    - TargetGene_Body: "activated_by_master"
+#    - Enhancer1: "active"
+#    - Enhancer2: "active" (unchanged)
+# 7. This demonstrates complex rule dependencies and cascading effects

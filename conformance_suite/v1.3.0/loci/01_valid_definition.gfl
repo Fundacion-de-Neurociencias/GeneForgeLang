@@ -1,0 +1,22 @@
+# GFL Conformance Test: Valid Locus Definition
+# Test Case: 01_valid_definition.gfl
+# Purpose: Test basic valid locus definition with all required fields
+# Expected: Should parse and validate successfully
+
+loci:
+  - id: "TestGene_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "TestGene_Promoter"
+        type: "promoter"
+      - id: "TestGene_Body"
+        type: "gene"
+
+# This test validates that the parser and semantic validator
+# correctly handle a basic locus definition with:
+# - Required fields: id, chromosome, start, end
+# - Optional elements array with valid element definitions
+# - Proper data types (string for id/chromosome, integers for coordinates)
+# - Standard genomic coordinate format (1-based coordinates)

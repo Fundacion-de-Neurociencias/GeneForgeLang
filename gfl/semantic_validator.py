@@ -6,8 +6,9 @@ reporting, including location tracking, error codes, and suggested fixes.
 
 import logging
 import os
-from typing import Any, Dict, List, Optional, Union, Set
+from typing import Any, Optional, Union
 
+from gfl.capability_system import CAPABILITY_DEFINITIONS, EngineCapabilityChecker, GFLFeature, GFLValidationWarning
 from gfl.error_handling import (
     EnhancedValidationResult,
     ErrorCodes,
@@ -15,26 +16,21 @@ from gfl.error_handling import (
     SourceLocation,
 )
 from gfl.schema_loader import get_global_schema_loader, load_schemas_from_files
-from gfl.capability_system import (
-    GFLFeature,
-    EngineCapabilityChecker,
-    GFLValidationWarning,
-    CAPABILITY_DEFINITIONS
-)
 
 logger = logging.getLogger(__name__)
 
 
-def validate(ast: Dict[str, Any], file_path: Optional[str] = None, 
-             engine_capabilities: Optional[Set[GFLFeature]] = None) -> EnhancedValidationResult:
+def validate(
+    ast: dict[str, Any], file_path: Optional[str] = None, engine_capabilities: Optional[set[GFLFeature]] = None
+) -> EnhancedValidationResult:
     """Convenience function for GFL validation with capability checking.
-    
+
     Args:
         ast: The GFL AST dictionary to validate.
         file_path: Optional path to the file being validated for error reporting.
         engine_capabilities: Set of GFL features supported by the target engine.
                             If None, no capability checking is performed.
-                            
+
     Returns:
         EnhancedValidationResult with detailed error information and capability warnings.
     """
@@ -42,20 +38,21 @@ def validate(ast: Dict[str, Any], file_path: Optional[str] = None,
     return validator.validate_ast(ast)
 
 
-def validate_with_engine_type(ast: Dict[str, Any], engine_type: str, 
-                             file_path: Optional[str] = None) -> EnhancedValidationResult:
+def validate_with_engine_type(
+    ast: dict[str, Any], engine_type: str, file_path: Optional[str] = None
+) -> EnhancedValidationResult:
     """Validate GFL AST with a predefined engine type.
-    
+
     Args:
         ast: The GFL AST dictionary to validate.
         engine_type: Type of engine ("basic", "standard", "advanced", "experimental").
         file_path: Optional path to the file being validated for error reporting.
-        
+
     Returns:
         EnhancedValidationResult with detailed error information and capability warnings.
     """
     from gfl.capability_system import get_engine_capabilities
-    
+
     capabilities = get_engine_capabilities(engine_type)
     return validate(ast, file_path, capabilities)
 
@@ -67,8 +64,7 @@ class EnhancedSemanticValidator:
     including location tracking, error codes, and suggested fixes.
     """
 
-    def __init__(self, file_path: Optional[str] = None, 
-                 engine_capabilities: Optional[Set[GFLFeature]] = None):
+    def __init__(self, file_path: Optional[str] = None, engine_capabilities: Optional[set[GFLFeature]] = None):
         """Initialize validator.
 
         Args:
@@ -76,7 +72,7 @@ class EnhancedSemanticValidator:
             engine_capabilities: Set of GFL features supported by the target engine.
                                 If None, no capability checking is performed.
         """
-        self.symbol_table: Dict[str, Dict[str, Any]] = {}
+        self.symbol_table: dict[str, dict[str, Any]] = {}
         self.result = EnhancedValidationResult(file_path=file_path)
         self.current_block: Optional[str] = None
         self.nested_level = 0
@@ -84,7 +80,7 @@ class EnhancedSemanticValidator:
         self.capability_checker = EngineCapabilityChecker(engine_capabilities or set())
         self.engine_capabilities = engine_capabilities
 
-    def validate_ast(self, ast: Dict[str, Any]) -> EnhancedValidationResult:
+    def validate_ast(self, ast: dict[str, Any]) -> EnhancedValidationResult:
         """Validate a GFL AST and return enhanced validation result.
 
         Args:
@@ -116,29 +112,29 @@ class EnhancedSemanticValidator:
 
     def _check_capability(self, feature: GFLFeature, block_name: str = None) -> bool:
         """Check if a feature is supported by the engine.
-        
+
         Args:
             feature: The GFL feature to check.
             block_name: Optional name of the block being validated.
-            
+
         Returns:
             True if the feature is supported, False otherwise.
         """
         if not self.engine_capabilities:
             return True  # No capability checking if no engine specified
-            
+
         if not self.capability_checker.supports_feature(feature):
             block_desc = f" in block '{block_name}'" if block_name else ""
             capability_info = self.capability_checker.get_capability_info(feature)
-            
+
             message = f"Feature '{feature.value}' is not supported by the target engine{block_desc}"
             if capability_info:
                 message += f". {capability_info.description}"
-            
+
             warning = self.result.add_warning(message, feature)
             logger.warning(f"Capability warning: {warning}")
             return False
-            
+
         # Check dependencies
         missing_deps = self.capability_checker.check_dependencies(feature)
         if missing_deps:
@@ -146,20 +142,19 @@ class EnhancedSemanticValidator:
             warning = self.result.add_warning(
                 f"Feature '{feature.value}' requires unsupported dependencies: {', '.join(dep_names)}",
                 feature,
-                f"Ensure all dependencies are supported: {', '.join(dep_names)}"
+                f"Ensure all dependencies are supported: {', '.join(dep_names)}",
             )
             logger.warning(f"Dependency warning: {warning}")
             return False
-            
+
         return True
 
-    def _add_capability_warning(self, message: str, feature: GFLFeature, 
-                               suggestion: str = None) -> None:
+    def _add_capability_warning(self, message: str, feature: GFLFeature, suggestion: str = None) -> None:
         """Add a capability warning to the validation result."""
         warning = self.result.add_warning(message, feature, suggestion)
         logger.warning(f"Capability warning: {warning}")
 
-    def _load_schema_imports(self, ast: Dict[str, Any]) -> None:
+    def _load_schema_imports(self, ast: dict[str, Any]) -> None:
         """Load schema imports from the AST.
 
         Args:
@@ -201,7 +196,7 @@ class EnhancedSemanticValidator:
         # Load all schema files
         load_schemas_from_files(schema_files, self.result)
 
-    def _validate_root_structure(self, ast: Dict[str, Any]) -> None:
+    def _validate_root_structure(self, ast: dict[str, Any]) -> None:
         """Validate the root structure of the AST."""
         if not isinstance(ast, dict):
             self.result.add_error(
@@ -226,6 +221,11 @@ class EnhancedSemanticValidator:
             "timeline",
             "pathways",
             "complexes",
+            # Multi-omic blocks v2.0
+            "transcripts",
+            "proteins",
+            "metabolites",
+            "loci",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -236,7 +236,7 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'pathways', or 'complexes' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'pathways', 'complexes', 'transcripts', 'proteins', 'metabolites', or 'loci' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
@@ -253,7 +253,7 @@ class EnhancedSemanticValidator:
             error.add_fix(f"Remove '{key}' or move it to the metadata block")
             error.add_context("valid_blocks", list(valid_top_level))
 
-    def _validate_blocks(self, ast: Dict[str, Any]) -> None:
+    def _validate_blocks(self, ast: dict[str, Any]) -> None:
         """Validate individual blocks in the AST."""
         # First, collect entity definitions for reference validation
         self._collect_entity_definitions(ast)
@@ -309,6 +309,15 @@ class EnhancedSemanticValidator:
             elif block_name == "loci":
                 if self._check_capability(GFLFeature.LOCI_BLOCK, block_name):
                     self._validate_loci_block(block_content)
+            elif block_name == "transcripts":
+                if self._check_capability(GFLFeature.TRANSCRIPTS_BLOCK, block_name):
+                    self._validate_transcripts_block(block_content)
+            elif block_name == "proteins":
+                if self._check_capability(GFLFeature.PROTEINS_BLOCK, block_name):
+                    self._validate_proteins_block(block_content)
+            elif block_name == "metabolites":
+                if self._check_capability(GFLFeature.METABOLITES_BLOCK, block_name):
+                    self._validate_metabolites_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -316,7 +325,7 @@ class EnhancedSemanticValidator:
                 # Complexes are validated during collection
                 pass
 
-    def _collect_entity_definitions(self, ast: Dict[str, Any]) -> None:
+    def _collect_entity_definitions(self, ast: dict[str, Any]) -> None:
         """Collect pathway and complex definitions for reference validation."""
         self.entity_registry = {}
 
@@ -423,7 +432,7 @@ class EnhancedSemanticValidator:
                 ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
             ).add_fix("Add entity definitions or reference an existing one")
 
-    def _collect_hypothesis_definitions(self, ast: Dict[str, Any]) -> None:
+    def _collect_hypothesis_definitions(self, ast: dict[str, Any]) -> None:
         """Collect hypothesis definitions for reference validation."""
         self.hypothesis_registry = {}
 
@@ -498,7 +507,7 @@ class EnhancedSemanticValidator:
             return  # Skip validation if not a dictionary
 
         condition_type = condition.get("type")
-        
+
         if condition_type == "is_within":
             self._validate_spatial_predicate(condition, context, GFLFeature.SPATIAL_PREDICATES)
         elif condition_type == "distance_between":
@@ -516,7 +525,7 @@ class EnhancedSemanticValidator:
             if "right" in condition:
                 self._validate_single_condition(condition["right"], f"{context}, right operand")
 
-    def _validate_spatial_predicate(self, condition: Dict[str, Any], context: str, feature: GFLFeature) -> None:
+    def _validate_spatial_predicate(self, condition: dict[str, Any], context: str, feature: GFLFeature) -> None:
         """Validate spatial predicates and check capabilities."""
         if not self._check_capability(feature, context):
             return  # Skip validation if feature not supported
@@ -531,7 +540,7 @@ class EnhancedSemanticValidator:
                         ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
                     )
                     error.add_fix(f"Add '{field}' field to is_within predicate")
-                    
+
         elif condition["type"] == "distance_between":
             required_fields = ["element_a", "element_b"]
             for field in required_fields:
@@ -541,7 +550,7 @@ class EnhancedSemanticValidator:
                         ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
                     )
                     error.add_fix(f"Add '{field}' field to distance_between predicate")
-                    
+
         elif condition["type"] == "is_in_contact":
             required_fields = ["element_a", "element_b", "hic_map"]
             for field in required_fields:
@@ -665,7 +674,7 @@ class EnhancedSemanticValidator:
                     ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
                 ).add_fix(f"Format 'expectations' field as a list in timeline event {i}")
 
-    def _store_block_contract(self, block_name: str, contract: Dict[str, Any]) -> None:
+    def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
         self.symbol_table[block_name] = {"contract": contract}
 
@@ -755,7 +764,7 @@ class EnhancedSemanticValidator:
             ).add_fix(f"Format attributes as a dictionary in contract {section_name} '{name}'")
 
     def _validate_schema_attributes(
-        self, definition: Dict[str, Any], schema_def: Any, name: str, section_name: str
+        self, definition: dict[str, Any], schema_def: Any, name: str, section_name: str
     ) -> None:
         """Validate contract attributes against schema definition."""
         attributes = definition.get("attributes", {})
@@ -842,8 +851,8 @@ class EnhancedSemanticValidator:
 
     def _check_contract_attributes_compatibility(
         self,
-        output_attributes: Dict[str, Any],
-        input_attributes: Dict[str, Any],
+        output_attributes: dict[str, Any],
+        input_attributes: dict[str, Any],
         producer_block: str,
         consumer_block: str,
         data_name: str,
@@ -1270,7 +1279,7 @@ class EnhancedSemanticValidator:
         if design_type == "inverse_design":
             self._validate_inverse_design(design)
 
-    def _validate_inverse_design(self, design: Dict[str, Any]) -> None:
+    def _validate_inverse_design(self, design: dict[str, Any]) -> None:
         """Validate inverse_design configuration."""
         # Check for required inverse_design dictionary
         if "inverse_design" not in design:
@@ -1737,7 +1746,7 @@ class EnhancedSemanticValidator:
         if strategy_name == "ActiveLearning":
             self._validate_active_learning_strategy(strategy)
 
-    def _validate_active_learning_strategy(self, strategy: Dict[str, Any]) -> None:
+    def _validate_active_learning_strategy(self, strategy: dict[str, Any]) -> None:
         """Validate ActiveLearning strategy with required nested keys."""
         # Check for required active_learning dictionary
         if "active_learning" not in strategy:
@@ -1991,13 +2000,13 @@ class EnhancedSemanticValidator:
             # This is the new spatial simulation format
             if not self._check_capability(GFLFeature.SPATIAL_SIMULATE, "simulate"):
                 return  # Skip validation if spatial simulate not supported
-                
+
             self._validate_spatial_simulate_block(simulate)
         elif "target" in simulate:
             # This is the legacy simulate format
             if not self._check_capability(GFLFeature.SIMULATE_BLOCK, "simulate"):
                 return  # Skip validation if basic simulate not supported
-                
+
             self._validate_legacy_simulate_block(simulate)
         else:
             error = self.result.add_error(
@@ -2006,7 +2015,7 @@ class EnhancedSemanticValidator:
             )
             error.add_fix("Add required fields for simulate block")
 
-    def _validate_spatial_simulate_block(self, simulate: Dict[str, Any]) -> None:
+    def _validate_spatial_simulate_block(self, simulate: dict[str, Any]) -> None:
         """Validate spatial simulation block."""
         # Validate required fields
         required_fields = ["name", "action", "query"]
@@ -2057,7 +2066,7 @@ class EnhancedSemanticValidator:
                                 )
                                 error.add_fix("Add 'element' field to get_activity query")
 
-    def _validate_legacy_simulate_block(self, simulate: Dict[str, Any]) -> None:
+    def _validate_legacy_simulate_block(self, simulate: dict[str, Any]) -> None:
         """Validate legacy simulate block."""
         # Validate required fields
         required_fields = ["target"]
@@ -2131,6 +2140,225 @@ class EnhancedSemanticValidator:
                                     ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
                                 )
                                 error.add_fix("Add 'id' and 'type' fields to element")
+
+    def _validate_transcripts_block(self, transcripts: Any) -> None:
+        """Validate transcripts block for transcript definitions."""
+        if not isinstance(transcripts, list):
+            error = self.result.add_error(
+                f"transcripts block must be a list, got {type(transcripts).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            )
+            error.add_fix("Use a list of transcript definitions for transcripts block")
+            return
+
+        for i, transcript in enumerate(transcripts):
+            if not isinstance(transcript, dict):
+                error = self.result.add_error(
+                    f"transcript {i} must be a dictionary",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix(f"Use dictionary structure for transcript {i}")
+                continue
+
+            # Validate required fields
+            required_fields = ["gene_source", "exons"]
+            for field in required_fields:
+                if field not in transcript:
+                    error = self.result.add_error(
+                        f"transcript {i} missing required field: {field}",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    )
+                    error.add_fix(f"Add '{field}' field to transcript {i}")
+
+            # Validate gene_source type
+            if "gene_source" in transcript and not isinstance(transcript["gene_source"], str):
+                error = self.result.add_error(
+                    f"transcript {i} gene_source must be a string",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix(f"Use string value for gene_source in transcript {i}")
+
+            # Validate exons type
+            if "exons" in transcript:
+                exons = transcript["exons"]
+                if not isinstance(exons, list):
+                    error = self.result.add_error(
+                        f"transcript {i} exons must be a list",
+                        ErrorCodes.TYPE_INVALID_TYPE,
+                    )
+                    error.add_fix(f"Use list structure for exons in transcript {i}")
+                else:
+                    for j, exon in enumerate(exons):
+                        if not isinstance(exon, int):
+                            error = self.result.add_error(
+                                f"transcript {i} exon {j} must be an integer",
+                                ErrorCodes.TYPE_INVALID_TYPE,
+                            )
+                            error.add_fix(f"Use integer value for exon {j} in transcript {i}")
+
+            # Validate identifiers if present
+            if "identifiers" in transcript:
+                self._validate_identifiers_field(transcript["identifiers"], f"transcript {i}")
+
+    def _validate_proteins_block(self, proteins: Any) -> None:
+        """Validate proteins block for protein definitions."""
+        if not isinstance(proteins, list):
+            error = self.result.add_error(
+                f"proteins block must be a list, got {type(proteins).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            )
+            error.add_fix("Use a list of protein definitions for proteins block")
+            return
+
+        for i, protein in enumerate(proteins):
+            if not isinstance(protein, dict):
+                error = self.result.add_error(
+                    f"protein {i} must be a dictionary",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix(f"Use dictionary structure for protein {i}")
+                continue
+
+            # Validate required fields
+            required_fields = ["translates_from", "domains"]
+            for field in required_fields:
+                if field not in protein:
+                    error = self.result.add_error(
+                        f"protein {i} missing required field: {field}",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    )
+                    error.add_fix(f"Add '{field}' field to protein {i}")
+
+            # Validate translates_from format
+            if "translates_from" in protein:
+                translates_from = protein["translates_from"]
+                if not isinstance(translates_from, str):
+                    error = self.result.add_error(
+                        f"protein {i} translates_from must be a string",
+                        ErrorCodes.TYPE_INVALID_TYPE,
+                    )
+                    error.add_fix(f"Use string value for translates_from in protein {i}")
+                elif not translates_from.startswith("transcript(") or not translates_from.endswith(")"):
+                    error = self.result.add_error(
+                        f"protein {i} translates_from must have format 'transcript(ID)'",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
+                    error.add_fix(f"Use format 'transcript(ID)' for translates_from in protein {i}")
+
+            # Validate domains structure
+            if "domains" in protein:
+                domains = protein["domains"]
+                if not isinstance(domains, list):
+                    error = self.result.add_error(
+                        f"protein {i} domains must be a list",
+                        ErrorCodes.TYPE_INVALID_TYPE,
+                    )
+                    error.add_fix(f"Use list structure for domains in protein {i}")
+                else:
+                    for j, domain in enumerate(domains):
+                        if not isinstance(domain, dict):
+                            error = self.result.add_error(
+                                f"protein {i} domain {j} must be a dictionary",
+                                ErrorCodes.TYPE_INVALID_TYPE,
+                            )
+                            error.add_fix(f"Use dictionary structure for domain {j} in protein {i}")
+                            continue
+
+                        # Validate domain fields
+                        domain_required_fields = ["id", "start", "end"]
+                        for field in domain_required_fields:
+                            if field not in domain:
+                                error = self.result.add_error(
+                                    f"protein {i} domain {j} missing required field: {field}",
+                                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                                )
+                                error.add_fix(f"Add '{field}' field to domain {j} in protein {i}")
+
+                        # Validate domain coordinate types
+                        if "start" in domain and not isinstance(domain["start"], int):
+                            error = self.result.add_error(
+                                f"protein {i} domain {j} start must be an integer",
+                                ErrorCodes.TYPE_INVALID_TYPE,
+                            )
+                            error.add_fix(f"Use integer value for start in domain {j} of protein {i}")
+
+                        if "end" in domain and not isinstance(domain["end"], int):
+                            error = self.result.add_error(
+                                f"protein {i} domain {j} end must be an integer",
+                                ErrorCodes.TYPE_INVALID_TYPE,
+                            )
+                            error.add_fix(f"Use integer value for end in domain {j} of protein {i}")
+
+            # Validate identifiers if present
+            if "identifiers" in protein:
+                self._validate_identifiers_field(protein["identifiers"], f"protein {i}")
+
+    def _validate_metabolites_block(self, metabolites: Any) -> None:
+        """Validate metabolites block for metabolite definitions."""
+        if not isinstance(metabolites, list):
+            error = self.result.add_error(
+                f"metabolites block must be a list, got {type(metabolites).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            )
+            error.add_fix("Use a list of metabolite definitions for metabolites block")
+            return
+
+        for i, metabolite in enumerate(metabolites):
+            if not isinstance(metabolite, dict):
+                error = self.result.add_error(
+                    f"metabolite {i} must be a dictionary",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix(f"Use dictionary structure for metabolite {i}")
+                continue
+
+            # Validate required fields
+            required_fields = ["formula"]
+            for field in required_fields:
+                if field not in metabolite:
+                    error = self.result.add_error(
+                        f"metabolite {i} missing required field: {field}",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    )
+                    error.add_fix(f"Add '{field}' field to metabolite {i}")
+
+            # Validate formula type
+            if "formula" in metabolite and not isinstance(metabolite["formula"], str):
+                error = self.result.add_error(
+                    f"metabolite {i} formula must be a string",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix(f"Use string value for formula in metabolite {i}")
+
+            # Validate identifiers if present
+            if "identifiers" in metabolite:
+                self._validate_identifiers_field(metabolite["identifiers"], f"metabolite {i}")
+
+    def _validate_identifiers_field(self, identifiers: Any, context: str) -> None:
+        """Validate identifiers field structure."""
+        if not isinstance(identifiers, dict):
+            error = self.result.add_error(
+                f"{context} identifiers must be a dictionary",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            )
+            error.add_fix(f"Use dictionary structure for identifiers in {context}")
+            return
+
+        # Validate that all keys and values are strings
+        for key, value in identifiers.items():
+            if not isinstance(key, str):
+                error = self.result.add_error(
+                    f"{context} identifier key must be a string, got {type(key).__name__}",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix(f"Use string keys for identifiers in {context}")
+
+            if not isinstance(value, str):
+                error = self.result.add_error(
+                    f"{context} identifier value must be a string, got {type(value).__name__}",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                )
+                error.add_fix(f"Use string values for identifiers in {context}")
 
     def _validate_branch_block(self, branch: Any) -> None:
         """Validate branch block."""
@@ -2416,7 +2644,7 @@ _validator = SemanticValidator()
 _enhanced_validator = EnhancedSemanticValidator()
 
 
-def validate(ast: Dict[str, Any], enhanced: bool = False) -> Union[List[str], EnhancedValidationResult]:
+def validate(ast: dict[str, Any], enhanced: bool = False) -> Union[list[str], EnhancedValidationResult]:
     """Validate a GFL AST and return validation results.
 
     Args:

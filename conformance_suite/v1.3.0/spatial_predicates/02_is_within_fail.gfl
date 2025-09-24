@@ -1,0 +1,39 @@
+# GFL Conformance Test: is_within Predicate - Should Fail
+# Test Case: 02_is_within_fail.gfl
+# Purpose: Test is_within predicate that should evaluate to false
+# Expected: Should parse successfully and evaluate to false
+# Description for GF Engine: "The engine must evaluate this condition as false."
+
+loci:
+  - id: "LocusA"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "ElementA"
+        type: "promoter"
+
+  - id: "LocusB"
+    chromosome: "chr1"
+    start: 2000000
+    end: 2001000
+    elements:
+      - id: "ElementB"
+        type: "enhancer"
+
+rules:
+  - id: "IsWithinFailRule"
+    description: "Test rule to verify is_within predicate evaluates to false when element is outside locus"
+    if:
+      - type: "is_within"
+        element: "ElementA"
+        locus: "LocusB"
+    then:
+      - type: "set_activity"
+        element: "ElementA"
+        level: "inactive"
+
+# This test validates that the is_within predicate correctly evaluates to false
+# when an element's coordinates fall outside the specified locus bounds.
+# ElementA (coordinates 1000000-1001000) should NOT be within LocusB
+# (coordinates 2000000-2001000), so the condition should evaluate to false.

@@ -1,0 +1,85 @@
+# GFL Conformance Test: Complex Logical Conditions
+# Test Case: 05_complex_logical_conditions.gfl
+# Purpose: Test complex logical combinations of spatial predicates
+# Expected: Should parse successfully and evaluate complex conditions
+
+loci:
+  - id: "GeneA_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "GeneA_Promoter"
+        type: "promoter"
+
+  - id: "GeneB_Locus"
+    chromosome: "chr1"
+    start: 2000000
+    end: 2001000
+    elements:
+      - id: "GeneB_Promoter"
+        type: "promoter"
+
+  - id: "Enhancer_Locus"
+    chromosome: "chr1"
+    start: 1500000
+    end: 1501000
+    elements:
+      - id: "Shared_Enhancer"
+        type: "enhancer"
+
+rules:
+  - id: "ComplexAndRule"
+    description: "Test rule with multiple AND conditions"
+    if:
+      - type: "is_within"
+        element: "GeneA_Promoter"
+        locus: "GeneA_Locus"
+      - type: "is_within"
+        element: "Shared_Enhancer"
+        locus: "Enhancer_Locus"
+      - type: "distance_between"
+        element_a: "GeneA_Promoter"
+        element_b: "Shared_Enhancer"
+        threshold: 1000000
+    then:
+      - type: "set_activity"
+        element: "GeneA_Promoter"
+        level: "enhanced"
+
+  - id: "ComplexNotRule"
+    description: "Test rule with NOT condition"
+    if:
+      - type: "not"
+        condition:
+          type: "is_within"
+          element: "GeneB_Promoter"
+          locus: "GeneA_Locus"
+    then:
+      - type: "set_activity"
+        element: "GeneB_Promoter"
+        level: "independent"
+
+  - id: "ComplexOrRule"
+    description: "Test rule with OR condition"
+    if:
+      - type: "distance_between"
+        element_a: "GeneA_Promoter"
+        element_b: "Shared_Enhancer"
+        threshold: 500000
+      - type: "distance_between"
+        element_a: "GeneB_Promoter"
+        element_b: "Shared_Enhancer"
+        threshold: 500000
+    then:
+      - type: "set_activity"
+        element: "Shared_Enhancer"
+        level: "active"
+
+# This test validates that the engine correctly handles complex logical
+# combinations of spatial predicates, including:
+# - Multiple AND conditions (all must be true)
+# - NOT conditions (condition must be false)
+# - OR conditions (at least one must be true)
+# - Nested logical structures
+# - Complex distance-based interactions

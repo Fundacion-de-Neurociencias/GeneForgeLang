@@ -1,0 +1,18 @@
+# GFL Conformance Test: Invalid Locus - Missing Chromosome
+# Test Case: 02_invalid_missing_chromosome.gfl
+# Purpose: Test validation of missing required chromosome field
+# Expected: Should be rejected by semantic validator with error message
+
+loci:
+  - id: "TestGene_Locus"
+    # chromosome: "chr1"  # MISSING REQUIRED FIELD
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "TestGene_Promoter"
+        type: "promoter"
+
+# This test validates that the semantic validator correctly identifies
+# missing required fields and generates appropriate error messages.
+# The chromosome field is required for all locus definitions as it
+# specifies which chromosome the genomic region is located on.

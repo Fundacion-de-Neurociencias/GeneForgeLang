@@ -1,0 +1,56 @@
+# GFL Conformance Test: Edge Case - Null Action
+# Test Case: 07_edge_case_null_action.gfl
+# Purpose: Test simulation with null action (baseline query)
+# Expected: Should parse successfully and query current state
+
+loci:
+  - id: "TestGene_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "TestGene_Promoter"
+        type: "promoter"
+      - id: "TestGene_Body"
+        type: "gene"
+
+rules:
+  - id: "BaselineRule"
+    description: "Rule that applies to baseline state"
+    if:
+      - type: "is_within"
+        element: "TestGene_Promoter"
+        locus: "TestGene_Locus"
+    then:
+      - type: "set_activity"
+        element: "TestGene_Body"
+        level: "baseline"
+
+  - id: "AlternativeRule"
+    description: "Rule that applies when promoter is moved"
+    if:
+      - type: "not"
+        condition:
+          type: "is_within"
+          element: "TestGene_Promoter"
+          locus: "TestGene_Locus"
+    then:
+      - type: "set_activity"
+        element: "TestGene_Body"
+        level: "moved"
+
+simulate:
+  name: "Null_Action_Baseline_Test"
+  description: "Test simulation with null action to query baseline state"
+  action: null  # No hypothetical action, just query current state
+  query:
+    - type: "get_activity"
+      element: "TestGene_Body"
+
+# This test validates that the simulation engine correctly handles null actions:
+# 1. No hypothetical action is performed (action: null)
+# 2. Rules are evaluated based on the original state
+# 3. BaselineRule should apply (TestGene_Promoter is within TestGene_Locus)
+# 4. AlternativeRule should NOT apply (promoter is still in locus)
+# 5. Query should return the baseline activity level
+# 6. This is useful for establishing baseline states before testing hypotheses

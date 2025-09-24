@@ -3,8 +3,8 @@
 Test script to check if the GFL service can be imported and started.
 """
 
-import sys
 import os
+import sys
 
 # Add the project root to the Python path
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
@@ -12,6 +12,7 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 try:
     print("Attempting to import gfl_service...")
     import gfl_service
+
     print("Successfully imported gfl_service")
     print("Health check endpoint is available at: /health")
     print("Service title:", gfl_service.app.title)
@@ -22,4 +23,5 @@ try:
 except Exception as e:
     print(f"Error importing gfl_service: {e}")
     import traceback
+
     traceback.print_exc()

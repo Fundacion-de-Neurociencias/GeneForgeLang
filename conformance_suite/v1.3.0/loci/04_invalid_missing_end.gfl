@@ -1,0 +1,17 @@
+# GFL Conformance Test: Invalid Locus - Missing End Coordinate
+# Test Case: 04_invalid_missing_end.gfl
+# Purpose: Test validation of missing end coordinate
+# Expected: Should be rejected by semantic validator with error message
+
+loci:
+  - id: "TestGene_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    # end: 1001000  # MISSING REQUIRED FIELD
+    elements:
+      - id: "TestGene_Promoter"
+        type: "promoter"
+
+# This test validates that the semantic validator correctly identifies
+# missing end coordinate. The end field is required to define the
+# end of the genomic region and enable spatial calculations.

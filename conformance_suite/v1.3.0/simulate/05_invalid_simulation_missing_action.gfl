@@ -1,0 +1,38 @@
+# GFL Conformance Test: Invalid Simulation - Missing Action
+# Test Case: 05_invalid_simulation_missing_action.gfl
+# Purpose: Test validation of simulate block missing action field
+# Expected: Should be rejected by semantic validator
+
+loci:
+  - id: "TestGene_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "TestGene_Promoter"
+        type: "promoter"
+
+rules:
+  - id: "TestRule"
+    description: "Test rule for validation"
+    if:
+      - type: "is_within"
+        element: "TestGene_Promoter"
+        locus: "TestGene_Locus"
+    then:
+      - type: "set_activity"
+        element: "TestGene_Promoter"
+        level: "active"
+
+simulate:
+  name: "Missing_Action_Test"
+  description: "Simulation missing required action field"
+  # action:  # MISSING REQUIRED FIELD
+  query:
+    - type: "get_activity"
+      element: "TestGene_Promoter"
+
+# This test validates that the semantic validator correctly identifies
+# missing action field in simulate block. The action field is required
+# to specify what hypothetical action should be performed during simulation.
+# Even if the action is null (no action), it must be explicitly specified.

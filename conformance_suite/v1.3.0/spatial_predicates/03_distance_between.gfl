@@ -1,0 +1,54 @@
+# GFL Conformance Test: distance_between Predicate
+# Test Case: 03_distance_between.gfl
+# Purpose: Test distance_between predicate with distance calculation
+# Expected: Should parse successfully and calculate correct distance
+# Description for GF Engine: "The engine must calculate the distance correctly and use it in rule evaluation."
+
+loci:
+  - id: "LocusA"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "ElementA"
+        type: "promoter"
+
+  - id: "LocusB"
+    chromosome: "chr1"
+    start: 2000000
+    end: 2001000
+    elements:
+      - id: "ElementB"
+        type: "enhancer"
+
+rules:
+  - id: "DistanceRule"
+    description: "Test rule using distance_between predicate with threshold"
+    if:
+      - type: "distance_between"
+        element_a: "ElementA"
+        element_b: "ElementB"
+        threshold: 500000
+    then:
+      - type: "set_activity"
+        element: "ElementA"
+        level: "distant_interaction"
+
+  - id: "CloseDistanceRule"
+    description: "Test rule for elements within close distance"
+    if:
+      - type: "distance_between"
+        element_a: "ElementA"
+        element_b: "ElementB"
+        threshold: 2000000
+    then:
+      - type: "set_activity"
+        element: "ElementA"
+        level: "close_interaction"
+
+# This test validates that the distance_between predicate correctly calculates
+# genomic distance between elements and evaluates threshold conditions.
+# ElementA (around position 1000500) and ElementB (around position 2000500)
+# are approximately 1,000,000 bp apart, so:
+# - DistanceRule (threshold 500000) should evaluate to TRUE (distance > threshold)
+# - CloseDistanceRule (threshold 2000000) should evaluate to FALSE (distance < threshold)

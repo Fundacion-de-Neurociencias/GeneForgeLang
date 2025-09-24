@@ -1,0 +1,131 @@
+# GFL v2.0 Multi-Omic Example
+# This example demonstrates the new multi-omic capabilities in GFL v2.0
+
+# Transcript definitions
+transcripts:
+  - id: "TP53_transcript_201"
+    gene_source: "TP53"
+    exons: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    identifiers:
+      refseq: "NM_000546.6"
+      ensembl: "ENST00000269305"
+
+  - id: "BRCA1_transcript_001"
+    gene_source: "BRCA1"
+    exons: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+    identifiers:
+      refseq: "NM_007294.4"
+      ensembl: "ENST00000357654"
+
+# Protein definitions
+proteins:
+  - id: "p53_protein"
+    translates_from: "transcript(TP53_transcript_201)"
+    domains:
+      - id: "TransactivationDomain1"
+        start: 1
+        end: 42
+      - id: "DNA_BindingDomain"
+        start: 102
+        end: 292
+      - id: "TetramerizationDomain"
+        start: 325
+        end: 355
+      - id: "RegulatoryDomain"
+        start: 356
+        end: 393
+    identifiers:
+      uniprot: "P04637"
+      refseq: "NP_000537.3"
+      pdb: "1TUP"
+
+  - id: "BRCA1_protein"
+    translates_from: "transcript(BRCA1_transcript_001)"
+    domains:
+      - id: "BRCT_Domain1"
+        start: 1649
+        end: 1736
+      - id: "BRCT_Domain2"
+        start: 1737
+        end: 1855
+      - id: "RING_Finger"
+        start: 24
+        end: 64
+    identifiers:
+      uniprot: "P38398"
+      refseq: "NP_009225.1"
+      pdb: "1JNX"
+
+# Metabolite definitions
+metabolites:
+  - id: "ATP"
+    formula: "C10H16N5O13P3"
+    identifiers:
+      chebi: "CHEBI:15422"
+      hmdb: "HMDB0000538"
+      kegg: "C00002"
+
+  - id: "glucose"
+    formula: "C6H12O6"
+    identifiers:
+      chebi: "CHEBI:17234"
+      hmdb: "HMDB0000122"
+      kegg: "C00031"
+
+  - id: "lactate"
+    formula: "C3H5O3"
+    identifiers:
+      chebi: "CHEBI:24996"
+      hmdb: "HMDB0000190"
+      kegg: "C00186"
+
+# Genomic loci (from v1.3.0 spatial genomic features)
+loci:
+  - id: "TP53_GeneLocus"
+    chromosome: "chr17"
+    start: 7668402
+    end: 7687550
+    elements:
+      - id: "TP53_Promoter"
+        type: "promoter"
+      - id: "TP53_GeneBody"
+        type: "gene"
+
+# Rules demonstrating multi-omic integration
+rules:
+  - id: "ProteinStabilityRule"
+    description: "Protein stability depends on domain integrity"
+    if:
+      - type: "is_within"
+        element: "TP53_Promoter"
+        locus: "TP53_GeneLocus"
+    then:
+      - type: "set_activity"
+        element: "p53_protein"
+        level: "stable"
+
+  - id: "MetabolicActivityRule"
+    description: "ATP production depends on glucose availability"
+    if:
+      - type: "distance_between"
+        element_a: "glucose"
+        element_b: "ATP"
+        threshold: 1000
+    then:
+      - type: "set_activity"
+        element: "ATP"
+        level: "high"
+
+# Simulation testing multi-omic interactions
+simulate:
+  name: "MultiOmicInteractionTest"
+  description: "Test how protein stability affects metabolic activity"
+  action:
+    type: "move"
+    element: "TP53_Promoter"
+    destination: "chr17:8000000"
+  query:
+    - type: "get_activity"
+      element: "p53_protein"
+    - type: "get_activity"
+      element: "ATP"

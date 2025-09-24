@@ -1,0 +1,59 @@
+# GFL Conformance Test: Simple Simulation
+# Test Case: 01_simple_simulation.gfl
+# Purpose: Test basic spatial simulation with rule application
+# Expected: Should parse successfully and apply rules correctly
+# Description for GF Engine: "The reasoning engine must apply the RelocationPenaltyRule and determine that the gene activity is 'low_or_off'."
+
+loci:
+  - id: "Sox2_GeneLocus"
+    chromosome: "chr3"
+    start: 181708858
+    end: 181711758
+    elements:
+      - id: "Sox2_Promoter"
+        type: "promoter"
+      - id: "Sox2_GeneBody"
+        type: "gene"
+
+rules:
+  - id: "RelocationPenaltyRule"
+    description: "If a promoter is relocated outside its native locus, activity decays"
+    if:
+      - type: "not"
+        condition:
+          type: "is_within"
+          element: "Sox2_Promoter"
+          locus: "Sox2_GeneLocus"
+    then:
+      - type: "set_activity"
+        element: "Sox2_GeneBody"
+        level: "low_or_off"
+
+  - id: "NativeActivityRule"
+    description: "If promoter is in native locus, gene is active"
+    if:
+      - type: "is_within"
+        element: "Sox2_Promoter"
+        locus: "Sox2_GeneLocus"
+    then:
+      - type: "set_activity"
+        element: "Sox2_GeneBody"
+        level: "high"
+
+simulate:
+  name: "Sox2_Promoter_Relocation_Test"
+  description: "What happens to Sox2 activity if we move its promoter elsewhere?"
+  action:
+    type: "move"
+    element: "Sox2_Promoter"
+    destination: "chr3:190000000"
+  query:
+    - type: "get_activity"
+      element: "Sox2_GeneBody"
+
+# This test validates that the simulation engine correctly:
+# 1. Executes the hypothetical move action (relocating Sox2_Promoter to chr3:190000000)
+# 2. Evaluates spatial conditions based on the new location
+# 3. Applies the RelocationPenaltyRule (since promoter is no longer in native locus)
+# 4. Determines that Sox2_GeneBody activity should be "low_or_off"
+# 5. Returns the query result showing the inferred activity level

@@ -1,0 +1,109 @@
+# GFL Conformance Test: Complex Multi-Rule Simulation
+# Test Case: 03_complex_multi_rule_simulation.gfl
+# Purpose: Test simulation with multiple rules and dependencies
+# Expected: Should parse successfully and apply rules in correct order
+
+loci:
+  - id: "GeneA_Locus"
+    chromosome: "chr1"
+    start: 1000000
+    end: 1001000
+    elements:
+      - id: "GeneA_Promoter"
+        type: "promoter"
+      - id: "GeneA_Body"
+        type: "gene"
+
+  - id: "Enhancer_Locus"
+    chromosome: "chr1"
+    start: 1500000
+    end: 1501000
+    elements:
+      - id: "Shared_Enhancer"
+        type: "enhancer"
+
+  - id: "GeneB_Locus"
+    chromosome: "chr1"
+    start: 2000000
+    end: 2001000
+    elements:
+      - id: "GeneB_Promoter"
+        type: "promoter"
+      - id: "GeneB_Body"
+        type: "gene"
+
+rules:
+  - id: "EnhancerActivityRule"
+    description: "Enhancer becomes active when in its native locus"
+    if:
+      - type: "is_within"
+        element: "Shared_Enhancer"
+        locus: "Enhancer_Locus"
+    then:
+      - type: "set_activity"
+        element: "Shared_Enhancer"
+        level: "active"
+
+  - id: "GeneA_EnhancerRule"
+    description: "GeneA is enhanced when promoter is close to active enhancer"
+    if:
+      - type: "is_within"
+        element: "GeneA_Promoter"
+        locus: "GeneA_Locus"
+      - type: "distance_between"
+        element_a: "GeneA_Promoter"
+        element_b: "Shared_Enhancer"
+        threshold: 500000
+    then:
+      - type: "set_activity"
+        element: "GeneA_Body"
+        level: "enhanced"
+
+  - id: "GeneB_EnhancerRule"
+    description: "GeneB is enhanced when promoter is close to active enhancer"
+    if:
+      - type: "is_within"
+        element: "GeneB_Promoter"
+        locus: "GeneB_Locus"
+      - type: "distance_between"
+        element_a: "GeneB_Promoter"
+        element_b: "Shared_Enhancer"
+        threshold: 500000
+    then:
+      - type: "set_activity"
+        element: "GeneB_Body"
+        level: "enhanced"
+
+  - id: "DefaultActivityRule"
+    description: "Default activity level for genes"
+    if:
+      - type: "is_within"
+        element: "GeneA_Promoter"
+        locus: "GeneA_Locus"
+    then:
+      - type: "set_activity"
+        element: "GeneA_Body"
+        level: "basal"
+
+simulate:
+  name: "Complex_Multi_Rule_Test"
+  description: "Test simulation with multiple interdependent rules"
+  action:
+    type: "move"
+    element: "Shared_Enhancer"
+    destination: "chr1:1200000"  # Move enhancer closer to GeneA
+  query:
+    - type: "get_activity"
+      element: "GeneA_Body"
+    - type: "get_activity"
+      element: "GeneB_Body"
+    - type: "get_activity"
+      element: "Shared_Enhancer"
+
+# This test validates that the simulation engine correctly handles complex scenarios:
+# 1. Move Shared_Enhancer to chr1:1200000 (closer to GeneA, farther from GeneB)
+# 2. EnhancerActivityRule should apply (enhancer is still within Enhancer_Locus)
+# 3. GeneA_EnhancerRule should apply (GeneA_Promoter is in locus, distance to enhancer < 500000)
+# 4. GeneB_EnhancerRule should NOT apply (distance to enhancer > 500000)
+# 5. DefaultActivityRule should apply as fallback for GeneA
+# 6. Query results should show: GeneA_Body="enhanced", GeneB_Body="basal", Shared_Enhancer="active"
