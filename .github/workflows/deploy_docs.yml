@@ -1,0 +1,35 @@
+name: Deploy Documentation to GitHub Pages
+
+# Se activa cada vez que hay un push a la rama 'main'
+on:
+  push:
+    branches:
+      - main
+
+# Permisos necesarios para que la acción pueda escribir en la rama gh-pages
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    name: Deploy Docs
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Clona el repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configura el entorno de Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
+      # 3. Instala las dependencias para construir la documentación
+      - name: Install documentation dependencies
+        run: pip install mkdocs mkdocs-material
+
+      # 4. Construye el sitio y lo despliega a la rama 'gh-pages'
+      # El comando 'mkdocs gh-deploy' se encarga de todo el proceso de forma automática
+      - name: Build and deploy
+        run: mkdocs gh-deploy --force --clean

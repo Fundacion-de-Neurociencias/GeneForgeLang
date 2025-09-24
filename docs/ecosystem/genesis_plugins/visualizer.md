@@ -253,20 +253,20 @@ output:
 # First evaluate candidates
 evaluate:
   candidates: "${design.candidates}"
-  
+
   # Score on-target efficiency
   - plugin: "gfl-ontarget-scorer"
-    input: 
+    input:
       grna_sequence: "${candidate.sequence}"
       genome_sequence: "${genome_context}"
     as_var: "on_target_score"
-  
+
   # Score off-target risk
   - plugin: "gfl-offtarget-scorer"
     input:
       grna_sequence: "${candidate.sequence}"
     as_var: "off_target_risk"
-  
+
   # Combine scores
   - plugin: "gfl-crispr-evaluator"
     input:

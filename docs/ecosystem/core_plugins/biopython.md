@@ -266,7 +266,7 @@ process:
         sequence: "${record.seq}"
         seq_type: "protein"
         as_var: "mw_result_${record.id}"
-      
+
       - plugin: "biopython-tools"
         operation: "gc_content"
         sequence: "${record.seq}"
@@ -296,18 +296,18 @@ process:
         operation: "reverse_complement"
         sequence: "${seq}"
         as_var: "rc_result"
-      
+
       - plugin: "biopython-tools"
         operation: "gc_content"
         sequence: "${seq}"
         as_var: "gc_result"
-      
+
       - plugin: "biopython-tools"
         operation: "molecular_weight"
         sequence: "${seq}"
         seq_type: "DNA"
         as_var: "mw_result"
-    
+
     output:
       - sequence_${loop.index}: {
           "original": "${seq}",

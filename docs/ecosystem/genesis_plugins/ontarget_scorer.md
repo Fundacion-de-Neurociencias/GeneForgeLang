@@ -225,7 +225,7 @@ process:
           "genome_sequence": "${candidate.context}"
         }
         as_var: "score_result_${loop.index}"
-    
+
     output:
       - scored_candidates: [
           {

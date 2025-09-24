@@ -101,14 +101,14 @@ design:
 # Evaluate candidates
 evaluate:
   candidates: "${design.candidates}"
-  
+
   # Score on-target efficiency
   - plugin: "gfl-ontarget-scorer"
-    input: 
+    input:
       grna_sequence: "${candidate.sequence}"
       genome_sequence: "${genome_context}"
     as_var: "on_target_score"
-  
+
   # Score off-target risk
   - plugin: "gfl-offtarget-scorer"
     input:
@@ -117,7 +117,7 @@ evaluate:
       max_mismatches: 3
       genome_reference: "GRCh38"
     as_var: "off_target_risk"
-  
+
   # Combine scores
   - plugin: "gfl-crispr-evaluator"
     input:
@@ -181,7 +181,7 @@ process:
     condition: "${quality_score >= 90}"
     plugin: "advanced_analysis"
     # ... parameters
-  
+
   - name: "standard_analysis"
     condition: "${quality_score < 90}"
     plugin: "basic_analysis"

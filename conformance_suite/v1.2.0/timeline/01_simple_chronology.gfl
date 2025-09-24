@@ -1,0 +1,12 @@
+# DESCRIPTION: Un motor compatible debe ejecutar las acciones en orden cronológico (T0, T+1h, T+2h), no en el orden en que aparecen en el fichero.
+timeline:
+  events:
+    - at: "T+2h"
+      actions:
+        - print("Evento 3: Final")
+    - at: "T0"
+      actions:
+        - print("Evento 1: Inicio")
+    - at: "T+1h"
+      actions:
+        - print("Evento 2: Intermedio")

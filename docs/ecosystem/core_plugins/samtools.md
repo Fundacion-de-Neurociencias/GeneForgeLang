@@ -285,12 +285,12 @@ process:
         input_bam: "${sample.bam}"
         output_bam: "${output_dir}/${sample.name}_sorted.bam"
         as_var: "sort_result_${sample.name}"
-      
+
       - plugin: "samtools"
         operation: "index"
         input_bam: "${sort_result_${sample.name}.output_bam}"
         as_var: "index_result_${sample.name}"
-    
+
     output:
       - sorted_bam_${sample.name}: "${sort_result_${sample.name}.output_bam}"
       - index_file_${sample.name}: "${index_result_${sample.name}.output_bai}"

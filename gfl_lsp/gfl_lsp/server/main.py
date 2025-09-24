@@ -3,7 +3,7 @@ from typing import List
 from lsprotocol.types import (
     Diagnostic, Position, Range, CompletionItem, CompletionItemKind,
     CompletionList, CompletionOptions, DiagnosticSeverity, Hover,
-    MarkupContent, MarkupKind
+    MarkupContent, MarkupKind, InsertTextFormat
 )
 from pygls.server import LanguageServer
 
@@ -17,6 +17,22 @@ from gfl.error_handling import EnhancedValidationResult, ErrorSeverity
 
 # Creamos una instancia del servidor de lenguaje
 server = LanguageServer("gfl-lsp", "v0.1.0")
+
+# Diccionario de documentación para palabras clave de GFL
+KEYWORD_DOCS = {
+    "guided_discovery": "Bloque principal para orquestar un ciclo de descubrimiento iterativo guiado por IA.",
+    "timeline": "Define un flujo de trabajo basado en una secuencia de eventos cronológicos.",
+    "contract": "Define el esquema de datos esperado para las entradas (inputs) y salidas (outputs) de un paso.",
+    "rules": "Define reglas lógicas para la validación y transformación de datos.",
+    "hypothesis": "Define hipótesis científicas con condiciones lógicas.",
+    "pathways": "Define rutas biológicas como listas de genes o componentes.",
+    "complexes": "Define complejos biológicos como conjuntos de subunidades.",
+    "experiment": "Define un experimento con herramientas y parámetros.",
+    "analyze": "Define análisis de datos con métodos específicos.",
+    "refine_data": "Refina datos mediante técnicas de procesamiento.",
+    "optimize": "Optimiza parámetros usando algoritmos de búsqueda.",
+    "simulate": "Simula procesos biológicos o experimentales."
+}
 
 def _validate(ls: LanguageServer, params):
     """
@@ -113,29 +129,60 @@ def completions(params):
     items = []
     document = server.workspace.get_document(params.text_document.uri)
     current_line = document.lines[params.position.line].strip()
+    current_line_text = document.lines[params.position.line]
 
     try:
         # Parsear el documento completo para obtener el AST
         source = document.source
         ast = parse(source)
 
-        # A. Autocompletado de Bloques de Alto Nivel
+        # Determinar el contexto actual (bloque padre)
+        parent_context = _get_parent_context(document, params.position.line)
+
+        # A. Autocompletado Contextual Anidado
+        if parent_context:
+            context_items = _get_contextual_completions(parent_context)
+            items.extend(context_items)
+
+        # B. Autocompletado de Bloques de Alto Nivel con Snippets
         # Si la línea actual está vacía o tiene indentación cero
-        if not document.lines[params.position.line].startswith('  '):
+        elif not document.lines[params.position.line].startswith('  '):
+            # Snippet para guided_discovery
+            # Snippet para guided_discovery
+            items.append(CompletionItem(
+                label="guided_discovery",
+                kind=CompletionItemKind.Snippet,
+                detail="GFL block: guided_discovery",
+                documentation="Bloque principal para orquestar un ciclo de descubrimiento iterativo guiado por IA.",
+                insert_text="guided_discovery:\n  design_params:\n    $1\n  active_learning_params:\n    $2\n  objective:\n    $3\n  budget:\n    max_cycles: ${4:10}\n  run:\n    $5\n  output: ${6:final_candidates}",
+                insert_text_format=InsertTextFormat.Snippet
+            ))
+
+            # Snippet para timeline
+            items.append(CompletionItem(
+                label="timeline",
+                kind=CompletionItemKind.Snippet,
+                detail="GFL block: timeline",
+                documentation="Define un flujo de trabajo basado en una secuencia de eventos cronológicos.",
+                insert_text="timeline:\n  name: \"${1:Mi Terapia}\"\n  description: \"${2:Descripción del protocolo}\"\n  events:\n    - at: \"T0\"\n      actions:\n        - ${3:do_something}",
+                insert_text_format=InsertTextFormat.Snippet
+            ))
+
+            # Otras palabras clave
             keywords = [
-                'import_schemas', 'rules', 'hypothesis', 'timeline',
+                'import_schemas', 'rules', 'hypothesis',
                 'pathways', 'complexes', 'experiment', 'analyze',
-                'guided_discovery', 'refine_data', 'optimize', 'simulate'
+                'refine_data', 'optimize', 'simulate'
             ]
             for keyword in keywords:
                 items.append(CompletionItem(
                     label=keyword,
-                    kind=CompletionItemKind.KEYWORD,
+                    kind=CompletionItemKind.Keyword,
                     detail=f"GFL block: {keyword}",
                     documentation=f"Define a {keyword} block in your GFL workflow"
                 ))
 
-        # B. Autocompletado de Tipos de Esquemas
+        # C. Autocompletado de Tipos de Esquemas
         elif 'type:' in current_line:
             # Buscar esquemas importados
             if isinstance(ast, dict) and 'import_schemas' in ast:
@@ -145,13 +192,18 @@ def completions(params):
                         try:
                             # Cargar esquemas usando el schema loader
                             from gfl.schema_loader import load_schemas_from_files
-                            schemas = load_schemas_from_files([schema_file])
+                            from gfl.error_handling import EnhancedValidationResult
+                            from gfl.schema_loader import get_global_schema_loader
+                            result = EnhancedValidationResult()
+                            load_schemas_from_files([schema_file], result)
+                            loader = get_global_schema_loader()
+                            schemas = loader.get_all_schemas()
 
                             for schema_name, schema_def in schemas.items():
                                 if isinstance(schema_def, dict) and 'type' in schema_def:
                                     items.append(CompletionItem(
                                         label=schema_name,
-                                        kind=CompletionItemKind.CLASS,
+                                        kind=CompletionItemKind.Class,
                                         detail=f"Schema type: {schema_name}",
                                         documentation=f"Use schema type {schema_name} from {schema_file}"
                                     ))
@@ -159,7 +211,7 @@ def completions(params):
                             # Si no se puede cargar el esquema, continuar
                             continue
 
-        # C. Autocompletado de Entidades Biológicas
+        # D. Autocompletado de Entidades Biológicas
         elif 'pathway(' in current_line or current_line.endswith('pathway('):
             # Buscar pathways definidos en el documento
             if isinstance(ast, dict) and 'pathways' in ast:
@@ -168,7 +220,7 @@ def completions(params):
                     for pathway_name in pathways.keys():
                         items.append(CompletionItem(
                             label=pathway_name,
-                            kind=CompletionItemKind.VALUE,
+                            kind=CompletionItemKind.Value,
                             detail=f"Pathway: {pathway_name}",
                             documentation=f"Use defined pathway {pathway_name}"
                         ))
@@ -181,12 +233,12 @@ def completions(params):
                     for complex_name in complexes.keys():
                         items.append(CompletionItem(
                             label=complex_name,
-                            kind=CompletionItemKind.VALUE,
+                            kind=CompletionItemKind.Value,
                             detail=f"Complex: {complex_name}",
                             documentation=f"Use defined complex {complex_name}"
                         ))
 
-        # D. Autocompletado de herramientas comunes
+        # E. Autocompletado de herramientas comunes
         elif 'tool:' in current_line:
             common_tools = [
                 'CRISPR_cas9', 'CRISPR_cas12', 'CRISPR_cas13',
@@ -197,12 +249,12 @@ def completions(params):
             for tool in common_tools:
                 items.append(CompletionItem(
                     label=tool,
-                    kind=CompletionItemKind.FUNCTION,
+                    kind=CompletionItemKind.Function,
                     detail=f"Tool: {tool}",
                     documentation=f"Use {tool} as experimental tool"
                 ))
 
-        # E. Autocompletado de tipos de experimento
+        # F. Autocompletado de tipos de experimento
         elif 'type:' in current_line and 'tool:' in current_line:
             experiment_types = [
                 'gene_editing', 'gene_expression', 'protein_analysis',
@@ -212,12 +264,12 @@ def completions(params):
             for exp_type in experiment_types:
                 items.append(CompletionItem(
                     label=exp_type,
-                    kind=CompletionItemKind.ENUM,
+                    kind=CompletionItemKind.Enum,
                     detail=f"Experiment type: {exp_type}",
                     documentation=f"Use {exp_type} as experiment type"
                 ))
 
-        # F. Autocompletado de métodos de análisis
+        # G. Autocompletado de métodos de análisis
         elif 'method:' in current_line:
             analysis_methods = [
                 'differential_expression', 'pathway_enrichment', 'clustering',
@@ -227,7 +279,7 @@ def completions(params):
             for method in analysis_methods:
                 items.append(CompletionItem(
                     label=method,
-                    kind=CompletionItemKind.METHOD,
+                    kind=CompletionItemKind.Method,
                     detail=f"Analysis method: {method}",
                     documentation=f"Use {method} for data analysis"
                 ))
@@ -237,6 +289,70 @@ def completions(params):
         pass
 
     return CompletionList(is_incomplete=False, items=items)
+
+
+def _get_parent_context(document, line_number):
+    """
+    Determina el bloque padre de la línea actual.
+    """
+    # Buscar hacia atrás para encontrar el bloque padre
+    for i in range(line_number - 1, -1, -1):
+        line = document.lines[i].strip()
+        if line.endswith(':') and not line.startswith('  '):
+            return line.rstrip(':')
+        # Si encontramos una línea sin indentación que no es un bloque, paramos
+        if not document.lines[i].startswith('  ') and line != '':
+            break
+    return None
+
+
+def _get_contextual_completions(parent_context):
+    """
+    Devuelve sugerencias contextuales basadas en el bloque padre.
+    """
+    items = []
+    
+    if parent_context == 'budget':
+        contextual_keywords = [
+            ('max_cycles', 'Número máximo de ciclos de optimización'),
+            ('convergence_threshold', 'Umbral de convergencia para detener la optimización'),
+            ('target_objective_value', 'Valor objetivo deseado')
+        ]
+        for keyword, description in contextual_keywords:
+            items.append(CompletionItem(
+                label=keyword,
+                kind=CompletionItemKind.Property,
+                detail=f"Budget parameter: {keyword}",
+                documentation=description
+            ))
+    
+    elif parent_context == 'contract':
+        contextual_keywords = [
+            ('inputs', 'Definición de entradas esperadas'),
+            ('outputs', 'Definición de salidas esperadas')
+        ]
+        for keyword, description in contextual_keywords:
+            items.append(CompletionItem(
+                label=keyword,
+                kind=CompletionItemKind.Property,
+                detail=f"Contract parameter: {keyword}",
+                documentation=description
+            ))
+    
+    elif parent_context == 'active_learning_params':
+        contextual_keywords = [
+            ('strategy', 'Estrategia de aprendizaje activo'),
+            ('active_learning', 'Configuración de aprendizaje activo')
+        ]
+        for keyword, description in contextual_keywords:
+            items.append(CompletionItem(
+                label=keyword,
+                kind=CompletionItemKind.Property,
+                detail=f"Active learning parameter: {keyword}",
+                documentation=description
+            ))
+    
+    return items
 
 
 @server.feature('textDocument/hover')
@@ -252,6 +368,13 @@ def hover(params):
 
     if not word:
         return None
+
+    # A. Hover sobre palabras clave de GFL
+    if word in KEYWORD_DOCS:
+        return Hover(contents=MarkupContent(
+            kind=MarkupKind.Markdown,
+            value=f"**{word}**\n\n---\n\n{KEYWORD_DOCS[word]}"
+        ))
 
     try:
         # Parsear el documento para obtener el AST
@@ -276,19 +399,24 @@ def hover(params):
                 for schema_file in schema_files:
                     try:
                         from gfl.schema_loader import load_schemas_from_files
-                        loaded_schemas = load_schemas_from_files([schema_file])
+                        from gfl.error_handling import EnhancedValidationResult
+                        from gfl.schema_loader import get_global_schema_loader
+                        result = EnhancedValidationResult()
+                        load_schemas_from_files([schema_file], result)
+                        loader = get_global_schema_loader()
+                        loaded_schemas = loader.get_all_schemas()
 
                         if word in loaded_schemas:
                             schema_def = loaded_schemas[word]
                             contents_md = f"**Schema: `{word}`**\n\n---\n\n"
-                            contents_md += f"**Base Type:** `{schema_def.get('type', 'unknown')}`\n\n"
+                            contents_md += f"**Base Type:** `{schema_def.base_type}`\n\n"
 
-                            if 'description' in schema_def:
-                                contents_md += f"**Description:** {schema_def['description']}\n\n"
+                            if schema_def.description:
+                                contents_md += f"**Description:** {schema_def.description}\n\n"
 
-                            if 'attributes' in schema_def:
+                            if schema_def.attributes:
                                 contents_md += "**Attributes:**\n"
-                                for attr, props in schema_def['attributes'].items():
+                                for attr, props in schema_def.attributes.items():
                                     required = props.get('required', False)
                                     attr_type = props.get('type', 'unknown')
                                     contents_md += f"- `{attr}`: (type: `{attr_type}`, required: `{required}`)\n"

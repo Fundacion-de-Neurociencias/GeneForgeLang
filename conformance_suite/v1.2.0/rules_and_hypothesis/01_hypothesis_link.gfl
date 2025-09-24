@@ -1,0 +1,14 @@
+# DESCRIPTION: Un motor compatible debe reconocer el campo 'validates_hypothesis' y asociar la ejecución del experimento con la hipótesis 'H1'.
+hypothesis:
+  id: H1
+  description: "Test hypothesis linking"
+  if:
+    - condition(A)
+  then:
+    - condition(B)
+
+experiment:
+  tool: "dummy-tool"
+  validates_hypothesis: H1
+  params:
+    input: "data.txt"

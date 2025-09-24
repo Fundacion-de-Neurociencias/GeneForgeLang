@@ -238,7 +238,7 @@ process:
           "genome_reference": "${genome_reference}"
         }
         as_var: "analysis_result_${loop.index}"
-    
+
     output:
       - analyzed_candidates: [
           {

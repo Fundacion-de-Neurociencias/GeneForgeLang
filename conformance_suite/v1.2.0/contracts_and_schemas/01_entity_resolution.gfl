@@ -1,0 +1,10 @@
+# DESCRIPTION: Un motor compatible debe resolver la referencia 'pathway(TestPathway)' y pasar la lista ['GENE1', 'GENE2'] al plugin.
+pathways:
+  TestPathway:
+    - GENE1
+    - GENE2
+
+analyze:
+  tool: "enrichment-tool"
+  params:
+    target_pathway: pathway(TestPathway)
