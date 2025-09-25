@@ -1,6 +1,8 @@
 # GeneForgeLang (GFL) Documentation
 
-Welcome to the official documentation for GeneForgeLang (GFL), a symbolic language for rational bio-design. GFL empowers researchers and developers to create, optimize, and analyze biological entities through structured workflows and AI-powered analysis.
+> **The Symbolic Language for Biological Reasoning**
+
+Welcome to the official documentation for GeneForgeLang (GFL), the symbolic language for biological reasoning. GFL empowers researchers and developers to create, optimize, and analyze biological entities through structured workflows and AI-powered analysis.
 
 ## 🧬 What is GeneForgeLang?
 
@@ -100,4 +102,4 @@ GeneForgeLang is released under the MIT License. See the [LICENSE](../LICENSE) f
 
 ---
 
-*GeneForgeLang - Empowering genomic research through structured workflows and AI-powered analysis.*
+*GeneForgeLang - The Symbolic Language for Biological Reasoning*

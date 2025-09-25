@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "geneforgelang"
 version = "1.0.0"
-description = "A professional DSL for genomic workflows and bioinformatics"
+description = "The Symbolic Language for Biological Reasoning"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }

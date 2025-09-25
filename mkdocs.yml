@@ -1,5 +1,5 @@
 site_name: GeneForgeLang (GFL)
-site_description: 'A Symbolic Language for Rational Bio-Design.'
+site_description: 'The Symbolic Language for Biological Reasoning'
 repo_url: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang
 theme:
   name: material

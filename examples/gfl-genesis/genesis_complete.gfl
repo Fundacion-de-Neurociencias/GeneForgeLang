@@ -1,0 +1,229 @@
+# GFL Genesis Project - Complete CRISPR gRNA Discovery Workflow
+# This script demonstrates the full power of GeneForge v2.0 with multi-omic capabilities
+
+# Define target gene and reference data
+metadata:
+  project: "GFL Genesis CRISPR Discovery"
+  version: "2.0"
+  author: "GeneForge Team"
+  description: "Complete workflow for discovering optimal gRNA candidates for BRCA1 gene editing"
+
+# Define multi-omic entities
+transcripts:
+  - id: "BRCA1_transcript_001"
+    gene_source: "BRCA1"
+    exons: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+    identifiers:
+      refseq: "NM_007294.4"
+      ensembl: "ENST00000357654"
+
+proteins:
+  - id: "BRCA1_protein"
+    translates_from: "transcript(BRCA1_transcript_001)"
+    domains:
+      - id: "BRCT_Domain1"
+        start: 1649
+        end: 1736
+      - id: "BRCT_Domain2"
+        start: 1737
+        end: 1855
+      - id: "RING_Finger"
+        start: 24
+        end: 64
+    identifiers:
+      uniprot: "P38398"
+      refseq: "NP_009225.1"
+
+# Define genomic loci for spatial reasoning
+loci:
+  - id: "BRCA1_GeneLocus"
+    chromosome: "chr17"
+    start: 43094495
+    end: 43125483
+    elements:
+      - id: "BRCA1_Promoter"
+        type: "promoter"
+      - id: "BRCA1_GeneBody"
+        type: "gene"
+      - id: "BRCA1_CriticalRegion"
+        type: "functional_domain"
+
+# Guided discovery workflow for gRNA candidates
+guided_discovery:
+  name: "BRCA1_gRNA_Discovery"
+  target: "BRCA1_protein"
+  
+  # Discovery strategy
+  strategy:
+    type: "iterative_refinement"
+    max_iterations: 5
+    convergence_threshold: 0.95
+    
+  # Initial candidate generation
+  initial_candidates:
+    count: 50
+    method: "random_sampling"
+    constraints:
+      - "length(20)"
+      - "gc_content(40, 60)"
+      - "no_homopolymer(4)"
+      - "avoid_repeats"
+      
+  # Evaluation criteria
+  evaluation:
+    on_target:
+      weight: 0.6
+      criteria:
+        - "efficiency_score"
+        - "specificity_score"
+        - "accessibility_score"
+        
+    off_target:
+      weight: 0.4
+      criteria:
+        - "mismatch_tolerance"
+        - "bulge_tolerance"
+        - "genome_wide_scan"
+        
+  # Learning parameters
+  learning:
+    model: "ensemble_classifier"
+    features:
+      - "sequence_composition"
+      - "secondary_structure"
+      - "genomic_context"
+      - "evolutionary_conservation"
+      
+# Rules for candidate selection and optimization
+rules:
+  - id: "HighEfficiencyRule"
+    description: "Prioritize candidates with high on-target efficiency"
+    if:
+      - type: "greater_than"
+        field: "on_target_score"
+        value: 0.8
+    then:
+      - type: "increase_priority"
+        factor: 1.5
+        
+  - id: "LowOffTargetRule"
+    description: "Penalize candidates with high off-target risk"
+    if:
+      - type: "greater_than"
+        field: "off_target_score"
+        value: 0.3
+    then:
+      - type: "decrease_priority"
+        factor: 0.5
+        
+  - id: "SpatialConstraintRule"
+    description: "Prefer candidates in accessible genomic regions"
+    if:
+      - type: "is_within"
+        element: "candidate_target"
+        locus: "BRCA1_CriticalRegion"
+    then:
+      - type: "increase_priority"
+        factor: 1.2
+
+# Simulation for what-if analysis
+simulate:
+  name: "gRNA_Effect_Prediction"
+  description: "Predict the effect of top candidates on BRCA1 function"
+  action:
+    type: "apply_candidates"
+    candidates: "${guided_discovery.top_candidates}"
+    target: "BRCA1_protein"
+  query:
+    - type: "get_efficiency"
+      target: "BRCA1_protein"
+    - type: "get_off_target_risk"
+      scope: "genome_wide"
+    - type: "predict_functional_impact"
+      metric: "protein_stability"
+
+# Analysis and optimization
+analyze:
+  name: "gRNA_Candidate_Analysis"
+  methods:
+    - "statistical_ranking"
+    - "clustering_analysis"
+    - "conservation_analysis"
+    - "secondary_structure_prediction"
+    
+  metrics:
+    - "combined_score"
+    - "efficiency_confidence"
+    - "off_target_confidence"
+    - "functional_impact_score"
+
+# Design optimization
+optimize:
+  name: "gRNA_Design_Optimization"
+  objective: "maximize_efficiency_minimize_offtarget"
+  
+  parameters:
+    - name: "sequence_length"
+      range: [18, 22]
+      step: 1
+      
+    - name: "gc_content"
+      range: [0.4, 0.6]
+      step: 0.05
+      
+    - name: "secondary_structure"
+      options: ["linear", "stem_loop", "hairpin"]
+      
+  constraints:
+    - "avoid_homopolymers"
+    - "minimize_off_targets"
+    - "maximize_accessibility"
+
+# Timeline for execution
+timeline:
+  phases:
+    - name: "Initial_Discovery"
+      duration: "2 hours"
+      tasks:
+        - "generate_initial_candidates"
+        - "evaluate_basic_properties"
+        
+    - name: "Iterative_Refinement"
+      duration: "8 hours"
+      tasks:
+        - "guided_discovery_cycles"
+        - "candidate_optimization"
+        
+    - name: "Final_Analysis"
+      duration: "1 hour"
+      tasks:
+        - "comprehensive_evaluation"
+        - "result_visualization"
+        - "report_generation"
+
+# Output specifications
+output:
+  format: "structured_data"
+  files:
+    - name: "final_candidates.csv"
+      type: "ranked_candidates"
+      columns:
+        - "candidate_id"
+        - "sequence"
+        - "on_target_score"
+        - "off_target_score"
+        - "combined_score"
+        - "genomic_position"
+        - "efficiency_confidence"
+        
+    - name: "convergence_plot.png"
+      type: "visualization"
+      description: "Learning curve showing improvement over iterations"
+      
+    - name: "candidate_alignment.pdf"
+      type: "visualization"
+      description: "Multiple sequence alignment of top candidates"
+      
+    - name: "genomic_context.png"
+      type: "visualization"
+      description: "Genomic context and accessibility of target regions"

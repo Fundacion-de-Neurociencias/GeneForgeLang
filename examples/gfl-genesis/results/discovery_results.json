@@ -1,0 +1,675 @@
+{
+  "cycles": [
+    {
+      "cycle": 1,
+      "best_score": 0.8136841446309021,
+      "avg_score": 0.6984321844141611,
+      "candidates_count": 10
+    },
+    {
+      "cycle": 2,
+      "best_score": 0.8949002238610875,
+      "avg_score": 0.8147087595455064,
+      "candidates_count": 10
+    },
+    {
+      "cycle": 3,
+      "best_score": 0.8661064603171635,
+      "avg_score": 0.7924277502252982,
+      "candidates_count": 10
+    },
+    {
+      "cycle": 4,
+      "best_score": 0.8970482160476037,
+      "avg_score": 0.8083573889368953,
+      "candidates_count": 10
+    },
+    {
+      "cycle": 5,
+      "best_score": 0.8464605083955056,
+      "avg_score": 0.737478788645086,
+      "candidates_count": 10
+    }
+  ],
+  "candidates": [
+    {
+      "id": "BRCA1_gRNA_4_02",
+      "sequence": "GTGATCCGACATGGTGTCGT",
+      "on_target_score": 0.8481874160838081,
+      "off_target_score": 0.029660584006702986,
+      "combined_score": 0.8970482160476037,
+      "genomic_position": "chr17:43099742",
+      "efficiency_confidence": 0.8350148250604607
+    },
+    {
+      "id": "BRCA1_gRNA_2_07",
+      "sequence": "GAGTGGCTACGCTATCGTCT",
+      "on_target_score": 0.8717032233388333,
+      "off_target_score": 0.0703042753555315,
+      "combined_score": 0.8949002238610875,
+      "genomic_position": "chr17:43101902",
+      "efficiency_confidence": 0.7576445728501375
+    },
+    {
+      "id": "BRCA1_gRNA_2_05",
+      "sequence": "GCTCTTAGCCTCAAGCGAGA",
+      "on_target_score": 0.9095901527876106,
+      "off_target_score": 0.13828335289517815,
+      "combined_score": 0.8904407505144951,
+      "genomic_position": "chr17:43100131",
+      "efficiency_confidence": 0.7102826881942296
+    },
+    {
+      "id": "BRCA1_gRNA_4_03",
+      "sequence": "GGAGGACCACCTTTGCCGTA",
+      "on_target_score": 0.9022828107675087,
+      "off_target_score": 0.153080318701838,
+      "combined_score": 0.88013755897977,
+      "genomic_position": "chr17:43096439",
+      "efficiency_confidence": 0.8871484163503224
+    },
+    {
+      "id": "BRCA1_gRNA_2_02",
+      "sequence": "GGATAAGGCGATAACAGACT",
+      "on_target_score": 0.9229080046284635,
+      "off_target_score": 0.19466349528776866,
+      "combined_score": 0.8758794046619707,
+      "genomic_position": "chr17:43102129",
+      "efficiency_confidence": 0.9138911612454108
+    },
+    {
+      "id": "BRCA1_gRNA_2_00",
+      "sequence": "GCTCGGTGCGTTATCTGTCA",
+      "on_target_score": 0.8295965712957718,
+      "off_target_score": 0.06923492636089026,
+      "combined_score": 0.8700639722331069,
+      "genomic_position": "chr17:43095560",
+      "efficiency_confidence": 0.783791299464506
+    },
+    {
+      "id": "BRCA1_gRNA_3_06",
+      "sequence": "GAAGTTGCTCCAGGGAAAAA",
+      "on_target_score": 0.88549812667094,
+      "off_target_score": 0.16298103921350104,
+      "combined_score": 0.8661064603171635,
+      "genomic_position": "chr17:43102167",
+      "efficiency_confidence": 0.7661377629144556
+    },
+    {
+      "id": "BRCA1_gRNA_2_04",
+      "sequence": "GCGGGTAAGTCTGTGTCCCA",
+      "on_target_score": 0.8425605004046355,
+      "off_target_score": 0.11260741528413415,
+      "combined_score": 0.8604933341291277,
+      "genomic_position": "chr17:43097868",
+      "efficiency_confidence": 0.7527024969373715
+    },
+    {
+      "id": "BRCA1_gRNA_2_01",
+      "sequence": "GCCGGAAACGAATACTGCTT",
+      "on_target_score": 0.8172945258828495,
+      "off_target_score": 0.08340016991544756,
+      "combined_score": 0.8570166475635306,
+      "genomic_position": "chr17:43100585",
+      "efficiency_confidence": 0.7873861779964363
+    },
+    {
+      "id": "BRCA1_gRNA_4_06",
+      "sequence": "GGGCAGTAAGCCGTTGGTGT",
+      "on_target_score": 0.9367612603528513,
+      "off_target_score": 0.286997755666969,
+      "combined_score": 0.8472576539449233,
+      "genomic_position": "chr17:43096537",
+      "efficiency_confidence": 0.7137575649963485
+    },
+    {
+      "id": "BRCA1_gRNA_5_06",
+      "sequence": "GCCGTTTAGGTTGAGACCCT",
+      "on_target_score": 0.8023419080552131,
+      "off_target_score": 0.08736159109405577,
+      "combined_score": 0.8464605083955056,
+      "genomic_position": "chr17:43103235",
+      "efficiency_confidence": 0.9180765055115812
+    },
+    {
+      "id": "BRCA1_gRNA_4_00",
+      "sequence": "GCTCTTCGCCCCATTCCGGT",
+      "on_target_score": 0.8869464906128708,
+      "off_target_score": 0.23070655531954226,
+      "combined_score": 0.8398852722399056,
+      "genomic_position": "chr17:43097239",
+      "efficiency_confidence": 0.7474549522000264
+    },
+    {
+      "id": "BRCA1_gRNA_4_05",
+      "sequence": "GTTCGCGGACTGCGCGTAAA",
+      "on_target_score": 0.9099153676645091,
+      "off_target_score": 0.2682057239159862,
+      "combined_score": 0.8386669310323109,
+      "genomic_position": "chr17:43096412",
+      "efficiency_confidence": 0.8922444975211693
+    },
+    {
+      "id": "BRCA1_gRNA_3_03",
+      "sequence": "GCAACTAAACTACTGGAGTT",
+      "on_target_score": 0.7896389110967592,
+      "off_target_score": 0.09948544741530431,
+      "combined_score": 0.8339891676919338,
+      "genomic_position": "chr17:43095270",
+      "efficiency_confidence": 0.7977826212227248
+    },
+    {
+      "id": "BRCA1_gRNA_3_04",
+      "sequence": "GGCCACACCACCATGACGCA",
+      "on_target_score": 0.7544551592946408,
+      "off_target_score": 0.051972817732168976,
+      "combined_score": 0.8318839684839169,
+      "genomic_position": "chr17:43096772",
+      "efficiency_confidence": 0.7766500266547993
+    },
+    {
+      "id": "BRCA1_gRNA_5_08",
+      "sequence": "GGCCTAGTAATTGTTAATGA",
+      "on_target_score": 0.768530809027208,
+      "off_target_score": 0.07824227058298973,
+      "combined_score": 0.829821577183129,
+      "genomic_position": "chr17:43096365",
+      "efficiency_confidence": 0.8882838718705335
+    },
+    {
+      "id": "BRCA1_gRNA_3_01",
+      "sequence": "GTAAGAGTTGCTTAAGGGCA",
+      "on_target_score": 0.9519902400319957,
+      "off_target_score": 0.3539757561984485,
+      "combined_score": 0.8296038415398181,
+      "genomic_position": "chr17:43097809",
+      "efficiency_confidence": 0.9215610798891496
+    },
+    {
+      "id": "BRCA1_gRNA_4_04",
+      "sequence": "GACGGGTACCCTACGGCAGT",
+      "on_target_score": 0.7724465620825681,
+      "off_target_score": 0.0850574272903025,
+      "combined_score": 0.8294449663334198,
+      "genomic_position": "chr17:43101999",
+      "efficiency_confidence": 0.8968431996943018
+    },
+    {
+      "id": "BRCA1_gRNA_3_05",
+      "sequence": "GTGAGGTCTTCTGGACCTTA",
+      "on_target_score": 0.8114656128212289,
+      "off_target_score": 0.15556194505592744,
+      "combined_score": 0.8246545896703663,
+      "genomic_position": "chr17:43096103",
+      "efficiency_confidence": 0.8664656302482421
+    },
+    {
+      "id": "BRCA1_gRNA_5_02",
+      "sequence": "GCTGTCACGTGTTCCGTATT",
+      "on_target_score": 0.9034053351778228,
+      "off_target_score": 0.3012866812411809,
+      "combined_score": 0.8215285286102213,
+      "genomic_position": "chr17:43096944",
+      "efficiency_confidence": 0.729395792390635
+    },
+    {
+      "id": "BRCA1_gRNA_4_09",
+      "sequence": "GTGTTAAATCTAGTTCTTGA",
+      "on_target_score": 0.7599407229955036,
+      "off_target_score": 0.10020546462701219,
+      "combined_score": 0.8158822479464973,
+      "genomic_position": "chr17:43099305",
+      "efficiency_confidence": 0.7781777938431563
+    },
+    {
+      "id": "BRCA1_gRNA_1_05",
+      "sequence": "GCCTGGTACAATACGTAGAA",
+      "on_target_score": 0.7357840808543569,
+      "off_target_score": 0.06946575970428011,
+      "combined_score": 0.8136841446309021,
+      "genomic_position": "chr17:43103043",
+      "efficiency_confidence": 0.9489710195727057
+    },
+    {
+      "id": "BRCA1_gRNA_1_01",
+      "sequence": "GACGCTTCTGTTTCCCATAA",
+      "on_target_score": 0.6992081524843351,
+      "off_target_score": 0.042632269766845504,
+      "combined_score": 0.802471983583863,
+      "genomic_position": "chr17:43097169",
+      "efficiency_confidence": 0.8858477041947184
+    },
+    {
+      "id": "BRCA1_gRNA_3_07",
+      "sequence": "GGACAGTGCTCAAGTCAACT",
+      "on_target_score": 0.814342327504935,
+      "off_target_score": 0.21988823879040326,
+      "combined_score": 0.8006501009867997,
+      "genomic_position": "chr17:43098395",
+      "efficiency_confidence": 0.745112155020607
+    },
+    {
+      "id": "BRCA1_gRNA_5_01",
+      "sequence": "GGATTAGATTATAACTGCGA",
+      "on_target_score": 0.7491477762272367,
+      "off_target_score": 0.136324321469988,
+      "combined_score": 0.7949589371483468,
+      "genomic_position": "chr17:43098704",
+      "efficiency_confidence": 0.822775900758441
+    },
+    {
+      "id": "BRCA1_gRNA_3_00",
+      "sequence": "GTGACAACACACTATCCTGA",
+      "on_target_score": 0.6619174296857464,
+      "off_target_score": 0.006856482144701341,
+      "combined_score": 0.7944078649535673,
+      "genomic_position": "chr17:43100288",
+      "efficiency_confidence": 0.90310305500431
+    },
+    {
+      "id": "BRCA1_gRNA_2_08",
+      "sequence": "GGGTGTGGAGCTCCTTCCCA",
+      "on_target_score": 0.956531071093641,
+      "off_target_score": 0.4566454633774636,
+      "combined_score": 0.7912604573051991,
+      "genomic_position": "chr17:43103758",
+      "efficiency_confidence": 0.9323262724130881
+    },
+    {
+      "id": "BRCA1_gRNA_5_09",
+      "sequence": "GCGTTACGTGTGCCTAATTT",
+      "on_target_score": 0.9288027401042828,
+      "off_target_score": 0.43922603116746173,
+      "combined_score": 0.781591231595585,
+      "genomic_position": "chr17:43102956",
+      "efficiency_confidence": 0.9141643580616621
+    },
+    {
+      "id": "BRCA1_gRNA_2_09",
+      "sequence": "GTAGATATCTTAAGGAGGGA",
+      "on_target_score": 0.8967676139933648,
+      "off_target_score": 0.39308220582307973,
+      "combined_score": 0.780827686066787,
+      "genomic_position": "chr17:43102857",
+      "efficiency_confidence": 0.8204199611720557
+    },
+    {
+      "id": "BRCA1_gRNA_1_04",
+      "sequence": "GCCCGGCTATGCCAAAGACT",
+      "on_target_score": 0.8206777111027159,
+      "off_target_score": 0.2929986446221728,
+      "combined_score": 0.7752071688127604,
+      "genomic_position": "chr17:43099291",
+      "efficiency_confidence": 0.8553439232675937
+    },
+    {
+      "id": "BRCA1_gRNA_1_08",
+      "sequence": "GCTATTAATCATGATGAATA",
+      "on_target_score": 0.9140846736520283,
+      "off_target_score": 0.44379046640936826,
+      "combined_score": 0.7709346176274696,
+      "genomic_position": "chr17:43101749",
+      "efficiency_confidence": 0.8747832985086703
+    },
+    {
+      "id": "BRCA1_gRNA_3_08",
+      "sequence": "GAGTAATGGATTGTGGCCTT",
+      "on_target_score": 0.8368977336701381,
+      "off_target_score": 0.35241183650053814,
+      "combined_score": 0.7611739056018676,
+      "genomic_position": "chr17:43102135",
+      "efficiency_confidence": 0.727835066552679
+    },
+    {
+      "id": "BRCA1_gRNA_5_07",
+      "sequence": "GGGGTCAGACGTGCGTTCAT",
+      "on_target_score": 0.6691744471717817,
+      "off_target_score": 0.11513454324695263,
+      "combined_score": 0.7554508510042879,
+      "genomic_position": "chr17:43098953",
+      "efficiency_confidence": 0.9233871391525257
+    },
+    {
+      "id": "BRCA1_gRNA_5_04",
+      "sequence": "GCACGGAAGAGCCCGCCGAT",
+      "on_target_score": 0.7434796016163925,
+      "off_target_score": 0.23405842547101996,
+      "combined_score": 0.7524643907814275,
+      "genomic_position": "chr17:43098471",
+      "efficiency_confidence": 0.8395992922973559
+    },
+    {
+      "id": "BRCA1_gRNA_4_01",
+      "sequence": "GATCTCCGGTGACGTTGTCT",
+      "on_target_score": 0.6654718757805239,
+      "off_target_score": 0.13015658557588522,
+      "combined_score": 0.7472204912379603,
+      "genomic_position": "chr17:43095729",
+      "efficiency_confidence": 0.7265635090796523
+    },
+    {
+      "id": "BRCA1_gRNA_5_03",
+      "sequence": "GTGTTATTTTTATGCCTAAT",
+      "on_target_score": 0.5865623702438374,
+      "off_target_score": 0.04410242136477746,
+      "combined_score": 0.7342964536003914,
+      "genomic_position": "chr17:43099128",
+      "efficiency_confidence": 0.8566586857216306
+    },
+    {
+      "id": "BRCA1_gRNA_2_03",
+      "sequence": "GGGGCGAGACCATACATGTT",
+      "on_target_score": 0.7204022283217469,
+      "off_target_score": 0.2643937677847944,
+      "combined_score": 0.7264838298791304,
+      "genomic_position": "chr17:43098295",
+      "efficiency_confidence": 0.8126528398874423
+    },
+    {
+      "id": "BRCA1_gRNA_3_02",
+      "sequence": "GAGCAACCCTTAAAGAGGCA",
+      "on_target_score": 0.6316448173649076,
+      "off_target_score": 0.15900664277186705,
+      "combined_score": 0.7153842333101978,
+      "genomic_position": "chr17:43100024",
+      "efficiency_confidence": 0.8842985682187754
+    },
+    {
+      "id": "BRCA1_gRNA_4_08",
+      "sequence": "GACGGTTTTCCTTCCTCCCT",
+      "on_target_score": 0.5742312125043393,
+      "off_target_score": 0.12008548357718142,
+      "combined_score": 0.6965045340717311,
+      "genomic_position": "chr17:43103993",
+      "efficiency_confidence": 0.7425754905335828
+    },
+    {
+      "id": "BRCA1_gRNA_4_07",
+      "sequence": "GGCAAACTCGAATGGTACAT",
+      "on_target_score": 0.81268707078838,
+      "off_target_score": 0.490215562345494,
+      "combined_score": 0.6915260175348303,
+      "genomic_position": "chr17:43097144",
+      "efficiency_confidence": 0.831032510155223
+    },
+    {
+      "id": "BRCA1_gRNA_1_00",
+      "sequence": "GCACGCAACATTTATCCCGA",
+      "on_target_score": 0.5963029307733226,
+      "off_target_score": 0.16684616629808807,
+      "combined_score": 0.6910432919447584,
+      "genomic_position": "chr17:43097462",
+      "efficiency_confidence": 0.9464223400518932
+    },
+    {
+      "id": "BRCA1_gRNA_3_09",
+      "sequence": "GCATGTAGTATTCACGGTCA",
+      "on_target_score": 0.634163128700786,
+      "off_target_score": 0.2851862688077986,
+      "combined_score": 0.666423369697352,
+      "genomic_position": "chr17:43097729",
+      "efficiency_confidence": 0.8877178099775107
+    },
+    {
+      "id": "BRCA1_gRNA_1_09",
+      "sequence": "GCTTCTCCGGTGTCTAAACT",
+      "on_target_score": 0.7732280778406224,
+      "off_target_score": 0.5112055275179893,
+      "combined_score": 0.6594546356971777,
+      "genomic_position": "chr17:43098911",
+      "efficiency_confidence": 0.8446964642501003
+    },
+    {
+      "id": "BRCA1_gRNA_1_03",
+      "sequence": "GTGTACTCGTTCCTCTTGTA",
+      "on_target_score": 0.5286640740674609,
+      "off_target_score": 0.14524376850425244,
+      "combined_score": 0.6591009370387755,
+      "genomic_position": "chr17:43094665",
+      "efficiency_confidence": 0.7391761609912412
+    },
+    {
+      "id": "BRCA1_gRNA_1_02",
+      "sequence": "GCGGGGACATCGGTATCTCA",
+      "on_target_score": 0.5992157107260538,
+      "off_target_score": 0.31925048306345066,
+      "combined_score": 0.6318292332102521,
+      "genomic_position": "chr17:43094823",
+      "efficiency_confidence": 0.9202836776303588
+    },
+    {
+      "id": "BRCA1_gRNA_5_00",
+      "sequence": "GTTTGATCGAAAAACCCGGT",
+      "on_target_score": 0.6135263868328689,
+      "off_target_score": 0.36204449391924587,
+      "combined_score": 0.6232980345320229,
+      "genomic_position": "chr17:43095451",
+      "efficiency_confidence": 0.7507254200853712
+    },
+    {
+      "id": "BRCA1_gRNA_2_06",
+      "sequence": "GTGTTCTCAAATTCGTCCGT",
+      "on_target_score": 0.5052376523730958,
+      "off_target_score": 0.25855325545807334,
+      "combined_score": 0.5997212892406281,
+      "genomic_position": "chr17:43094886",
+      "efficiency_confidence": 0.8968239056244927
+    },
+    {
+      "id": "BRCA1_gRNA_1_06",
+      "sequence": "GGGATTTAGGTATTTAATGT",
+      "on_target_score": 0.6914272119014662,
+      "off_target_score": 0.5605154908729167,
+      "combined_score": 0.5906501307917129,
+      "genomic_position": "chr17:43099890",
+      "efficiency_confidence": 0.7557699099575029
+    },
+    {
+      "id": "BRCA1_gRNA_1_07",
+      "sequence": "GGCTATGCCGGACGATGAAA",
+      "on_target_score": 0.5261360398212206,
+      "off_target_score": 0.3143398077219812,
+      "combined_score": 0.5899457008039399,
+      "genomic_position": "chr17:43096644",
+      "efficiency_confidence": 0.8094295273900766
+    },
+    {
+      "id": "BRCA1_gRNA_5_05",
+      "sequence": "GAGGAAGGAAATACATTAAA",
+      "on_target_score": 0.43623352103012214,
+      "off_target_score": 0.5670568475453259,
+      "combined_score": 0.4349173735999429,
+      "genomic_position": "chr17:43103577",
+      "efficiency_confidence": 0.8090794463038462
+    }
+  ],
+  "convergence": [
+    0.8136841446309021,
+    0.8949002238610875,
+    0.8661064603171635,
+    0.8970482160476037,
+    0.8464605083955056
+  ],
+  "final_rankings": [
+    {
+      "id": "BRCA1_gRNA_4_02",
+      "sequence": "GTGATCCGACATGGTGTCGT",
+      "on_target_score": 0.8481874160838081,
+      "off_target_score": 0.029660584006702986,
+      "combined_score": 0.8970482160476037,
+      "genomic_position": "chr17:43099742",
+      "efficiency_confidence": 0.8350148250604607
+    },
+    {
+      "id": "BRCA1_gRNA_2_07",
+      "sequence": "GAGTGGCTACGCTATCGTCT",
+      "on_target_score": 0.8717032233388333,
+      "off_target_score": 0.0703042753555315,
+      "combined_score": 0.8949002238610875,
+      "genomic_position": "chr17:43101902",
+      "efficiency_confidence": 0.7576445728501375
+    },
+    {
+      "id": "BRCA1_gRNA_2_05",
+      "sequence": "GCTCTTAGCCTCAAGCGAGA",
+      "on_target_score": 0.9095901527876106,
+      "off_target_score": 0.13828335289517815,
+      "combined_score": 0.8904407505144951,
+      "genomic_position": "chr17:43100131",
+      "efficiency_confidence": 0.7102826881942296
+    },
+    {
+      "id": "BRCA1_gRNA_4_03",
+      "sequence": "GGAGGACCACCTTTGCCGTA",
+      "on_target_score": 0.9022828107675087,
+      "off_target_score": 0.153080318701838,
+      "combined_score": 0.88013755897977,
+      "genomic_position": "chr17:43096439",
+      "efficiency_confidence": 0.8871484163503224
+    },
+    {
+      "id": "BRCA1_gRNA_2_02",
+      "sequence": "GGATAAGGCGATAACAGACT",
+      "on_target_score": 0.9229080046284635,
+      "off_target_score": 0.19466349528776866,
+      "combined_score": 0.8758794046619707,
+      "genomic_position": "chr17:43102129",
+      "efficiency_confidence": 0.9138911612454108
+    },
+    {
+      "id": "BRCA1_gRNA_2_00",
+      "sequence": "GCTCGGTGCGTTATCTGTCA",
+      "on_target_score": 0.8295965712957718,
+      "off_target_score": 0.06923492636089026,
+      "combined_score": 0.8700639722331069,
+      "genomic_position": "chr17:43095560",
+      "efficiency_confidence": 0.783791299464506
+    },
+    {
+      "id": "BRCA1_gRNA_3_06",
+      "sequence": "GAAGTTGCTCCAGGGAAAAA",
+      "on_target_score": 0.88549812667094,
+      "off_target_score": 0.16298103921350104,
+      "combined_score": 0.8661064603171635,
+      "genomic_position": "chr17:43102167",
+      "efficiency_confidence": 0.7661377629144556
+    },
+    {
+      "id": "BRCA1_gRNA_2_04",
+      "sequence": "GCGGGTAAGTCTGTGTCCCA",
+      "on_target_score": 0.8425605004046355,
+      "off_target_score": 0.11260741528413415,
+      "combined_score": 0.8604933341291277,
+      "genomic_position": "chr17:43097868",
+      "efficiency_confidence": 0.7527024969373715
+    },
+    {
+      "id": "BRCA1_gRNA_2_01",
+      "sequence": "GCCGGAAACGAATACTGCTT",
+      "on_target_score": 0.8172945258828495,
+      "off_target_score": 0.08340016991544756,
+      "combined_score": 0.8570166475635306,
+      "genomic_position": "chr17:43100585",
+      "efficiency_confidence": 0.7873861779964363
+    },
+    {
+      "id": "BRCA1_gRNA_4_06",
+      "sequence": "GGGCAGTAAGCCGTTGGTGT",
+      "on_target_score": 0.9367612603528513,
+      "off_target_score": 0.286997755666969,
+      "combined_score": 0.8472576539449233,
+      "genomic_position": "chr17:43096537",
+      "efficiency_confidence": 0.7137575649963485
+    },
+    {
+      "id": "BRCA1_gRNA_5_06",
+      "sequence": "GCCGTTTAGGTTGAGACCCT",
+      "on_target_score": 0.8023419080552131,
+      "off_target_score": 0.08736159109405577,
+      "combined_score": 0.8464605083955056,
+      "genomic_position": "chr17:43103235",
+      "efficiency_confidence": 0.9180765055115812
+    },
+    {
+      "id": "BRCA1_gRNA_4_00",
+      "sequence": "GCTCTTCGCCCCATTCCGGT",
+      "on_target_score": 0.8869464906128708,
+      "off_target_score": 0.23070655531954226,
+      "combined_score": 0.8398852722399056,
+      "genomic_position": "chr17:43097239",
+      "efficiency_confidence": 0.7474549522000264
+    },
+    {
+      "id": "BRCA1_gRNA_4_05",
+      "sequence": "GTTCGCGGACTGCGCGTAAA",
+      "on_target_score": 0.9099153676645091,
+      "off_target_score": 0.2682057239159862,
+      "combined_score": 0.8386669310323109,
+      "genomic_position": "chr17:43096412",
+      "efficiency_confidence": 0.8922444975211693
+    },
+    {
+      "id": "BRCA1_gRNA_3_03",
+      "sequence": "GCAACTAAACTACTGGAGTT",
+      "on_target_score": 0.7896389110967592,
+      "off_target_score": 0.09948544741530431,
+      "combined_score": 0.8339891676919338,
+      "genomic_position": "chr17:43095270",
+      "efficiency_confidence": 0.7977826212227248
+    },
+    {
+      "id": "BRCA1_gRNA_3_04",
+      "sequence": "GGCCACACCACCATGACGCA",
+      "on_target_score": 0.7544551592946408,
+      "off_target_score": 0.051972817732168976,
+      "combined_score": 0.8318839684839169,
+      "genomic_position": "chr17:43096772",
+      "efficiency_confidence": 0.7766500266547993
+    },
+    {
+      "id": "BRCA1_gRNA_5_08",
+      "sequence": "GGCCTAGTAATTGTTAATGA",
+      "on_target_score": 0.768530809027208,
+      "off_target_score": 0.07824227058298973,
+      "combined_score": 0.829821577183129,
+      "genomic_position": "chr17:43096365",
+      "efficiency_confidence": 0.8882838718705335
+    },
+    {
+      "id": "BRCA1_gRNA_3_01",
+      "sequence": "GTAAGAGTTGCTTAAGGGCA",
+      "on_target_score": 0.9519902400319957,
+      "off_target_score": 0.3539757561984485,
+      "combined_score": 0.8296038415398181,
+      "genomic_position": "chr17:43097809",
+      "efficiency_confidence": 0.9215610798891496
+    },
+    {
+      "id": "BRCA1_gRNA_4_04",
+      "sequence": "GACGGGTACCCTACGGCAGT",
+      "on_target_score": 0.7724465620825681,
+      "off_target_score": 0.0850574272903025,
+      "combined_score": 0.8294449663334198,
+      "genomic_position": "chr17:43101999",
+      "efficiency_confidence": 0.8968431996943018
+    },
+    {
+      "id": "BRCA1_gRNA_3_05",
+      "sequence": "GTGAGGTCTTCTGGACCTTA",
+      "on_target_score": 0.8114656128212289,
+      "off_target_score": 0.15556194505592744,
+      "combined_score": 0.8246545896703663,
+      "genomic_position": "chr17:43096103",
+      "efficiency_confidence": 0.8664656302482421
+    },
+    {
+      "id": "BRCA1_gRNA_5_02",
+      "sequence": "GCTGTCACGTGTTCCGTATT",
+      "on_target_score": 0.9034053351778228,
+      "off_target_score": 0.3012866812411809,
+      "combined_score": 0.8215285286102213,
+      "genomic_position": "chr17:43096944",
+      "efficiency_confidence": 0.729395792390635
+    }
+  ]
+}
