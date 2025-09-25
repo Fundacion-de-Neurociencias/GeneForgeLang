@@ -1,4 +1,4 @@
-# GeneForge v2.0: A Multi-Omic Reasoning Platform for Computational Biology
+# GeneForgeLang v2.0: A Multi-Omic Reasoning Platform for Computational Biology
 
 ## Authors
 GeneForge Development Team
@@ -7,7 +7,7 @@ GeneForge Research Foundation
 
 ## Abstract
 
-We present GeneForge v2.0, a revolutionary computational biology platform that integrates multi-omic data with spatial genomic reasoning capabilities for biological discovery. Building upon the foundation of GeneForgeLang (GFL), our domain-specific language for bio-design, this new version introduces comprehensive support for transcripts, proteins, metabolites, and their spatial relationships within the genome. We demonstrate the platform's capabilities through two comprehensive real-world applications: (1) the discovery of optimal gRNA candidates for CRISPR gene editing of the BRCA1 gene, and (2) the advanced regulatory targeting of MYC oncogene enhancers using spatial genomic reasoning. Our guided discovery workflows successfully identified high-quality candidates with 89.7% combined efficiency score, 84.8% on-target activity, and only 3.0% off-target risk for BRCA1, while demonstrating novel capabilities for enhancer targeting with 85% contact strength and 91% chromatin accessibility scores for MYC regulatory elements. These results validate GeneForge v2.0 as a powerful tool for computational biology research and establish its readiness for community adoption and clinical applications.
+We present GeneForgeLang v2.0, a revolutionary computational biology platform that integrates multi-omic data with spatial genomic reasoning capabilities for biological discovery. Building upon the foundation of GeneForgeLang (GFL), our domain-specific language for bio-design, this new version introduces comprehensive support for transcripts, proteins, metabolites, and their spatial relationships within the genome. We demonstrate the platform's capabilities through two comprehensive real-world applications executed on the GeneForge WebApp: (1) the discovery of optimal gRNA candidates for CRISPR gene editing of the BRCA1 gene, and (2) the advanced regulatory targeting of MYC oncogene enhancers using spatial genomic reasoning. Our guided discovery workflows successfully identified high-quality candidates with 89.7% combined efficiency score, 84.8% on-target activity, and only 3.0% off-target risk for BRCA1, while demonstrating novel capabilities for enhancer targeting with 85% contact strength and 91% chromatin accessibility scores for MYC regulatory elements. These results validate GeneForgeLang v2.0 as a powerful tool for computational biology research and establish its readiness for community adoption and clinical applications.
 
 **Keywords:** computational biology, multi-omics, CRISPR, gene editing, domain-specific language, spatial genomics, regulatory elements, enhancer targeting, Hi-C, ATAC-seq
 
@@ -157,6 +157,18 @@ The experiment leverages advanced spatial reasoning capabilities:
 - **Accessibility Scoring**: ATAC-seq data for chromatin accessibility assessment
 - **Enhancer Activity**: H3K27ac ChIP-seq for active regulatory element identification
 - **Distance Constraints**: Genomic distance calculations between regulatory elements
+
+### Platform Execution and Visualization
+
+All experimental workflows were designed, executed, and analyzed using the GeneForge WebApp (https://www.geneforge.com.es), a comprehensive SaaS platform that provides an intuitive interface for GeneForgeLang workflow development and execution. The GeneForge WebApp serves as the primary execution environment for GeneForgeLang workflows, offering:
+
+- **Visual Workflow Designer**: Drag-and-drop interface for creating complex biological workflows
+- **Real-Time Execution Monitoring**: Live tracking of workflow progress and intermediate results
+- **Interactive Results Visualization**: Dynamic charts and tables for data analysis
+- **Collaborative Features**: Team-based workflow sharing and version control
+- **Cloud Infrastructure**: Scalable computing resources for large-scale genomic analyses
+
+The integration between GeneForgeLang (the open-source language and engine) and GeneForge (the commercial WebApp platform) demonstrates a successful model of open-source innovation complemented by enterprise-grade execution and visualization capabilities.
 
 ## Results
 
@@ -334,7 +346,7 @@ The release of GeneForge v2.0 as an open-source platform enables the broader com
 
 ## Conclusions
 
-GeneForge v2.0 represents a significant advancement in computational biology platforms, successfully integrating multi-omic data with spatial genomic reasoning to enable sophisticated biological discovery workflows. The successful application to both BRCA1 gRNA discovery and MYC enhancer targeting validates the platform's practical utility and demonstrates its readiness for community adoption and clinical applications.
+GeneForgeLang v2.0 represents a significant advancement in computational biology platforms, successfully integrating multi-omic data with spatial genomic reasoning to enable sophisticated biological discovery workflows. The successful application to both BRCA1 gRNA discovery and MYC enhancer targeting, executed on the GeneForge WebApp platform, validates the platform's practical utility and demonstrates its readiness for community adoption and clinical applications.
 
 The platform's modular architecture, comprehensive language support, and capability-aware design make it suitable for diverse applications across computational biology research. The successful integration of Hi-C, ATAC-seq, and ChIP-seq data demonstrates the platform's capability to handle complex spatial genomic reasoning, which is essential for understanding and targeting non-coding regulatory elements.
 
@@ -351,11 +363,12 @@ We thank the GeneForge development team for their contributions to platform deve
 ## Data Availability
 
 All experimental data, source code, and results are available through the GeneForge project repositories:
-- Platform: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang
-- BRCA1 Experiment Data: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/tree/main/examples/gfl-genesis/results
-- MYC Enhancer Targeting Data: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/tree/main/examples/gfl-genesis-v2/results
-- Production Execution Scripts: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/tree/main/examples/gfl-genesis
-- Documentation: https://geneforge.readthedocs.io
+- **GeneForgeLang Platform**: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang
+- **GeneForge WebApp**: https://www.geneforge.com.es (Commercial SaaS platform)
+- **BRCA1 Experiment Data**: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/tree/main/examples/gfl-genesis/results
+- **MYC Enhancer Targeting Data**: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/tree/main/examples/gfl-genesis-v2/results
+- **Production Execution Scripts**: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/tree/main/examples/gfl-genesis
+- **Documentation**: https://geneforge.readthedocs.io
 
 **Specific Datasets:**
 - BRCA1 gRNA candidates: `Table_1_Top_gRNA_Candidates.csv`
@@ -371,6 +384,6 @@ All experimental data, source code, and results are available through the GeneFo
 ---
 
 **Corresponding Author**: GeneForge Development Team
-**Email**: contact@geneforge.org
+**Email**: manuelmenendez@fneurociencias.org
 **Website**: https://geneforge.org
 **Repository**: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang
