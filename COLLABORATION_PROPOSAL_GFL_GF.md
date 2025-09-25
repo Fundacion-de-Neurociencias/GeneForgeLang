@@ -127,6 +127,6 @@ Para discutir esta propuesta o realizar ajustes, contactar:
 
 ---
 
-**Fecha**: 25 de Septiembre, 2024  
-**Versión**: 1.0  
+**Fecha**: 25 de Septiembre, 2024
+**Versión**: 1.0
 **Estado**: Pendiente de Aprobación
