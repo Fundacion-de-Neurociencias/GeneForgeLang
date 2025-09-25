@@ -8,7 +8,7 @@ This comprehensive QA plan covers all critical areas of the GeneForge platform t
 ### 1. Core GFL Language Parser & Lexer
 **Priority:** Critical
 **Type:** Automated + Manual
-**Scope:** 
+**Scope:**
 - Syntax validation for all GFL constructs
 - Multi-omic blocks (transcripts, proteins, metabolites)
 - Spatial genomic features (loci, spatial predicates)

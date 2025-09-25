@@ -52,13 +52,13 @@ loci:
 guided_discovery:
   name: "BRCA1_gRNA_Discovery"
   target: "BRCA1_protein"
-  
+
   # Discovery strategy
   strategy:
     type: "iterative_refinement"
     max_iterations: 5
     convergence_threshold: 0.95
-    
+
   # Initial candidate generation
   initial_candidates:
     count: 50
@@ -68,7 +68,7 @@ guided_discovery:
       - "gc_content(40, 60)"
       - "no_homopolymer(4)"
       - "avoid_repeats"
-      
+
   # Evaluation criteria
   evaluation:
     on_target:
@@ -77,14 +77,14 @@ guided_discovery:
         - "efficiency_score"
         - "specificity_score"
         - "accessibility_score"
-        
+
     off_target:
       weight: 0.4
       criteria:
         - "mismatch_tolerance"
         - "bulge_tolerance"
         - "genome_wide_scan"
-        
+
   # Learning parameters
   learning:
     model: "ensemble_classifier"
@@ -93,7 +93,7 @@ guided_discovery:
       - "secondary_structure"
       - "genomic_context"
       - "evolutionary_conservation"
-      
+
 # Rules for candidate selection and optimization
 rules:
   - id: "HighEfficiencyRule"
@@ -105,7 +105,7 @@ rules:
     then:
       - type: "increase_priority"
         factor: 1.5
-        
+
   - id: "LowOffTargetRule"
     description: "Penalize candidates with high off-target risk"
     if:
@@ -115,7 +115,7 @@ rules:
     then:
       - type: "decrease_priority"
         factor: 0.5
-        
+
   - id: "SpatialConstraintRule"
     description: "Prefer candidates in accessible genomic regions"
     if:
@@ -150,7 +150,7 @@ analyze:
     - "clustering_analysis"
     - "conservation_analysis"
     - "secondary_structure_prediction"
-    
+
   metrics:
     - "combined_score"
     - "efficiency_confidence"
@@ -161,19 +161,19 @@ analyze:
 optimize:
   name: "gRNA_Design_Optimization"
   objective: "maximize_efficiency_minimize_offtarget"
-  
+
   parameters:
     - name: "sequence_length"
       range: [18, 22]
       step: 1
-      
+
     - name: "gc_content"
       range: [0.4, 0.6]
       step: 0.05
-      
+
     - name: "secondary_structure"
       options: ["linear", "stem_loop", "hairpin"]
-      
+
   constraints:
     - "avoid_homopolymers"
     - "minimize_off_targets"
@@ -187,13 +187,13 @@ timeline:
       tasks:
         - "generate_initial_candidates"
         - "evaluate_basic_properties"
-        
+
     - name: "Iterative_Refinement"
       duration: "8 hours"
       tasks:
         - "guided_discovery_cycles"
         - "candidate_optimization"
-        
+
     - name: "Final_Analysis"
       duration: "1 hour"
       tasks:
@@ -215,15 +215,15 @@ output:
         - "combined_score"
         - "genomic_position"
         - "efficiency_confidence"
-        
+
     - name: "convergence_plot.png"
       type: "visualization"
       description: "Learning curve showing improvement over iterations"
-      
+
     - name: "candidate_alignment.pdf"
       type: "visualization"
       description: "Multiple sequence alignment of top candidates"
-      
+
     - name: "genomic_context.png"
       type: "visualization"
       description: "Genomic context and accessibility of target regions"

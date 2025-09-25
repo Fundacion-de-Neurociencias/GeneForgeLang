@@ -50,13 +50,13 @@ Our platform has been validated through a comprehensive experiment discovering o
 
 ### **Results Summary**
 - **🏆 Best Candidate**: BRCA1_gRNA_4_02
-- **📈 Combined Score**: 89.7% efficiency  
+- **📈 Combined Score**: 89.7% efficiency
 - **🎯 On-Target**: 84.8% efficiency with only 3.0% off-target risk
 - **⚡ Discovery Time**: 24 seconds for 50 candidates across 5 cycles
 
 ### **Scientific Impact**
 - **Clinical Relevance**: BRCA1 is critical for cancer research
-- **Safety Focus**: <30% off-target risk across all top candidates  
+- **Safety Focus**: <30% off-target risk across all top candidates
 - **Efficiency**: >80% on-target activity for top 10 candidates
 - **Reproducibility**: Complete workflow documented and open-source
 

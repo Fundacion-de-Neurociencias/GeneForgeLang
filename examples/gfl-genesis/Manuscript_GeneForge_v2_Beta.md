@@ -1,8 +1,8 @@
 # GeneForge v2.0: A Multi-Omic Reasoning Platform for Computational Biology
 
 ## Authors
-GeneForge Development Team  
-Computational Biology Division  
+GeneForge Development Team
+Computational Biology Division
 GeneForge Research Foundation
 
 ## Abstract
@@ -116,7 +116,7 @@ To validate the platform's capabilities, we designed and executed a comprehensiv
 - **Target Gene**: BRCA1 (chromosome 17: 43,094,495-43,125,483)
 - **Discovery Strategy**: Iterative refinement with 5 cycles
 - **Candidate Generation**: 50 total gRNA candidates (10 per cycle)
-- **Evaluation Metrics**: 
+- **Evaluation Metrics**:
   - On-target efficiency (60% weight)
   - Off-target risk minimization (40% weight)
 - **Quality Constraints**: 20bp length, 40-60% GC content, no homopolymers
@@ -136,10 +136,10 @@ To further validate the platform's advanced capabilities, we designed and execut
 - **Target Strategy**: Enhancer silencing via CRISPRi targeting distal regulatory elements
 - **Discovery Strategy**: Regulatory enhancer targeting with spatial constraints
 - **Candidate Generation**: 500 total gRNA candidates (50 per cycle, 10 cycles)
-- **Evaluation Metrics**: 
+- **Evaluation Metrics**:
   - Regulatory impact score (60% weight)
   - Safety metrics (40% weight)
-- **Spatial Constraints**: 
+- **Spatial Constraints**:
   - Must be within accessible chromatin regions (ATAC-seq)
   - Must be in 3D contact with MYC promoter (Hi-C)
   - Must target active enhancers (H3K27ac ChIP-seq)
@@ -370,7 +370,7 @@ All experimental data, source code, and results are available through the GeneFo
 
 ---
 
-**Corresponding Author**: GeneForge Development Team  
-**Email**: contact@geneforge.org  
-**Website**: https://geneforge.org  
+**Corresponding Author**: GeneForge Development Team
+**Email**: contact@geneforge.org
+**Website**: https://geneforge.org
 **Repository**: https://github.com/Fundacion-de-Neurociencias/GeneForgeLang
