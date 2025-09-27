@@ -1,0 +1,19 @@
+# DESCRIPTION: A compliant engine must understand the 'insert' operation.
+# It must resolve the reference to 'sequence(Therapeutic_Gene)' and simulate its insertion at the 'AAVS1_SafeHarbor' locus.
+
+sequences:
+  - id: Therapeutic_Gene
+    source: "file://payloads/terapia_genica_v1.fasta"
+
+loci:
+  - id: AAVS1_SafeHarbor
+    chromosome: "chr19"
+    start: 55115873
+    end: 55115874
+
+experiment:
+  tool: "bridge_editor"
+  operation:
+    insert:
+      sequence: sequence(Therapeutic_Gene)
+      at_locus: locus(AAVS1_SafeHarbor)

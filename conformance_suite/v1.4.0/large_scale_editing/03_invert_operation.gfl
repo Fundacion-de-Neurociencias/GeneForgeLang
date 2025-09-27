@@ -1,0 +1,18 @@
+# DESCRIPTION: A compliant engine must understand the 'invert' operation.
+# It must identify the 'locus(GABRB3_Promoter)' and simulate the inversion of its sequence.
+
+loci:
+  - id: GABRB3_Promoter
+    type: "promoter"
+    chromosome: "chr15"
+    start: 28551160
+    end: 28552270
+
+simulate:
+  action:
+    apply_edit:
+      tool: "bridge_editor"
+      operation:
+        invert: locus(GABRB3_Promoter)
+  query:
+    - expression_is(gene: "GABRB3", level: "silenced")

@@ -1,0 +1,19 @@
+# DESCRIPTION: A compliant engine must understand the 'delete' operation.
+# It must identify the 'locus(FXN_GAA_RepeatExpansion)' and simulate its elimination from the genome.
+
+loci:
+  - id: FXN_GAA_RepeatExpansion
+    type: "repeat_expansion"
+    chromosome: "chr9"
+    start: 69028960
+    end: 69029960
+
+hypothesis:
+  id: H_Friedreich_Cure
+  if:
+    - apply_edit:
+        tool: "bridge_editor"
+        operation:
+          delete: locus(FXN_GAA_RepeatExpansion)
+  then:
+    - expression_is(gene: "FXN", level: "normal")

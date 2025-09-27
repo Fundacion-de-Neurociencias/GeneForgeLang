@@ -18,6 +18,12 @@ The test suite is organized by GFL version, with each version containing tests f
   - `timeline/` - Tests for chronological execution features
   - `rules_and_hypothesis/` - Tests for hypothesis validation and rule-based reasoning
   - `contracts_and_schemas/` - Tests for entity resolution and pathway references
+- `v1.3.0/` - Tests for GFL v1.3.0 features including loci management, spatial predicates, and simulation capabilities
+  - `loci/` - Tests for genomic locus definition and validation
+  - `spatial_predicates/` - Tests for spatial relationship testing between genomic elements
+  - `simulate/` - Tests for genomic change simulation and hypothesis testing
+- `v1.4.0/` - Tests for GFL v1.4.0 features including large-scale genomic editing operations
+  - `large_scale_editing/` - Tests for delete, insert, and invert operations on large genomic regions
 
 ## Usage
 
