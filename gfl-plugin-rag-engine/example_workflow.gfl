@@ -1,0 +1,56 @@
+# Example Workflow: Hypothesis Validation with RAG Engine
+# =========================================================
+# This workflow demonstrates how to use the RAG Engine plugin
+# to validate biological hypotheses against scientific literature.
+
+# Step 1: Define hypotheses to be validated
+hypothesis:
+  id: "H_TP53_LungCancer"
+  description: "Test the association between TP53 mutations and Lung Cancer susceptibility"
+  if:
+    - entity_is:
+        gene: "TP53"
+    - entity_is:
+        disease: "Lung Cancer"
+  then:
+    - relationship_is: "association"
+
+hypothesis:
+  id: "H_BRCA1_BreastCancer"
+  description: "Investigate BRCA1 mutations as a risk factor for Breast Cancer"
+  if:
+    - entity_is:
+        gene: "BRCA1"
+    - entity_is:
+        disease: "Breast Cancer"
+  then:
+    - relationship_is: "causal"
+
+hypothesis:
+  id: "H_CFTR_CysticFibrosis"
+  description: "Analyze the relationship between CFTR gene variants and Cystic Fibrosis"
+  if:
+    - entity_is:
+        gene: "CFTR"
+    - entity_is:
+        disease: "Cystic Fibrosis"
+  then:
+    - relationship_is: "causal"
+
+# Step 2: Validate hypotheses using the RAG Engine plugin
+analyze:
+  tool: "rag-engine"
+  input: "this_file"  # Self-reference: validate hypotheses in this file
+  output: "validation_report.json"
+  params:
+    top_k_docs: 10
+    evidence_threshold: 0.65
+
+# Step 3: Optional - Filter and report on high-confidence hypotheses
+report:
+  tool: "hypothesis-reporter"
+  input: "validation_report.json"
+  output: "high_confidence_hypotheses.md"
+  params:
+    confidence_threshold: 0.80
+    include_evidence: true

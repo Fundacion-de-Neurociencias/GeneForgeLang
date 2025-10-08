@@ -1,0 +1,8 @@
+include README.md
+include LICENSE
+include pyproject.toml
+recursive-include gfl_plugin_rag_engine *.py *.json *.yaml *.yml
+recursive-include tests *.py
+include example_workflow.gfl
+include guided_discovery_with_rag.gfl
+include batch_validation.gfl

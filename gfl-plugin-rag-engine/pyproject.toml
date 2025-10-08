@@ -1,0 +1,70 @@
+[project]
+name = "gfl-plugin-rag-engine"
+version = "1.0.0"
+description = "A GFL plugin that validates hypotheses using a Neuro-Symbolic RAG engine"
+authors = [
+    { name = "GeneForge Team", email = "geneforge@research.org" },
+]
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+keywords = ["bioinformatics", "genomics", "gfl", "rag", "neuro-symbolic", "hypothesis-validation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+dependencies = [
+    "geneforgelang>=1.0.0",
+    "chromadb>=0.4.0",
+    "biopython>=1.81",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "coverage>=7.0",
+    "black>=23.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+    "bandit>=1.7.0",
+    "safety>=2.3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang"
+Documentation = "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/tree/main/gfl-plugin-rag-engine"
+Repository = "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang"
+Issues = "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gfl_plugin_rag_engine*"]
+
+[tool.setuptools.package-data]
+gfl_plugin_rag_engine = ["py.typed", "*.json", "*.yaml", "*.yml"]
+
+[tool.black]
+line-length = 100
+target-version = ['py39']
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false

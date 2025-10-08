@@ -1,0 +1,65 @@
+# Guided Discovery Workflow with RAG Validation
+# ==============================================
+# This advanced workflow integrates the RAG engine into a guided
+# discovery pipeline for CRISPR gRNA design with literature validation.
+
+# Phase 1: Define target and generate initial hypotheses
+target:
+  gene: "BRCA1"
+  region: "exon_11"
+  edit_type: "repair"
+
+# Generate hypotheses about optimal editing strategies
+hypothesis:
+  id: "H_BRCA1_Exon11_Efficiency"
+  description: "PAM-proximal targeting in BRCA1 exon 11 yields high editing efficiency"
+  if:
+    - entity_is:
+        gene: "BRCA1"
+        region: "exon_11"
+    - edit_strategy:
+        type: "PAM_proximal"
+  then:
+    - outcome_is:
+        efficiency: "high"
+
+hypothesis:
+  id: "H_BRCA1_OffTarget_Risk"
+  description: "Off-target effects in BRCA1 editing are minimized with high-specificity gRNAs"
+  if:
+    - entity_is:
+        gene: "BRCA1"
+    - gRNA_property:
+        specificity_score: ">90"
+  then:
+    - outcome_is:
+        off_target_risk: "low"
+
+# Phase 2: Validate hypotheses against literature
+analyze:
+  tool: "rag-engine"
+  input: "this_file"
+  output: "hypothesis_validation.json"
+  params:
+    top_k_docs: 15
+    evidence_threshold: 0.70
+
+# Phase 3: Use validated hypotheses to guide gRNA discovery
+guided_discovery:
+  tool: "crispr_optimizer"
+  input: "hypothesis_validation.json"
+  constraints:
+    - use_validated_strategies: true
+    - confidence_threshold: 0.75
+  output: "optimized_grnas.json"
+
+# Phase 4: Generate final report combining discovery and validation
+report:
+  tool: "discovery_reporter"
+  inputs:
+    - "optimized_grnas.json"
+    - "hypothesis_validation.json"
+  output: "final_discovery_report.md"
+  params:
+    include_evidence: true
+    include_confidence_scores: true
