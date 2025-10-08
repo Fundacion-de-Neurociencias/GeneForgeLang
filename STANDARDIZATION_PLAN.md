@@ -30,8 +30,8 @@ El objetivo de esta iniciativa es elevar la calidad, robustez y mantenibilidad d
 |---|--------|-------------|-------------|--------|
 | 1 | `gfl-plugin-blast` | BLAST sequence alignment | Media | ✅ **Completado** |
 | 2 | `gfl-plugin-samtools` | SAM/BAM file manipulation | Media | ✅ **Completado** |
-| 3 | `gfl-plugin-gatk` | GATK variant calling | Alta | 📝 Planificado |
-| 4 | `gfl-plugin-biopython-tools` | Biopython utilities | Baja | 📝 Planificado |
+| 3 | `gfl-plugin-gatk` | GATK variant calling | Alta | ✅ **Completado** |
+| 4 | `gfl-plugin-biopython-tools` | Biopython utilities | Baja | ⚠️ No existe aún |
 
 ### Métricas Objetivo
 
