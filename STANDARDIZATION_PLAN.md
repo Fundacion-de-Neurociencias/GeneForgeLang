@@ -29,7 +29,7 @@ El objetivo de esta iniciativa es elevar la calidad, robustez y mantenibilidad d
 | # | Plugin | Descripción | Complejidad | Status |
 |---|--------|-------------|-------------|--------|
 | 1 | `gfl-plugin-blast` | BLAST sequence alignment | Media | ✅ **Completado** |
-| 2 | `gfl-plugin-samtools` | SAM/BAM file manipulation | Media | 🔄 En Progreso |
+| 2 | `gfl-plugin-samtools` | SAM/BAM file manipulation | Media | ✅ **Completado** |
 | 3 | `gfl-plugin-gatk` | GATK variant calling | Alta | 📝 Planificado |
 | 4 | `gfl-plugin-biopython-tools` | Biopython utilities | Baja | 📝 Planificado |
 
@@ -140,15 +140,16 @@ Un plugin se considerará **estandarizado** cuando cumpla con **TODOS** los sigu
 
 ---
 
-### 🔧 Tarea 2: Estandarizar `gfl-plugin-samtools`
+### 🔧 Tarea 2: Estandarizar `gfl-plugin-samtools` ✅
 
+**Estado**: ✅ **COMPLETADO** (8 de octubre de 2025)  
 **Prioridad**: 🔴 Alta  
-**Estimación**: 1-2 semanas  
-**Dependencias**: Tarea 1 completada (para reutilizar template)
+**Tiempo Real**: 1 sesión  
+**Commit**: `a0db25a`
 
 #### Subtareas
 
-- [ ] **2.1 Análisis del código existente**
+- [x] **2.1 Análisis del código existente**
   - Revisar estructura actual del plugin
   - Identificar funciones core (view, sort, index, etc.)
   - Documentar llamadas a samtools CLI
