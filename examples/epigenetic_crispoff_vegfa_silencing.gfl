@@ -1,0 +1,56 @@
+# CRISPRoff-Mediated Therapeutic Silencing of VEGFA
+# Models epigenetic gene silencing for anti-angiogenic therapy
+
+loci:
+  - id: VEGFA_Promoter
+    chromosome: "chr6"
+    start: 43737946
+    end: 43738946
+    description: "VEGFA promoter region with CpG islands"
+
+epigenetic_state:
+  - region: locus(VEGFA_Promoter)
+    baseline_marks:
+      - type: "DNA_methylation"
+        level: "hypomethylated"
+        percentage: 20.0
+    expression_consequence: "active"
+
+edit:
+  name: "VEGFA_Epigenetic_Silencing"
+  tool: "CRISPRoff"
+  target: locus(VEGFA_Promoter)
+  guide_rnas:
+    - "GGGCGAGCGCGGCGGCTCGG"
+  operation:
+    add_methylation:
+      region: locus(VEGFA_Promoter)
+      target_level: "hypermethylated"
+      target_percentage: 85.0
+      mechanism: "DNMT3A_recruitment"
+
+hypothesis:
+  id: "H_CRISPRoff_Durable_Silencing"
+  description: "CRISPRoff induces heritable VEGFA silencing without DSBs"
+  if:
+    - epigenetic_edit_applied: true
+  then:
+    - methylation_increases_to: 85.0
+    - expression_reduces_by: 90.0
+    - no_dsbs_detected: true
+    - reversible_with_CRISPRon: true
+
+rules:
+  - id: R_Safety_Advantage
+    description: "Epigenetic editing avoids genotoxicity"
+    if:
+      - edit_tool_is: "CRISPRoff"
+    then:
+      - dsb_risk: "none"
+      - reversibility: "yes"
+
+output:
+  - strategy: "CRISPRoff_epigenetic"
+  - target: "VEGFA"
+  - safety: "no_DSBs_reversible"
+
