@@ -298,15 +298,7 @@ class ErrorCodes:
    ```
    AI would refactor completely. Humans preserve compatibility.
 
-2. **Comments in Spanish and English**:
-   ```python
-   # Sentencia LOCI - Define regiones genómicas
-   def p_loci_statement(self, p):
-       """loci_statement : LOCI LBRACE loci_list RBRACE"""
-   ```
-   This bilingual approach suggests **human international collaboration**.
-
-3. **Incomplete Features Documented**:
+2. **Incomplete Features Documented**:
    ```yaml
    # TODO: Implement predicate evaluation
    # NOTE: This is specification, actual execution pending
@@ -607,7 +599,7 @@ conformance_suite/
 ```
 
 **This progressive addition of conformance tests shows**:
-- Learning from experience (human)
+- Learning from experience (evolutionary improvement)
 - Raising quality bar over time (maturity)
 - Systematic approach to validation (professional)
 
@@ -700,12 +692,7 @@ This is **common in human-designed systems** to preserve reasoning.
 
 ### Distinctive Human Patterns Found:
 
-1. **Bilingual Comments** (Spanish/English)
-   - Suggests international collaboration
-   - Natural code-switching in comments
-   - Not AI translation (too natural)
-
-2. **Gradual Feature Addition**
+1. **Gradual Feature Addition**
    - Each version adds one major capability
    - Features build on each other logically
    - Resembles scientific research progression
@@ -762,7 +749,6 @@ This is **common in human-designed systems** to preserve reasoning.
 
 **STRONG EVIDENCE**:
 - Organic feature progression following scientific logic
-- Bilingual development (Spanish/English)
 - Pragmatic engineering trade-offs
 - Domain expertise in examples (real clinical cases)
 - Incomplete features documented for future (planning)

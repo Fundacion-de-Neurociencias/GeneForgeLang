@@ -8,12 +8,12 @@ class GFLLexer:
     """
 
     def __init__(self):
-        # Construye el lexer
+        # Build the lexer
         self.lexer = lex.lex(module=self)
 
-    # Lista de nombres de tokens (siempre necesaria)
-    # NOTA IMPORTANTE: 'BOOLEAN' no se incluye aquí directamente,
-    # ya que se añade a través de los valores de 'reserved'.
+    # List of token names (always required)
+    # IMPORTANT NOTE: 'BOOLEAN' is not included here directly,
+    # as it is added through the 'reserved' values.
     tokens = [
         "ID",
         "NUMBER",
@@ -32,12 +32,12 @@ class GFLLexer:
         "GT",  # >
         "LTE",  # <=
         "GTE",  # >=
-        "STRATEGY",  # Token explícito para "strategy" (case-insensitive)
-        "PARAMS",  # Token explícito para "params" (case-insensitive)
+        "STRATEGY",  # Explicit token for "strategy" (case-insensitive)
+        "PARAMS",  # Explicit token for "params" (case-insensitive)
     ]
 
-    # Palabras reservadas (keywords)
-    # Estas palabras se tokenizarán como su tipo de token correspondiente (en mayúsculas)
+    # Reserved words (keywords)
+    # These words will be tokenized as their corresponding token type (in uppercase)
     reserved = {
         "if": "IF",
         "then": "THEN",
@@ -50,10 +50,10 @@ class GFLLexer:
         "branch": "BRANCH",
         "using": "USING",
         "with": "WITH",
-        "true": "BOOLEAN",  # BOOLEAN se define aquí
-        "false": "BOOLEAN",  # BOOLEAN se define aquí
-        "and": "AND",  # Añadido para expresiones lógicas
-        "or": "OR",  # Añadido para expresiones lógicas
+        "true": "BOOLEAN",  # BOOLEAN defined here
+        "false": "BOOLEAN",  # BOOLEAN defined here
+        "and": "AND",  # Added for logical expressions
+        "or": "OR",  # Added for logical expressions
         # New spatial genomic keywords
         "loci": "LOCI",
         "locus": "LOCUS",
@@ -97,10 +97,10 @@ class GFLLexer:
         "identifier": "IDENTIFIER",
     }
 
-    # Agrega los valores del diccionario de palabras reservadas a la lista de tokens
+    # Add the values from the reserved words dictionary to the token list
     tokens += list(reserved.values())
 
-    # Ignorar caracteres de espacio en blanco y tabulaciones
+    # Ignore whitespace and tab characters
     t_ignore = " \t"
 
     # Reglas para tokens simples (expresiones regulares)
@@ -119,7 +119,7 @@ class GFLLexer:
     t_LTE = r"<="
     t_GTE = r">="
 
-    # Regla para números (enteros o flotantes)
+    # Rule for numbers (integers or floats)
     def t_NUMBER(self, t):
         r"\d+(\.\d*)?"
         t.value = float(t.value) if "." in t.value else int(t.value)
@@ -141,25 +141,25 @@ class GFLLexer:
         r"[Pp][Aa][Rr][Aa][Mm][Ss]"
         return t
 
-    # Regla para identificadores y palabras reservadas
+    # Rule for identifiers and reserved words
     def t_ID(self, t):
         r"[a-zA-Z_][a-zA-Z_0-9]*"
-        # Verifica si el identificador es una palabra reservada (case-insensitive para reservadas)
-        # La conversión a minúsculas aquí es crucial para que coincida con las claves en 'reserved'
+        # Check if the identifier is a reserved word (case-insensitive for reserved words)
+        # Lowercasing here is crucial to match keys in 'reserved'
         t.type = self.reserved.get(t.value.lower(), "ID")
         return t
 
-    # Regla para contar líneas
+    # Rule for counting lines
     def t_newline(self, t):
         r"\n+"
         t.lexer.lineno += len(t.value)
 
-    # Regla de manejo de errores
+    # Error handling rule
     def t_error(self, t):
-        print(f"Carácter ilegal '{t.value[0]}' en la línea {t.lineno}")
+        print(f"Illegal character '{t.value[0]}' on line {t.lineno}")
         t.lexer.skip(1)
 
-    # Comentarios (ignorar líneas que empiezan con #)
+    # Comments (ignore lines starting with #)
     def t_COMMENT(self, t):
         r"\#.*"
-        pass  # No devuelve ningún token
+        pass  # Does not return any token

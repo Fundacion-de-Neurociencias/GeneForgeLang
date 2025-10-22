@@ -1,24 +1,24 @@
-from gfl.lexer import GFLLexer  # Importación necesaria para acceder a los tokens
+from gfl.lexer import GFLLexer  # Import necessary to access tokens
 
 
 class GFLParser:
-    # Define los tokens que este parser reconocerá.
+    # Defines the tokens that this parser will recognize.
     tokens = GFLLexer.tokens
 
-    # Define el símbolo de inicio de tu gramática GFL.
+    # Defines the start symbol of your GFL grammar.
     start = "gfl_code"
 
-    # Importante: No hay un método __init__ aquí que cree lexer o parser de PLY.
-    # Esos se crean centralmente en gfl/parser.py.
+    # Important: There is no __init__ method here that creates lexer or parser from PLY.
+    # Those are created centrally in gfl/parser.py.
 
-    # --- Reglas de Producción de la Gramática GFL ---
+    # --- GFL Grammar Production Rules ---
 
-    # Regla principal: un programa GFL es una secuencia de sentencias.
+    # Main rule: a GFL program is a sequence of statements.
     def p_gfl_code(self, p):
         """gfl_code : statements"""
         p[0] = p[1]
 
-    # Una secuencia de sentencias.
+    # A sequence of statements.
     def p_statements(self, p):
         """statements : statement
         | statements statement"""
@@ -27,7 +27,7 @@ class GFLParser:
         else:
             p[0] = p[1] + [p[2]]
 
-    # Una sentencia puede ser de varios tipos.
+    # A statement can be of several types.
     def p_statement(self, p):
         """statement : analyze_statement
         | experiment_statement
@@ -40,17 +40,17 @@ class GFLParser:
         | metabolites_statement"""
         p[0] = p[1]
 
-    # Sentencia ANALYZE
+    # ANALYZE statement
     def p_analyze_statement(self, p):
         """analyze_statement : ANALYZE LBRACE properties RBRACE"""
         p[0] = {"node_type": "analyze", "properties": p[3]}
 
-    # Sentencia EXPERIMENT
+    # EXPERIMENT statement
     def p_experiment_statement(self, p):
         """experiment_statement : EXPERIMENT LBRACE properties RBRACE"""
         p[0] = {"node_type": "experiment", "properties": p[3]}
 
-    # Sentencia SIMULATE - Enhanced for spatial genomic reasoning
+    # SIMULATE statement - Enhanced for spatial genomic reasoning
     def p_simulate_statement(self, p):
         """simulate_statement : SIMULATE IDENTIFIER
         | SIMULATE IDENTIFIER properties
@@ -102,7 +102,7 @@ class GFLParser:
         else:
             p[0] = {"type": "get_activity", "element": p[3], "level": p[6]}
 
-    # Sentencia BRANCH (IF-THEN-ELSE)
+    # BRANCH statement (IF-THEN-ELSE)
     def p_branch_statement(self, p):
         """branch_statement : BRANCH LBRACE IF COLON condition THEN COLON statements RBRACE
         | BRANCH LBRACE IF COLON condition THEN COLON statements ELSE COLON statements RBRACE
@@ -117,7 +117,7 @@ class GFLParser:
                 "else_block": p[11],
             }
 
-    # Definición de condiciones para las ramas.
+    # Definition of conditions for branches.
     def p_condition(self, p):
         """condition : IDENTIFIER EQUALS value
         | IDENTIFIER NOT_EQUALS value
@@ -133,30 +133,30 @@ class GFLParser:
         elif len(p) == 4 and p[2] in ("AND", "OR"):
             p[0] = {"type": "logical", "operator": p[2], "left": p[1], "right": p[3]}
         elif len(p) == 4 and p[1] == "(" and p[3] == ")":
-            p[0] = p[2]  # Manejar paréntesis para agrupar condiciones
+            p[0] = p[2]  # Handle parentheses for grouping conditions
         else:
             p[0] = {"type": "identifier_condition", "value": p[1]}
 
-    # Colección de propiedades: usa una lista de propiedades separadas por comas.
+    # Collection of properties: uses a list of comma-separated properties.
     def p_properties(self, p):
         """properties : property_list"""
         p[0] = p[1]
 
-    # Lista de propiedades, permitiendo separación por comas.
+    # List of properties, allowing comma separation.
     def p_property_list(self, p):
         """property_list : property
         | property_list COMMA property"""
         if len(p) == 2:
             p[0] = [p[1]]
         else:
-            p[0] = p[1] + [p[3]]  # p[1] es la lista existente, p[3] es la nueva propiedad después de la coma
+            p[0] = p[1] + [p[3]]  # p[1] is the existing list, p[3] is the new property after the comma
 
-    # Una propiedad individual: un identificador seguido de un valor.
+    # An individual property: an identifier followed by a value.
     def p_property(self, p):
         """property : IDENTIFIER COLON value"""
         p[0] = {p[1]: p[3]}
 
-    # Un valor puede ser un string, número, booleano, o un bloque de propiedades anidado.
+    # A value can be a string, number, boolean, or nested properties block.
     def p_value(self, p):
         """value : STRING
         | NUMBER
@@ -165,11 +165,11 @@ class GFLParser:
         | FALSE
         | LBRACE properties RBRACE"""
         if p[1] == "{":
-            p[0] = p[2]  # Para propiedades anidadas
+            p[0] = p[2]  # For nested properties
         else:
             p[0] = p[1]
 
-    # Sentencia LOCI - Define regiones genómicas y coordenadas
+    # LOCI statement - Defines genomic regions and coordinates
     def p_loci_statement(self, p):
         """loci_statement : LOCI LBRACE loci_list RBRACE"""
         p[0] = {"node_type": "loci", "loci": p[3]}
