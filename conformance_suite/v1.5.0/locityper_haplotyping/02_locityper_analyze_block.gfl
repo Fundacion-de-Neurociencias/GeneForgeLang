@@ -1,0 +1,26 @@
+# DESCRIPTION: A compliant engine must understand analyze blocks with tool: "locityper".
+# The engine should recognize locus references and genotyping workflow structure.
+
+import_schemas:
+  - ./schema/locityper_types.yml
+
+loci:
+  - id: Test_Locus
+    chromosome: "chr1"
+    start: 1000000
+    end: 1010000
+    haplotype_panel: "test_panel.fasta"
+
+analyze:
+  tool: "locityper"
+  target: locus(Test_Locus)
+  input: "test_input.bam"
+  output: "genotype_result"
+  contract:
+    inputs:
+      test_input.bam:
+        type: "BAM"
+    outputs:
+      genotype_result:
+        type: "LocusGenotypeResult"
+

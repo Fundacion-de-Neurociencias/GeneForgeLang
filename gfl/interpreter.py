@@ -113,6 +113,7 @@ class Interpreter:
             start = locus.get("start")
             end = locus.get("end")
             elements = locus.get("elements", [])
+            haplotype_panel = locus.get("haplotype_panel")
 
             # Store locus information in symbol table
             self.symbol_table[locus_id] = {
@@ -121,8 +122,11 @@ class Interpreter:
                 "start": start,
                 "end": end,
                 "elements": elements,
+                "haplotype_panel": haplotype_panel,
             }
             logger.info(f"Defined locus {locus_id}: {chromosome}:{start}-{end}")
+            if haplotype_panel:
+                logger.info(f"  Haplotype panel: {haplotype_panel}")
 
     def visit_rules_statement(self, node):
         """Handle rules with spatial predicates."""

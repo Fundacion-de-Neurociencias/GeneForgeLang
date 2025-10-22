@@ -1,0 +1,123 @@
+# KIR Gene Presence/Absence and Immune Profiling
+# ================================================
+# This workflow uses Locityper to determine KIR (Killer Immunoglobulin-like
+# Receptor) gene content and infer NK cell immune phenotypes.
+
+# Import Locityper schemas
+import_schemas:
+  - ./schema/locityper_types.yml
+
+# Define KIR gene loci with haplotype panels
+loci:
+  - id: KIR2DL1_Locus
+    chromosome: "chr19"
+    start: 54784687
+    end: 54799625
+    description: "KIR2DL1 - Inhibitory receptor for HLA-C"
+    haplotype_panel: "db/kir/kir2dl1_alleles.fasta"
+
+  - id: KIR2DS4_Locus
+    chromosome: "chr19"
+    start: 54836984
+    end: 54849995
+    description: "KIR2DS4 - Activating receptor, often deleted"
+    haplotype_panel: "db/kir/kir2ds4_alleles.fasta"
+
+  - id: KIR3DL1_Locus
+    chromosome: "chr19"
+    start: 54741748
+    end: 54757261
+    description: "KIR3DL1 - Inhibitory receptor for HLA-Bw4"
+    haplotype_panel: "db/kir/kir3dl1_alleles.fasta"
+
+  - id: KIR3DS1_Locus
+    chromosome: "chr19"
+    start: 54725000
+    end: 54738000
+    description: "KIR3DS1 - Activating receptor, allelic with KIR3DL1"
+    haplotype_panel: "db/kir/kir3ds1_alleles.fasta"
+
+# Batch genotyping of multiple KIR loci
+analyze:
+  tool: "locityper"
+  targets:
+    - locus(KIR2DL1_Locus)
+    - locus(KIR2DS4_Locus)
+    - locus(KIR3DL1_Locus)
+    - locus(KIR3DS1_Locus)
+  input: "patient_wgs_chr19.bam"
+  output: "kir_genotyping_results"
+  params:
+    mode: "batch"
+    detect_deletions: true
+    min_coverage: 20
+    report_copy_number: true
+  contract:
+    inputs:
+      patient_wgs_chr19.bam:
+        type: "BAM"
+    outputs:
+      kir_genotyping_results:
+        type: "MultiLocusGenotypeResult"
+
+# Immune phenotype inference rules
+rules:
+  - id: R_KIR2DS4_Full_Length
+    description: "Full-length KIR2DS4 enhances NK cell activation"
+    if:
+      - genotype_contains:
+          result: kir_genotyping_results
+          haplotype_id: "KIR2DS4*001"  # Full-length allele
+    then:
+      - set_immune_phenotype:
+          feature: "NK_cell_activation_potential"
+          value: "enhanced"
+          mechanism: "KIR2DS4_activating_signal"
+
+  - id: R_KIR2DS4_Deletion
+    description: "KIR2DS4 deletion (22bp frameshift) reduces NK diversity"
+    if:
+      - genotype_indicates_absence:
+          result: kir_genotyping_results
+          gene_id: "KIR2DS4"
+    then:
+      - set_immune_phenotype:
+          feature: "NK_cell_repertoire"
+          value: "reduced_diversity"
+          clinical_note: "May affect anti-viral immunity"
+
+  - id: R_KIR3DL1_KIR3DS1_Balance
+    description: "KIR3DL1/KIR3DS1 ratio affects inhibition/activation balance"
+    if:
+      - genotype_contains:
+          result: kir_genotyping_results
+          haplotype_id: "KIR3DS1*013"
+      - genotype_indicates_absence:
+          result: kir_genotyping_results
+          gene_id: "KIR3DL1"
+    then:
+      - set_immune_phenotype:
+          feature: "NK_inhibition_activation_balance"
+          value: "activation_dominant"
+          clinical_relevance: "HIV_progression_protection"
+
+  - id: R_KIR_Genotype_Quality
+    description: "Quality control for KIR genotyping"
+    if:
+      - overall_quality_below:
+          result: kir_genotyping_results
+          threshold: 20
+    then:
+      - flag_for_review:
+          reason: "low_quality_kir_genotype"
+          action: "Consider targeted sequencing confirmation"
+
+# Comprehensive immune profiling output
+output:
+  - kir2dl1_genotype: "${kir_genotyping_results.KIR2DL1}"
+  - kir2ds4_status: "${kir_genotyping_results.KIR2DS4}"
+  - kir3dl1_genotype: "${kir_genotyping_results.KIR3DL1}"
+  - kir3ds1_genotype: "${kir_genotyping_results.KIR3DS1}"
+  - nk_cell_phenotype: "${immune_phenotype.NK_cell_repertoire}"
+  - clinical_notes: "${review_flags}"
+

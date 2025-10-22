@@ -199,7 +199,8 @@ class GFLParser:
         | CHROMOSOME COLON STRING
         | START COLON NUMBER
         | END COLON NUMBER
-        | ELEMENTS COLON LBRACKET elements_list RBRACKET"""
+        | ELEMENTS COLON LBRACKET elements_list RBRACKET
+        | HAPLOTYPE_PANEL COLON STRING"""
         if p[1] == "chromosome":
             p[0] = ("chromosome", p[3])
         elif p[1] == "start":
@@ -208,6 +209,8 @@ class GFLParser:
             p[0] = ("end", p[3])
         elif p[1] == "elements":
             p[0] = ("elements", p[4])
+        elif p[1] == "haplotype_panel":
+            p[0] = ("haplotype_panel", p[3])
         else:
             p[0] = (p[1], p[3])
 

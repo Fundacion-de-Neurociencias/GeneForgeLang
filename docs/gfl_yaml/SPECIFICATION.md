@@ -40,6 +40,47 @@ GFL also supports several optional top-level blocks that enhance its symbolic re
 - `pathways` (object, optional): Metabolic and signaling pathways
 - `complexes` (object, optional): Protein complexes
 
+### Loci Block (v1.3.0+)
+- `loci` (list, optional): Genomic regions with coordinates
+  - Each locus must contain:
+    - `id` (string): Unique identifier
+    - `chromosome` (string): Chromosome location
+    - `start` (integer): Start coordinate
+    - `end` (integer): End coordinate
+    - `description` (string, optional): Description
+    - `elements` (list, optional): Sub-elements within locus
+    - `haplotype_panel` (string, optional, v1.5.0+): Path to reference haplotype sequences
+
+### Haplotype Genotyping (v1.5.0+)
+
+GFL v1.5.0 introduces support for genomic haplotyping using Locityper:
+
+#### Haplotype Panel References
+Loci can reference panels of known haplotype sequences:
+```yaml
+loci:
+  - id: HLA_A_Locus
+    chromosome: "chr6"
+    start: 29941160
+    end: 29945884
+    haplotype_panel: "db/hla_a_alleles.fasta"
+```
+
+#### Locityper Analysis
+Use the analyze block with `tool: "locityper"` for haplotype genotyping:
+```yaml
+analyze:
+  tool: "locityper"
+  target: locus(HLA_A_Locus)
+  input: "patient_wgs.bam"
+  output: "genotype_result"
+```
+
+#### Genotype Predicates
+New predicates for reasoning about genotyping results:
+- `genotype_contains(result, haplotype_id)`: Tests if genotype includes specific allele
+- `genotype_indicates_absence(result, gene_id)`: Tests if gene is absent/deleted
+
 ## Entity and Hypothesis References
 
 ### Entity References

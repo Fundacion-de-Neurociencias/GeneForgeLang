@@ -70,6 +70,7 @@ class GFLLexer:
         "start": "START",
         "end": "END",
         "elements": "ELEMENTS",
+        "haplotype_panel": "HAPLOTYPE_PANEL",
         "type": "TYPE",
         "promoter": "PROMOTER",
         "enhancer": "ENHANCER",

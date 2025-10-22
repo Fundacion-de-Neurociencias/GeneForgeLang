@@ -1,0 +1,80 @@
+# Locityper Type Definitions for GeneForgeLang
+# ==============================================
+# Custom schemas for genomic haplotyping and genotyping analysis using Locityper
+
+schemas:
+  - name: LocusGenotypeResult
+    base_type: CUSTOM
+    description: "Genotyping result from Locityper haplotype analysis of complex genomic loci"
+    attributes:
+      haplotype1_id:
+        type: string
+        required: true
+        description: "Identifier of the first predicted haplotype allele"
+      haplotype2_id:
+        type: string
+        required: true
+        description: "Identifier of the second predicted haplotype allele"
+      quality_value:
+        type: number
+        required: true
+        description: "Phred-like quality value for the genotyping prediction"
+      confidence_score:
+        type: number
+        required: false
+        description: "Confidence score for the haplotype assignment (0-1)"
+      locus_id:
+        type: string
+        required: false
+        description: "Identifier of the genotyped locus"
+      coverage_depth:
+        type: integer
+        required: false
+        description: "Average sequencing depth at the locus"
+      ambiguous_bases:
+        type: integer
+        required: false
+        description: "Number of ambiguous or uncertain base calls"
+
+  - name: HaplotypePanel
+    base_type: CUSTOM
+    description: "Reference panel of known haplotype sequences for a genomic locus"
+    attributes:
+      panel_id:
+        type: string
+        required: true
+        description: "Unique identifier for the haplotype panel"
+      locus_name:
+        type: string
+        required: true
+        description: "Name of the genomic locus (e.g., HLA-A, KIR2DL1)"
+      allele_count:
+        type: integer
+        required: true
+        description: "Number of known haplotype alleles in the panel"
+      source_database:
+        type: string
+        required: false
+        description: "Source database (e.g., IPD-IMGT/HLA, KIR)"
+      version:
+        type: string
+        required: false
+        description: "Version of the haplotype panel database"
+
+  - name: MultiLocusGenotypeResult
+    base_type: CUSTOM
+    description: "Batch genotyping results for multiple loci"
+    attributes:
+      loci_genotyped:
+        type: integer
+        required: true
+        description: "Number of loci successfully genotyped"
+      overall_quality:
+        type: number
+        required: true
+        description: "Overall quality metric across all loci"
+      results:
+        type: array
+        required: true
+        description: "List of individual LocusGenotypeResult objects"
+

@@ -24,6 +24,8 @@ The test suite is organized by GFL version, with each version containing tests f
   - `simulate/` - Tests for genomic change simulation and hypothesis testing
 - `v1.4.0/` - Tests for GFL v1.4.0 features including large-scale genomic editing operations
   - `large_scale_editing/` - Tests for delete, insert, and invert operations on large genomic regions
+- `v1.5.0/` - Tests for GFL v1.5.0 features including genomic haplotyping with Locityper
+  - `locityper_haplotyping/` - Tests for haplotype panel references, Locityper analysis, and genotyping schemas
 
 ## Usage
 

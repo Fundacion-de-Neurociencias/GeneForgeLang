@@ -34,6 +34,11 @@ class GFLFeature(Enum):
     SPATIAL_SIMULATE = "spatial_simulate"
     HIC_INTEGRATION = "hic_integration"
 
+    # Haplotyping features (new in v1.5.0)
+    HAPLOTYPE_GENOTYPING = "haplotype_genotyping"
+    HAPLOTYPE_PANEL_REFS = "haplotype_panel_refs"
+    GENOTYPE_PREDICATES = "genotype_predicates"
+
     # Multi-omic features (new in v2.0)
     TRANSCRIPTS_BLOCK = "transcripts_block"
     PROTEINS_BLOCK = "proteins_block"
@@ -182,6 +187,30 @@ CAPABILITY_DEFINITIONS: dict[GFLFeature, CapabilityInfo] = {
         description="3D chromatin contact data integration",
         version_introduced="v1.3.0",
         dependencies=[GFLFeature.SPATIAL_PREDICATES],
+        is_experimental=True,
+    ),
+    GFLFeature.HAPLOTYPE_GENOTYPING: CapabilityInfo(
+        feature=GFLFeature.HAPLOTYPE_GENOTYPING,
+        name="Haplotype Genotyping",
+        description="Locityper-based genomic haplotyping analysis for complex loci",
+        version_introduced="v1.5.0",
+        dependencies=[GFLFeature.LOCI_BLOCK, GFLFeature.ANALYZE_BLOCK],
+        is_experimental=True,
+    ),
+    GFLFeature.HAPLOTYPE_PANEL_REFS: CapabilityInfo(
+        feature=GFLFeature.HAPLOTYPE_PANEL_REFS,
+        name="Haplotype Panel References",
+        description="Reference panels of known haplotypes in loci definitions",
+        version_introduced="v1.5.0",
+        dependencies=[GFLFeature.LOCI_BLOCK],
+        is_experimental=True,
+    ),
+    GFLFeature.GENOTYPE_PREDICATES: CapabilityInfo(
+        feature=GFLFeature.GENOTYPE_PREDICATES,
+        name="Genotype Reasoning Predicates",
+        description="Predicates for reasoning about genotyping results (genotype_contains, genotype_indicates_absence)",
+        version_introduced="v1.5.0",
+        dependencies=[GFLFeature.HAPLOTYPE_GENOTYPING, GFLFeature.RULES_BLOCK],
         is_experimental=True,
     ),
     GFLFeature.TRANSCRIPTS_BLOCK: CapabilityInfo(

@@ -1,0 +1,80 @@
+# HLA-A Pharmacogenomic Genotyping Workflow
+# ==========================================
+# This workflow demonstrates Locityper-based HLA-A genotyping for
+# pharmacogenomic risk assessment, specifically for carbamazepine
+# hypersensitivity screening.
+
+# Import custom schemas for Locityper
+import_schemas:
+  - ./schema/locityper_types.yml
+
+# Define the HLA-A locus with reference haplotype panel
+loci:
+  - id: HLA_A_Locus
+    chromosome: "chr6"
+    start: 29941160
+    end: 29945884
+    description: "HLA-A gene, MHC class I molecule encoding alpha chain"
+    haplotype_panel: "db/ipd_hla/hla_a_alleles_v3.48.0.fasta"
+
+# Perform haplotype genotyping using Locityper
+analyze:
+  tool: "locityper"
+  target: locus(HLA_A_Locus)
+  input: "patient_001_wgs_sorted.bam"
+  output: "hla_a_genotype_result"
+  params:
+    min_coverage: 30
+    quality_threshold: 20
+    algorithm: "likelihood"
+  contract:
+    inputs:
+      patient_001_wgs_sorted.bam:
+        type: "BAM"
+        attributes:
+          sorted: true
+          indexed: true
+          min_mapping_quality: 20
+    outputs:
+      hla_a_genotype_result:
+        type: "LocusGenotypeResult"
+        attributes:
+          quality_value: { min: 20 }
+
+# Clinical decision rules based on HLA-A genotype
+rules:
+  - id: R_Carbamazepine_Hypersensitivity_Risk
+    description: "HLA-A*31:01 allele is strongly associated with carbamazepine-induced hypersensitivity (CPIC Level A evidence)"
+    if:
+      - genotype_contains:
+          result: hla_a_genotype_result
+          haplotype_id: "HLA-A*31:01"
+    then:
+      - set_risk_profile:
+          drug: "Carbamazepine"
+          risk_level: "high"
+          recommendation: "Avoid carbamazepine; use alternative anti-epileptic"
+          evidence_level: "CPIC_Level_A"
+          reference: "PMID:28198005"
+
+  - id: R_HLA_A_Quality_Check
+    description: "Flag low-quality genotyping results for manual review"
+    if:
+      - quality_below_threshold:
+          result: hla_a_genotype_result
+          threshold: 20
+    then:
+      - flag_for_manual_review:
+          reason: "low_quality_genotype"
+          reviewer_note: "Consider confirmatory Sanger sequencing"
+
+# Generate comprehensive pharmacogenomic report
+output:
+  - patient_id: "patient_001"
+  - hla_a_haplotype_1: "${hla_a_genotype_result.haplotype1_id}"
+  - hla_a_haplotype_2: "${hla_a_genotype_result.haplotype2_id}"
+  - genotype_quality: "${hla_a_genotype_result.quality_value}"
+  - genotype_confidence: "${hla_a_genotype_result.confidence_score}"
+  - carbamazepine_risk: "${risk_profile.Carbamazepine.risk_level}"
+  - clinical_recommendation: "${risk_profile.Carbamazepine.recommendation}"
+

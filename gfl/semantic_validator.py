@@ -2107,6 +2107,17 @@ class EnhancedSemanticValidator:
                     )
                     error.add_fix(f"Add '{field}' field to locus {i}")
 
+            # Validate optional haplotype_panel field
+            if "haplotype_panel" in locus:
+                if not isinstance(locus["haplotype_panel"], str):
+                    error = self.result.add_error(
+                        f"locus {i} haplotype_panel must be a string",
+                        ErrorCodes.TYPE_INVALID_TYPE,
+                    )
+                    error.add_fix(f"Provide file path as string for haplotype_panel")
+                # Optional: warn if file doesn't exist (but don't error)
+                # This allows references to files that will be generated later
+
             # Validate coordinate types
             if "start" in locus and not isinstance(locus["start"], int):
                 error = self.result.add_error(

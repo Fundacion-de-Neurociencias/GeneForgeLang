@@ -156,6 +156,20 @@
       "title": "Analysis Block",
       "description": "Defines data analysis parameters and methods",
       "properties": {
+        "tool": {
+          "type": "string",
+          "title": "Analysis Tool",
+          "description": "Specific tool or plugin to use for analysis",
+          "enum": [
+            "locityper",
+            "rag-engine",
+            "blast",
+            "samtools",
+            "gatk",
+            "biopython-tools"
+          ],
+          "examples": ["locityper", "blast", "gatk"]
+        },
         "strategy": {
           "type": "string",
           "title": "Analysis Strategy",
@@ -170,9 +184,10 @@
             "comparative",
             "longitudinal",
             "single_cell",
-            "spatial"
+            "spatial",
+            "haplotype_genotyping"
           ],
-          "examples": ["differential", "pathway", "variant"]
+          "examples": ["differential", "pathway", "variant", "haplotype_genotyping"]
         },
         "data": {
           "type": "string",

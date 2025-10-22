@@ -1,0 +1,17 @@
+# DESCRIPTION: A compliant engine must parse and understand the haplotype_panel field in loci definitions.
+# The engine should recognize this as an optional field pointing to a reference haplotype database.
+
+loci:
+  - id: HLA_A_Test_Locus
+    chromosome: "chr6"
+    start: 29941160
+    end: 29945884
+    description: "HLA-A locus for conformance testing"
+    haplotype_panel: "test_data/hla_a_panel.fasta"
+
+  - id: KIR2DL1_Test_Locus
+    chromosome: "chr19"
+    start: 54784687
+    end: 54799625
+    haplotype_panel: "test_data/kir2dl1_panel.fasta"
+

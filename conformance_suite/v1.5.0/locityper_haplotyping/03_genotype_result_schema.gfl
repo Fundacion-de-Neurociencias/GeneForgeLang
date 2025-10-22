@@ -1,0 +1,43 @@
+# DESCRIPTION: A compliant engine must validate LocusGenotypeResult schema structure.
+# The engine should ensure all required fields are present and correctly typed.
+
+import_schemas:
+  - ./schema/locityper_types.yml
+
+loci:
+  - id: Schema_Test_Locus
+    chromosome: "chr6"
+    start: 29000000
+    end: 29100000
+    haplotype_panel: "test.fasta"
+
+analyze:
+  tool: "locityper"
+  target: locus(Schema_Test_Locus)
+  input: "input.bam"
+  output: "test_result"
+  contract:
+    outputs:
+      test_result:
+        type: "LocusGenotypeResult"
+        attributes:
+          quality_value: { min: 20 }
+          confidence_score: { min: 0.7 }
+
+# Validate that engine checks for required fields
+rules:
+  - id: R_Schema_Validation_Test
+    description: "Test that LocusGenotypeResult has required fields"
+    if:
+      - result_has_field:
+          result: test_result
+          field: "haplotype1_id"
+      - result_has_field:
+          result: test_result
+          field: "haplotype2_id"
+      - result_has_field:
+          result: test_result
+          field: "quality_value"
+    then:
+      - validation_passed: true
+
