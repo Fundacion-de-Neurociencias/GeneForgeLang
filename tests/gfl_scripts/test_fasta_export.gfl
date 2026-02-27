@@ -1,0 +1,22 @@
+# tests/gfl_scripts/test_fasta_export.gfl
+
+# Este workflow valida la exportación de datos a formato FASTA.
+# Utiliza el plugin 'interop' para convertir secuencias a formato FASTA.
+
+metadata:
+  author: "GeneForge Validation Team"
+  version: "1.0"
+  description: "End-to-end test for FASTA export functionality"
+
+run:
+  - plugin: "interop"
+    operation: "to_fasta"
+    input_data: 
+      - id: "protein_1"
+        sequence: "MKTVRQERLKSIVRILERSKEPVSGAQLAEELSVSRQVIVQDIAYLRSLGYNIVATPRGYVLAGG"
+      - id: "protein_2"
+        sequence: "MKWVTFISLLFLFSSAYSRGVFRRDAHKSEVAHRFKDLGEENFKALVLIAFAQYLQQCPFEDHVK"
+    as_var: "fasta_output"
+
+output:
+  - fasta_content: "${fasta_output}"

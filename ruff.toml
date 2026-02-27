@@ -53,7 +53,11 @@ exclude = [
     "docs",
 ]
 
+<<<<<<< HEAD
 [lint.per-file-ignores]
+=======
+[per-file-ignores]
+>>>>>>> b17423f (chore: synchronize gfl_core submodule with latest changes)
 # Allow specific patterns in test files
 "tests/**/*.py" = ["E501", "F401", "F403"]
 # Allow specific patterns in example files
@@ -62,6 +66,10 @@ exclude = [
 "scripts/**/*.py" = ["E", "W", "F", "UP", "B", "SIM", "I"]
 "tools/**/*.py" = ["E", "W", "F", "UP", "B", "SIM", "I"]
 
+<<<<<<< HEAD
 [lint.isort]
+=======
+[isort]
+>>>>>>> b17423f (chore: synchronize gfl_core submodule with latest changes)
 # Use single line between sections
 split-on-trailing-comma = true

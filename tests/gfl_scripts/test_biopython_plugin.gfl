@@ -1,0 +1,26 @@
+# tests/gfl_scripts/test_biopython_plugin.gfl
+
+# Este workflow valida la ejecución de un plugin GFL externo.
+# Utiliza el plugin 'biopython-tools' para realizar análisis básicos de secuencias.
+
+metadata:
+  author: "GeneForge Validation Team"
+  version: "1.0"
+  description: "End-to-end test for the biopython-tools external plugin."
+
+run:
+  - plugin: "biopython-tools"
+    method: "translate_dna"
+    params:
+      dna_sequence: "ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG"
+    as_var: "protein_sequence"
+
+  - plugin: "biopython-tools"
+    method: "gc_content"
+    params:
+      dna_sequence: "ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG"
+    as_var: "gc_percentage"
+
+output:
+  - translated_protein: "${protein_sequence}"
+  - gc_content_percent: "${gc_percentage}"

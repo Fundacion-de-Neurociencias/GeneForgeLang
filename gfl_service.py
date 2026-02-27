@@ -230,6 +230,20 @@ async def list_plugins():
             "description": "CRISPR guide design plugin",
             "capabilities": ["design_crispr_guides", "off_target_analysis"],
             "status": "active",
+            "is_containerized": True,
+            "container_image": "biocontainers/crispr-designer:v1.0.0_cv1",
+            "inputs": [
+                {
+                    "name": "input_sequence",
+                    "schema_type": "FASTA"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "guide_rnas",
+                    "schema_type": "CSV"
+                }
+            ]
         },
         {
             "name": "protein_design",
@@ -237,6 +251,20 @@ async def list_plugins():
             "description": "Protein design plugin",
             "capabilities": ["inverse_design", "property_prediction"],
             "status": "active",
+            "is_containerized": True,
+            "container_image": "biocontainers/protein-designer:v1.0.0_cv1",
+            "inputs": [
+                {
+                    "name": "target_structure",
+                    "schema_type": "PDB"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "designed_protein",
+                    "schema_type": "PDB"
+                }
+            ]
         },
         {
             "name": "data_analysis",
@@ -244,7 +272,66 @@ async def list_plugins():
             "description": "Data analysis plugin",
             "capabilities": ["statistical_analysis", "visualization"],
             "status": "active",
+            "is_containerized": False,
+            "inputs": [
+                {
+                    "name": "input_data",
+                    "schema_type": "CSV"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "analysis_results",
+                    "schema_type": "JSON"
+                }
+            ]
         },
+        {
+            "name": "sequence_alignment",
+            "version": "1.0.0",
+            "description": "Sequence alignment plugin",
+            "capabilities": ["align_sequences", "generate_bam"],
+            "status": "active",
+            "is_containerized": True,
+            "container_image": "biocontainers/sequence-aligner:v1.0.0_cv1",
+            "inputs": [
+                {
+                    "name": "reference_genome",
+                    "schema_type": "FASTA"
+                },
+                {
+                    "name": "reads",
+                    "schema_type": "FASTQ"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "aligned_reads",
+                    "schema_type": "BAM"
+                }
+            ]
+        },
+        {
+            "name": "variant_calling",
+            "version": "1.0.0",
+            "description": "Variant calling plugin",
+            "capabilities": ["call_variants", "annotate_variants"],
+            "status": "active",
+            "is_containerized": True,
+            "container_image": "biocontainers/variant-caller:v1.0.0_cv1",
+            "inputs": [
+                {
+                    "name": "aligned_reads",
+                    "schema_type": "BAM"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "variants",
+                    "schema_type": "VCF"
+                }
+            ]
+        }
     ]
 
     # Combine all plugins
