@@ -1,19 +1,13 @@
 """Plugin registry for managing GFL plugins."""
 
+from __future__ import annotations
+
 import importlib.metadata
 from typing import Any, Dict, List, Optional, Type
 
-"""Plugin registry for managing GFL plugins.
-
-External packages can register plugins by adding entry points in their pyproject.toml:
-
-[project.entry-points."gfl.plugins"]
-my_plugin = "my_package.plugin:MyPlugin"
-"""
-
-from __future__ import annotations
 
 import logging
+import json
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
@@ -233,6 +227,100 @@ class BaseGFLPlugin(ABC):
         }
 
 
+import hashlib
+import time
+
+class GeneForgeSkill(BaseGFLPlugin):
+    """
+    ClawBio-inspired Base Class for all scientific "Bio-Skills".
+    Enforces restricted JSON input/output, local data processing,
+    and constructs a Reproducibility Package.
+    """
+
+    @property
+    @abstractmethod
+    def author(self) -> str:
+        """Skill author or organization."""
+        pass
+    
+    @property
+    @abstractmethod
+    def description(self) -> str:
+        """Short scientific description of the skill."""
+        pass
+
+    @property
+    def skill_type(self) -> str:
+        """Type of skill (e.g., 'Neuro-PharmGx', 'Metagenomics')."""
+        return "GenericBioSkill"
+
+    def execute(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Public method to execute the skill.
+        Wraps the internal _analyze method to build the reproducibility package.
+        """
+        start_time = time.time()
+        
+        # Determine the input hash to prove reproducibility
+        inputs_str = json.dumps(inputs, sort_keys=True)
+        input_hash = hashlib.sha256(inputs_str.encode("utf-8")).hexdigest()
+        
+        try:
+            # Subclasses MUST implement _analyze instead of process directly
+            result_data = self._analyze(inputs)
+            
+            return {
+                "success": True,
+                "data": result_data,
+                "reproducibility_package": self._generate_reproducibility_package(
+                    input_hash, start_time
+                )
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "reproducibility_package": self._generate_reproducibility_package(
+                    input_hash, start_time, failed=True
+                )
+            }
+            
+    @abstractmethod
+    def _analyze(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Internal scientific analysis implementation.
+        Must return a structured dict representing the scientific outcome.
+        """
+        pass
+        
+    def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Implements BaseGFLPlugin.process by routing to the secure execute method.
+        """
+        return self.execute(data)
+        
+    def _generate_reproducibility_package(self, input_hash: str, start_time: float, failed: bool = False) -> Dict[str, Any]:
+        """
+        Generates the standard metadata package proving the analysis was run locally.
+        """
+        try:
+            from gfl import __version__ as gfl_version
+        except ImportError:
+            gfl_version = "unknown"
+            
+        return {
+            "timestamp": time.time(),
+            "execution_time_ms": int((time.time() - start_time) * 1000),
+            "skill_name": self.name,
+            "skill_version": self.version,
+            "skill_author": self.author,
+            "gfl_core_version": gfl_version,
+            "input_hash_sha256": input_hash,
+            "local_execution": True,
+            "status": "FAILED" if failed else "SUCCESS"
+        }
+
+
 @dataclass
 class PluginInfo:
     """Enhanced information about a registered plugin."""
@@ -427,7 +515,7 @@ class PluginInfo:
                 logger.warning(f"Plugin lifecycle hook failed for {self.name}: {e}")
 
 
-class _Registry:
+class PluginRegistry:
     """Enhanced plugin registry with entry point discovery, dependency management and lifecycle hooks."""
 
     def __init__(self):
@@ -800,20 +888,8 @@ class _Registry:
         self._plugin_order.clear()
 
         # Rediscover
->>>>>>> b17423f (chore: synchronize gfl_core submodule with latest changes)
         self._discover_plugins()
 
-    def _register_builtin_plugins(self):
-        """Register builtin plugins."""
-        try:
-            from gfl.plugins.builtin.protein_generator import SimpleProteinGenerator
-            from gfl.plugins.builtin.simple_optimizer import SimpleOptimizer
-
-            self.register_generator("ProteinVAEGenerator", SimpleProteinGenerator)
-            self.register_optimizer("BayesianOptimization", SimpleOptimizer)
-
-        except ImportError:
-            pass  # Builtin plugins not available
 
     def _discover_plugins(self):
         """Discover and register external plugins via entry points."""

@@ -34,6 +34,12 @@ GeneForgeLang (GFL) v2.0 is a **next-generation domain-specific language** for c
 - **📋 Rule-Based Logic**: Complex biological constraint expression
 - **🎭 Simulation Framework**: What-if analysis and hypothesis testing
 
+### **Privacy-Preserving Bio-Skills**
+- **🧬 Local Bioinformatics**: High-precision analysis running 100% locally
+- **✅ Scientific Reproducibility**: Automatic generation of Reproducibility Packages (hashes, timestamps, versions)
+- **🧠 Clinical Neuro-Skills**: Specialized skills for PharmGx, Geriatric Risk, and NutriGx
+- **🛡️ Data Sovereignty**: Genome-scale analysis without cloud dependencies or LLM hallucinations
+
 ## Key Features
 
 - **Declarative Syntax**: Clean, readable YAML-based workflow definitions

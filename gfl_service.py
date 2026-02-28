@@ -83,6 +83,20 @@ class ExecuteResponse(BaseModel):
     result: dict[str, Any] = None
 
 
+class SkillExecuteRequest(BaseModel):
+    """Request to run a local Bio-Skill by name."""
+    skill_name: str
+    inputs: dict[str, Any] = {}
+
+
+class SkillExecuteResponse(BaseModel):
+    """Response from a local Bio-Skill execution."""
+    success: bool
+    message: str = ""
+    data: dict[str, Any] = None
+    reproducibility_package: dict[str, Any] = None
+
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
@@ -183,6 +197,84 @@ async def execute_ast(request: ExecuteRequest):
             except Exception as e:
                 logger.error(f"Data staging cleanup failed: {e}")
 
+
+# ---------------------------------------------------------------------------
+# Auto-registration of Bio-Skills
+# ---------------------------------------------------------------------------
+_skills_registry: dict[str, Any] = {}
+
+def _register_bio_skills() -> None:
+    """Auto-register all available GeneForge Bio-Skills."""
+    try:
+        from gfl.plugins.skills.neuro_pharmgx import NeuroPharmGxSkill
+        from gfl.plugins.skills.neuro_geriatric_risk import NeuroGeriatricRiskSkill
+        from gfl.plugins.skills.neuro_nutrigx import NeuroNutriGxSkill
+        
+        skills = [
+            NeuroPharmGxSkill(), 
+            NeuroGeriatricRiskSkill(),
+            NeuroNutriGxSkill()
+        ]
+        for skill in skills:
+            _skills_registry[skill.name] = skill
+            logger.info(f"Registered Bio-Skill: {skill.name} v{skill.version}")
+    except Exception as e:
+        logger.warning(f"Could not register Bio-Skills: {e}")
+
+_register_bio_skills()
+
+
+# ---------------------------------------------------------------------------
+# Bio-Skills endpoints
+# ---------------------------------------------------------------------------
+
+@app.post("/api/v2/skills/execute", response_model=SkillExecuteResponse)
+async def execute_skill(request: SkillExecuteRequest):
+    """
+    Execute a local GeneForge Bio-Skill by name.
+    Data never leaves this machine. Ships a reproducibility package.
+    """
+    skill_name = request.skill_name.lower()
+    if skill_name not in _skills_registry:
+        available = list(_skills_registry.keys())
+        return SkillExecuteResponse(
+            success=False,
+            message=f"Skill '{skill_name}' no encontrada. Disponibles: {available}",
+        )
+    skill = _skills_registry[skill_name]
+    try:
+        result = skill.execute(request.inputs)
+        return SkillExecuteResponse(
+            success=result["success"],
+            message="" if result["success"] else result.get("error", "Error desconocido"),
+            data=result.get("data"),
+            reproducibility_package=result.get("reproducibility_package"),
+        )
+    except Exception as e:
+        logger.error(f"Skill execution failed for '{skill_name}': {e}")
+        return SkillExecuteResponse(
+            success=False,
+            message=f"Error al ejecutar skill '{skill_name}': {str(e)}",
+        )
+
+
+@app.get("/api/v2/skills")
+async def list_skills():
+    """List all registered local Bio-Skills."""
+    return {
+        "success": True,
+        "skills": [
+            {
+                "name": s.name,
+                "version": s.version,
+                "author": s.author,
+                "description": s.description,
+                "skill_type": s.skill_type,
+                "local_execution": True,
+            }
+            for s in _skills_registry.values()
+        ],
+    }
 
 @app.get("/api/v2/plugins")
 async def list_plugins():
