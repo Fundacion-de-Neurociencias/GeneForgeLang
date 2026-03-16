@@ -6,7 +6,7 @@
 [![Version](https://img.shields.io/badge/version-2.0.0--beta-blue.svg)](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang)
 [![PyPI](https://img.shields.io/pypi/v/geneforgelang.svg)](https://pypi.org/project/geneforgelang/)
 
-## 🎉 **GeneForge v2.0 Beta - Multi-Omic Reasoning Platform**
+## **GeneForge v2.0 Beta - Multi-Omic Reasoning Platform**
 
 **Revolutionary computational biology platform** that integrates multi-omic data with spatial genomic reasoning for biological discovery and design.
 

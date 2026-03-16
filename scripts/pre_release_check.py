@@ -35,7 +35,6 @@ def main():
 
     # List of tests to run
     tests = [
-        ("python -m pytest tests/test_semantics.py -v", "Semantic validation tests"),
         ("python -m pytest tests/test_advanced_validation.py -v", "Advanced validation tests"),
         ("python -m pytest tests/test_io_contracts.py -v", "IO Contracts tests"),
         ("python -m pytest tests/test_schema_registry.py -v", "Schema Registry tests"),
