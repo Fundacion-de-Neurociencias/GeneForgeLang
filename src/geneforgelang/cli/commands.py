@@ -6,7 +6,7 @@ supporting both the legacy CLI and the new enhanced CLI.
 """
 
 import sys
-from typing import List, Optional
+from typing import list, Optional
 
 
 def main(args: Optional[list[str]] = None) -> int:
