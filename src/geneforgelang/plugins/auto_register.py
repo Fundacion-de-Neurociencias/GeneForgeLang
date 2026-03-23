@@ -4,6 +4,7 @@ This module provides automatic registration of built-in example plugins
 to ensure they are available when using the GFL API.
 """
 
+import traceback
 import logging
 import sys
 from pathlib import Path
@@ -16,7 +17,7 @@ def auto_register_example_plugins() -> None:
     """Automatically register example plugins if they are available."""
     try:
         # Try to import and register example plugins
-        from .example_implementations import register_example_plugins
+        from geneforgelang.plugins.example_implementations import register_example_plugins
 
         register_example_plugins()
         logger.info("Successfully auto-registered example plugins")
@@ -44,7 +45,7 @@ def _register_genesis_plugins() -> None:
         # Dynamically import the plugin class
         import importlib.util
 
-        from gfl.plugins.plugin_registry import register_plugin_class
+        from geneforgelang.plugins.plugin_registry import register_plugin_class
 
         plugin_path = examples_path / "gfl-plugin-ontarget-scorer" / "gfl_plugin_ontarget_scorer" / "plugin.py"
         logger.info(f"Looking for on-target plugin at: {plugin_path}")
@@ -58,8 +59,6 @@ def _register_genesis_plugins() -> None:
                 logger.info("Registered on-target scorer plugin")
     except Exception as e:
         logger.error(f"Could not register on-target scorer plugin: {e}")
-        import traceback
-
         logger.error(traceback.format_exc())
 
     # Try to register the off-target scorer plugin
@@ -67,7 +66,7 @@ def _register_genesis_plugins() -> None:
         # Dynamically import the plugin class
         import importlib.util
 
-        from gfl.plugins.plugin_registry import register_plugin_class
+        from geneforgelang.plugins.plugin_registry import register_plugin_class
 
         plugin_path = examples_path / "gfl-plugin-offtarget-scorer" / "gfl_plugin_offtarget_scorer" / "plugin.py"
         logger.info(f"Looking for off-target plugin at: {plugin_path}")
@@ -81,8 +80,6 @@ def _register_genesis_plugins() -> None:
                 logger.info("Registered off-target scorer plugin")
     except Exception as e:
         logger.error(f"Could not register off-target scorer plugin: {e}")
-        import traceback
-
         logger.error(traceback.format_exc())
 
     # Try to register the CRISPR evaluator plugin
@@ -90,7 +87,7 @@ def _register_genesis_plugins() -> None:
         # Dynamically import the plugin class
         import importlib.util
 
-        from gfl.plugins.plugin_registry import register_plugin_class
+        from geneforgelang.plugins.plugin_registry import register_plugin_class
 
         plugin_path = examples_path / "gfl-crispr-evaluator" / "gfl_crispr_evaluator" / "plugin.py"
         logger.info(f"Looking for CRISPR evaluator plugin at: {plugin_path}")
@@ -104,15 +101,13 @@ def _register_genesis_plugins() -> None:
                 logger.info("Registered CRISPR evaluator plugin")
     except Exception as e:
         logger.error(f"Could not register CRISPR evaluator plugin: {e}")
-        import traceback
-
         logger.error(traceback.format_exc())
 
 
 def get_available_plugins_info() -> dict[str, Any]:
     """Get information about available plugins."""
     try:
-        from .interfaces import get_available_generators, get_available_optimizers
+        from geneforgelang.plugins.interfaces import get_available_generators, get_available_optimizers
 
         generators = get_available_generators()
         optimizers = get_available_optimizers()

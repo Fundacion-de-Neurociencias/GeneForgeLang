@@ -17,7 +17,12 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from .plugin_registry import BaseGFLPlugin, PluginDependency, PluginPriority
+from geneforgelang.plugins.plugin_registry import (
+    BaseGFLPlugin, 
+    PluginDependency, 
+    PluginPriority, 
+    plugin_registry
+)
 
 logger = logging.getLogger(__name__)
 
@@ -479,7 +484,6 @@ def register_generator_plugin(
         priority: Plugin execution priority
         dependencies: List of plugin dependencies
     """
-    from .plugin_registry import plugin_registry
 
     # Validate that class implements GeneratorPlugin
     if not issubclass(plugin_class, GeneratorPlugin):
@@ -505,7 +509,6 @@ def register_optimizer_plugin(
         priority: Plugin execution priority
         dependencies: List of plugin dependencies
     """
-    from .plugin_registry import plugin_registry
 
     # Validate that class implements OptimizerPlugin
     if not issubclass(plugin_class, OptimizerPlugin):
@@ -521,7 +524,6 @@ def get_available_generators() -> dict[str, GeneratorPlugin]:
     Returns:
         Dictionary mapping plugin names to GeneratorPlugin instances
     """
-    from .plugin_registry import plugin_registry
 
     generators = {}
     for info in plugin_registry.list_plugins():
@@ -537,7 +539,6 @@ def get_available_optimizers() -> dict[str, OptimizerPlugin]:
     Returns:
         Dictionary mapping plugin names to OptimizerPlugin instances
     """
-    from .plugin_registry import plugin_registry
 
     optimizers = {}
     for info in plugin_registry.list_plugins():

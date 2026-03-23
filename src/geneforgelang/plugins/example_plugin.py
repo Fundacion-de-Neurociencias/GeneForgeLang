@@ -9,7 +9,7 @@ This plugin shows how to use:
 
 from typing import Any, Dict, List
 
-from .plugin_registry import BaseGFLPlugin, PluginDependency, PluginPriority
+from geneforgelang.plugins.plugin_registry import BaseGFLPlugin, PluginDependency, PluginPriority
 
 
 class ExampleAnalysisPlugin(BaseGFLPlugin):

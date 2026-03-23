@@ -15,7 +15,7 @@ import random
 import time
 from typing import Any, Dict, List, Optional
 
-from .interfaces import (
+from geneforgelang.plugins.interfaces import (
     BayesianOptimizerPlugin,
     DesignCandidate,
     EntityType,
@@ -25,7 +25,7 @@ from .interfaces import (
     OptimizationStrategy,
     SequenceGeneratorPlugin,
 )
-from .plugin_registry import PluginDependency, PluginPriority
+from geneforgelang.plugins.plugin_registry import PluginDependency, PluginPriority
 
 logger = logging.getLogger(__name__)
 
@@ -619,7 +619,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
 # Plugin registration examples
 def register_example_plugins():
     """Register example plugins for demonstration."""
-    from .interfaces import register_generator_plugin, register_optimizer_plugin
+    from geneforgelang.plugins.interfaces import register_generator_plugin, register_optimizer_plugin
 
     try:
         # Register generator plugins

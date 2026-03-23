@@ -2,7 +2,7 @@
 
 from typing import Any, Dict, List
 
-from gfl.plugins.plugin_registry import plugin_registry
+from geneforgelang.plugins.plugin_registry import plugin_registry
 
 
 class ExecutionError(Exception):

@@ -1,8 +1,8 @@
 """Simple protein sequence generator plugin."""
 
+import random
 from typing import Any, Dict, List
-
-from gfl.plugins.base import BaseGeneratorPlugin
+from geneforgelang.plugins.base import BaseGeneratorPlugin
 
 
 class SimpleProteinGenerator(BaseGeneratorPlugin):
@@ -45,8 +45,6 @@ class SimpleProteinGenerator(BaseGeneratorPlugin):
 
     def generate(self, params: dict[str, Any]) -> dict[str, Any]:
         """Generate protein sequences based on parameters."""
-        import random
-
         count = params.get("count", 10)
         length = params.get("length", 100)
 

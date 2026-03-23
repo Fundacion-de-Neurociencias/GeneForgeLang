@@ -1,10 +1,10 @@
 from typing import Any, Dict, Optional
 
-from gfl.prob_rules import ProbReasoner, default_rules
+from geneforgelang.utils.prob_rules import ProbReasoner, default_rules
 
 # Import enhanced inference capabilities
 try:
-    from gfl.enhanced_inference_engine import (
+    from geneforgelang.core.enhanced_inference_engine import (
         EnhancedInferenceEngine,
         InferenceResult,
         get_inference_engine,
@@ -32,7 +32,7 @@ class InferenceEngine:
             # Register the legacy model if it has a predict method
             if hasattr(model, "predict"):
                 try:
-                    from gfl.enhanced_inference_engine import BaseMLModel, ModelConfig
+                    from geneforgelang.core.enhanced_inference_engine import BaseMLModel, ModelConfig
 
                     class LegacyModelWrapper(BaseMLModel):
                         def __init__(self, legacy_model):

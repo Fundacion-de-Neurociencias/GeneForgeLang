@@ -3,7 +3,7 @@
 import random
 from typing import Any, Dict, List
 
-from gfl.plugins.base import BaseOptimizerPlugin
+from geneforgelang.plugins.base import BaseOptimizerPlugin
 
 
 class SimpleOptimizer(BaseOptimizerPlugin):

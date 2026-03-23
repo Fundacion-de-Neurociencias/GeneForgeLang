@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional
 
 import yaml
 
-from .performance import cached, get_monitor
+from geneforgelang.core.performance import cached, get_monitor
 
 logger = logging.getLogger(__name__)
 

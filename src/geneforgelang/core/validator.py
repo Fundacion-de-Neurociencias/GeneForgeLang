@@ -5,19 +5,19 @@ reporting, including location tracking, error codes, and suggested fixes.
 """
 
 import logging
+import re
 import os
 from typing import Any, Dict, List, Optional, Union
 
-from gfl.error_handling import (
+from geneforgelang.core.errors import (
     EnhancedValidationResult,
     ErrorCodes,
     ErrorSeverity,
     SourceLocation,
 )
-from gfl.schema_loader import get_global_schema_loader, load_schemas_from_files
+from geneforgelang.utils.schema import get_global_schema_loader, load_schemas_from_files
 
 logger = logging.getLogger(__name__)
-
 
 class EnhancedSemanticValidator:
     """Enhanced semantic validator for GFL ASTs.
@@ -257,7 +257,6 @@ class EnhancedSemanticValidator:
 
     def _validate_entity_reference(self, entity_ref: str) -> None:
         """Validate entity reference in parameter values."""
-        import re
 
         # Extract entity type and name
         match = re.match(r"^([a-zA-Z_][a-zA-Z0-9_]*)\(([a-zA-Z_][a-zA-Z0-9_]*)\)$", entity_ref)
@@ -885,7 +884,6 @@ class EnhancedSemanticValidator:
 
     def _is_entity_reference(self, value: str) -> bool:
         """Check if a string value is an entity reference (e.g., pathway(UreaCycle))."""
-        import re
 
         # Pattern for entity references: entity_type(entity_name)
         pattern = r"^[a-zA-Z_][a-zA-Z0-9_]*\([a-zA-Z_][a-zA-Z0-9_]*\)$"
@@ -893,7 +891,6 @@ class EnhancedSemanticValidator:
 
     def _validate_entity_reference(self, entity_ref: str) -> None:
         """Validate entity reference in parameter values."""
-        import re
 
         # Extract entity type and name
         match = re.match(r"^([a-zA-Z_][a-zA-Z0-9_]*)\(([a-zA-Z_][a-zA-Z0-9_]*)\)$", entity_ref)
@@ -1281,8 +1278,6 @@ class EnhancedSemanticValidator:
             return
 
         # Validate identifier format
-        import re
-
         if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", output):
             error = self.result.add_error(
                 f"Invalid output identifier '{output}'",
@@ -1399,8 +1394,6 @@ class EnhancedSemanticValidator:
             return
 
         # Validate parameter name format
-        import re
-
         if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", param_name):
             error = self.result.add_error(
                 f"Invalid parameter name '{param_name}'",
@@ -1705,7 +1698,6 @@ class EnhancedSemanticValidator:
                     error.add_fix(f"Use time format like '24h', '7d' for '{constraint}'")
                 else:
                     # Validate time format
-                    import re
 
                     if not re.match(r"^\d+[smhd]$", value):
                         error = self.result.add_error(
@@ -1783,7 +1775,6 @@ class EnhancedSemanticValidator:
                 error.add_fix("Specify a parameter name like ${parameter_name}")
             else:
                 # Validate parameter name format
-                import re
 
                 if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", param_name):
                     error = self.result.add_error(
@@ -2051,8 +2042,6 @@ class EnhancedSemanticValidator:
             return
 
         # Validate identifier format
-        import re
-
         if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", output):
             error = self.result.add_error(
                 f"Invalid output identifier '{output}'",

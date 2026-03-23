@@ -3,7 +3,7 @@
 import importlib.metadata
 from typing import Any, Dict, List, Type
 
-from gfl.plugins.base import BaseGeneratorPlugin, BaseGFLPlugin, BaseOptimizerPlugin
+from geneforgelang.plugins.base import BaseGeneratorPlugin, BaseGFLPlugin, BaseOptimizerPlugin
 
 
 class PluginRegistry:
@@ -23,8 +23,8 @@ class PluginRegistry:
     def _register_builtin_plugins(self):
         """Register builtin plugins."""
         try:
-            from gfl.plugins.builtin.protein_generator import SimpleProteinGenerator
-            from gfl.plugins.builtin.simple_optimizer import SimpleOptimizer
+            from geneforgelang.plugins.builtin.protein_generator import SimpleProteinGenerator
+            from geneforgelang.plugins.builtin.simple_optimizer import SimpleOptimizer
 
             self.register_generator("ProteinVAEGenerator", SimpleProteinGenerator)
             self.register_optimizer("BayesianOptimization", SimpleOptimizer)

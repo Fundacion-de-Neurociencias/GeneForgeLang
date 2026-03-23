@@ -24,18 +24,24 @@ Example:
 from __future__ import annotations
 
 import contextlib
+import logging
 from typing import Any, Dict, List, Optional, Union, cast
 
-from ..utils.prob_rules import default_rules
-from . import parser as _parser
-from .errors import EnhancedValidationResult
-from .inference import InferenceEngine as _InferenceEngine
-from .performance import cached, get_monitor
-from .validator import validate as _validate
+from geneforgelang.utils.prob_rules import default_rules
+from geneforgelang.core import parser as _parser
+from geneforgelang.core.errors import (
+    EnhancedValidationResult,
+    EnhancedValidationError,
+    ErrorCategory,
+    ErrorSeverity,
+)
+from geneforgelang.core.inference import InferenceEngine as _InferenceEngine
+from geneforgelang.core.performance import cached, get_monitor
+from geneforgelang.core.validator import validate as _validate
 
 # Optional execution engine import
 try:
-    from .execution import (
+    from geneforgelang.core.execution import (
         ExecutionError,
         GFLExecutionEngine,
         execute_gfl_ast,
@@ -53,7 +59,7 @@ except ImportError:
 
 # Optional grammar parser import
 try:
-    from ..utils.grammar_parser import parse_gfl_grammar
+    from geneforgelang.utils.grammar_parser import parse_gfl_grammar, GFLSyntaxError
 
     HAS_GRAMMAR_PARSER = True
 except ImportError:
@@ -62,7 +68,7 @@ except ImportError:
 
 # Auto-register example plugins to ensure they're available
 with contextlib.suppress(ImportError):
-    from ..plugins import auto_register
+    from geneforgelang.plugins import auto_register
 
 
 def parse(text: str, use_grammar: bool = False, filename: str = "<input>") -> dict[str, Any]:
@@ -124,8 +130,6 @@ def parse(text: str, use_grammar: bool = False, filename: str = "<input>") -> di
                         error_messages.append(f"{error.location}: {error.message}")
                     else:
                         error_messages.append(error.message)
-
-                from gfl.grammar_parser import GFLSyntaxError
 
                 raise GFLSyntaxError("\n".join(error_messages))
 
@@ -233,7 +237,7 @@ def infer(
         if enhanced:
             try:
                 # Import here to avoid circular imports
-                from gfl.enhanced_inference_engine import get_inference_engine
+                from geneforgelang.core.enhanced_inference_engine import get_inference_engine
 
                 enhanced_engine = get_inference_engine()
 
@@ -256,8 +260,6 @@ def infer(
 
             except Exception as e:
                 # Fall back to legacy inference if enhanced fails
-                import logging
-
                 logging.warning(f"Enhanced inference failed, using legacy: {e}")
 
         # Legacy inference path
@@ -301,25 +303,14 @@ def parse_enhanced(text: str, use_grammar: bool = True, filename: str = "<input>
             return parse_gfl_grammar(text, filename)
         else:
             # Fallback to YAML parser with basic error wrapping
-            from gfl.error_handling import (
-                EnhancedValidationError,
-                ErrorCategory,
-                ErrorSeverity,
-            )
-
             try:
                 ast = _parser.parse_gfl(text)
                 result = EnhancedValidationResult(file_path=filename)
                 # Add the AST as an attribute instead of constructor param
                 result.ast = ast
                 return result
+            
             except Exception as e:
-                from gfl.error_handling import (
-                    EnhancedValidationError,
-                    ErrorCategory,
-                    ErrorSeverity,
-                )
-
                 error = EnhancedValidationError(
                     message=str(e),
                     code="YAML_PARSE_ERROR",
@@ -354,9 +345,9 @@ def infer_enhanced(ast: dict[str, Any], model_name: str = "heuristic", explain: 
         >>> print(result['explanation'])
     """
     try:
-        from gfl.enhanced_inference_engine import get_inference_engine
-        from gfl.inference_engine import InferenceEngine
-        from gfl.models.dummy import DummyGeneModel
+        from geneforgelang.core.enhanced_inference_engine import get_inference_engine
+        from geneforgelang.core.inference import InferenceEngine
+        from geneforgelang.models.dummy import DummyGeneModel
 
         # Create temporary engine to extract features
         temp_engine = InferenceEngine(DummyGeneModel())
@@ -396,9 +387,9 @@ def compare_inference_models(ast: dict[str, Any], model_names: list[str] | None 
         ...     print(f"{model}: {result['prediction']} ({result['confidence']:.2%})")
     """
     try:
-        from gfl.enhanced_inference_engine import get_inference_engine
-        from gfl.inference_engine import InferenceEngine
-        from gfl.models.dummy import DummyGeneModel
+        from geneforgelang.core.enhanced_inference_engine import get_inference_engine
+        from geneforgelang.core.inference import InferenceEngine
+        from geneforgelang.models.dummy import DummyGeneModel
 
         # Extract features
         temp_engine = InferenceEngine(DummyGeneModel())
@@ -557,7 +548,7 @@ def list_available_plugins() -> dict[str, list[str]]:
         return {"generators": [], "optimizers": []}
 
     try:
-        from gfl.plugins import get_available_generators, get_available_optimizers
+        from geneforgelang.plugins import get_available_generators, get_available_optimizers
 
         generators = get_available_generators()
         optimizers = get_available_optimizers()
@@ -606,7 +597,7 @@ def get_api_info() -> dict[str, Any]:
             info["available_plugins"] = {"generators": [], "optimizers": []}
 
     try:
-        from gfl.enhanced_inference_engine import get_inference_engine
+        from geneforgelang.core.enhanced_inference_engine import get_inference_engine
 
         engine = get_inference_engine()
         info["inference_models"] = engine.list_models()

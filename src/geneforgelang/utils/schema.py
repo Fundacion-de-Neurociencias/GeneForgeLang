@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import yaml
 
-from gfl.error_handling import (
+from geneforgelang.core.errors import (
     EnhancedValidationResult,
     ErrorCodes,
     ErrorSeverity,
