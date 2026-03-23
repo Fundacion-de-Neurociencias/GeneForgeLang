@@ -35,7 +35,7 @@ class PluginRegistry:
     def _discover_plugins(self):
         """Discover and register external plugins via entry points."""
         # Discover regular plugins
-        for entry_point in importlib.metadata.entry_points().get("gfl.plugins", []):
+        for entry_point in importlib.metadata.entry_points(group="geneforgelang.plugins"):
             try:
                 plugin_class = entry_point.load()
                 self._register_plugin(entry_point.name, plugin_class)
@@ -43,7 +43,7 @@ class PluginRegistry:
                 pass  # Skip plugins that fail to load
 
         # Discover container images for plugins
-        for entry_point in importlib.metadata.entry_points().get("gfl.plugin_containers", []):
+        for entry_point in importlib.metadata.entry_points(group="geneforgelang.plugin_containers"):
             try:
                 container_image = entry_point.load() if callable(entry_point.load) else entry_point.value
                 self._container_images[entry_point.name] = container_image

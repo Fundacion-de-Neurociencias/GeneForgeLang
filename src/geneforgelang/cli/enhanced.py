@@ -21,6 +21,7 @@ import argparse
 import json
 import logging
 import sys
+import traceback 
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -46,14 +47,13 @@ except ImportError:
     Console = None
 
 # Import GFL components
-from gfl import __api_version__, __version__
-from gfl.api import infer, parse, parse_enhanced, validate
-from gfl.cli_utils import CLIUtilsMixin
-from gfl.performance import get_monitor, get_optimizer
+from geneforgelang.core.api import infer, parse, parse_enhanced, validate
+from geneforgelang.cli.utils import CLIUtilsMixin
+from geneforgelang.core.performance import get_monitor, get_optimizer
 
 # Optional imports with fallbacks
 try:
-    from gfl.plugins.plugin_registry import (
+    from geneforgelang.plugins.plugin_registry import (
         activate_plugin,
         deactivate_plugin,
         list_plugins,
@@ -66,7 +66,7 @@ except ImportError:
     HAS_PLUGINS = False
 
 try:
-    from gfl.enhanced_schema_validator import EnhancedSchemaValidator
+    from geneforgelang.utils.enhanced_schema_validator import EnhancedSchemaValidator
 
     HAS_ENHANCED_SCHEMA = True
 except ImportError:
@@ -76,6 +76,9 @@ except ImportError:
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+# Version information
+__version__ = "0.2.0"
+__api_version__ = "2.0.0"
 
 class CLIError(Exception):
     """Base exception for CLI errors."""
@@ -152,14 +155,10 @@ class OutputFormatter:
         if self.use_rich:
             self.console.print(f"[red]Error:[/red] {message}")
             if error and logger.isEnabledFor(logging.DEBUG):
-                import traceback
-
                 self.console.print(f"[dim]{traceback.format_exc()}[/dim]")
         else:
             print(f"Error: {message}", file=sys.stderr)
             if error and logger.isEnabledFor(logging.DEBUG):
-                import traceback
-
                 print(traceback.format_exc(), file=sys.stderr)
 
     def print_success(self, message: str):
@@ -699,7 +698,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
         try:
             # Import models
             try:
-                from gfl.models.dummy import DummyModel
+                from geneforgelang.models.dummy import DummyGeneModel
             except ImportError:
                 self.formatter.print_error("No inference models available")
                 return 1
@@ -712,7 +711,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
 
             # Initialize model
             if args.model == "dummy":
-                model = DummyModel()
+                model = DummyGeneModel()
             else:
                 self.formatter.print_error(f"Unknown model: {args.model}")
                 return 1
@@ -1030,6 +1029,4 @@ def main(args: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    import sys
-
     sys.exit(main())

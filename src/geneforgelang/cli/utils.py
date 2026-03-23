@@ -100,7 +100,7 @@ def check_dependencies() -> dict[str, bool]:
 def process_file_batch(file_path: Path, action: str, **kwargs) -> dict[str, Any]:
     """Process a single file for batch operations."""
     try:
-        from gfl.api import infer, parse, validate
+        from geneforgelang.core.api import infer, parse, validate
 
         with open(file_path, encoding="utf-8") as f:
             content = f.read()
@@ -407,7 +407,7 @@ class CLIUtilsMixin:
         """Run performance benchmark."""
         import statistics
 
-        from gfl.api import parse, validate
+        from geneforgelang.core.api import parse, validate
 
         self.formatter.print(f"Running benchmark with {iterations} iterations per file...")
 

@@ -6,13 +6,15 @@ ML model integration capabilities of the GeneForgeLang inference system.
 
 import argparse
 import json
+import traceback
+import time
 from typing import Any, Dict, Optional
 
 # Import GFL API
 try:
-    from gfl.api import parse, validate
-    from gfl.enhanced_inference_engine import get_inference_engine
-    from gfl.models.advanced_models import (
+    from geneforgelang.core.api import parse, validate
+    from geneforgelang.core.enhanced_inference_engine import get_inference_engine
+    from geneforgelang.models.advanced_models import (
         create_genomic_classification_model,
         create_multimodal_genomic_model,
         create_protein_generation_model,
@@ -187,8 +189,8 @@ def test_inference_file(file_path: str, model_name: Optional[str] = None, output
         return
 
     # Extract features from AST
-    from gfl.inference_engine import InferenceEngine
-    from gfl.models.dummy import DummyGeneModel
+    from geneforgelang.core.inference import InferenceEngine
+    from geneforgelang.models.dummy import DummyGeneModel
 
     # Create temporary inference engine to extract features
     temp_engine = InferenceEngine(DummyGeneModel())
@@ -241,8 +243,6 @@ def test_inference_file(file_path: str, model_name: Optional[str] = None, output
 
     except Exception as e:
         print_output(f"Inference failed: {e}", "error")
-        import traceback
-
         print_output(traceback.format_exc(), "error")
 
 
@@ -251,8 +251,6 @@ def benchmark_models(iterations: int = 10):
     if not HAS_GFL_API:
         print_output("GFL API not available", "error")
         return
-
-    import time
 
     engine = get_inference_engine()
 

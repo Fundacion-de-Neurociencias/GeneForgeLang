@@ -6,11 +6,12 @@ Provides console commands for parsing, validation, inference, and utilities.
 import argparse
 import json
 import sys
+import yaml
 
-from gfl.api import get_api_info, infer, parse, validate
+from geneforgelang.core.api import get_api_info, infer, parse, validate
 
 try:
-    from gfl.schema_validator import comprehensive_validate, load_schema
+    from geneforgelang.utils.schema_validator import comprehensive_validate, load_schema
 
     HAS_SCHEMA = True
 except ImportError:
@@ -19,12 +20,12 @@ except ImportError:
     load_schema = None
 
 try:
-    from gfl.models.dummy import DummyModel
+    from geneforgelang.models.dummy import DummyGeneModel
 
     HAS_DUMMY_MODEL = True
 except ImportError:
     HAS_DUMMY_MODEL = False
-    DummyModel = None
+    DummyGeneModel = None
 
 
 def cmd_parse():
@@ -46,8 +47,6 @@ def cmd_parse():
         if args.format == "json":
             output = json.dumps(ast.to_dict(), indent=2) if args.typed else json.dumps(ast, indent=2)
         elif args.format == "yaml":
-            import yaml
-
             if args.typed:
                 output = yaml.dump(ast.to_dict(), default_flow_style=False)
             else:
@@ -148,7 +147,7 @@ def cmd_infer():
         ast = parse(text)
 
         if args.model == "dummy" and HAS_DUMMY_MODEL:
-            model = DummyModel()
+            model = DummyGeneModel()
         else:
             raise ValueError(f"Model {args.model} not available")
 
@@ -157,8 +156,6 @@ def cmd_infer():
         if args.format == "json":
             output = json.dumps(result.to_dict(), indent=2) if args.detailed else json.dumps(result, indent=2)
         else:  # yaml
-            import yaml
-
             if args.detailed:
                 output = yaml.dump(result.to_dict(), default_flow_style=False)
             else:

@@ -6,6 +6,7 @@ supporting both the legacy CLI and the new enhanced CLI.
 """
 
 import sys
+import traceback
 from typing import list, Optional
 
 
@@ -13,7 +14,7 @@ def main(args: Optional[list[str]] = None) -> int:
     """Main entry point for the GFL CLI."""
     try:
         # Try to use the enhanced CLI first
-        from .enhanced_cli import EnhancedCLI
+        from geneforgelang.cli.enhanced import EnhancedCLI
 
         cli = EnhancedCLI()
         return cli.run(args)
@@ -25,7 +26,7 @@ def main(args: Optional[list[str]] = None) -> int:
 
         # Import legacy CLI functions
         try:
-            from . import cli
+            from geneforgelang.cli import cli
 
             # Parse arguments manually for legacy CLI
             if not args:
@@ -68,8 +69,6 @@ def main(args: Optional[list[str]] = None) -> int:
 
     except Exception as e:
         print(f"Unexpected error: {e}", file=sys.stderr)
-        import traceback
-
         traceback.print_exc()
         return 1
 
