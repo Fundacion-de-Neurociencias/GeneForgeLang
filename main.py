@@ -1,15 +1,7 @@
-import os
 import sys
-
-# Add the project root to the Python path
-# This helps resolve imports like 'gfl.parser', 'gfl.plugins', etc., correctly
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-
 import logging
 
-from gfl import parser
-from gfl.interpreter import Interpreter
-from gfl.semantic_validator import validate
+from geneforgelang.core import parse_gfl, validate, execute
 
 # Configure logging
 logging.basicConfig(
@@ -28,7 +20,7 @@ def main(gfl_file_path):
 
     try:
         # Lexing and Parsing
-        ast = parser.parse(gfl_code)
+        ast = parse_gfl(gfl_code)
         if not ast:
             logger.error("Failed to parse GFL code.")
             return
@@ -42,10 +34,13 @@ def main(gfl_file_path):
             return
         logger.info("Semantic validation successful.")
 
-        # Interpretation
-        interpreter = Interpreter()
-        interpreter.interpret(ast)
+        # Execution
+        execution_result = execute(ast)
+        if not execution_result:
+            logger.error("Execution failed to produce results.")
+            return
         logger.info("GFL script execution complete.")
+        #print(execution_result)
 
     except Exception as e:
         logger.exception(f"An unexpected error occurred during GFL processing: {e}")
