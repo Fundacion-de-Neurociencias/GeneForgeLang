@@ -6,8 +6,7 @@ loops, as described in the proposal. It shows how to define parameter search
 spaces, optimization strategies, and automated experimentation loops.
 """
 
-from gfl.api import infer, parse, validate
-from gfl.models.dummy import DummyGeneModel
+from geneforgelang.core.api import infer, parse, validate
 
 
 def test_active_learning_optimization():

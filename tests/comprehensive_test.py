@@ -7,7 +7,7 @@ import sys
 # Add the current directory to the path so we can import gfl
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from gfl.semantic_validator import EnhancedSemanticValidator
+from src.geneforgelang.core.validator import EnhancedSemanticValidator
 
 
 def test_active_learning_optimize():

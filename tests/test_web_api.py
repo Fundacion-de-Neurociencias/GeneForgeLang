@@ -69,7 +69,7 @@ class TestAPIServer(unittest.TestCase):
     def test_api_server_import(self):
         """Test that API server can be imported."""
         try:
-            from gfl.api_server import app, create_app
+            from geneforgelang.core.api import app, create_app
 
             self.assertIsNotNone(app)
             self.assertIsNotNone(create_app)
@@ -80,7 +80,7 @@ class TestAPIServer(unittest.TestCase):
     def test_create_success_response(self):
         """Test success response creation."""
         try:
-            from gfl.api_server import create_success_response
+            from geneforgelang.core.api import create_success_response
 
             response = create_success_response(data={"test": "data"}, message="Test successful")
 
@@ -95,7 +95,7 @@ class TestAPIServer(unittest.TestCase):
     def test_create_error_response(self):
         """Test error response creation."""
         try:
-            from gfl.api_server import create_error_response
+            from geneforgelang.core.api import create_error_response
 
             response = create_error_response("Test error", 400)
 
@@ -109,7 +109,7 @@ class TestAPIServer(unittest.TestCase):
     def test_api_server_configuration(self):
         """Test API server configuration."""
         try:
-            from gfl.api_server import create_app
+            from geneforgelang.core.api import create_app
 
             app = create_app()
 
@@ -123,7 +123,7 @@ class TestAPIServer(unittest.TestCase):
     def test_parse_request_model(self):
         """Test parse request validation."""
         try:
-            from gfl.api_server import GFLParseRequest
+            from geneforgelang.core.api import GFLParseRequest
 
             # Valid request
             request = GFLParseRequest(content=SAMPLE_GFL, use_grammar=False, filename="test.gfl")
@@ -142,7 +142,7 @@ class TestAPIServer(unittest.TestCase):
     def test_inference_request_model(self):
         """Test inference request validation."""
         try:
-            from gfl.api_server import GFLInferenceRequest
+            from geneforgelang.core.api import GFLInferenceRequest
 
             request = GFLInferenceRequest(content=SAMPLE_GFL, model_name="heuristic", explain=True)
 
@@ -180,7 +180,7 @@ class TestWebInterface(unittest.TestCase):
     def test_web_interface_import(self):
         """Test that web interface can be imported."""
         try:
-            from gfl.web_interface import create_interface, launch_web_interface
+            from geneforgelang.web.interface import create_interface, launch_web_interface
 
             self.assertIsNotNone(create_interface)
             self.assertIsNotNone(launch_web_interface)
@@ -190,7 +190,7 @@ class TestWebInterface(unittest.TestCase):
     def test_sample_gfl_content(self):
         """Test sample GFL content availability."""
         try:
-            from gfl.web_interface import SAMPLE_GFL_CONTENT
+            from geneforgelang.web.interface import SAMPLE_GFL_CONTENT
 
             self.assertIsInstance(SAMPLE_GFL_CONTENT, dict)
             self.assertIn("CRISPR Gene Editing", SAMPLE_GFL_CONTENT)
@@ -207,7 +207,7 @@ class TestWebInterface(unittest.TestCase):
     def test_initialize_inference_engine(self):
         """Test inference engine initialization."""
         try:
-            from gfl.web_interface import initialize_inference_engine
+            from geneforgelang.web.interface import initialize_inference_engine
 
             with patch("gfl.web_interface.get_inference_engine") as mock_engine:
                 mock_engine.return_value.list_models.return_value = [
@@ -228,7 +228,7 @@ class TestWebInterface(unittest.TestCase):
     def test_parse_and_validate_gfl(self):
         """Test GFL parsing and validation function."""
         try:
-            from gfl.web_interface import parse_and_validate_gfl
+            from geneforgelang.web.interface import parse_and_validate_gfl
 
             # Mock validation result
             with patch("gfl.web_interface.validate") as mock_validate:
@@ -247,7 +247,7 @@ class TestWebInterface(unittest.TestCase):
     def test_parse_and_validate_gfl_error(self):
         """Test GFL parsing with errors."""
         try:
-            from gfl.web_interface import parse_and_validate_gfl
+            from geneforgelang.web.interface import parse_and_validate_gfl
 
             # Test empty content
             is_valid, message, ast = parse_and_validate_gfl("")
@@ -262,7 +262,7 @@ class TestWebInterface(unittest.TestCase):
     def test_get_available_models(self):
         """Test getting available models."""
         try:
-            from gfl.web_interface import get_available_models
+            from geneforgelang.web.interface import get_available_models
 
             # Without inference engine
             models = get_available_models()
@@ -281,7 +281,7 @@ class TestWebInterface(unittest.TestCase):
     def test_get_system_stats(self):
         """Test system statistics generation."""
         try:
-            from gfl.web_interface import get_system_stats
+            from geneforgelang.web.interface import get_system_stats
 
             stats = get_system_stats()
 
@@ -325,7 +325,7 @@ class TestClientSDK(unittest.TestCase):
     def test_client_creation(self):
         """Test client creation and configuration."""
         try:
-            from gfl.client_sdk import GFLClient
+            from geneforgelang.utils.client import GFLClient
 
             client = GFLClient(base_url="http://test-server:8000", timeout=60.0, retries=5)
 
@@ -339,7 +339,7 @@ class TestClientSDK(unittest.TestCase):
     def test_api_response_dataclass(self):
         """Test APIResponse dataclass."""
         try:
-            from gfl.client_sdk import APIResponse
+            from geneforgelang.utils.client import APIResponse
 
             response = APIResponse(
                 success=True,
@@ -359,7 +359,7 @@ class TestClientSDK(unittest.TestCase):
     def test_parse_result_dataclass(self):
         """Test ParseResult dataclass."""
         try:
-            from gfl.client_sdk import ParseResult
+            from geneforgelang.utils.client import ParseResult
 
             result = ParseResult(
                 ast={"experiment": {"tool": "test"}},
@@ -377,7 +377,7 @@ class TestClientSDK(unittest.TestCase):
     def test_client_make_request(self):
         """Test client HTTP request method."""
         try:
-            from gfl.client_sdk import GFLClient
+            from geneforgelang.utils.client import GFLClient
 
             client = GFLClient()
 
@@ -393,7 +393,7 @@ class TestClientSDK(unittest.TestCase):
     def test_client_error_handling(self):
         """Test client error handling."""
         try:
-            from gfl.client_sdk import GFLAPIError, GFLClient
+            from geneforgelang.utils.client import GFLAPIError, GFLClient
 
             client = GFLClient()
 
@@ -415,7 +415,7 @@ class TestClientSDK(unittest.TestCase):
     def test_convenience_functions(self):
         """Test convenience functions for client creation."""
         try:
-            from gfl.client_sdk import create_async_client, create_client
+            from geneforgelang.utils.client import create_async_client, create_client
 
             sync_client = create_client("http://test:8000")
             self.assertEqual(sync_client.base_url, "http://test:8000")
@@ -453,7 +453,7 @@ class TestServerLauncher(unittest.TestCase):
     def test_server_process_creation(self):
         """Test ServerProcess class."""
         try:
-            from gfl.server_launcher import ServerProcess
+            from geneforgelang.web.launcher import ServerProcess
 
             def dummy_target():
                 pass
@@ -475,7 +475,7 @@ class TestServerLauncher(unittest.TestCase):
     def test_server_process_start(self):
         """Test server process starting."""
         try:
-            from gfl.server_launcher import ServerProcess
+            from geneforgelang.web.launcher import ServerProcess
 
             def dummy_target():
                 pass
@@ -493,12 +493,12 @@ class TestServerLauncher(unittest.TestCase):
     def test_gfl_server_manager(self):
         """Test GFLServerManager class."""
         try:
-            from gfl.server_launcher import GFLServerManager
+            from geneforgelang.web.launcher import GFLServerManager
 
             manager = GFLServerManager()
 
             # Mock API server addition
-            with patch("gfl.server_launcher.GFLServerManager.add_api_server"):
+            with patch("geneforgelang.web.launcher.GFLServerManager.add_api_server"):
                 manager.add_api_server(host="127.0.0.1", port=8080)
 
             self.assertFalse(manager.shutdown_requested)
@@ -509,7 +509,7 @@ class TestServerLauncher(unittest.TestCase):
     def test_check_dependencies(self):
         """Test dependency checking."""
         try:
-            from gfl.server_launcher import check_dependencies
+            from geneforgelang.web.launcher import check_dependencies
 
             deps = check_dependencies()
 
@@ -537,7 +537,7 @@ class TestIntegration(unittest.TestCase):
 
         # Step 1: Parse GFL
         try:
-            from gfl.client_sdk import ParseResult
+            from geneforgelang.utils.client import ParseResult
 
             parse_result = ParseResult(
                 ast={"experiment": {"tool": "CRISPR_cas9"}},
@@ -552,7 +552,7 @@ class TestIntegration(unittest.TestCase):
 
         # Step 2: Validate
         try:
-            from gfl.client_sdk import ValidationResult
+            from geneforgelang.utils.client import ValidationResult
 
             validation_result = ValidationResult(
                 is_valid=True,
@@ -569,7 +569,7 @@ class TestIntegration(unittest.TestCase):
 
         # Step 3: Inference
         try:
-            from gfl.client_sdk import InferenceResult
+            from geneforgelang.utils.client import InferenceResult
 
             inference_result = InferenceResult(
                 prediction="edited",
@@ -595,7 +595,7 @@ class TestIntegration(unittest.TestCase):
 
         # Test client error classes
         try:
-            from gfl.client_sdk import GFLAPIError, GFLClientError, GFLConnectionError
+            from geneforgelang.utils.client import GFLAPIError, GFLClientError, GFLConnectionError
 
             # Test basic exception
             with self.assertRaises(GFLClientError):

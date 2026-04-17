@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 try:
     # Try to import the plugin registry
-    from gfl.plugins.plugin_registry import plugin_registry
+    from geneforgelang.plugins.plugin_registry import plugin_registry
     
     # List all registered plugins
     plugins = plugin_registry.list_plugins()

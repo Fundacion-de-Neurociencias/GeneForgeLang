@@ -3,10 +3,8 @@
 Test the design block JSON schema validation.
 """
 
-from gfl.api import parse
-from gfl.schema_validator import comprehensive_validate
-
-
+from src.geneforgelang.core.api import parse
+from geneforgelang.utils.schema_validator import comprehensive_validate
 def test_design_schema_validation():
     """Test that design block validates against the JSON schema."""
 

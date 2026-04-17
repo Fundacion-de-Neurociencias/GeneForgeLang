@@ -3,9 +3,11 @@
 Test basic plugin functionality without entry point discovery.
 """
 
-from gfl.api import execute, get_api_info, parse, validate
-from gfl.plugins import plugin_registry
-from gfl.plugins.example_implementations import BayesianOptimizer, MoleculeTransformerGenerator, ProteinVAEGenerator
+from src.geneforgelang.core.api import execute, get_api_info, parse, validate
+from src.geneforgelang.plugins.plugin_registry import PluginRegistry
+from examples.example_implementations import BayesianOptimizer, MoleculeTransformerGenerator, ProteinVAEGenerator
+
+plugin_registry = PluginRegistry()
 
 
 def test_basic_plugin_functionality():

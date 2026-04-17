@@ -2,7 +2,7 @@
 """Simple test for the grammar parser."""
 
 try:
-    from gfl.grammar_parser import parse_gfl_grammar
+    from src.geneforgelang.core.parser import parse_gfl_grammar
 
     # Test simple experiment
     code = """experiment: {

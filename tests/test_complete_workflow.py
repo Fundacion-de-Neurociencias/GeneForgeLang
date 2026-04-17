@@ -15,18 +15,18 @@ def test_complete_workflow():
 
     try:
         # Import the API
-        import gfl
+        from src.geneforgelang.core import api
 
-        print(f"GFL version: {gfl.__version__}")
+        print(f"GFL version: {api.__version__}")
 
         # Manually register the genesis plugins
-        from gfl.plugins.auto_register import _register_genesis_plugins
+        from src.geneforgelang.plugins.auto_register import _register_genesis_plugins
 
         _register_genesis_plugins()
         print("Genesis plugins registered")
 
         # Test plugin availability
-        from gfl.plugins.plugin_registry import plugin_registry
+        from src.geneforgelang.plugins.plugin_registry import plugin_registry
 
         plugin_registry._discover_plugins()
 
@@ -36,7 +36,7 @@ def test_complete_workflow():
             print(f"  - {plugin.name} (v{plugin.version})")
 
         # Test the CRISPR evaluator plugin directly
-        from gfl.plugins.plugin_registry import get_plugin
+        from src.geneforgelang.plugins.plugin_registry import get_plugin
 
         print("\nTesting CRISPR evaluator plugin...")
         crispr_evaluator = get_plugin("crispr_evaluator")

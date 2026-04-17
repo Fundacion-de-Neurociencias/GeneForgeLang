@@ -3,7 +3,7 @@
 Test the design block implementation with a real GFL file.
 """
 
-from gfl.api import parse, validate
+from src.geneforgelang.core.api import parse, validate
 
 
 def test_real_gfl_file():

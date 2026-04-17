@@ -3,8 +3,8 @@
 Test the complete plugin ecosystem with real GFL execution.
 """
 
-from gfl.api import execute, get_api_info, list_available_plugins, parse, validate
-from gfl.plugins.example_implementations import register_example_plugins
+from geneforgelang.core.api import execute, get_api_info, list_available_plugins, parse, validate
+from examples.example_implementations import register_example_plugins
 
 
 def test_plugin_ecosystem():
@@ -268,7 +268,7 @@ design:
 """
 
     try:
-        from gfl.api import validate_plugins
+        from geneforgelang.core.api import validate_plugins
 
         ast = parse(invalid_gfl)
         plugin_errors = validate_plugins(ast)

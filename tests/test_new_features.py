@@ -8,7 +8,7 @@ These tests prevent future updates from breaking existing functionality.
 
 import pytest
 
-from gfl.api import parse, validate
+from geneforgelang.core.api import parse, validate
 
 
 class TestNewFeaturesRegression:

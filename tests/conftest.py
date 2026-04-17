@@ -9,7 +9,7 @@ from typing import Any, Dict
 
 import pytest
 
-from gfl.api import parse, validate
+from src.geneforgelang.core.api import parse, validate
 
 
 @pytest.fixture

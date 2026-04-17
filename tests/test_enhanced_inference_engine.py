@@ -5,14 +5,14 @@ from unittest.mock import patch
 
 # Import modules under test
 try:
-    from gfl.enhanced_inference_engine import (
+    from geneforgelang.core.enhanced_inference_engine import (
         EnhancedInferenceEngine,
         HeuristicModel,
         InferenceResult,
         ModelConfig,
         get_inference_engine,
     )
-    from gfl.models.advanced_models import (
+    from src.geneforgelang.models.advanced_models import (
         GenomicClassificationModel,
         MultiModalGenomicModel,
         ProteinGenerationModel,
@@ -178,7 +178,7 @@ class TestTransformersModel(unittest.TestCase):
         # Don't actually load the model in tests
         with patch("gfl.enhanced_inference_engine.AutoTokenizer"):
             with patch("gfl.enhanced_inference_engine.AutoModel"):
-                from gfl.enhanced_inference_engine import TransformersModel
+                from src.geneforgelang.models.advanced_models import TransformersModel
 
                 model = TransformersModel(config)
 
@@ -366,8 +366,8 @@ class TestIntegrationWithLegacyEngine(unittest.TestCase):
         """Test that legacy engine can use enhanced features."""
         # This test requires both old and new engines
         try:
-            from gfl.inference_engine import InferenceEngine
-            from gfl.models.dummy import DummyGeneModel
+            from src.geneforgelang.cli.inference import InferenceEngine
+            from src.geneforgelang.models.dummy import DummyGeneModel
 
             # Create legacy engine with dummy model
             legacy_model = DummyGeneModel()
