@@ -12,7 +12,7 @@ try:
         ModelConfig,
         get_inference_engine,
     )
-    from src.geneforgelang.models.advanced_models import (
+    from geneforgelang.models.advanced_models import (
         GenomicClassificationModel,
         MultiModalGenomicModel,
         ProteinGenerationModel,

@@ -3,7 +3,7 @@
 Test the optimize block example file.
 """
 
-from src.geneforgelang.core.api import parse, validate
+from geneforgelang.core.api import parse, validate
 
 
 def test_example_optimize_file():

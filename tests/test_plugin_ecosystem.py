@@ -2,6 +2,9 @@
 """
 Test the complete plugin ecosystem with real GFL execution.
 """
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from geneforgelang.core.api import execute, get_api_info, list_available_plugins, parse, validate
 from examples.example_implementations import register_example_plugins

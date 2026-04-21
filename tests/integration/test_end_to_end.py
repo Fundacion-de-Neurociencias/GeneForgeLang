@@ -9,8 +9,8 @@ Tests cover:
 
 import pytest
 
-from gfl.api import infer, parse, validate
-from gfl.models.dummy import DummyGeneModel
+from geneforgelang.core.api import infer, parse, validate
+from geneforgelang.models.dummy import DummyGeneModel
 
 
 class TestBasicWorkflows:
@@ -533,7 +533,7 @@ class TestExampleFiles:
 
                 # If we have typed AST support, test roundtrip
                 try:
-                    from gfl.types import GFLAST
+                    from geneforgelang.core.gftypes import GFLAST
 
                     typed_ast = GFLAST.from_dict(ast)
                     reconstructed_dict = typed_ast.to_dict()

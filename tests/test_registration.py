@@ -21,8 +21,8 @@ plugin_registry._discover_plugins()
 # List plugins
 plugins = plugin_registry.list_plugins()
 print("Available plugins:")
-for plugin in plugins:
-    print(f"  - {plugin.name} (v{plugin.version}) - State: {plugin.state.value}")
+for plugin_name in plugins:
+    print(f"  - {plugin_name}")
 
 # Try to get specific plugins
 try:

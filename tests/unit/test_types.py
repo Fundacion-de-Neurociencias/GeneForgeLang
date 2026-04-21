@@ -11,7 +11,7 @@ from typing import Any, Dict
 
 import pytest
 
-from gfl.types import (
+from geneforgelang.core.gftypes import (
     GFLAST,
     Analysis,
     AnalysisStrategy,

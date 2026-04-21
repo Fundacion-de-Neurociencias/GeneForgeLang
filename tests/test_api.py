@@ -1,5 +1,5 @@
-from src.geneforgelang.core.api import infer, parse, validate
-from src.geneforgelang.models.dummy import DummyGeneModel
+from geneforgelang.core.api import infer, parse, validate
+from geneforgelang.models.dummy import DummyGeneModel
 
 
 def test_parse_and_validate_minimal():

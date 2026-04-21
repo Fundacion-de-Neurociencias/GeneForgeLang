@@ -11,7 +11,7 @@ Tests cover:
 
 import pytest
 
-from gfl.api import validate
+from geneforgelang.core.api import validate
 
 
 class TestRulesBlockValidation:

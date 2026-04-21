@@ -57,7 +57,7 @@ def test_schema_registry_validation():
     print("\nTesting schema registry validation...")
 
     # Read the test GFL file
-    with open("test_schema_registry.gfl") as f:
+    with open("tests/test_schema_registry.gfl") as f:
         gfl_content = f.read()
 
     # Parse the GFL content

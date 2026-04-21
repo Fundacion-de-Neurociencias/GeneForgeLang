@@ -83,49 +83,22 @@ class AdvancedGFLLexer:
         # Core blocks
         "experiment": "EXPERIMENT",
         "analyze": "ANALYZE",
-        "analyse": "ANALYZE",  # British spelling
-        "design": "DESIGN",
-        "optimize": "OPTIMIZE",
         "simulate": "SIMULATE",
         "branch": "BRANCH",
         "metadata": "METADATA",
         # Control flow
         "if": "IF",
-        "then": "THEN",
         "else": "ELSE",
-        "elif": "ELIF",
-        "while": "WHILE",
-        "for": "FOR",
-        "in": "IN",
         # Logical operators
         "and": "AND",
         "or": "OR",
         "not": "NOT",
-        # Keywords
-        "tool": "TOOL",
-        "type": "TYPE",
-        "strategy": "STRATEGY",
-        "params": "PARAMS",
-        "parameters": "PARAMS",  # Alias
-        "data": "DATA",
-        "output": "OUTPUT",
-        "input": "INPUT",
-        "using": "USING",
-        "with": "WITH",
-        "as": "AS",
-        "from": "FROM",
-        "import": "IMPORT",
         # Boolean values
         "true": "BOOLEAN",
         "false": "BOOLEAN",
-        "yes": "BOOLEAN",
-        "no": "BOOLEAN",
-        "on": "BOOLEAN",
-        "off": "BOOLEAN",
         # Null values
         "null": "NULL",
         "none": "NULL",
-        "nil": "NULL",
     }
 
     # List of token names
@@ -150,8 +123,6 @@ class AdvancedGFLLexer:
         "LESS_EQUAL",
         "GREATER_EQUAL",
         "ASSIGN",
-        "PLUS_ASSIGN",
-        "MINUS_ASSIGN",
         # Delimiters
         "LPAREN",
         "RPAREN",
@@ -160,24 +131,16 @@ class AdvancedGFLLexer:
         "LBRACKET",
         "RBRACKET",
         "COMMA",
-        "SEMICOLON",
         "COLON",
-        "DOT",
-        "ARROW",
-        "PIPE",
-        # Special
-        "NEWLINE",
-        "INDENT",
-        "DEDENT",
-    ] + list(reserved.values())
+    ] + [t for t in set(reserved.values()) if t not in ["BOOLEAN", "NULL"]]
 
     # Token rules
-    t_PLUS = r"\\+"
+    t_PLUS = r"\+"
     t_MINUS = r"-"
-    t_TIMES = r"\\*"
+    t_TIMES = r"\*"
     t_DIVIDE = r"/"
     t_MODULO = r"%"
-    t_POWER = r"\\*\\*"
+    t_POWER = r"\*\*"
 
     t_EQUALS = r"=="
     t_NOT_EQUALS = r"!="
@@ -187,25 +150,19 @@ class AdvancedGFLLexer:
     t_GREATER_EQUAL = r">="
 
     t_ASSIGN = r"="
-    t_PLUS_ASSIGN = r"\\+="
-    t_MINUS_ASSIGN = r"-="
 
-    t_LPAREN = r"\\("
-    t_RPAREN = r"\\)"
-    t_LBRACE = r"\\{"
-    t_RBRACE = r"\\}"
-    t_LBRACKET = r"\\["
-    t_RBRACKET = r"\\]"
+    t_LPAREN = r"\("
+    t_RPAREN = r"\)"
+    t_LBRACE = r"\{"
+    t_RBRACE = r"\}"
+    t_LBRACKET = r"\["
+    t_RBRACKET = r"\]"
 
     t_COMMA = r","
-    t_SEMICOLON = r";"
     t_COLON = r":"
-    t_DOT = r"\\."
-    t_ARROW = r"->"
-    t_PIPE = r"\\|"
 
     # Ignored characters (spaces and tabs)
-    t_ignore = " \\t"
+    t_ignore = " \t"
 
     def __init__(self):
         self.lexer = None
@@ -216,17 +173,18 @@ class AdvancedGFLLexer:
         self.lexer = lex.lex(module=self, debug=False)
 
     def t_COMMENT(self, t):
-        r"\\#.*"
+        r"\#.*"
         # Comments are ignored
         pass
 
     def t_MULTILINE_COMMENT(self, t):
-        r"/\\*[^*]*\\*+([^/*][^*]*\\*+)*/"
+        r"/\*([^*]|\*+[^*/])*\*+/"
+        pass
         # Multi-line comments are ignored
-        t.lexer.lineno += t.value.count("\\n")
+        #t.lexer.lineno += t.value.count("\\n")
 
     def t_NUMBER(self, t):
-        r"\\d+(\\.\\d*)?([eE][+-]?\\d+)?"
+        r"\d+(\.\d*)?([eE][+-]?\d+)?"
         try:
             if "." in t.value or "e" in t.value.lower():
                 t.value = float(t.value)
@@ -238,18 +196,16 @@ class AdvancedGFLLexer:
         return t
 
     def t_STRING(self, t):
-        r'"([^"\\]|\\.)*"|\'([^\'\\]|\\.)*\' '
+        r'"([^"\\]|\\.)*"|\'([^\'\\]|\\.)*\''
         # Remove quotes and handle escape sequences
-        t.value[0]
         content = t.value[1:-1]
-
         # Basic escape sequence handling
-        content = content.replace("\\\\n", "\\n")
-        content = content.replace("\\\\t", "\\t")
-        content = content.replace("\\\\r", "\\r")
-        content = content.replace('\\\\"', '"')
-        content = content.replace("\\\\'", "'")
-        content = content.replace("\\\\\\\\", "\\\\")
+        content = content.replace("\\n", "\n")
+        content = content.replace("\\t", "\t")
+        content = content.replace("\\r", "\r")
+        content = content.replace('\\"', '"')
+        content = content.replace("\\'", "'")
+        content = content.replace("\\\\", "\\")
 
         t.value = content
         return t
@@ -266,9 +222,8 @@ class AdvancedGFLLexer:
         return t
 
     def t_NEWLINE(self, t):
-        r"\\n+"
+        r"\n+"
         t.lexer.lineno += len(t.value)
-        return t
 
     def t_error(self, t):
         """Handle lexical errors."""
@@ -398,12 +353,12 @@ class AdvancedGFLParser:
         p[0] = {"type": "branch", "body": p[4], "location": self._get_location(p, 1)}
 
     def p_branch_body(self, p):
-        """branch_body : IF COLON expression NEWLINE statement_list
-        | IF COLON expression NEWLINE statement_list ELSE COLON statement_list"""
-        if len(p) == 6:
-            p[0] = {"condition": p[3], "then_statements": p[5]}
+        """branch_body : IF COLON expression COMMA statement_list
+        | IF COLON expression COMMA statement_list ELSE COLON statement_list"""
+        if len(p) == 5:
+            p[0] = {"condition": p[3], "then_statements": p[4]}
         else:
-            p[0] = {"condition": p[3], "then_statements": p[5], "else_statements": p[8]}
+            p[0] = {"condition": p[3], "then_statements": p[4], "else_statements": p[7]}
 
     def p_metadata_statement(self, p):
         """metadata_statement : METADATA COLON metadata_body"""
@@ -427,8 +382,7 @@ class AdvancedGFLParser:
         }
 
     def p_property_list(self, p):
-        """property_list : property_list NEWLINE property
-        | property_list COMMA property
+        """property_list : property_list COMMA property
         | property
         | empty"""
         if len(p) == 4:
@@ -626,9 +580,8 @@ class AdvancedGFLParser:
                 category=ErrorCategory.SYNTAX,
                 location=location,
                 suggested_fixes=[
-                    ErrorFix(
-                        description=f"Remove or replace the unexpected token '{p.value}'",
-                        code="REMOVE_TOKEN",
+                    ErrorFix(                        
+                        "REMOVE_TOKEN",
                     )
                 ],
             )

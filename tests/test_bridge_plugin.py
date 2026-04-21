@@ -13,38 +13,32 @@ try:
     # List all registered plugins
     plugins = plugin_registry.list_plugins()
     print("Available plugins:")
-    for plugin in plugins:
-        print(f"- {plugin.name} (version: {plugin.version})")
+    for plugin_name in plugins:
+        print(f"- {plugin_name}")
         
     # Check if our bridge editor plugin is registered
-    bridge_plugin = None
-    for plugin in plugins:
-        if plugin.name == "bridge_editor":
-            bridge_plugin = plugin
-            break
-            
-    if bridge_plugin:
-        print(f"\nBridge Editor plugin found!")
-        print(f"Name: {bridge_plugin.name}")
-        print(f"Version: {bridge_plugin.version}")
-        print(f"Instance: {bridge_plugin.instance}")
-        
+    bridge_plugin_name = None
+    if "bridge_editor" in plugins:
+        bridge_plugin_name = "bridge_editor"
+
+    if bridge_plugin_name:
+        print(f"\nBridge Editor plugin is registered with name: {bridge_plugin_name}")
+    
         # Try to create an instance of the plugin
-        if bridge_plugin.instance is None:
-            print("Plugin instance is None, trying to load it...")
-            try:
-                plugin_instance = plugin_registry.get_plugin("bridge_editor")
-                print(f"Plugin instance loaded: {plugin_instance}")
+        try:
+            plugin_instance = plugin_registry.get_plugin("bridge_editor")
+            print(f"Plugin instance loaded: {plugin_instance}")
+            if hasattr(plugin_instance, 'name'):
                 print(f"Plugin name: {plugin_instance.name}")
-            except Exception as e:
-                print(f"Error loading plugin instance: {e}")
-        else:
-            print(f"Plugin instance already loaded: {bridge_plugin.instance}")
-            print(f"Plugin name: {bridge_plugin.instance.name}")
+            if hasattr(plugin_instance, 'version'):
+                print(f"Plugin version: {plugin_instance.version}")
+        except Exception as e:
+            print(f"Error loading plugin instance: {e}")
     else:
         print("\nBridge Editor plugin NOT found in registry!")
         
 except Exception as e:
     print(f"Error: {e}")
     import traceback
-    traceback.print_exc()
+    traceback.print_exc()    
+    

@@ -9,8 +9,8 @@ Tests cover:
 
 import pytest
 
-from gfl.api import parse
-from gfl.yaml_lang.parser import YamlParseError
+from geneforgelang.core.api import parse
+
 
 
 class TestBasicParsing:
