@@ -303,7 +303,6 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
         self._add_parse_command(subparsers)
         self._add_validate_command(subparsers)
         self._add_infer_command(subparsers)
-        self._add_format_command(subparsers)
         self._add_plugins_command(subparsers)
         self._add_config_command(subparsers)
         self._add_batch_command(subparsers)
@@ -372,16 +371,6 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
         )
         parser.add_argument("--explain", action="store_true", help="Include explanations in output")
         parser.set_defaults(func=self.cmd_infer)
-
-    def _add_format_command(self, subparsers):
-        """Add format subcommand."""
-        parser = subparsers.add_parser("format", help="Format GFL files")
-        parser.add_argument("files", nargs="+", type=Path, help="GFL files to format")
-        parser.add_argument("--in-place", "-i", action="store_true", help="Modify files in place")
-        parser.add_argument("--check", action="store_true", help="Check if files are formatted")
-        parser.add_argument("--diff", action="store_true", help="Show formatting differences")
-        parser.add_argument("--indent", type=int, default=2, help="Indentation level")
-        parser.set_defaults(func=self.cmd_format)
 
     def _add_plugins_command(self, subparsers):
         """Add plugins subcommand."""
@@ -580,7 +569,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
     def cmd_validate(self, args) -> int:
         """Handle validate command."""
         try:
-            files = self._collect_files(args.files, args.recursive, args.pattern)
+            files = self._collect_files(args.files, args.recursive, pattern="*.gfl")
 
             if not files:
                 self.formatter.print_error("No files found to validate")
@@ -759,11 +748,6 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
         except Exception as e:
             self.formatter.print_error(f"Inference command failed: {e}")
             return 1
-
-    def cmd_format(self, args) -> int:
-        """Handle format command."""
-        self.formatter.print_error("Format command not yet implemented")
-        return 1
 
     def cmd_plugins(self, args) -> int:
         """Handle plugins command."""
