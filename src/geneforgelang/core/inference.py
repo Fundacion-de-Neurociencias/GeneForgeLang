@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from geneforgelang.utils.prob_rules import ProbReasoner, default_rules
 

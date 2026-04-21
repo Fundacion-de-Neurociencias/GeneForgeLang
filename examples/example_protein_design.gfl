@@ -13,7 +13,7 @@ design:
   entity: ProteinSequence
 
   # Specify the generative model plugin
-  model: ProteinGeneratorVAE
+  model: ProteinVAEGenerator
 
   # Define the optimization objective
   objective:
