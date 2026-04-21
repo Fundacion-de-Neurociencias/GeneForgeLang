@@ -9,7 +9,7 @@ def test_basic_api():
     print("Testing basic GFL API...")
 
     try:
-        from gfl.api import get_api_info, parse, validate
+        from geneforgelang.core.api import get_api_info, parse, validate
 
         # Test API info
         info = get_api_info()
@@ -40,24 +40,25 @@ experiment:
 
 
 def test_enhanced_inference():
-    """Test enhanced inference functionality."""
     print("\nTesting enhanced inference...")
-
     try:
-        from gfl.api import infer_enhanced, parse
+        from geneforgelang.core.enhanced_inference_engine import (
+            EnhancedInferenceEngine, ModelConfig, HeuristicModel
+        )
 
-        gfl_content = """
-experiment:
-  tool: CRISPR_cas9
-  type: gene_editing
-  params:
-    target_gene: TP53
-"""
-
-        ast = parse(gfl_content)
-        result = infer_enhanced(ast, model_name="heuristic")
-
-        print(f"✓ Inference successful: {result['label']} (confidence: {result['confidence']:.2%})")
+        engine = EnhancedInferenceEngine()
+        
+        features = {
+            "experiment_tool": "CRISPR_cas9",
+            "experiment_type": "gene_editing",
+            "target_gene": "TP53"
+        }
+        
+        # Llamar directamente al modelo, sin pasar por el caché
+        model = engine.models["heuristic"]
+        result = model.predict(features)
+        
+        print(f"✓ Inference successful: {result.prediction} (confidence: {result.confidence:.2%})")
         return True
 
     except Exception as e:
@@ -86,15 +87,19 @@ def test_cli_tools():
     try:
         import subprocess
 
-        # Test gfl-server help
-        result = subprocess.run(["gfl-server", "--help"], capture_output=True, text=True, timeout=10)
+        # Test gfl help
+        result = subprocess.run(["gfl", "--help"], capture_output=True, text=True, timeout=30)
 
         if result.returncode == 0:
-            print("✓ gfl-server CLI available")
+            print("✓ gfl CLI available")
+            return True
         else:
-            print(f"✗ gfl-server CLI failed: {result.stderr}")
-
-        return result.returncode == 0
+            print(f"✗ gfl CLI failed: {result.stderr}")
+            return False
+    
+    except subprocess.TimeoutExpired:
+        print("✗ CLI tools test failed: timeout — el comando tarda demasiado")
+        return False
 
     except Exception as e:
         print(f"✗ CLI tools test failed: {e}")

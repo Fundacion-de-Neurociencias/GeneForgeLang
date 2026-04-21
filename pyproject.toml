@@ -86,8 +86,8 @@ Repository = "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang"
 Issues = "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues"
 
 [project.scripts]
-gfl = "geneforgelang.cli.main:main"
-geneforgelang = "geneforgelang.cli.main:main"
+gfl = "geneforgelang.cli.commands:main"
+geneforgelang = "geneforgelang.cli.commands:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
