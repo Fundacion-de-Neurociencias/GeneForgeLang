@@ -1,6 +1,6 @@
-# User Quickstart Guide
+## GeneForgeLang quickstart guide
 
-This guide will help you get started with GeneForgeLang by creating your first workflow. We'll walk through installation, creating a simple workflow, and running it with plugins.
+GeneForgeLang (GFL) is a domain-specific language designed for genomic workflow specification, validation, and AI-powered analysis. This guide walks you through installation, your first workflows, custom schemas, and best practices to get you up and running quickly.
 
 ## Prerequisites
 
@@ -9,32 +9,28 @@ Before starting, make sure you have:
 2. GeneForgeLang installed (see [Installation Guide](installation.md))
 3. Basic understanding of biological workflows
 
-## Step 1: Verify Installation
-
-First, let's verify that GeneForgeLang is properly installed:
+## 1. Installation
 
 ```bash
-# Check GeneForgeLang installation
-python -c "import geneforgelang; print(f'GeneForgeLang version: {geneforgelang.__version__}')"
+ # Check GeneForgeLang installation
+python -c "import geneforgelang; print(f'Version: {geneforgelang.__version__}')"
 
 # Check available plugins
-gfl --list-plugins
+gfl --list-plugins"
 ```
 
-## Step 2: Create Your First Workflow
+If both commands run without errors, you are ready to create your first workflow.
 
-Create a new file called `my_first_workflow.gfl` with the following content:
+## 2. Your First Workflow
 
-```gfl
-# My First GeneForgeLang Workflow
-# This workflow demonstrates basic GFL functionality
+Create a file called my_first_workflow.gfl with the following content. It runs a BLAST search and filters the results:
 
-# Define input parameters
+```bash
+# my_first_workflow.gfl
 input:
-  sequence: "ATGCGATCGATCGATCGATCGATCGATCGATCGATCGATCG"
+  sequence: "ATGCGATCGATCGATCGATCGATCGATCG"
   database: "nt"
 
-# Run a BLAST search
 run:
   - plugin: "blast"
     operation: "blastn"
@@ -43,54 +39,36 @@ run:
     expect_threshold: 0.001
     as_var: "blast_results"
 
-# Process the results
 process:
-  - name: "filter_hits"
+ - name: "filter_hits"
     input: "${blast_results}"
     operation: "filter"
     condition: "evalue < 0.01"
     as_var: "filtered_hits"
 
-# Output the results
 output:
   - blast_hits: "${filtered_hits}"
   - summary: "Found ${len(filtered_hits)} significant hits"
 ```
 
-## Step 3: Run Your Workflow
-
-Execute your workflow using the GFL command-line tool:
+Run it and optionally save the output in different formats:
 
 ```bash
+# Run the workflow
 gfl run my_first_workflow.gfl
+
+# Save results as JSON
+gfl run my_first_workflow.gfl --output-format json --output-file results.json
 ```
 
-## Step 4: View Results
-
-The results will be displayed in the terminal and saved to output files. You can also specify output formats:
+The following workflow uses Genesis plugins to design and evaluate gRNA candidates:
 
 ```bash
-# Save results in JSON format
-gfl run my_first_workflow.gfl --output-format json --output-file results.json
-
-# Save results in YAML format
-gfl run my_first_workflow.gfl --output-format yaml --output-file results.yaml
-```
-
-## Step 5: Create a CRISPR Design Workflow
-
-Let's create a more advanced workflow using the Genesis plugins for CRISPR design:
-
-```gfl
-# CRISPR Design Workflow
-# This workflow designs and evaluates gRNA candidates
-
-# Define input sequences
+# crispr_design.gfl
 input:
-  target_sequence: "ATGCGATCGATCGATCGATCGATCGATCGATCGATCGATCG"
-  genome_context: "ACGTGCAATGGAGCGGCTTGCGGATCGATCGATCGATCGATCGATCG"
+  target_sequence: "ATGCGATCGATCGATCGATCG"
+  genome_context: "ACGTGCAATGGAGCGGCTTGCGG"
 
-# Generate gRNA candidates
 design:
   entity: "gRNA"
   count: 5
@@ -98,18 +76,13 @@ design:
     - "length(20)"
     - "gc_content(40, 60)"
 
-# Evaluate candidates
 evaluate:
   candidates: "${design.candidates}"
-
-  # Score on-target efficiency
   - plugin: "gfl-ontarget-scorer"
     input:
       grna_sequence: "${candidate.sequence}"
       genome_sequence: "${genome_context}"
     as_var: "on_target_score"
-
-  # Score off-target risk
   - plugin: "gfl-offtarget-scorer"
     input:
       grna_sequence: "${candidate.sequence}"
@@ -117,42 +90,24 @@ evaluate:
       max_mismatches: 3
       genome_reference: "GRCh38"
     as_var: "off_target_risk"
-
-  # Combine scores
   - plugin: "gfl-crispr-evaluator"
     input:
       grna_candidates: "${evaluate.candidates}"
     params:
       weight_factor: 0.3
-    as_var: "final_scores"
+       as_var: "final_scores"
 
-# Visualize results
-visualize:
-  plugin: "gfl-crispr-visualizer"
-  input:
-    evaluation_results: "${final_scores.results}"
-  params:
-    output_format: "html"
-    chart_type: "bar"
-  as_var: "visualization"
-
-# Output final results
 output:
   - ranked_candidates: "${final_scores.results}"
-  - visualization: "${visualization}"
   - summary: "Evaluated ${len(final_scores.results)} gRNA candidates"
 ```
 
-## Step 6: Advanced Workflow Features
+GFL supports dynamic variables and conditional steps:
 
-### Using Variables and Expressions
-
-GFL supports variables and expressions for dynamic workflow configuration:
-
-```gfl
+```bash
 input:
   organism: "human"
-  analysis_type: "rnaseq"
+  quality_score: 85
 
 variables:
   database_map:
@@ -166,56 +121,192 @@ run:
     reference_genome: "${database_map[organism]}"
     threads: "${threads}"
     as_var: "variants"
-```
-
-### Conditional Execution
-
-Use conditions to control workflow execution:
-
-```gfl
-input:
-  quality_score: 85
 
 process:
   - name: "high_quality_analysis"
     condition: "${quality_score >= 90}"
     plugin: "advanced_analysis"
-    # ... parameters
-
   - name: "standard_analysis"
     condition: "${quality_score < 90}"
     plugin: "basic_analysis"
-    # ... parameters
 ```
 
-## Step 7: Best Practices
+## 3. Custom schemas and IO contracts
 
-### Workflow Organization
+Custom schemas let you define typed data contracts between workflow steps, catching errors before execution. Schemas are defined in separate YAML files and imported into your workflow.
 
-1. **Modular Design**: Break complex workflows into smaller, reusable components
-2. **Clear Naming**: Use descriptive names for variables, steps, and outputs
-3. **Documentation**: Add comments to explain complex logic
-4. **Error Handling**: Include validation and error handling steps
+Define a schema file: 
 
-### Plugin Usage
+```bash 
+# gene_expression_schemas.yml
+version: 1.0
+schemas:
+  - name: GeneExpressionMatrix
+    base_type: CSV
+    description: "Gene expression data matrix"
+    attributes:
+      normalized:
+        required: true
+        value: true
+      sample_count:
+        required: true
+        type: integer
+      gene_count:
+        required: true
+        type: integer
 
-1. **Plugin Selection**: Choose plugins that match your specific needs
-2. **Parameter Tuning**: Experiment with plugin parameters for optimal results
-3. **Version Control**: Specify plugin versions for reproducibility
-4. **Resource Management**: Monitor memory and CPU usage for large datasets
+  - name: DifferentialExpressionResults
+    base_type: CSV
+    description: "Results from differential expression analysis"
+    attributes:
+      p_value_adjusted:
+        required: true
+        value: true
+      fold_change_threshold:
+        required: true
+        type: float
+``` 
 
-## Next Steps
+Use the schema in a window
+Import the schema file and reference schema types in your contract blocks:
 
-- Explore the [Plugin Ecosystem](../ecosystem/plugins_overview.md) to learn about available plugins
-- Read the [Language Specification](../gfl_yaml/) for detailed syntax information
-- Check out the [Tutorials](../tutorials/) for more advanced examples
-- Join the [Community](../support/community.md) to connect with other users
+```bash
+# rna_seq_analysis.gfl
+import_schemas:
+  - ./schemas/gene_expression_schemas.yml
 
-## Getting Help
+experiment:
+  tool: RNAseq
+  type: sequencing
+  contract:
+    outputs:
+      raw_expression:
+        type: GeneExpressionMatrix
+        attributes:
+          normalized: true
+          sample_count: 12
+          gene_count: 25000
+  params:
+    protocol: standard
+    read_length: 150
+    paired_end: true
+  output: expression_data
 
-If you encounter issues:
+analyze:
+  strategy: differential
+  contract:
+    inputs:
+      expression_data:
+        type: GeneExpressionMatrix
+        attributes:
+          normalized: true
+    outputs:
+      de_results:
+        type: DifferentialExpressionResults
+        attributes:
+          p_value_adjusted: true
+          fold_change_threshold: 1.5
+  data: expression_data
+  thresholds:
+    p_value: 0.05
+    fold_change: 1.5
+  output: differential_results
+```
 
-1. Check the [Troubleshooting Guide](installation.md#troubleshooting)
-2. Review the [API Reference](../api/)
-3. Search the [Documentation](../)
-4. Ask questions in the [Discussion Forum](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/discussions)
+Validate Your Workflow
+Run the validator after adding schemas to catch contract mismatches early:
+
+```bash
+gfl-validate rna_seq_analysis.gfl
+
+# Expected output:
+# ✓ Parsing successful
+# ✓ Validation passed: 0 errors, 0 warnings
+```
+
+Common Schema Validation Errors
+
+```bash 
+# Missing required attribute
+Error: Required attribute 'sample_count' missing in contract outputs
+       'raw_expression' for schema type 'GeneExpressionMatrix'
+Fix:   Add the required 'sample_count' attribute to your contract definition
+
+# Invalid attribute value
+Error: Attribute 'clinical_significance' must have one of the allowed values,
+       got 'unknown'
+Fix:   Use one of: benign, likely_benign, uncertain, likely_pathogenic, pathogenic
+```
+
+NOTE: _For advanced schema features such as VCF/CUSTOM base types, complex validation rules, and phylogenetic data types, see the Advanced Schema Definitions reference document._
+
+## 4. Best Practices
+
+Workflow Organization
+- Break complex workflows into smaller, reusable components.Modular Design: 
+- Use descriptive names for variables, steps, and outputs.Clear Naming: 
+- Add comments and include a metadata block with author, date, and version.Documentation: 
+- Include validation and conditional steps to handle edge cases.Error Handling: 
+
+Example metadata block:
+
+```bash
+metadata:
+  author: "Dr. Jane Smith"
+  institution: "University Research Lab"
+  date: "2025-01-15"
+  version: "1.0"
+  notes: |
+    This workflow validates CRISPR knockout efficiency.
+    Expected results: >80% knockout efficiency.
+```
+
+Plugin Usage:
+- Choose plugins that match your specific needs and verify compatibility.Plugin Selection: 
+- Experiment with parameters for optimal results on your data.Parameter Tuning: 
+- Specify plugin versions explicitly for reproducibility.Version Pinning: 
+- Monitor memory and CPU usage for large datasets.Resource Management: 
+
+Schema Best Practices
+- Group related schemas in logical YAML files.Organize schema files: 
+- Include version information to track changes over time.Version your schemas: 
+- Run gfl-validate after every schema change.Validate early: 
+- Design schemas to be shared across multiple projects.Reuse schemas: 
+
+Common Syntax Pitfalls
+
+```bash 
+# ❌ Wrong: dash in unquoted value
+target_gene: TP-53
+
+# ✅ Correct: quote special characters
+target_gene: "TP-53"
+
+# ❌ Wrong: lowercase tool name
+tool: crispr_cas9
+
+# ✅ Correct: standard tool name
+tool: CRISPR_cas9
+
+# ❌ Wrong: string instead of number
+efficiency: "0.8"
+
+# ✅ Correct: proper data type
+efficiency: 0.8
+```
+
+## 5. Next Steps
+Now that you have a working setup, explore these resources to go further:
+
+- plugins_overview.md — browse available plugins and their parameters.Plugin Ecosystem — 
+- gfl_yaml/ — complete syntax reference.Language Specification — 
+- advanced_schemas.md — VCF/CUSTOM types and complex validation rules.Advanced Schema Definitions — 
+- tutorials/ — advanced workflow examples including batch processing and AI inference.Tutorials — 
+- api/ — REST API and client SDK documentation.API Reference — 
+- https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/discussionsCommunity — 
+
+Getting Help
+1. Check the Troubleshooting Guide (installation.md#troubleshooting).
+2. Review the API Reference (api/).
+3. Search the project documentation.
+4. Ask questions in the GitHub Discussion Forum.

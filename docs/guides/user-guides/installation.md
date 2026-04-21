@@ -11,7 +11,7 @@ This guide will help you install and set up GeneForgeLang on your system.
 - **OS**: Windows 10/11, macOS 10.15+, or Linux (Ubuntu 18.04+)
 
 ### Recommended Requirements
-- **Python**: 3.11 or higher
+- **Python**: 3.14 or higher
 - **Memory**: 8GB RAM
 - **Storage**: 10GB free space (for ML models)
 - **GPU**: CUDA-compatible (optional, for advanced ML features)
@@ -35,7 +35,7 @@ git clone https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git
 cd GeneForgeLang
 
 # Install with all optional dependencies
-pip install -e .[full]
+pip install -e .[all]
 ```
 
 ### 3. Minimal Installation
@@ -49,13 +49,13 @@ pip install -e .
 
 ```bash
 # Web interface and API server
-pip install -e .[server,apps]
+pip install -e .[web]
 
 # Machine learning features
 pip install -e .[ml]
 
 # Grammar-based parser
-pip install -e .[lexer]
+pip install -e .[dependencies]
 
 # Development tools
 pip install -e .[dev]
@@ -66,12 +66,11 @@ pip install -e .[dev]
 | Group | Description | Use Case |
 |-------|-------------|----------|
 | `basic` | Core GFL functionality | Basic parsing and validation |
-| `server` | API server components | REST API, rate limiting |
-| `apps` | Web applications | Gradio interface, demos |
+| `web` | API server components | REST API, rate limiting |
 | `ml` | Machine learning | PyTorch, Transformers |
-| `lexer` | Advanced parsing | PLY-based grammar parser |
+| `dependencies` | Advanced parsing | PLY-based grammar parser |
 | `dev` | Development tools | Testing, linting, formatting |
-| `full` | Everything included | Complete installation |
+| `all` | Everything included | Complete installation |
 
 ## Verification
 
@@ -79,15 +78,13 @@ After installation, verify everything works:
 
 ```bash
 # Test basic functionality
-python -c "from gfl.api import parse, validate; print('✓ GFL API working')"
+python -c "from geneforgelang.core.api import parse, validate; print('✓ GFL API working')"
 
-# Test CLI tools
-gfl-server --help
 
 # Run platform test suite
-python test_platform.py
+python ../GeneForgeLang/tests/test_platform.py
 ```
-
+.\GeneForgeLang\tests\test_platform.py
 Expected output:
 ```
 GeneForgeLang Platform Test Suite
@@ -139,7 +136,7 @@ pip install -e .
 ```bash
 # Error: ModuleNotFoundError: No module named 'fastapi'
 # Solution: Install server dependencies
-pip install -e .[server]
+pip install -e .[web]
 ```
 
 #### Permission Issues (Windows)
@@ -160,7 +157,7 @@ gfl-env\Scripts\activate
 source gfl-env/bin/activate
 
 # Install
-pip install -e .[full]
+pip install -e .[all]
 ```
 
 ### Getting Help
@@ -183,7 +180,7 @@ Once installed successfully:
 
 ## Development Installation
 
-For contributors and developers:
+For contributors and developers
 
 ```bash
 # Clone with development tools
