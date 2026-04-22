@@ -5,8 +5,8 @@ reporting, including location tracking, error codes, and suggested fixes.
 """
 
 import logging
-import re
 import os
+import re
 from typing import Any, Dict, List, Optional, Union
 
 from geneforgelang.core.errors import (
@@ -18,6 +18,7 @@ from geneforgelang.core.errors import (
 from geneforgelang.utils.schema import get_global_schema_loader, load_schemas_from_files
 
 logger = logging.getLogger(__name__)
+
 
 class EnhancedSemanticValidator:
     """Enhanced semantic validator for GFL ASTs.
@@ -1328,7 +1329,7 @@ class EnhancedSemanticValidator:
             strategy = optimize["strategy"]
             if isinstance(strategy, dict) and strategy.get("name") == "ActiveLearning":
                 # Check for surrogate_model requirement
-                if "surrogate_model" not in optimize:
+                if "surrogate_model" not in strategy:
                     error = self.result.add_error(
                         "Optimize block with ActiveLearning strategy requires 'surrogate_model'",
                         ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,

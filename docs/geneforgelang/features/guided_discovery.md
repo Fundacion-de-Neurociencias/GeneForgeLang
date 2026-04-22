@@ -241,6 +241,7 @@ Common errors with `guided_discovery` blocks include:
 4. **Parameter Injection Issues**: Template variables must match search space
 
 Example error message:
+
 ```
 Missing required key 'candidates_per_cycle' in design_params
 ```
