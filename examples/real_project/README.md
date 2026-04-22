@@ -1,5 +1,7 @@
 # GFL Genesis Project
 
+## Important note: This project uses deprecated code and references that are known to cause conflicts with current versions. It is provided "as-is" for archival purposes and historical documentation
+
 This project demonstrates the capabilities of the GeneForgeLang (GFL) ecosystem with the Genesis plugin suite for CRISPR gene editing workflows.
 
 ## Project Overview
@@ -15,16 +17,19 @@ The GFL Genesis project provides a complete workflow for designing and evaluatin
 ## Setup Instructions
 
 1. Install the GFL ecosystem:
+
    ```bash
    make install
    ```
 
 2. Setup the data environment for the Genesis project:
+
    ```bash
    make setup-genesis-data
    ```
 
 This will automatically:
+
 - Download the GRCh38 human reference genome
 - Download GENCODE gene annotations
 - Preprocess the genome for BLAST searches
@@ -47,6 +52,7 @@ This will automatically:
 ## Execution
 
 Once the GeneForge engine is ready, the workflow can be executed using:
+
 ```bash
 python main.py
 ```

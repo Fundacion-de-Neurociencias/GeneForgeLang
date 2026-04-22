@@ -5,15 +5,8 @@ Working GFL workflow example.
 This example demonstrates a complete workflow using properly implemented
 plugins that are actually available in the system.
 """
-
-import os
 import sys
-from pathlib import Path
-
-# Add current directory to path
-sys.path.insert(0, str(Path(__file__).parent))
-
-from gfl.api import execute, list_available_plugins, parse, validate
+from geneforgelang.core.api import execute, parse, validate, list_available_plugins
 
 
 def main():
