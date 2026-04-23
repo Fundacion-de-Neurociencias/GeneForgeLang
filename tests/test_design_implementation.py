@@ -6,8 +6,8 @@ as described in the paper concept. It shows how to specify the generation of
 new biological sequences or structures, optimizing an objective in a search space.
 """
 
-from gfl.api import infer, parse, validate
-from gfl.models.dummy import DummyGeneModel
+from geneforgelang.core.api import infer, parse, validate
+from geneforgelang.models.dummy import DummyGeneModel
 
 
 def test_protein_design_example():

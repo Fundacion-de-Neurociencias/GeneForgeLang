@@ -12,8 +12,8 @@ Tests cover:
 
 import pytest
 
-from gfl.api import parse, validate
-from gfl.types import Optimize
+from geneforgelang.core.api import parse, validate
+from geneforgelang.core.gftypes import Optimize
 
 
 class TestOptimizeBlockParsing:

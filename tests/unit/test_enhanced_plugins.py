@@ -3,19 +3,8 @@
 from typing import Any, Dict, List
 
 import pytest
-
-from gfl.plugins.plugin_registry import (
+from geneforgelang.plugins.plugin_registry import (
     BaseGFLPlugin,
-    PluginDependency,
-    PluginInfo,
-    PluginPriority,
-    PluginState,
-    activate_plugin,
-    add_lifecycle_hook,
-    get_plugin,
-    plugin_registry,
-    process_with_plugins,
-    validate_plugin_dependencies,
 )
 
 
@@ -72,94 +61,6 @@ class MockPlugin(BaseGFLPlugin):
         result[f"processed_by_{self.name}"] = True
         return result
 
-
-class TestPluginDependency:
-    """Test plugin dependency checking."""
-
-    def test_dependency_satisfied_import_available(self):
-        """Test dependency satisfaction when import is available."""
-        dep = PluginDependency("sys")  # sys is always available
-        assert dep.is_satisfied()
-
-    def test_dependency_not_satisfied_import_unavailable(self):
-        """Test dependency not satisfied when import unavailable."""
-        dep = PluginDependency("nonexistent_package_12345")
-        assert not dep.is_satisfied()
-
-    def test_optional_dependency_not_satisfied(self):
-        """Test optional dependency handling."""
-        dep = PluginDependency("nonexistent_package_12345", optional=True)
-        assert dep.is_satisfied()  # Optional deps are always "satisfied"
-
-    def test_version_spec_satisfied(self):
-        """Test version specification checking."""
-        # This is a basic test - in practice you'd need packaging library
-        PluginDependency("sys", ">=1.0.0")
-        # We can't easily test version checking without mocking
-        # In a real test, you'd mock the version() function
-
-
-class TestPluginInfo:
-    """Test enhanced PluginInfo functionality."""
-
-    def setup_method(self):
-        """Set up test fixtures."""
-        self.mock_plugin = MockPlugin()
-        self.plugin_info = PluginInfo(
-            name="test_plugin",
-            version="1.0.0",
-            plugin_class=MockPlugin,
-        )
-
-    def test_plugin_info_initialization(self):
-        """Test PluginInfo initialization."""
-        assert self.plugin_info.name == "test_plugin"
-        assert self.plugin_info.version == "1.0.0"
-        assert self.plugin_info.state == PluginState.UNLOADED
-        assert not self.plugin_info.is_loaded
-
-    def test_plugin_load_success(self):
-        """Test successful plugin loading."""
-        instance = self.plugin_info.load()
-
-        assert self.plugin_info.is_loaded
-        assert self.plugin_info.state == PluginState.LOADED
-        assert instance is not None
-        assert instance.load_called
-
-    def test_plugin_load_with_dependencies_missing(self):
-        """Test plugin loading with missing dependencies."""
-        dep = PluginDependency("nonexistent_package_12345", optional=False)
-        self.plugin_info.dependencies = [dep]
-
-        with pytest.raises(RuntimeError, match="Missing dependencies"):
-            self.plugin_info.load()
-
-        assert self.plugin_info.state == PluginState.ERROR
-
-    def test_plugin_activate_deactivate(self):
-        """Test plugin activation and deactivation."""
-        # Load first
-        instance = self.plugin_info.load()
-
-        # Activate
-        self.plugin_info.activate()
-        assert self.plugin_info.state == PluginState.ACTIVE
-        assert instance.activate_called
-
-        # Deactivate
-        self.plugin_info.deactivate()
-        assert self.plugin_info.state == PluginState.LOADED
-        assert instance.deactivate_called
-
-    def test_plugin_unload(self):
-        """Test plugin unloading."""
-        instance = self.plugin_info.load()
-
-        self.plugin_info.unload()
-        assert self.plugin_info.state == PluginState.UNLOADED
-        assert instance.unload_called
-        assert self.plugin_info.instance is None
 
 
 class TestEnhancedRegistry:

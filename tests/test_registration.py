@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import and test
-from gfl.plugins.plugin_registry import plugin_registry
+from geneforgelang.plugins.plugin_registry import plugin_registry
 
 # Force discovery
 print("Discovering plugins...")
@@ -21,8 +21,8 @@ plugin_registry._discover_plugins()
 # List plugins
 plugins = plugin_registry.list_plugins()
 print("Available plugins:")
-for plugin in plugins:
-    print(f"  - {plugin.name} (v{plugin.version}) - State: {plugin.state.value}")
+for plugin_name in plugins:
+    print(f"  - {plugin_name}")
 
 # Try to get specific plugins
 try:

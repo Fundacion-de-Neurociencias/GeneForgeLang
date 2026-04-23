@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
-from gfl.performance import (
+from geneforgelang.core.performance import (
     IntelligentCache,
     LazyLoader,
     LRUEvictionPolicy,

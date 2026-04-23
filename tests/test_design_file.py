@@ -2,19 +2,19 @@
 """
 Test the design block implementation with a real GFL file.
 """
-
-from gfl.api import parse, validate
+import os
+from geneforgelang.core.api import parse, validate
 
 
 def test_real_gfl_file():
     """Test parsing and validating a real GFL file with design block."""
 
     print("Testing real GFL file with design block...")
+    gfl_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "examples", "example_protein_design.gfl")
 
     # Read the GFL file
-    with open("example_protein_design.gfl") as f:
+    with open(gfl_file_path) as f:
         gfl_content = f.read()
-
     print(f"GFL content ({len(gfl_content)} characters):")
     print("-" * 40)
     print(gfl_content)

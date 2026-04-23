@@ -2,8 +2,8 @@
 
 import pytest
 
-from gfl.error_handling import ErrorCategory, ErrorSeverity
-from gfl.grammar_parser import (
+from geneforgelang.core.errors import ErrorCategory, ErrorSeverity
+from geneforgelang.utils.grammar_parser import (
     create_lexer,
     create_parser,
     parse_gfl_grammar,

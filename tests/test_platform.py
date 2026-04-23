@@ -9,7 +9,7 @@ def test_basic_api():
     print("Testing basic GFL API...")
 
     try:
-        from gfl.api import get_api_info, parse, validate
+        from geneforgelang.core.api import get_api_info, parse, validate
 
         # Test API info
         info = get_api_info()
@@ -44,7 +44,7 @@ def test_enhanced_inference():
     print("\nTesting enhanced inference...")
 
     try:
-        from gfl.api import infer_enhanced, parse
+        from geneforgelang.core.api import infer_enhanced, parse
 
         gfl_content = """
 experiment:

@@ -17,7 +17,7 @@ def auto_register_example_plugins() -> None:
     """Automatically register example plugins if they are available."""
     try:
         # Try to import and register example plugins
-        from geneforgelang.plugins.example_implementations import register_example_plugins
+        from examples.example_implementations import register_example_plugins
 
         register_example_plugins()
         logger.info("Successfully auto-registered example plugins")

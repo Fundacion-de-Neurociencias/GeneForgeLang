@@ -10,8 +10,8 @@ Tests cover:
 
 import pytest
 
-from gfl.api import validate
-from gfl.semantic_validator import SemanticValidator
+from geneforgelang.core.api import validate
+from geneforgelang.core.validator import SemanticValidator
 
 
 class TestBasicValidation:

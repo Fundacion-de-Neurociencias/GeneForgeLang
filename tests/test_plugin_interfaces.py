@@ -8,12 +8,12 @@ from typing import Any, Dict, List
 
 import pytest
 
-from gfl.plugins.example_implementations import (
+from examples.example_implementations import (
     BayesianOptimizer,
     MoleculeTransformerGenerator,
     ProteinVAEGenerator,
 )
-from gfl.plugins.interfaces import (
+from geneforgelang.plugins.interfaces import (
     BayesianOptimizerPlugin,
     DesignCandidate,
     EntityType,
@@ -30,7 +30,6 @@ from gfl.plugins.interfaces import (
     register_generator_plugin,
     register_optimizer_plugin,
 )
-from gfl.plugins.plugin_registry import PluginDependency, PluginPriority
 
 
 class TestDesignCandidate:

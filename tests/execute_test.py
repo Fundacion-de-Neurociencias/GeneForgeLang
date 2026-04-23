@@ -11,7 +11,7 @@ import requests
 def test_gfl_execution():
     """Test executing a GFL script through the service"""
     # Read the GFL script
-    with open("test_biopython_plugin.gfl") as f:
+    with open("gfl_scripts/test_biopython_plugin.gfl") as f:
         gfl_code = f.read()
 
     # Parse the GFL code
@@ -56,3 +56,4 @@ def test_gfl_execution():
 
 if __name__ == "__main__":
     test_gfl_execution()
+

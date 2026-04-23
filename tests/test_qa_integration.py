@@ -16,10 +16,9 @@ import requests
 # Add gfl to path
 sys.path.append(os.path.join(os.path.dirname(__file__), "gfl"))
 
-from gfl.capability_system import get_engine_capabilities
-from gfl.parser import parse_gfl
-from gfl.semantic_validator import EnhancedSemanticValidator
-
+from geneforgelang.core.enhanced_inference_engine import get_engine_capabilities
+from geneforgelang.core.parser import parse_gfl
+from geneforgelang.core.validator import EnhancedSemanticValidator
 
 class QAIntegrationTester:
     """Comprehensive QA testing for GeneForge platform."""

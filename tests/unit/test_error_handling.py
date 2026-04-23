@@ -2,7 +2,7 @@
 
 import pytest
 
-from gfl.error_handling import (
+from geneforgelang.core.errors import (
     EnhancedValidationError,
     EnhancedValidationResult,
     ErrorCategory,

@@ -1,0 +1,3432 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    ARROW
+    AS
+    DATA
+    DESIGN
+    DOT
+    ELIF
+    FOR
+    FROM
+    IMPORT
+    IN
+    INPUT
+    MINUS_ASSIGN
+    OPTIMIZE
+    OUTPUT
+    PARAMS
+    PIPE
+    PLUS_ASSIGN
+    SEMICOLON
+    STRATEGY
+    THEN
+    TOOL
+    TYPE
+    USING
+    WHILE
+    WITH
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> statement_list
+Rule 2     statement_list -> statement_list statement
+Rule 3     statement_list -> statement
+Rule 4     statement_list -> empty
+Rule 5     statement -> experiment_statement
+Rule 6     statement -> analyze_statement
+Rule 7     statement -> simulate_statement
+Rule 8     statement -> branch_statement
+Rule 9     statement -> metadata_statement
+Rule 10    statement -> assignment_statement
+Rule 11    experiment_statement -> EXPERIMENT COLON experiment_body
+Rule 12    experiment_body -> LBRACE property_list RBRACE
+Rule 13    experiment_body -> property_list
+Rule 14    analyze_statement -> ANALYZE COLON analyze_body
+Rule 15    analyze_body -> LBRACE property_list RBRACE
+Rule 16    analyze_body -> property_list
+Rule 17    simulate_statement -> SIMULATE COLON boolean_value
+Rule 18    simulate_statement -> SIMULATE COLON simulate_body
+Rule 19    simulate_body -> LBRACE property_list RBRACE
+Rule 20    simulate_body -> property_list
+Rule 21    branch_statement -> BRANCH COLON LBRACE branch_body RBRACE
+Rule 22    branch_body -> IF COLON expression COMMA statement_list
+Rule 23    branch_body -> IF COLON expression COMMA statement_list ELSE COLON statement_list
+Rule 24    metadata_statement -> METADATA COLON metadata_body
+Rule 25    metadata_body -> LBRACE property_list RBRACE
+Rule 26    metadata_body -> property_list
+Rule 27    assignment_statement -> IDENTIFIER ASSIGN expression
+Rule 28    property_list -> property_list COMMA property
+Rule 29    property_list -> property
+Rule 30    property_list -> empty
+Rule 31    property -> IDENTIFIER COLON value
+Rule 32    value -> expression
+Rule 33    value -> object_literal
+Rule 34    value -> array_literal
+Rule 35    object_literal -> LBRACE property_list RBRACE
+Rule 36    object_literal -> LBRACE RBRACE
+Rule 37    array_literal -> LBRACKET expression_list RBRACKET
+Rule 38    array_literal -> LBRACKET RBRACKET
+Rule 39    expression_list -> expression_list COMMA expression
+Rule 40    expression_list -> expression
+Rule 41    expression_list -> empty
+Rule 42    expression -> logical_expression
+Rule 43    logical_expression -> logical_expression AND comparison_expression
+Rule 44    logical_expression -> logical_expression OR comparison_expression
+Rule 45    logical_expression -> comparison_expression
+Rule 46    comparison_expression -> arithmetic_expression EQUALS arithmetic_expression
+Rule 47    comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression
+Rule 48    comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression
+Rule 49    comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression
+Rule 50    comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression
+Rule 51    comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression
+Rule 52    comparison_expression -> arithmetic_expression
+Rule 53    arithmetic_expression -> arithmetic_expression PLUS term
+Rule 54    arithmetic_expression -> arithmetic_expression MINUS term
+Rule 55    arithmetic_expression -> term
+Rule 56    term -> term TIMES factor
+Rule 57    term -> term DIVIDE factor
+Rule 58    term -> term MODULO factor
+Rule 59    term -> factor
+Rule 60    factor -> MINUS factor
+Rule 61    factor -> PLUS factor
+Rule 62    factor -> NOT factor
+Rule 63    factor -> power
+Rule 64    power -> atom POWER factor
+Rule 65    power -> atom
+Rule 66    atom -> LPAREN expression RPAREN
+Rule 67    atom -> literal
+Rule 68    atom -> IDENTIFIER
+Rule 69    literal -> NUMBER
+Rule 70    literal -> STRING
+Rule 71    literal -> boolean_value
+Rule 72    literal -> NULL
+Rule 73    boolean_value -> BOOLEAN
+Rule 74    empty -> <empty>
+
+Terminals, with rules where they appear
+
+ANALYZE              : 14
+AND                  : 43
+ARROW                : 
+AS                   : 
+ASSIGN               : 27
+BOOLEAN              : 73
+BRANCH               : 21
+COLON                : 11 14 17 18 21 22 23 23 24 31
+COMMA                : 22 23 28 39
+DATA                 : 
+DESIGN               : 
+DIVIDE               : 57
+DOT                  : 
+ELIF                 : 
+ELSE                 : 23
+EQUALS               : 46
+EXPERIMENT           : 11
+FOR                  : 
+FROM                 : 
+GREATER_EQUAL        : 51
+GREATER_THAN         : 49
+IDENTIFIER           : 27 31 68
+IF                   : 22 23
+IMPORT               : 
+IN                   : 
+INPUT                : 
+LBRACE               : 12 15 19 21 25 35 36
+LBRACKET             : 37 38
+LESS_EQUAL           : 50
+LESS_THAN            : 48
+LPAREN               : 66
+METADATA             : 24
+MINUS                : 54 60
+MINUS_ASSIGN         : 
+MODULO               : 58
+NOT                  : 62
+NOT_EQUALS           : 47
+NULL                 : 72
+NUMBER               : 69
+OPTIMIZE             : 
+OR                   : 44
+OUTPUT               : 
+PARAMS               : 
+PIPE                 : 
+PLUS                 : 53 61
+PLUS_ASSIGN          : 
+POWER                : 64
+RBRACE               : 12 15 19 21 25 35 36
+RBRACKET             : 37 38
+RPAREN               : 66
+SEMICOLON            : 
+SIMULATE             : 17 18
+STRATEGY             : 
+STRING               : 70
+THEN                 : 
+TIMES                : 56
+TOOL                 : 
+TYPE                 : 
+USING                : 
+WHILE                : 
+WITH                 : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+analyze_body         : 14
+analyze_statement    : 6
+arithmetic_expression : 46 46 47 47 48 48 49 49 50 50 51 51 52 53 54
+array_literal        : 34
+assignment_statement : 10
+atom                 : 64 65
+boolean_value        : 17 71
+branch_body          : 21
+branch_statement     : 8
+comparison_expression : 43 44 45
+empty                : 4 30 41
+experiment_body      : 11
+experiment_statement : 5
+expression           : 22 23 27 32 39 40 66
+expression_list      : 37 39
+factor               : 56 57 58 59 60 61 62 64
+literal              : 67
+logical_expression   : 42 43 44
+metadata_body        : 24
+metadata_statement   : 9
+object_literal       : 33
+power                : 63
+program              : 0
+property             : 28 29
+property_list        : 12 13 15 16 19 20 25 26 28 35
+simulate_body        : 18
+simulate_statement   : 7
+statement            : 2 3
+statement_list       : 1 2 22 23 23
+term                 : 53 54 55 56 57 58
+value                : 31
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . statement_list
+    (2) statement_list -> . statement_list statement
+    (3) statement_list -> . statement
+    (4) statement_list -> . empty
+    (5) statement -> . experiment_statement
+    (6) statement -> . analyze_statement
+    (7) statement -> . simulate_statement
+    (8) statement -> . branch_statement
+    (9) statement -> . metadata_statement
+    (10) statement -> . assignment_statement
+    (74) empty -> .
+    (11) experiment_statement -> . EXPERIMENT COLON experiment_body
+    (14) analyze_statement -> . ANALYZE COLON analyze_body
+    (17) simulate_statement -> . SIMULATE COLON boolean_value
+    (18) simulate_statement -> . SIMULATE COLON simulate_body
+    (21) branch_statement -> . BRANCH COLON LBRACE branch_body RBRACE
+    (24) metadata_statement -> . METADATA COLON metadata_body
+    (27) assignment_statement -> . IDENTIFIER ASSIGN expression
+
+  ! shift/reduce conflict for EXPERIMENT resolved as shift
+  ! shift/reduce conflict for ANALYZE resolved as shift
+  ! shift/reduce conflict for SIMULATE resolved as shift
+  ! shift/reduce conflict for BRANCH resolved as shift
+  ! shift/reduce conflict for METADATA resolved as shift
+  ! shift/reduce conflict for IDENTIFIER resolved as shift
+    $end            reduce using rule 74 (empty -> .)
+    EXPERIMENT      shift and go to state 11
+    ANALYZE         shift and go to state 12
+    SIMULATE        shift and go to state 13
+    BRANCH          shift and go to state 14
+    METADATA        shift and go to state 15
+    IDENTIFIER      shift and go to state 16
+
+  ! EXPERIMENT      [ reduce using rule 74 (empty -> .) ]
+  ! ANALYZE         [ reduce using rule 74 (empty -> .) ]
+  ! SIMULATE        [ reduce using rule 74 (empty -> .) ]
+  ! BRANCH          [ reduce using rule 74 (empty -> .) ]
+  ! METADATA        [ reduce using rule 74 (empty -> .) ]
+  ! IDENTIFIER      [ reduce using rule 74 (empty -> .) ]
+
+    program                        shift and go to state 1
+    statement_list                 shift and go to state 2
+    statement                      shift and go to state 3
+    empty                          shift and go to state 4
+    experiment_statement           shift and go to state 5
+    analyze_statement              shift and go to state 6
+    simulate_statement             shift and go to state 7
+    branch_statement               shift and go to state 8
+    metadata_statement             shift and go to state 9
+    assignment_statement           shift and go to state 10
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (1) program -> statement_list .
+    (2) statement_list -> statement_list . statement
+    (5) statement -> . experiment_statement
+    (6) statement -> . analyze_statement
+    (7) statement -> . simulate_statement
+    (8) statement -> . branch_statement
+    (9) statement -> . metadata_statement
+    (10) statement -> . assignment_statement
+    (11) experiment_statement -> . EXPERIMENT COLON experiment_body
+    (14) analyze_statement -> . ANALYZE COLON analyze_body
+    (17) simulate_statement -> . SIMULATE COLON boolean_value
+    (18) simulate_statement -> . SIMULATE COLON simulate_body
+    (21) branch_statement -> . BRANCH COLON LBRACE branch_body RBRACE
+    (24) metadata_statement -> . METADATA COLON metadata_body
+    (27) assignment_statement -> . IDENTIFIER ASSIGN expression
+
+    $end            reduce using rule 1 (program -> statement_list .)
+    EXPERIMENT      shift and go to state 11
+    ANALYZE         shift and go to state 12
+    SIMULATE        shift and go to state 13
+    BRANCH          shift and go to state 14
+    METADATA        shift and go to state 15
+    IDENTIFIER      shift and go to state 16
+
+    statement                      shift and go to state 17
+    experiment_statement           shift and go to state 5
+    analyze_statement              shift and go to state 6
+    simulate_statement             shift and go to state 7
+    branch_statement               shift and go to state 8
+    metadata_statement             shift and go to state 9
+    assignment_statement           shift and go to state 10
+
+state 3
+
+    (3) statement_list -> statement .
+
+    EXPERIMENT      reduce using rule 3 (statement_list -> statement .)
+    ANALYZE         reduce using rule 3 (statement_list -> statement .)
+    SIMULATE        reduce using rule 3 (statement_list -> statement .)
+    BRANCH          reduce using rule 3 (statement_list -> statement .)
+    METADATA        reduce using rule 3 (statement_list -> statement .)
+    IDENTIFIER      reduce using rule 3 (statement_list -> statement .)
+    $end            reduce using rule 3 (statement_list -> statement .)
+    ELSE            reduce using rule 3 (statement_list -> statement .)
+    RBRACE          reduce using rule 3 (statement_list -> statement .)
+
+
+state 4
+
+    (4) statement_list -> empty .
+
+    EXPERIMENT      reduce using rule 4 (statement_list -> empty .)
+    ANALYZE         reduce using rule 4 (statement_list -> empty .)
+    SIMULATE        reduce using rule 4 (statement_list -> empty .)
+    BRANCH          reduce using rule 4 (statement_list -> empty .)
+    METADATA        reduce using rule 4 (statement_list -> empty .)
+    IDENTIFIER      reduce using rule 4 (statement_list -> empty .)
+    $end            reduce using rule 4 (statement_list -> empty .)
+    ELSE            reduce using rule 4 (statement_list -> empty .)
+    RBRACE          reduce using rule 4 (statement_list -> empty .)
+
+
+state 5
+
+    (5) statement -> experiment_statement .
+
+    EXPERIMENT      reduce using rule 5 (statement -> experiment_statement .)
+    ANALYZE         reduce using rule 5 (statement -> experiment_statement .)
+    SIMULATE        reduce using rule 5 (statement -> experiment_statement .)
+    BRANCH          reduce using rule 5 (statement -> experiment_statement .)
+    METADATA        reduce using rule 5 (statement -> experiment_statement .)
+    IDENTIFIER      reduce using rule 5 (statement -> experiment_statement .)
+    $end            reduce using rule 5 (statement -> experiment_statement .)
+    ELSE            reduce using rule 5 (statement -> experiment_statement .)
+    RBRACE          reduce using rule 5 (statement -> experiment_statement .)
+
+
+state 6
+
+    (6) statement -> analyze_statement .
+
+    EXPERIMENT      reduce using rule 6 (statement -> analyze_statement .)
+    ANALYZE         reduce using rule 6 (statement -> analyze_statement .)
+    SIMULATE        reduce using rule 6 (statement -> analyze_statement .)
+    BRANCH          reduce using rule 6 (statement -> analyze_statement .)
+    METADATA        reduce using rule 6 (statement -> analyze_statement .)
+    IDENTIFIER      reduce using rule 6 (statement -> analyze_statement .)
+    $end            reduce using rule 6 (statement -> analyze_statement .)
+    ELSE            reduce using rule 6 (statement -> analyze_statement .)
+    RBRACE          reduce using rule 6 (statement -> analyze_statement .)
+
+
+state 7
+
+    (7) statement -> simulate_statement .
+
+    EXPERIMENT      reduce using rule 7 (statement -> simulate_statement .)
+    ANALYZE         reduce using rule 7 (statement -> simulate_statement .)
+    SIMULATE        reduce using rule 7 (statement -> simulate_statement .)
+    BRANCH          reduce using rule 7 (statement -> simulate_statement .)
+    METADATA        reduce using rule 7 (statement -> simulate_statement .)
+    IDENTIFIER      reduce using rule 7 (statement -> simulate_statement .)
+    $end            reduce using rule 7 (statement -> simulate_statement .)
+    ELSE            reduce using rule 7 (statement -> simulate_statement .)
+    RBRACE          reduce using rule 7 (statement -> simulate_statement .)
+
+
+state 8
+
+    (8) statement -> branch_statement .
+
+    EXPERIMENT      reduce using rule 8 (statement -> branch_statement .)
+    ANALYZE         reduce using rule 8 (statement -> branch_statement .)
+    SIMULATE        reduce using rule 8 (statement -> branch_statement .)
+    BRANCH          reduce using rule 8 (statement -> branch_statement .)
+    METADATA        reduce using rule 8 (statement -> branch_statement .)
+    IDENTIFIER      reduce using rule 8 (statement -> branch_statement .)
+    $end            reduce using rule 8 (statement -> branch_statement .)
+    ELSE            reduce using rule 8 (statement -> branch_statement .)
+    RBRACE          reduce using rule 8 (statement -> branch_statement .)
+
+
+state 9
+
+    (9) statement -> metadata_statement .
+
+    EXPERIMENT      reduce using rule 9 (statement -> metadata_statement .)
+    ANALYZE         reduce using rule 9 (statement -> metadata_statement .)
+    SIMULATE        reduce using rule 9 (statement -> metadata_statement .)
+    BRANCH          reduce using rule 9 (statement -> metadata_statement .)
+    METADATA        reduce using rule 9 (statement -> metadata_statement .)
+    IDENTIFIER      reduce using rule 9 (statement -> metadata_statement .)
+    $end            reduce using rule 9 (statement -> metadata_statement .)
+    ELSE            reduce using rule 9 (statement -> metadata_statement .)
+    RBRACE          reduce using rule 9 (statement -> metadata_statement .)
+
+
+state 10
+
+    (10) statement -> assignment_statement .
+
+    EXPERIMENT      reduce using rule 10 (statement -> assignment_statement .)
+    ANALYZE         reduce using rule 10 (statement -> assignment_statement .)
+    SIMULATE        reduce using rule 10 (statement -> assignment_statement .)
+    BRANCH          reduce using rule 10 (statement -> assignment_statement .)
+    METADATA        reduce using rule 10 (statement -> assignment_statement .)
+    IDENTIFIER      reduce using rule 10 (statement -> assignment_statement .)
+    $end            reduce using rule 10 (statement -> assignment_statement .)
+    ELSE            reduce using rule 10 (statement -> assignment_statement .)
+    RBRACE          reduce using rule 10 (statement -> assignment_statement .)
+
+
+state 11
+
+    (11) experiment_statement -> EXPERIMENT . COLON experiment_body
+
+    COLON           shift and go to state 18
+
+
+state 12
+
+    (14) analyze_statement -> ANALYZE . COLON analyze_body
+
+    COLON           shift and go to state 19
+
+
+state 13
+
+    (17) simulate_statement -> SIMULATE . COLON boolean_value
+    (18) simulate_statement -> SIMULATE . COLON simulate_body
+
+    COLON           shift and go to state 20
+
+
+state 14
+
+    (21) branch_statement -> BRANCH . COLON LBRACE branch_body RBRACE
+
+    COLON           shift and go to state 21
+
+
+state 15
+
+    (24) metadata_statement -> METADATA . COLON metadata_body
+
+    COLON           shift and go to state 22
+
+
+state 16
+
+    (27) assignment_statement -> IDENTIFIER . ASSIGN expression
+
+    ASSIGN          shift and go to state 23
+
+
+state 17
+
+    (2) statement_list -> statement_list statement .
+
+    EXPERIMENT      reduce using rule 2 (statement_list -> statement_list statement .)
+    ANALYZE         reduce using rule 2 (statement_list -> statement_list statement .)
+    SIMULATE        reduce using rule 2 (statement_list -> statement_list statement .)
+    BRANCH          reduce using rule 2 (statement_list -> statement_list statement .)
+    METADATA        reduce using rule 2 (statement_list -> statement_list statement .)
+    IDENTIFIER      reduce using rule 2 (statement_list -> statement_list statement .)
+    $end            reduce using rule 2 (statement_list -> statement_list statement .)
+    ELSE            reduce using rule 2 (statement_list -> statement_list statement .)
+    RBRACE          reduce using rule 2 (statement_list -> statement_list statement .)
+
+
+state 18
+
+    (11) experiment_statement -> EXPERIMENT COLON . experiment_body
+    (12) experiment_body -> . LBRACE property_list RBRACE
+    (13) experiment_body -> . property_list
+    (28) property_list -> . property_list COMMA property
+    (29) property_list -> . property
+    (30) property_list -> . empty
+    (31) property -> . IDENTIFIER COLON value
+    (74) empty -> .
+
+  ! shift/reduce conflict for IDENTIFIER resolved as shift
+    LBRACE          shift and go to state 25
+    IDENTIFIER      shift and go to state 29
+    COMMA           reduce using rule 74 (empty -> .)
+    EXPERIMENT      reduce using rule 74 (empty -> .)
+    ANALYZE         reduce using rule 74 (empty -> .)
+    SIMULATE        reduce using rule 74 (empty -> .)
+    BRANCH          reduce using rule 74 (empty -> .)
+    METADATA        reduce using rule 74 (empty -> .)
+    $end            reduce using rule 74 (empty -> .)
+    ELSE            reduce using rule 74 (empty -> .)
+    RBRACE          reduce using rule 74 (empty -> .)
+
+  ! IDENTIFIER      [ reduce using rule 74 (empty -> .) ]
+
+    experiment_body                shift and go to state 24
+    property_list                  shift and go to state 26
+    property                       shift and go to state 27
+    empty                          shift and go to state 28
+
+state 19
+
+    (14) analyze_statement -> ANALYZE COLON . analyze_body
+    (15) analyze_body -> . LBRACE property_list RBRACE
+    (16) analyze_body -> . property_list
+    (28) property_list -> . property_list COMMA property
+    (29) property_list -> . property
+    (30) property_list -> . empty
+    (31) property -> . IDENTIFIER COLON value
+    (74) empty -> .
+
+  ! shift/reduce conflict for IDENTIFIER resolved as shift
+    LBRACE          shift and go to state 31
+    IDENTIFIER      shift and go to state 29
+    COMMA           reduce using rule 74 (empty -> .)
+    EXPERIMENT      reduce using rule 74 (empty -> .)
+    ANALYZE         reduce using rule 74 (empty -> .)
+    SIMULATE        reduce using rule 74 (empty -> .)
+    BRANCH          reduce using rule 74 (empty -> .)
+    METADATA        reduce using rule 74 (empty -> .)
+    $end            reduce using rule 74 (empty -> .)
+    ELSE            reduce using rule 74 (empty -> .)
+    RBRACE          reduce using rule 74 (empty -> .)
+
+  ! IDENTIFIER      [ reduce using rule 74 (empty -> .) ]
+
+    analyze_body                   shift and go to state 30
+    property_list                  shift and go to state 32
+    property                       shift and go to state 27
+    empty                          shift and go to state 28
+
+state 20
+
+    (17) simulate_statement -> SIMULATE COLON . boolean_value
+    (18) simulate_statement -> SIMULATE COLON . simulate_body
+    (73) boolean_value -> . BOOLEAN
+    (19) simulate_body -> . LBRACE property_list RBRACE
+    (20) simulate_body -> . property_list
+    (28) property_list -> . property_list COMMA property
+    (29) property_list -> . property
+    (30) property_list -> . empty
+    (31) property -> . IDENTIFIER COLON value
+    (74) empty -> .
+
+  ! shift/reduce conflict for IDENTIFIER resolved as shift
+    BOOLEAN         shift and go to state 35
+    LBRACE          shift and go to state 36
+    IDENTIFIER      shift and go to state 29
+    COMMA           reduce using rule 74 (empty -> .)
+    EXPERIMENT      reduce using rule 74 (empty -> .)
+    ANALYZE         reduce using rule 74 (empty -> .)
+    SIMULATE        reduce using rule 74 (empty -> .)
+    BRANCH          reduce using rule 74 (empty -> .)
+    METADATA        reduce using rule 74 (empty -> .)
+    $end            reduce using rule 74 (empty -> .)
+    ELSE            reduce using rule 74 (empty -> .)
+    RBRACE          reduce using rule 74 (empty -> .)
+
+  ! IDENTIFIER      [ reduce using rule 74 (empty -> .) ]
+
+    boolean_value                  shift and go to state 33
+    simulate_body                  shift and go to state 34
+    property_list                  shift and go to state 37
+    property                       shift and go to state 27
+    empty                          shift and go to state 28
+
+state 21
+
+    (21) branch_statement -> BRANCH COLON . LBRACE branch_body RBRACE
+
+    LBRACE          shift and go to state 38
+
+
+state 22
+
+    (24) metadata_statement -> METADATA COLON . metadata_body
+    (25) metadata_body -> . LBRACE property_list RBRACE
+    (26) metadata_body -> . property_list
+    (28) property_list -> . property_list COMMA property
+    (29) property_list -> . property
+    (30) property_list -> . empty
+    (31) property -> . IDENTIFIER COLON value
+    (74) empty -> .
+
+  ! shift/reduce conflict for IDENTIFIER resolved as shift
+    LBRACE          shift and go to state 40
+    IDENTIFIER      shift and go to state 29
+    COMMA           reduce using rule 74 (empty -> .)
+    EXPERIMENT      reduce using rule 74 (empty -> .)
+    ANALYZE         reduce using rule 74 (empty -> .)
+    SIMULATE        reduce using rule 74 (empty -> .)
+    BRANCH          reduce using rule 74 (empty -> .)
+    METADATA        reduce using rule 74 (empty -> .)
+    $end            reduce using rule 74 (empty -> .)
+    ELSE            reduce using rule 74 (empty -> .)
+    RBRACE          reduce using rule 74 (empty -> .)
+
+  ! IDENTIFIER      [ reduce using rule 74 (empty -> .) ]
+
+    metadata_body                  shift and go to state 39
+    property_list                  shift and go to state 41
+    property                       shift and go to state 27
+    empty                          shift and go to state 28
+
+state 23
+
+    (27) assignment_statement -> IDENTIFIER ASSIGN . expression
+    (42) expression -> . logical_expression
+    (43) logical_expression -> . logical_expression AND comparison_expression
+    (44) logical_expression -> . logical_expression OR comparison_expression
+    (45) logical_expression -> . comparison_expression
+    (46) comparison_expression -> . arithmetic_expression EQUALS arithmetic_expression
+    (47) comparison_expression -> . arithmetic_expression NOT_EQUALS arithmetic_expression
+    (48) comparison_expression -> . arithmetic_expression LESS_THAN arithmetic_expression
+    (49) comparison_expression -> . arithmetic_expression GREATER_THAN arithmetic_expression
+    (50) comparison_expression -> . arithmetic_expression LESS_EQUAL arithmetic_expression
+    (51) comparison_expression -> . arithmetic_expression GREATER_EQUAL arithmetic_expression
+    (52) comparison_expression -> . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    expression                     shift and go to state 43
+    logical_expression             shift and go to state 44
+    comparison_expression          shift and go to state 45
+    arithmetic_expression          shift and go to state 46
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 24
+
+    (11) experiment_statement -> EXPERIMENT COLON experiment_body .
+
+    EXPERIMENT      reduce using rule 11 (experiment_statement -> EXPERIMENT COLON experiment_body .)
+    ANALYZE         reduce using rule 11 (experiment_statement -> EXPERIMENT COLON experiment_body .)
+    SIMULATE        reduce using rule 11 (experiment_statement -> EXPERIMENT COLON experiment_body .)
+    BRANCH          reduce using rule 11 (experiment_statement -> EXPERIMENT COLON experiment_body .)
+    METADATA        reduce using rule 11 (experiment_statement -> EXPERIMENT COLON experiment_body .)
+    IDENTIFIER      reduce using rule 11 (experiment_statement -> EXPERIMENT COLON experiment_body .)
+    $end            reduce using rule 11 (experiment_statement -> EXPERIMENT COLON experiment_body .)
+    ELSE            reduce using rule 11 (experiment_statement -> EXPERIMENT COLON experiment_body .)
+    RBRACE          reduce using rule 11 (experiment_statement -> EXPERIMENT COLON experiment_body .)
+
+
+state 25
+
+    (12) experiment_body -> LBRACE . property_list RBRACE
+    (28) property_list -> . property_list COMMA property
+    (29) property_list -> . property
+    (30) property_list -> . empty
+    (31) property -> . IDENTIFIER COLON value
+    (74) empty -> .
+
+    IDENTIFIER      shift and go to state 29
+    RBRACE          reduce using rule 74 (empty -> .)
+    COMMA           reduce using rule 74 (empty -> .)
+
+    property_list                  shift and go to state 60
+    property                       shift and go to state 27
+    empty                          shift and go to state 28
+
+state 26
+
+    (13) experiment_body -> property_list .
+    (28) property_list -> property_list . COMMA property
+
+    EXPERIMENT      reduce using rule 13 (experiment_body -> property_list .)
+    ANALYZE         reduce using rule 13 (experiment_body -> property_list .)
+    SIMULATE        reduce using rule 13 (experiment_body -> property_list .)
+    BRANCH          reduce using rule 13 (experiment_body -> property_list .)
+    METADATA        reduce using rule 13 (experiment_body -> property_list .)
+    IDENTIFIER      reduce using rule 13 (experiment_body -> property_list .)
+    $end            reduce using rule 13 (experiment_body -> property_list .)
+    ELSE            reduce using rule 13 (experiment_body -> property_list .)
+    RBRACE          reduce using rule 13 (experiment_body -> property_list .)
+    COMMA           shift and go to state 61
+
+
+state 27
+
+    (29) property_list -> property .
+
+    COMMA           reduce using rule 29 (property_list -> property .)
+    EXPERIMENT      reduce using rule 29 (property_list -> property .)
+    ANALYZE         reduce using rule 29 (property_list -> property .)
+    SIMULATE        reduce using rule 29 (property_list -> property .)
+    BRANCH          reduce using rule 29 (property_list -> property .)
+    METADATA        reduce using rule 29 (property_list -> property .)
+    IDENTIFIER      reduce using rule 29 (property_list -> property .)
+    $end            reduce using rule 29 (property_list -> property .)
+    ELSE            reduce using rule 29 (property_list -> property .)
+    RBRACE          reduce using rule 29 (property_list -> property .)
+
+
+state 28
+
+    (30) property_list -> empty .
+
+    COMMA           reduce using rule 30 (property_list -> empty .)
+    EXPERIMENT      reduce using rule 30 (property_list -> empty .)
+    ANALYZE         reduce using rule 30 (property_list -> empty .)
+    SIMULATE        reduce using rule 30 (property_list -> empty .)
+    BRANCH          reduce using rule 30 (property_list -> empty .)
+    METADATA        reduce using rule 30 (property_list -> empty .)
+    IDENTIFIER      reduce using rule 30 (property_list -> empty .)
+    $end            reduce using rule 30 (property_list -> empty .)
+    ELSE            reduce using rule 30 (property_list -> empty .)
+    RBRACE          reduce using rule 30 (property_list -> empty .)
+
+
+state 29
+
+    (31) property -> IDENTIFIER . COLON value
+
+    COLON           shift and go to state 62
+
+
+state 30
+
+    (14) analyze_statement -> ANALYZE COLON analyze_body .
+
+    EXPERIMENT      reduce using rule 14 (analyze_statement -> ANALYZE COLON analyze_body .)
+    ANALYZE         reduce using rule 14 (analyze_statement -> ANALYZE COLON analyze_body .)
+    SIMULATE        reduce using rule 14 (analyze_statement -> ANALYZE COLON analyze_body .)
+    BRANCH          reduce using rule 14 (analyze_statement -> ANALYZE COLON analyze_body .)
+    METADATA        reduce using rule 14 (analyze_statement -> ANALYZE COLON analyze_body .)
+    IDENTIFIER      reduce using rule 14 (analyze_statement -> ANALYZE COLON analyze_body .)
+    $end            reduce using rule 14 (analyze_statement -> ANALYZE COLON analyze_body .)
+    ELSE            reduce using rule 14 (analyze_statement -> ANALYZE COLON analyze_body .)
+    RBRACE          reduce using rule 14 (analyze_statement -> ANALYZE COLON analyze_body .)
+
+
+state 31
+
+    (15) analyze_body -> LBRACE . property_list RBRACE
+    (28) property_list -> . property_list COMMA property
+    (29) property_list -> . property
+    (30) property_list -> . empty
+    (31) property -> . IDENTIFIER COLON value
+    (74) empty -> .
+
+    IDENTIFIER      shift and go to state 29
+    RBRACE          reduce using rule 74 (empty -> .)
+    COMMA           reduce using rule 74 (empty -> .)
+
+    property_list                  shift and go to state 63
+    property                       shift and go to state 27
+    empty                          shift and go to state 28
+
+state 32
+
+    (16) analyze_body -> property_list .
+    (28) property_list -> property_list . COMMA property
+
+    EXPERIMENT      reduce using rule 16 (analyze_body -> property_list .)
+    ANALYZE         reduce using rule 16 (analyze_body -> property_list .)
+    SIMULATE        reduce using rule 16 (analyze_body -> property_list .)
+    BRANCH          reduce using rule 16 (analyze_body -> property_list .)
+    METADATA        reduce using rule 16 (analyze_body -> property_list .)
+    IDENTIFIER      reduce using rule 16 (analyze_body -> property_list .)
+    $end            reduce using rule 16 (analyze_body -> property_list .)
+    ELSE            reduce using rule 16 (analyze_body -> property_list .)
+    RBRACE          reduce using rule 16 (analyze_body -> property_list .)
+    COMMA           shift and go to state 61
+
+
+state 33
+
+    (17) simulate_statement -> SIMULATE COLON boolean_value .
+
+    EXPERIMENT      reduce using rule 17 (simulate_statement -> SIMULATE COLON boolean_value .)
+    ANALYZE         reduce using rule 17 (simulate_statement -> SIMULATE COLON boolean_value .)
+    SIMULATE        reduce using rule 17 (simulate_statement -> SIMULATE COLON boolean_value .)
+    BRANCH          reduce using rule 17 (simulate_statement -> SIMULATE COLON boolean_value .)
+    METADATA        reduce using rule 17 (simulate_statement -> SIMULATE COLON boolean_value .)
+    IDENTIFIER      reduce using rule 17 (simulate_statement -> SIMULATE COLON boolean_value .)
+    $end            reduce using rule 17 (simulate_statement -> SIMULATE COLON boolean_value .)
+    ELSE            reduce using rule 17 (simulate_statement -> SIMULATE COLON boolean_value .)
+    RBRACE          reduce using rule 17 (simulate_statement -> SIMULATE COLON boolean_value .)
+
+
+state 34
+
+    (18) simulate_statement -> SIMULATE COLON simulate_body .
+
+    EXPERIMENT      reduce using rule 18 (simulate_statement -> SIMULATE COLON simulate_body .)
+    ANALYZE         reduce using rule 18 (simulate_statement -> SIMULATE COLON simulate_body .)
+    SIMULATE        reduce using rule 18 (simulate_statement -> SIMULATE COLON simulate_body .)
+    BRANCH          reduce using rule 18 (simulate_statement -> SIMULATE COLON simulate_body .)
+    METADATA        reduce using rule 18 (simulate_statement -> SIMULATE COLON simulate_body .)
+    IDENTIFIER      reduce using rule 18 (simulate_statement -> SIMULATE COLON simulate_body .)
+    $end            reduce using rule 18 (simulate_statement -> SIMULATE COLON simulate_body .)
+    ELSE            reduce using rule 18 (simulate_statement -> SIMULATE COLON simulate_body .)
+    RBRACE          reduce using rule 18 (simulate_statement -> SIMULATE COLON simulate_body .)
+
+
+state 35
+
+    (73) boolean_value -> BOOLEAN .
+
+    EXPERIMENT      reduce using rule 73 (boolean_value -> BOOLEAN .)
+    ANALYZE         reduce using rule 73 (boolean_value -> BOOLEAN .)
+    SIMULATE        reduce using rule 73 (boolean_value -> BOOLEAN .)
+    BRANCH          reduce using rule 73 (boolean_value -> BOOLEAN .)
+    METADATA        reduce using rule 73 (boolean_value -> BOOLEAN .)
+    IDENTIFIER      reduce using rule 73 (boolean_value -> BOOLEAN .)
+    $end            reduce using rule 73 (boolean_value -> BOOLEAN .)
+    ELSE            reduce using rule 73 (boolean_value -> BOOLEAN .)
+    RBRACE          reduce using rule 73 (boolean_value -> BOOLEAN .)
+    POWER           reduce using rule 73 (boolean_value -> BOOLEAN .)
+    TIMES           reduce using rule 73 (boolean_value -> BOOLEAN .)
+    DIVIDE          reduce using rule 73 (boolean_value -> BOOLEAN .)
+    MODULO          reduce using rule 73 (boolean_value -> BOOLEAN .)
+    EQUALS          reduce using rule 73 (boolean_value -> BOOLEAN .)
+    NOT_EQUALS      reduce using rule 73 (boolean_value -> BOOLEAN .)
+    LESS_THAN       reduce using rule 73 (boolean_value -> BOOLEAN .)
+    GREATER_THAN    reduce using rule 73 (boolean_value -> BOOLEAN .)
+    LESS_EQUAL      reduce using rule 73 (boolean_value -> BOOLEAN .)
+    GREATER_EQUAL   reduce using rule 73 (boolean_value -> BOOLEAN .)
+    PLUS            reduce using rule 73 (boolean_value -> BOOLEAN .)
+    MINUS           reduce using rule 73 (boolean_value -> BOOLEAN .)
+    AND             reduce using rule 73 (boolean_value -> BOOLEAN .)
+    OR              reduce using rule 73 (boolean_value -> BOOLEAN .)
+    RPAREN          reduce using rule 73 (boolean_value -> BOOLEAN .)
+    COMMA           reduce using rule 73 (boolean_value -> BOOLEAN .)
+    RBRACKET        reduce using rule 73 (boolean_value -> BOOLEAN .)
+
+
+state 36
+
+    (19) simulate_body -> LBRACE . property_list RBRACE
+    (28) property_list -> . property_list COMMA property
+    (29) property_list -> . property
+    (30) property_list -> . empty
+    (31) property -> . IDENTIFIER COLON value
+    (74) empty -> .
+
+    IDENTIFIER      shift and go to state 29
+    RBRACE          reduce using rule 74 (empty -> .)
+    COMMA           reduce using rule 74 (empty -> .)
+
+    property_list                  shift and go to state 64
+    property                       shift and go to state 27
+    empty                          shift and go to state 28
+
+state 37
+
+    (20) simulate_body -> property_list .
+    (28) property_list -> property_list . COMMA property
+
+    EXPERIMENT      reduce using rule 20 (simulate_body -> property_list .)
+    ANALYZE         reduce using rule 20 (simulate_body -> property_list .)
+    SIMULATE        reduce using rule 20 (simulate_body -> property_list .)
+    BRANCH          reduce using rule 20 (simulate_body -> property_list .)
+    METADATA        reduce using rule 20 (simulate_body -> property_list .)
+    IDENTIFIER      reduce using rule 20 (simulate_body -> property_list .)
+    $end            reduce using rule 20 (simulate_body -> property_list .)
+    ELSE            reduce using rule 20 (simulate_body -> property_list .)
+    RBRACE          reduce using rule 20 (simulate_body -> property_list .)
+    COMMA           shift and go to state 61
+
+
+state 38
+
+    (21) branch_statement -> BRANCH COLON LBRACE . branch_body RBRACE
+    (22) branch_body -> . IF COLON expression COMMA statement_list
+    (23) branch_body -> . IF COLON expression COMMA statement_list ELSE COLON statement_list
+
+    IF              shift and go to state 66
+
+    branch_body                    shift and go to state 65
+
+state 39
+
+    (24) metadata_statement -> METADATA COLON metadata_body .
+
+    EXPERIMENT      reduce using rule 24 (metadata_statement -> METADATA COLON metadata_body .)
+    ANALYZE         reduce using rule 24 (metadata_statement -> METADATA COLON metadata_body .)
+    SIMULATE        reduce using rule 24 (metadata_statement -> METADATA COLON metadata_body .)
+    BRANCH          reduce using rule 24 (metadata_statement -> METADATA COLON metadata_body .)
+    METADATA        reduce using rule 24 (metadata_statement -> METADATA COLON metadata_body .)
+    IDENTIFIER      reduce using rule 24 (metadata_statement -> METADATA COLON metadata_body .)
+    $end            reduce using rule 24 (metadata_statement -> METADATA COLON metadata_body .)
+    ELSE            reduce using rule 24 (metadata_statement -> METADATA COLON metadata_body .)
+    RBRACE          reduce using rule 24 (metadata_statement -> METADATA COLON metadata_body .)
+
+
+state 40
+
+    (25) metadata_body -> LBRACE . property_list RBRACE
+    (28) property_list -> . property_list COMMA property
+    (29) property_list -> . property
+    (30) property_list -> . empty
+    (31) property -> . IDENTIFIER COLON value
+    (74) empty -> .
+
+    IDENTIFIER      shift and go to state 29
+    RBRACE          reduce using rule 74 (empty -> .)
+    COMMA           reduce using rule 74 (empty -> .)
+
+    property_list                  shift and go to state 67
+    property                       shift and go to state 27
+    empty                          shift and go to state 28
+
+state 41
+
+    (26) metadata_body -> property_list .
+    (28) property_list -> property_list . COMMA property
+
+    EXPERIMENT      reduce using rule 26 (metadata_body -> property_list .)
+    ANALYZE         reduce using rule 26 (metadata_body -> property_list .)
+    SIMULATE        reduce using rule 26 (metadata_body -> property_list .)
+    BRANCH          reduce using rule 26 (metadata_body -> property_list .)
+    METADATA        reduce using rule 26 (metadata_body -> property_list .)
+    IDENTIFIER      reduce using rule 26 (metadata_body -> property_list .)
+    $end            reduce using rule 26 (metadata_body -> property_list .)
+    ELSE            reduce using rule 26 (metadata_body -> property_list .)
+    RBRACE          reduce using rule 26 (metadata_body -> property_list .)
+    COMMA           shift and go to state 61
+
+
+state 42
+
+    (68) atom -> IDENTIFIER .
+
+    POWER           reduce using rule 68 (atom -> IDENTIFIER .)
+    TIMES           reduce using rule 68 (atom -> IDENTIFIER .)
+    DIVIDE          reduce using rule 68 (atom -> IDENTIFIER .)
+    MODULO          reduce using rule 68 (atom -> IDENTIFIER .)
+    EQUALS          reduce using rule 68 (atom -> IDENTIFIER .)
+    NOT_EQUALS      reduce using rule 68 (atom -> IDENTIFIER .)
+    LESS_THAN       reduce using rule 68 (atom -> IDENTIFIER .)
+    GREATER_THAN    reduce using rule 68 (atom -> IDENTIFIER .)
+    LESS_EQUAL      reduce using rule 68 (atom -> IDENTIFIER .)
+    GREATER_EQUAL   reduce using rule 68 (atom -> IDENTIFIER .)
+    PLUS            reduce using rule 68 (atom -> IDENTIFIER .)
+    MINUS           reduce using rule 68 (atom -> IDENTIFIER .)
+    AND             reduce using rule 68 (atom -> IDENTIFIER .)
+    OR              reduce using rule 68 (atom -> IDENTIFIER .)
+    EXPERIMENT      reduce using rule 68 (atom -> IDENTIFIER .)
+    ANALYZE         reduce using rule 68 (atom -> IDENTIFIER .)
+    SIMULATE        reduce using rule 68 (atom -> IDENTIFIER .)
+    BRANCH          reduce using rule 68 (atom -> IDENTIFIER .)
+    METADATA        reduce using rule 68 (atom -> IDENTIFIER .)
+    IDENTIFIER      reduce using rule 68 (atom -> IDENTIFIER .)
+    $end            reduce using rule 68 (atom -> IDENTIFIER .)
+    ELSE            reduce using rule 68 (atom -> IDENTIFIER .)
+    RBRACE          reduce using rule 68 (atom -> IDENTIFIER .)
+    RPAREN          reduce using rule 68 (atom -> IDENTIFIER .)
+    COMMA           reduce using rule 68 (atom -> IDENTIFIER .)
+    RBRACKET        reduce using rule 68 (atom -> IDENTIFIER .)
+
+
+state 43
+
+    (27) assignment_statement -> IDENTIFIER ASSIGN expression .
+
+    EXPERIMENT      reduce using rule 27 (assignment_statement -> IDENTIFIER ASSIGN expression .)
+    ANALYZE         reduce using rule 27 (assignment_statement -> IDENTIFIER ASSIGN expression .)
+    SIMULATE        reduce using rule 27 (assignment_statement -> IDENTIFIER ASSIGN expression .)
+    BRANCH          reduce using rule 27 (assignment_statement -> IDENTIFIER ASSIGN expression .)
+    METADATA        reduce using rule 27 (assignment_statement -> IDENTIFIER ASSIGN expression .)
+    IDENTIFIER      reduce using rule 27 (assignment_statement -> IDENTIFIER ASSIGN expression .)
+    $end            reduce using rule 27 (assignment_statement -> IDENTIFIER ASSIGN expression .)
+    ELSE            reduce using rule 27 (assignment_statement -> IDENTIFIER ASSIGN expression .)
+    RBRACE          reduce using rule 27 (assignment_statement -> IDENTIFIER ASSIGN expression .)
+
+
+state 44
+
+    (42) expression -> logical_expression .
+    (43) logical_expression -> logical_expression . AND comparison_expression
+    (44) logical_expression -> logical_expression . OR comparison_expression
+
+    EXPERIMENT      reduce using rule 42 (expression -> logical_expression .)
+    ANALYZE         reduce using rule 42 (expression -> logical_expression .)
+    SIMULATE        reduce using rule 42 (expression -> logical_expression .)
+    BRANCH          reduce using rule 42 (expression -> logical_expression .)
+    METADATA        reduce using rule 42 (expression -> logical_expression .)
+    IDENTIFIER      reduce using rule 42 (expression -> logical_expression .)
+    $end            reduce using rule 42 (expression -> logical_expression .)
+    ELSE            reduce using rule 42 (expression -> logical_expression .)
+    RBRACE          reduce using rule 42 (expression -> logical_expression .)
+    RPAREN          reduce using rule 42 (expression -> logical_expression .)
+    COMMA           reduce using rule 42 (expression -> logical_expression .)
+    RBRACKET        reduce using rule 42 (expression -> logical_expression .)
+    AND             shift and go to state 68
+    OR              shift and go to state 69
+
+
+state 45
+
+    (45) logical_expression -> comparison_expression .
+
+    AND             reduce using rule 45 (logical_expression -> comparison_expression .)
+    OR              reduce using rule 45 (logical_expression -> comparison_expression .)
+    EXPERIMENT      reduce using rule 45 (logical_expression -> comparison_expression .)
+    ANALYZE         reduce using rule 45 (logical_expression -> comparison_expression .)
+    SIMULATE        reduce using rule 45 (logical_expression -> comparison_expression .)
+    BRANCH          reduce using rule 45 (logical_expression -> comparison_expression .)
+    METADATA        reduce using rule 45 (logical_expression -> comparison_expression .)
+    IDENTIFIER      reduce using rule 45 (logical_expression -> comparison_expression .)
+    $end            reduce using rule 45 (logical_expression -> comparison_expression .)
+    ELSE            reduce using rule 45 (logical_expression -> comparison_expression .)
+    RBRACE          reduce using rule 45 (logical_expression -> comparison_expression .)
+    RPAREN          reduce using rule 45 (logical_expression -> comparison_expression .)
+    COMMA           reduce using rule 45 (logical_expression -> comparison_expression .)
+    RBRACKET        reduce using rule 45 (logical_expression -> comparison_expression .)
+
+
+state 46
+
+    (46) comparison_expression -> arithmetic_expression . EQUALS arithmetic_expression
+    (47) comparison_expression -> arithmetic_expression . NOT_EQUALS arithmetic_expression
+    (48) comparison_expression -> arithmetic_expression . LESS_THAN arithmetic_expression
+    (49) comparison_expression -> arithmetic_expression . GREATER_THAN arithmetic_expression
+    (50) comparison_expression -> arithmetic_expression . LESS_EQUAL arithmetic_expression
+    (51) comparison_expression -> arithmetic_expression . GREATER_EQUAL arithmetic_expression
+    (52) comparison_expression -> arithmetic_expression .
+    (53) arithmetic_expression -> arithmetic_expression . PLUS term
+    (54) arithmetic_expression -> arithmetic_expression . MINUS term
+
+    EQUALS          shift and go to state 70
+    NOT_EQUALS      shift and go to state 71
+    LESS_THAN       shift and go to state 72
+    GREATER_THAN    shift and go to state 73
+    LESS_EQUAL      shift and go to state 74
+    GREATER_EQUAL   shift and go to state 75
+    AND             reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    OR              reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    EXPERIMENT      reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    ANALYZE         reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    SIMULATE        reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    BRANCH          reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    METADATA        reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    IDENTIFIER      reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    $end            reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    ELSE            reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    RBRACE          reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    RPAREN          reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    COMMA           reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    RBRACKET        reduce using rule 52 (comparison_expression -> arithmetic_expression .)
+    PLUS            shift and go to state 76
+    MINUS           shift and go to state 77
+
+
+state 47
+
+    (61) factor -> PLUS . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    factor                         shift and go to state 78
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 48
+
+    (55) arithmetic_expression -> term .
+    (56) term -> term . TIMES factor
+    (57) term -> term . DIVIDE factor
+    (58) term -> term . MODULO factor
+
+    EQUALS          reduce using rule 55 (arithmetic_expression -> term .)
+    NOT_EQUALS      reduce using rule 55 (arithmetic_expression -> term .)
+    LESS_THAN       reduce using rule 55 (arithmetic_expression -> term .)
+    GREATER_THAN    reduce using rule 55 (arithmetic_expression -> term .)
+    LESS_EQUAL      reduce using rule 55 (arithmetic_expression -> term .)
+    GREATER_EQUAL   reduce using rule 55 (arithmetic_expression -> term .)
+    PLUS            reduce using rule 55 (arithmetic_expression -> term .)
+    MINUS           reduce using rule 55 (arithmetic_expression -> term .)
+    AND             reduce using rule 55 (arithmetic_expression -> term .)
+    OR              reduce using rule 55 (arithmetic_expression -> term .)
+    EXPERIMENT      reduce using rule 55 (arithmetic_expression -> term .)
+    ANALYZE         reduce using rule 55 (arithmetic_expression -> term .)
+    SIMULATE        reduce using rule 55 (arithmetic_expression -> term .)
+    BRANCH          reduce using rule 55 (arithmetic_expression -> term .)
+    METADATA        reduce using rule 55 (arithmetic_expression -> term .)
+    IDENTIFIER      reduce using rule 55 (arithmetic_expression -> term .)
+    $end            reduce using rule 55 (arithmetic_expression -> term .)
+    ELSE            reduce using rule 55 (arithmetic_expression -> term .)
+    RBRACE          reduce using rule 55 (arithmetic_expression -> term .)
+    RPAREN          reduce using rule 55 (arithmetic_expression -> term .)
+    COMMA           reduce using rule 55 (arithmetic_expression -> term .)
+    RBRACKET        reduce using rule 55 (arithmetic_expression -> term .)
+    TIMES           shift and go to state 79
+    DIVIDE          shift and go to state 80
+    MODULO          shift and go to state 81
+
+
+state 49
+
+    (60) factor -> MINUS . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    factor                         shift and go to state 82
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 50
+
+    (59) term -> factor .
+
+    TIMES           reduce using rule 59 (term -> factor .)
+    DIVIDE          reduce using rule 59 (term -> factor .)
+    MODULO          reduce using rule 59 (term -> factor .)
+    EQUALS          reduce using rule 59 (term -> factor .)
+    NOT_EQUALS      reduce using rule 59 (term -> factor .)
+    LESS_THAN       reduce using rule 59 (term -> factor .)
+    GREATER_THAN    reduce using rule 59 (term -> factor .)
+    LESS_EQUAL      reduce using rule 59 (term -> factor .)
+    GREATER_EQUAL   reduce using rule 59 (term -> factor .)
+    PLUS            reduce using rule 59 (term -> factor .)
+    MINUS           reduce using rule 59 (term -> factor .)
+    AND             reduce using rule 59 (term -> factor .)
+    OR              reduce using rule 59 (term -> factor .)
+    EXPERIMENT      reduce using rule 59 (term -> factor .)
+    ANALYZE         reduce using rule 59 (term -> factor .)
+    SIMULATE        reduce using rule 59 (term -> factor .)
+    BRANCH          reduce using rule 59 (term -> factor .)
+    METADATA        reduce using rule 59 (term -> factor .)
+    IDENTIFIER      reduce using rule 59 (term -> factor .)
+    $end            reduce using rule 59 (term -> factor .)
+    ELSE            reduce using rule 59 (term -> factor .)
+    RBRACE          reduce using rule 59 (term -> factor .)
+    RPAREN          reduce using rule 59 (term -> factor .)
+    COMMA           reduce using rule 59 (term -> factor .)
+    RBRACKET        reduce using rule 59 (term -> factor .)
+
+
+state 51
+
+    (62) factor -> NOT . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    factor                         shift and go to state 83
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 52
+
+    (63) factor -> power .
+
+    TIMES           reduce using rule 63 (factor -> power .)
+    DIVIDE          reduce using rule 63 (factor -> power .)
+    MODULO          reduce using rule 63 (factor -> power .)
+    EQUALS          reduce using rule 63 (factor -> power .)
+    NOT_EQUALS      reduce using rule 63 (factor -> power .)
+    LESS_THAN       reduce using rule 63 (factor -> power .)
+    GREATER_THAN    reduce using rule 63 (factor -> power .)
+    LESS_EQUAL      reduce using rule 63 (factor -> power .)
+    GREATER_EQUAL   reduce using rule 63 (factor -> power .)
+    PLUS            reduce using rule 63 (factor -> power .)
+    MINUS           reduce using rule 63 (factor -> power .)
+    AND             reduce using rule 63 (factor -> power .)
+    OR              reduce using rule 63 (factor -> power .)
+    EXPERIMENT      reduce using rule 63 (factor -> power .)
+    ANALYZE         reduce using rule 63 (factor -> power .)
+    SIMULATE        reduce using rule 63 (factor -> power .)
+    BRANCH          reduce using rule 63 (factor -> power .)
+    METADATA        reduce using rule 63 (factor -> power .)
+    IDENTIFIER      reduce using rule 63 (factor -> power .)
+    $end            reduce using rule 63 (factor -> power .)
+    ELSE            reduce using rule 63 (factor -> power .)
+    RBRACE          reduce using rule 63 (factor -> power .)
+    RPAREN          reduce using rule 63 (factor -> power .)
+    COMMA           reduce using rule 63 (factor -> power .)
+    RBRACKET        reduce using rule 63 (factor -> power .)
+
+
+state 53
+
+    (64) power -> atom . POWER factor
+    (65) power -> atom .
+
+    POWER           shift and go to state 84
+    TIMES           reduce using rule 65 (power -> atom .)
+    DIVIDE          reduce using rule 65 (power -> atom .)
+    MODULO          reduce using rule 65 (power -> atom .)
+    EQUALS          reduce using rule 65 (power -> atom .)
+    NOT_EQUALS      reduce using rule 65 (power -> atom .)
+    LESS_THAN       reduce using rule 65 (power -> atom .)
+    GREATER_THAN    reduce using rule 65 (power -> atom .)
+    LESS_EQUAL      reduce using rule 65 (power -> atom .)
+    GREATER_EQUAL   reduce using rule 65 (power -> atom .)
+    PLUS            reduce using rule 65 (power -> atom .)
+    MINUS           reduce using rule 65 (power -> atom .)
+    AND             reduce using rule 65 (power -> atom .)
+    OR              reduce using rule 65 (power -> atom .)
+    EXPERIMENT      reduce using rule 65 (power -> atom .)
+    ANALYZE         reduce using rule 65 (power -> atom .)
+    SIMULATE        reduce using rule 65 (power -> atom .)
+    BRANCH          reduce using rule 65 (power -> atom .)
+    METADATA        reduce using rule 65 (power -> atom .)
+    IDENTIFIER      reduce using rule 65 (power -> atom .)
+    $end            reduce using rule 65 (power -> atom .)
+    ELSE            reduce using rule 65 (power -> atom .)
+    RBRACE          reduce using rule 65 (power -> atom .)
+    RPAREN          reduce using rule 65 (power -> atom .)
+    COMMA           reduce using rule 65 (power -> atom .)
+    RBRACKET        reduce using rule 65 (power -> atom .)
+
+
+state 54
+
+    (66) atom -> LPAREN . expression RPAREN
+    (42) expression -> . logical_expression
+    (43) logical_expression -> . logical_expression AND comparison_expression
+    (44) logical_expression -> . logical_expression OR comparison_expression
+    (45) logical_expression -> . comparison_expression
+    (46) comparison_expression -> . arithmetic_expression EQUALS arithmetic_expression
+    (47) comparison_expression -> . arithmetic_expression NOT_EQUALS arithmetic_expression
+    (48) comparison_expression -> . arithmetic_expression LESS_THAN arithmetic_expression
+    (49) comparison_expression -> . arithmetic_expression GREATER_THAN arithmetic_expression
+    (50) comparison_expression -> . arithmetic_expression LESS_EQUAL arithmetic_expression
+    (51) comparison_expression -> . arithmetic_expression GREATER_EQUAL arithmetic_expression
+    (52) comparison_expression -> . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    expression                     shift and go to state 85
+    logical_expression             shift and go to state 44
+    comparison_expression          shift and go to state 45
+    arithmetic_expression          shift and go to state 46
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 55
+
+    (67) atom -> literal .
+
+    POWER           reduce using rule 67 (atom -> literal .)
+    TIMES           reduce using rule 67 (atom -> literal .)
+    DIVIDE          reduce using rule 67 (atom -> literal .)
+    MODULO          reduce using rule 67 (atom -> literal .)
+    EQUALS          reduce using rule 67 (atom -> literal .)
+    NOT_EQUALS      reduce using rule 67 (atom -> literal .)
+    LESS_THAN       reduce using rule 67 (atom -> literal .)
+    GREATER_THAN    reduce using rule 67 (atom -> literal .)
+    LESS_EQUAL      reduce using rule 67 (atom -> literal .)
+    GREATER_EQUAL   reduce using rule 67 (atom -> literal .)
+    PLUS            reduce using rule 67 (atom -> literal .)
+    MINUS           reduce using rule 67 (atom -> literal .)
+    AND             reduce using rule 67 (atom -> literal .)
+    OR              reduce using rule 67 (atom -> literal .)
+    EXPERIMENT      reduce using rule 67 (atom -> literal .)
+    ANALYZE         reduce using rule 67 (atom -> literal .)
+    SIMULATE        reduce using rule 67 (atom -> literal .)
+    BRANCH          reduce using rule 67 (atom -> literal .)
+    METADATA        reduce using rule 67 (atom -> literal .)
+    IDENTIFIER      reduce using rule 67 (atom -> literal .)
+    $end            reduce using rule 67 (atom -> literal .)
+    ELSE            reduce using rule 67 (atom -> literal .)
+    RBRACE          reduce using rule 67 (atom -> literal .)
+    RPAREN          reduce using rule 67 (atom -> literal .)
+    COMMA           reduce using rule 67 (atom -> literal .)
+    RBRACKET        reduce using rule 67 (atom -> literal .)
+
+
+state 56
+
+    (69) literal -> NUMBER .
+
+    POWER           reduce using rule 69 (literal -> NUMBER .)
+    TIMES           reduce using rule 69 (literal -> NUMBER .)
+    DIVIDE          reduce using rule 69 (literal -> NUMBER .)
+    MODULO          reduce using rule 69 (literal -> NUMBER .)
+    EQUALS          reduce using rule 69 (literal -> NUMBER .)
+    NOT_EQUALS      reduce using rule 69 (literal -> NUMBER .)
+    LESS_THAN       reduce using rule 69 (literal -> NUMBER .)
+    GREATER_THAN    reduce using rule 69 (literal -> NUMBER .)
+    LESS_EQUAL      reduce using rule 69 (literal -> NUMBER .)
+    GREATER_EQUAL   reduce using rule 69 (literal -> NUMBER .)
+    PLUS            reduce using rule 69 (literal -> NUMBER .)
+    MINUS           reduce using rule 69 (literal -> NUMBER .)
+    AND             reduce using rule 69 (literal -> NUMBER .)
+    OR              reduce using rule 69 (literal -> NUMBER .)
+    EXPERIMENT      reduce using rule 69 (literal -> NUMBER .)
+    ANALYZE         reduce using rule 69 (literal -> NUMBER .)
+    SIMULATE        reduce using rule 69 (literal -> NUMBER .)
+    BRANCH          reduce using rule 69 (literal -> NUMBER .)
+    METADATA        reduce using rule 69 (literal -> NUMBER .)
+    IDENTIFIER      reduce using rule 69 (literal -> NUMBER .)
+    $end            reduce using rule 69 (literal -> NUMBER .)
+    ELSE            reduce using rule 69 (literal -> NUMBER .)
+    RBRACE          reduce using rule 69 (literal -> NUMBER .)
+    RPAREN          reduce using rule 69 (literal -> NUMBER .)
+    COMMA           reduce using rule 69 (literal -> NUMBER .)
+    RBRACKET        reduce using rule 69 (literal -> NUMBER .)
+
+
+state 57
+
+    (70) literal -> STRING .
+
+    POWER           reduce using rule 70 (literal -> STRING .)
+    TIMES           reduce using rule 70 (literal -> STRING .)
+    DIVIDE          reduce using rule 70 (literal -> STRING .)
+    MODULO          reduce using rule 70 (literal -> STRING .)
+    EQUALS          reduce using rule 70 (literal -> STRING .)
+    NOT_EQUALS      reduce using rule 70 (literal -> STRING .)
+    LESS_THAN       reduce using rule 70 (literal -> STRING .)
+    GREATER_THAN    reduce using rule 70 (literal -> STRING .)
+    LESS_EQUAL      reduce using rule 70 (literal -> STRING .)
+    GREATER_EQUAL   reduce using rule 70 (literal -> STRING .)
+    PLUS            reduce using rule 70 (literal -> STRING .)
+    MINUS           reduce using rule 70 (literal -> STRING .)
+    AND             reduce using rule 70 (literal -> STRING .)
+    OR              reduce using rule 70 (literal -> STRING .)
+    EXPERIMENT      reduce using rule 70 (literal -> STRING .)
+    ANALYZE         reduce using rule 70 (literal -> STRING .)
+    SIMULATE        reduce using rule 70 (literal -> STRING .)
+    BRANCH          reduce using rule 70 (literal -> STRING .)
+    METADATA        reduce using rule 70 (literal -> STRING .)
+    IDENTIFIER      reduce using rule 70 (literal -> STRING .)
+    $end            reduce using rule 70 (literal -> STRING .)
+    ELSE            reduce using rule 70 (literal -> STRING .)
+    RBRACE          reduce using rule 70 (literal -> STRING .)
+    RPAREN          reduce using rule 70 (literal -> STRING .)
+    COMMA           reduce using rule 70 (literal -> STRING .)
+    RBRACKET        reduce using rule 70 (literal -> STRING .)
+
+
+state 58
+
+    (71) literal -> boolean_value .
+
+    POWER           reduce using rule 71 (literal -> boolean_value .)
+    TIMES           reduce using rule 71 (literal -> boolean_value .)
+    DIVIDE          reduce using rule 71 (literal -> boolean_value .)
+    MODULO          reduce using rule 71 (literal -> boolean_value .)
+    EQUALS          reduce using rule 71 (literal -> boolean_value .)
+    NOT_EQUALS      reduce using rule 71 (literal -> boolean_value .)
+    LESS_THAN       reduce using rule 71 (literal -> boolean_value .)
+    GREATER_THAN    reduce using rule 71 (literal -> boolean_value .)
+    LESS_EQUAL      reduce using rule 71 (literal -> boolean_value .)
+    GREATER_EQUAL   reduce using rule 71 (literal -> boolean_value .)
+    PLUS            reduce using rule 71 (literal -> boolean_value .)
+    MINUS           reduce using rule 71 (literal -> boolean_value .)
+    AND             reduce using rule 71 (literal -> boolean_value .)
+    OR              reduce using rule 71 (literal -> boolean_value .)
+    EXPERIMENT      reduce using rule 71 (literal -> boolean_value .)
+    ANALYZE         reduce using rule 71 (literal -> boolean_value .)
+    SIMULATE        reduce using rule 71 (literal -> boolean_value .)
+    BRANCH          reduce using rule 71 (literal -> boolean_value .)
+    METADATA        reduce using rule 71 (literal -> boolean_value .)
+    IDENTIFIER      reduce using rule 71 (literal -> boolean_value .)
+    $end            reduce using rule 71 (literal -> boolean_value .)
+    ELSE            reduce using rule 71 (literal -> boolean_value .)
+    RBRACE          reduce using rule 71 (literal -> boolean_value .)
+    RPAREN          reduce using rule 71 (literal -> boolean_value .)
+    COMMA           reduce using rule 71 (literal -> boolean_value .)
+    RBRACKET        reduce using rule 71 (literal -> boolean_value .)
+
+
+state 59
+
+    (72) literal -> NULL .
+
+    POWER           reduce using rule 72 (literal -> NULL .)
+    TIMES           reduce using rule 72 (literal -> NULL .)
+    DIVIDE          reduce using rule 72 (literal -> NULL .)
+    MODULO          reduce using rule 72 (literal -> NULL .)
+    EQUALS          reduce using rule 72 (literal -> NULL .)
+    NOT_EQUALS      reduce using rule 72 (literal -> NULL .)
+    LESS_THAN       reduce using rule 72 (literal -> NULL .)
+    GREATER_THAN    reduce using rule 72 (literal -> NULL .)
+    LESS_EQUAL      reduce using rule 72 (literal -> NULL .)
+    GREATER_EQUAL   reduce using rule 72 (literal -> NULL .)
+    PLUS            reduce using rule 72 (literal -> NULL .)
+    MINUS           reduce using rule 72 (literal -> NULL .)
+    AND             reduce using rule 72 (literal -> NULL .)
+    OR              reduce using rule 72 (literal -> NULL .)
+    EXPERIMENT      reduce using rule 72 (literal -> NULL .)
+    ANALYZE         reduce using rule 72 (literal -> NULL .)
+    SIMULATE        reduce using rule 72 (literal -> NULL .)
+    BRANCH          reduce using rule 72 (literal -> NULL .)
+    METADATA        reduce using rule 72 (literal -> NULL .)
+    IDENTIFIER      reduce using rule 72 (literal -> NULL .)
+    $end            reduce using rule 72 (literal -> NULL .)
+    ELSE            reduce using rule 72 (literal -> NULL .)
+    RBRACE          reduce using rule 72 (literal -> NULL .)
+    RPAREN          reduce using rule 72 (literal -> NULL .)
+    COMMA           reduce using rule 72 (literal -> NULL .)
+    RBRACKET        reduce using rule 72 (literal -> NULL .)
+
+
+state 60
+
+    (12) experiment_body -> LBRACE property_list . RBRACE
+    (28) property_list -> property_list . COMMA property
+
+    RBRACE          shift and go to state 86
+    COMMA           shift and go to state 61
+
+
+state 61
+
+    (28) property_list -> property_list COMMA . property
+    (31) property -> . IDENTIFIER COLON value
+
+    IDENTIFIER      shift and go to state 29
+
+    property                       shift and go to state 87
+
+state 62
+
+    (31) property -> IDENTIFIER COLON . value
+    (32) value -> . expression
+    (33) value -> . object_literal
+    (34) value -> . array_literal
+    (42) expression -> . logical_expression
+    (35) object_literal -> . LBRACE property_list RBRACE
+    (36) object_literal -> . LBRACE RBRACE
+    (37) array_literal -> . LBRACKET expression_list RBRACKET
+    (38) array_literal -> . LBRACKET RBRACKET
+    (43) logical_expression -> . logical_expression AND comparison_expression
+    (44) logical_expression -> . logical_expression OR comparison_expression
+    (45) logical_expression -> . comparison_expression
+    (46) comparison_expression -> . arithmetic_expression EQUALS arithmetic_expression
+    (47) comparison_expression -> . arithmetic_expression NOT_EQUALS arithmetic_expression
+    (48) comparison_expression -> . arithmetic_expression LESS_THAN arithmetic_expression
+    (49) comparison_expression -> . arithmetic_expression GREATER_THAN arithmetic_expression
+    (50) comparison_expression -> . arithmetic_expression LESS_EQUAL arithmetic_expression
+    (51) comparison_expression -> . arithmetic_expression GREATER_EQUAL arithmetic_expression
+    (52) comparison_expression -> . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    LBRACE          shift and go to state 92
+    LBRACKET        shift and go to state 93
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    value                          shift and go to state 88
+    expression                     shift and go to state 89
+    object_literal                 shift and go to state 90
+    array_literal                  shift and go to state 91
+    logical_expression             shift and go to state 44
+    comparison_expression          shift and go to state 45
+    arithmetic_expression          shift and go to state 46
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 63
+
+    (15) analyze_body -> LBRACE property_list . RBRACE
+    (28) property_list -> property_list . COMMA property
+
+    RBRACE          shift and go to state 94
+    COMMA           shift and go to state 61
+
+
+state 64
+
+    (19) simulate_body -> LBRACE property_list . RBRACE
+    (28) property_list -> property_list . COMMA property
+
+    RBRACE          shift and go to state 95
+    COMMA           shift and go to state 61
+
+
+state 65
+
+    (21) branch_statement -> BRANCH COLON LBRACE branch_body . RBRACE
+
+    RBRACE          shift and go to state 96
+
+
+state 66
+
+    (22) branch_body -> IF . COLON expression COMMA statement_list
+    (23) branch_body -> IF . COLON expression COMMA statement_list ELSE COLON statement_list
+
+    COLON           shift and go to state 97
+
+
+state 67
+
+    (25) metadata_body -> LBRACE property_list . RBRACE
+    (28) property_list -> property_list . COMMA property
+
+    RBRACE          shift and go to state 98
+    COMMA           shift and go to state 61
+
+
+state 68
+
+    (43) logical_expression -> logical_expression AND . comparison_expression
+    (46) comparison_expression -> . arithmetic_expression EQUALS arithmetic_expression
+    (47) comparison_expression -> . arithmetic_expression NOT_EQUALS arithmetic_expression
+    (48) comparison_expression -> . arithmetic_expression LESS_THAN arithmetic_expression
+    (49) comparison_expression -> . arithmetic_expression GREATER_THAN arithmetic_expression
+    (50) comparison_expression -> . arithmetic_expression LESS_EQUAL arithmetic_expression
+    (51) comparison_expression -> . arithmetic_expression GREATER_EQUAL arithmetic_expression
+    (52) comparison_expression -> . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    comparison_expression          shift and go to state 99
+    arithmetic_expression          shift and go to state 46
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 69
+
+    (44) logical_expression -> logical_expression OR . comparison_expression
+    (46) comparison_expression -> . arithmetic_expression EQUALS arithmetic_expression
+    (47) comparison_expression -> . arithmetic_expression NOT_EQUALS arithmetic_expression
+    (48) comparison_expression -> . arithmetic_expression LESS_THAN arithmetic_expression
+    (49) comparison_expression -> . arithmetic_expression GREATER_THAN arithmetic_expression
+    (50) comparison_expression -> . arithmetic_expression LESS_EQUAL arithmetic_expression
+    (51) comparison_expression -> . arithmetic_expression GREATER_EQUAL arithmetic_expression
+    (52) comparison_expression -> . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    comparison_expression          shift and go to state 100
+    arithmetic_expression          shift and go to state 46
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 70
+
+    (46) comparison_expression -> arithmetic_expression EQUALS . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    arithmetic_expression          shift and go to state 101
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 71
+
+    (47) comparison_expression -> arithmetic_expression NOT_EQUALS . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    arithmetic_expression          shift and go to state 102
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 72
+
+    (48) comparison_expression -> arithmetic_expression LESS_THAN . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    arithmetic_expression          shift and go to state 103
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 73
+
+    (49) comparison_expression -> arithmetic_expression GREATER_THAN . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    arithmetic_expression          shift and go to state 104
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 74
+
+    (50) comparison_expression -> arithmetic_expression LESS_EQUAL . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    arithmetic_expression          shift and go to state 105
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 75
+
+    (51) comparison_expression -> arithmetic_expression GREATER_EQUAL . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    arithmetic_expression          shift and go to state 106
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 76
+
+    (53) arithmetic_expression -> arithmetic_expression PLUS . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    term                           shift and go to state 107
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 77
+
+    (54) arithmetic_expression -> arithmetic_expression MINUS . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    term                           shift and go to state 108
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 78
+
+    (61) factor -> PLUS factor .
+
+    TIMES           reduce using rule 61 (factor -> PLUS factor .)
+    DIVIDE          reduce using rule 61 (factor -> PLUS factor .)
+    MODULO          reduce using rule 61 (factor -> PLUS factor .)
+    EQUALS          reduce using rule 61 (factor -> PLUS factor .)
+    NOT_EQUALS      reduce using rule 61 (factor -> PLUS factor .)
+    LESS_THAN       reduce using rule 61 (factor -> PLUS factor .)
+    GREATER_THAN    reduce using rule 61 (factor -> PLUS factor .)
+    LESS_EQUAL      reduce using rule 61 (factor -> PLUS factor .)
+    GREATER_EQUAL   reduce using rule 61 (factor -> PLUS factor .)
+    PLUS            reduce using rule 61 (factor -> PLUS factor .)
+    MINUS           reduce using rule 61 (factor -> PLUS factor .)
+    AND             reduce using rule 61 (factor -> PLUS factor .)
+    OR              reduce using rule 61 (factor -> PLUS factor .)
+    EXPERIMENT      reduce using rule 61 (factor -> PLUS factor .)
+    ANALYZE         reduce using rule 61 (factor -> PLUS factor .)
+    SIMULATE        reduce using rule 61 (factor -> PLUS factor .)
+    BRANCH          reduce using rule 61 (factor -> PLUS factor .)
+    METADATA        reduce using rule 61 (factor -> PLUS factor .)
+    IDENTIFIER      reduce using rule 61 (factor -> PLUS factor .)
+    $end            reduce using rule 61 (factor -> PLUS factor .)
+    ELSE            reduce using rule 61 (factor -> PLUS factor .)
+    RBRACE          reduce using rule 61 (factor -> PLUS factor .)
+    RPAREN          reduce using rule 61 (factor -> PLUS factor .)
+    COMMA           reduce using rule 61 (factor -> PLUS factor .)
+    RBRACKET        reduce using rule 61 (factor -> PLUS factor .)
+
+
+state 79
+
+    (56) term -> term TIMES . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    factor                         shift and go to state 109
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 80
+
+    (57) term -> term DIVIDE . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    factor                         shift and go to state 110
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 81
+
+    (58) term -> term MODULO . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    factor                         shift and go to state 111
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 82
+
+    (60) factor -> MINUS factor .
+
+    TIMES           reduce using rule 60 (factor -> MINUS factor .)
+    DIVIDE          reduce using rule 60 (factor -> MINUS factor .)
+    MODULO          reduce using rule 60 (factor -> MINUS factor .)
+    EQUALS          reduce using rule 60 (factor -> MINUS factor .)
+    NOT_EQUALS      reduce using rule 60 (factor -> MINUS factor .)
+    LESS_THAN       reduce using rule 60 (factor -> MINUS factor .)
+    GREATER_THAN    reduce using rule 60 (factor -> MINUS factor .)
+    LESS_EQUAL      reduce using rule 60 (factor -> MINUS factor .)
+    GREATER_EQUAL   reduce using rule 60 (factor -> MINUS factor .)
+    PLUS            reduce using rule 60 (factor -> MINUS factor .)
+    MINUS           reduce using rule 60 (factor -> MINUS factor .)
+    AND             reduce using rule 60 (factor -> MINUS factor .)
+    OR              reduce using rule 60 (factor -> MINUS factor .)
+    EXPERIMENT      reduce using rule 60 (factor -> MINUS factor .)
+    ANALYZE         reduce using rule 60 (factor -> MINUS factor .)
+    SIMULATE        reduce using rule 60 (factor -> MINUS factor .)
+    BRANCH          reduce using rule 60 (factor -> MINUS factor .)
+    METADATA        reduce using rule 60 (factor -> MINUS factor .)
+    IDENTIFIER      reduce using rule 60 (factor -> MINUS factor .)
+    $end            reduce using rule 60 (factor -> MINUS factor .)
+    ELSE            reduce using rule 60 (factor -> MINUS factor .)
+    RBRACE          reduce using rule 60 (factor -> MINUS factor .)
+    RPAREN          reduce using rule 60 (factor -> MINUS factor .)
+    COMMA           reduce using rule 60 (factor -> MINUS factor .)
+    RBRACKET        reduce using rule 60 (factor -> MINUS factor .)
+
+
+state 83
+
+    (62) factor -> NOT factor .
+
+    TIMES           reduce using rule 62 (factor -> NOT factor .)
+    DIVIDE          reduce using rule 62 (factor -> NOT factor .)
+    MODULO          reduce using rule 62 (factor -> NOT factor .)
+    EQUALS          reduce using rule 62 (factor -> NOT factor .)
+    NOT_EQUALS      reduce using rule 62 (factor -> NOT factor .)
+    LESS_THAN       reduce using rule 62 (factor -> NOT factor .)
+    GREATER_THAN    reduce using rule 62 (factor -> NOT factor .)
+    LESS_EQUAL      reduce using rule 62 (factor -> NOT factor .)
+    GREATER_EQUAL   reduce using rule 62 (factor -> NOT factor .)
+    PLUS            reduce using rule 62 (factor -> NOT factor .)
+    MINUS           reduce using rule 62 (factor -> NOT factor .)
+    AND             reduce using rule 62 (factor -> NOT factor .)
+    OR              reduce using rule 62 (factor -> NOT factor .)
+    EXPERIMENT      reduce using rule 62 (factor -> NOT factor .)
+    ANALYZE         reduce using rule 62 (factor -> NOT factor .)
+    SIMULATE        reduce using rule 62 (factor -> NOT factor .)
+    BRANCH          reduce using rule 62 (factor -> NOT factor .)
+    METADATA        reduce using rule 62 (factor -> NOT factor .)
+    IDENTIFIER      reduce using rule 62 (factor -> NOT factor .)
+    $end            reduce using rule 62 (factor -> NOT factor .)
+    ELSE            reduce using rule 62 (factor -> NOT factor .)
+    RBRACE          reduce using rule 62 (factor -> NOT factor .)
+    RPAREN          reduce using rule 62 (factor -> NOT factor .)
+    COMMA           reduce using rule 62 (factor -> NOT factor .)
+    RBRACKET        reduce using rule 62 (factor -> NOT factor .)
+
+
+state 84
+
+    (64) power -> atom POWER . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    atom                           shift and go to state 53
+    factor                         shift and go to state 112
+    power                          shift and go to state 52
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 85
+
+    (66) atom -> LPAREN expression . RPAREN
+
+    RPAREN          shift and go to state 113
+
+
+state 86
+
+    (12) experiment_body -> LBRACE property_list RBRACE .
+
+    EXPERIMENT      reduce using rule 12 (experiment_body -> LBRACE property_list RBRACE .)
+    ANALYZE         reduce using rule 12 (experiment_body -> LBRACE property_list RBRACE .)
+    SIMULATE        reduce using rule 12 (experiment_body -> LBRACE property_list RBRACE .)
+    BRANCH          reduce using rule 12 (experiment_body -> LBRACE property_list RBRACE .)
+    METADATA        reduce using rule 12 (experiment_body -> LBRACE property_list RBRACE .)
+    IDENTIFIER      reduce using rule 12 (experiment_body -> LBRACE property_list RBRACE .)
+    $end            reduce using rule 12 (experiment_body -> LBRACE property_list RBRACE .)
+    ELSE            reduce using rule 12 (experiment_body -> LBRACE property_list RBRACE .)
+    RBRACE          reduce using rule 12 (experiment_body -> LBRACE property_list RBRACE .)
+
+
+state 87
+
+    (28) property_list -> property_list COMMA property .
+
+    COMMA           reduce using rule 28 (property_list -> property_list COMMA property .)
+    EXPERIMENT      reduce using rule 28 (property_list -> property_list COMMA property .)
+    ANALYZE         reduce using rule 28 (property_list -> property_list COMMA property .)
+    SIMULATE        reduce using rule 28 (property_list -> property_list COMMA property .)
+    BRANCH          reduce using rule 28 (property_list -> property_list COMMA property .)
+    METADATA        reduce using rule 28 (property_list -> property_list COMMA property .)
+    IDENTIFIER      reduce using rule 28 (property_list -> property_list COMMA property .)
+    $end            reduce using rule 28 (property_list -> property_list COMMA property .)
+    ELSE            reduce using rule 28 (property_list -> property_list COMMA property .)
+    RBRACE          reduce using rule 28 (property_list -> property_list COMMA property .)
+
+
+state 88
+
+    (31) property -> IDENTIFIER COLON value .
+
+    COMMA           reduce using rule 31 (property -> IDENTIFIER COLON value .)
+    EXPERIMENT      reduce using rule 31 (property -> IDENTIFIER COLON value .)
+    ANALYZE         reduce using rule 31 (property -> IDENTIFIER COLON value .)
+    SIMULATE        reduce using rule 31 (property -> IDENTIFIER COLON value .)
+    BRANCH          reduce using rule 31 (property -> IDENTIFIER COLON value .)
+    METADATA        reduce using rule 31 (property -> IDENTIFIER COLON value .)
+    IDENTIFIER      reduce using rule 31 (property -> IDENTIFIER COLON value .)
+    $end            reduce using rule 31 (property -> IDENTIFIER COLON value .)
+    ELSE            reduce using rule 31 (property -> IDENTIFIER COLON value .)
+    RBRACE          reduce using rule 31 (property -> IDENTIFIER COLON value .)
+
+
+state 89
+
+    (32) value -> expression .
+
+    COMMA           reduce using rule 32 (value -> expression .)
+    EXPERIMENT      reduce using rule 32 (value -> expression .)
+    ANALYZE         reduce using rule 32 (value -> expression .)
+    SIMULATE        reduce using rule 32 (value -> expression .)
+    BRANCH          reduce using rule 32 (value -> expression .)
+    METADATA        reduce using rule 32 (value -> expression .)
+    IDENTIFIER      reduce using rule 32 (value -> expression .)
+    $end            reduce using rule 32 (value -> expression .)
+    ELSE            reduce using rule 32 (value -> expression .)
+    RBRACE          reduce using rule 32 (value -> expression .)
+
+
+state 90
+
+    (33) value -> object_literal .
+
+    COMMA           reduce using rule 33 (value -> object_literal .)
+    EXPERIMENT      reduce using rule 33 (value -> object_literal .)
+    ANALYZE         reduce using rule 33 (value -> object_literal .)
+    SIMULATE        reduce using rule 33 (value -> object_literal .)
+    BRANCH          reduce using rule 33 (value -> object_literal .)
+    METADATA        reduce using rule 33 (value -> object_literal .)
+    IDENTIFIER      reduce using rule 33 (value -> object_literal .)
+    $end            reduce using rule 33 (value -> object_literal .)
+    ELSE            reduce using rule 33 (value -> object_literal .)
+    RBRACE          reduce using rule 33 (value -> object_literal .)
+
+
+state 91
+
+    (34) value -> array_literal .
+
+    COMMA           reduce using rule 34 (value -> array_literal .)
+    EXPERIMENT      reduce using rule 34 (value -> array_literal .)
+    ANALYZE         reduce using rule 34 (value -> array_literal .)
+    SIMULATE        reduce using rule 34 (value -> array_literal .)
+    BRANCH          reduce using rule 34 (value -> array_literal .)
+    METADATA        reduce using rule 34 (value -> array_literal .)
+    IDENTIFIER      reduce using rule 34 (value -> array_literal .)
+    $end            reduce using rule 34 (value -> array_literal .)
+    ELSE            reduce using rule 34 (value -> array_literal .)
+    RBRACE          reduce using rule 34 (value -> array_literal .)
+
+
+state 92
+
+    (35) object_literal -> LBRACE . property_list RBRACE
+    (36) object_literal -> LBRACE . RBRACE
+    (28) property_list -> . property_list COMMA property
+    (29) property_list -> . property
+    (30) property_list -> . empty
+    (31) property -> . IDENTIFIER COLON value
+    (74) empty -> .
+
+  ! shift/reduce conflict for RBRACE resolved as shift
+    RBRACE          shift and go to state 115
+    IDENTIFIER      shift and go to state 29
+    COMMA           reduce using rule 74 (empty -> .)
+
+  ! RBRACE          [ reduce using rule 74 (empty -> .) ]
+
+    property_list                  shift and go to state 114
+    property                       shift and go to state 27
+    empty                          shift and go to state 28
+
+state 93
+
+    (37) array_literal -> LBRACKET . expression_list RBRACKET
+    (38) array_literal -> LBRACKET . RBRACKET
+    (39) expression_list -> . expression_list COMMA expression
+    (40) expression_list -> . expression
+    (41) expression_list -> . empty
+    (42) expression -> . logical_expression
+    (74) empty -> .
+    (43) logical_expression -> . logical_expression AND comparison_expression
+    (44) logical_expression -> . logical_expression OR comparison_expression
+    (45) logical_expression -> . comparison_expression
+    (46) comparison_expression -> . arithmetic_expression EQUALS arithmetic_expression
+    (47) comparison_expression -> . arithmetic_expression NOT_EQUALS arithmetic_expression
+    (48) comparison_expression -> . arithmetic_expression LESS_THAN arithmetic_expression
+    (49) comparison_expression -> . arithmetic_expression GREATER_THAN arithmetic_expression
+    (50) comparison_expression -> . arithmetic_expression LESS_EQUAL arithmetic_expression
+    (51) comparison_expression -> . arithmetic_expression GREATER_EQUAL arithmetic_expression
+    (52) comparison_expression -> . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+  ! shift/reduce conflict for RBRACKET resolved as shift
+    RBRACKET        shift and go to state 117
+    COMMA           reduce using rule 74 (empty -> .)
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+  ! RBRACKET        [ reduce using rule 74 (empty -> .) ]
+
+    expression_list                shift and go to state 116
+    expression                     shift and go to state 118
+    empty                          shift and go to state 119
+    logical_expression             shift and go to state 44
+    comparison_expression          shift and go to state 45
+    arithmetic_expression          shift and go to state 46
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 94
+
+    (15) analyze_body -> LBRACE property_list RBRACE .
+
+    EXPERIMENT      reduce using rule 15 (analyze_body -> LBRACE property_list RBRACE .)
+    ANALYZE         reduce using rule 15 (analyze_body -> LBRACE property_list RBRACE .)
+    SIMULATE        reduce using rule 15 (analyze_body -> LBRACE property_list RBRACE .)
+    BRANCH          reduce using rule 15 (analyze_body -> LBRACE property_list RBRACE .)
+    METADATA        reduce using rule 15 (analyze_body -> LBRACE property_list RBRACE .)
+    IDENTIFIER      reduce using rule 15 (analyze_body -> LBRACE property_list RBRACE .)
+    $end            reduce using rule 15 (analyze_body -> LBRACE property_list RBRACE .)
+    ELSE            reduce using rule 15 (analyze_body -> LBRACE property_list RBRACE .)
+    RBRACE          reduce using rule 15 (analyze_body -> LBRACE property_list RBRACE .)
+
+
+state 95
+
+    (19) simulate_body -> LBRACE property_list RBRACE .
+
+    EXPERIMENT      reduce using rule 19 (simulate_body -> LBRACE property_list RBRACE .)
+    ANALYZE         reduce using rule 19 (simulate_body -> LBRACE property_list RBRACE .)
+    SIMULATE        reduce using rule 19 (simulate_body -> LBRACE property_list RBRACE .)
+    BRANCH          reduce using rule 19 (simulate_body -> LBRACE property_list RBRACE .)
+    METADATA        reduce using rule 19 (simulate_body -> LBRACE property_list RBRACE .)
+    IDENTIFIER      reduce using rule 19 (simulate_body -> LBRACE property_list RBRACE .)
+    $end            reduce using rule 19 (simulate_body -> LBRACE property_list RBRACE .)
+    ELSE            reduce using rule 19 (simulate_body -> LBRACE property_list RBRACE .)
+    RBRACE          reduce using rule 19 (simulate_body -> LBRACE property_list RBRACE .)
+
+
+state 96
+
+    (21) branch_statement -> BRANCH COLON LBRACE branch_body RBRACE .
+
+    EXPERIMENT      reduce using rule 21 (branch_statement -> BRANCH COLON LBRACE branch_body RBRACE .)
+    ANALYZE         reduce using rule 21 (branch_statement -> BRANCH COLON LBRACE branch_body RBRACE .)
+    SIMULATE        reduce using rule 21 (branch_statement -> BRANCH COLON LBRACE branch_body RBRACE .)
+    BRANCH          reduce using rule 21 (branch_statement -> BRANCH COLON LBRACE branch_body RBRACE .)
+    METADATA        reduce using rule 21 (branch_statement -> BRANCH COLON LBRACE branch_body RBRACE .)
+    IDENTIFIER      reduce using rule 21 (branch_statement -> BRANCH COLON LBRACE branch_body RBRACE .)
+    $end            reduce using rule 21 (branch_statement -> BRANCH COLON LBRACE branch_body RBRACE .)
+    ELSE            reduce using rule 21 (branch_statement -> BRANCH COLON LBRACE branch_body RBRACE .)
+    RBRACE          reduce using rule 21 (branch_statement -> BRANCH COLON LBRACE branch_body RBRACE .)
+
+
+state 97
+
+    (22) branch_body -> IF COLON . expression COMMA statement_list
+    (23) branch_body -> IF COLON . expression COMMA statement_list ELSE COLON statement_list
+    (42) expression -> . logical_expression
+    (43) logical_expression -> . logical_expression AND comparison_expression
+    (44) logical_expression -> . logical_expression OR comparison_expression
+    (45) logical_expression -> . comparison_expression
+    (46) comparison_expression -> . arithmetic_expression EQUALS arithmetic_expression
+    (47) comparison_expression -> . arithmetic_expression NOT_EQUALS arithmetic_expression
+    (48) comparison_expression -> . arithmetic_expression LESS_THAN arithmetic_expression
+    (49) comparison_expression -> . arithmetic_expression GREATER_THAN arithmetic_expression
+    (50) comparison_expression -> . arithmetic_expression LESS_EQUAL arithmetic_expression
+    (51) comparison_expression -> . arithmetic_expression GREATER_EQUAL arithmetic_expression
+    (52) comparison_expression -> . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    expression                     shift and go to state 120
+    logical_expression             shift and go to state 44
+    comparison_expression          shift and go to state 45
+    arithmetic_expression          shift and go to state 46
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 98
+
+    (25) metadata_body -> LBRACE property_list RBRACE .
+
+    EXPERIMENT      reduce using rule 25 (metadata_body -> LBRACE property_list RBRACE .)
+    ANALYZE         reduce using rule 25 (metadata_body -> LBRACE property_list RBRACE .)
+    SIMULATE        reduce using rule 25 (metadata_body -> LBRACE property_list RBRACE .)
+    BRANCH          reduce using rule 25 (metadata_body -> LBRACE property_list RBRACE .)
+    METADATA        reduce using rule 25 (metadata_body -> LBRACE property_list RBRACE .)
+    IDENTIFIER      reduce using rule 25 (metadata_body -> LBRACE property_list RBRACE .)
+    $end            reduce using rule 25 (metadata_body -> LBRACE property_list RBRACE .)
+    ELSE            reduce using rule 25 (metadata_body -> LBRACE property_list RBRACE .)
+    RBRACE          reduce using rule 25 (metadata_body -> LBRACE property_list RBRACE .)
+
+
+state 99
+
+    (43) logical_expression -> logical_expression AND comparison_expression .
+
+    AND             reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    OR              reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    EXPERIMENT      reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    ANALYZE         reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    SIMULATE        reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    BRANCH          reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    METADATA        reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    IDENTIFIER      reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    $end            reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    ELSE            reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    RBRACE          reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    RPAREN          reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    COMMA           reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+    RBRACKET        reduce using rule 43 (logical_expression -> logical_expression AND comparison_expression .)
+
+
+state 100
+
+    (44) logical_expression -> logical_expression OR comparison_expression .
+
+    AND             reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    OR              reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    EXPERIMENT      reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    ANALYZE         reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    SIMULATE        reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    BRANCH          reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    METADATA        reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    IDENTIFIER      reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    $end            reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    ELSE            reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    RBRACE          reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    RPAREN          reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    COMMA           reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+    RBRACKET        reduce using rule 44 (logical_expression -> logical_expression OR comparison_expression .)
+
+
+state 101
+
+    (46) comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .
+    (53) arithmetic_expression -> arithmetic_expression . PLUS term
+    (54) arithmetic_expression -> arithmetic_expression . MINUS term
+
+    AND             reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    OR              reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    EXPERIMENT      reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    ANALYZE         reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    SIMULATE        reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    BRANCH          reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    METADATA        reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    IDENTIFIER      reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    $end            reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    ELSE            reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    RBRACE          reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    RPAREN          reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    COMMA           reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    RBRACKET        reduce using rule 46 (comparison_expression -> arithmetic_expression EQUALS arithmetic_expression .)
+    PLUS            shift and go to state 76
+    MINUS           shift and go to state 77
+
+
+state 102
+
+    (47) comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .
+    (53) arithmetic_expression -> arithmetic_expression . PLUS term
+    (54) arithmetic_expression -> arithmetic_expression . MINUS term
+
+    AND             reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    OR              reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    EXPERIMENT      reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    ANALYZE         reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    SIMULATE        reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    BRANCH          reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    METADATA        reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    IDENTIFIER      reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    $end            reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    ELSE            reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    RBRACE          reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    RPAREN          reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    COMMA           reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    RBRACKET        reduce using rule 47 (comparison_expression -> arithmetic_expression NOT_EQUALS arithmetic_expression .)
+    PLUS            shift and go to state 76
+    MINUS           shift and go to state 77
+
+
+state 103
+
+    (48) comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .
+    (53) arithmetic_expression -> arithmetic_expression . PLUS term
+    (54) arithmetic_expression -> arithmetic_expression . MINUS term
+
+    AND             reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    OR              reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    EXPERIMENT      reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    ANALYZE         reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    SIMULATE        reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    BRANCH          reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    METADATA        reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    IDENTIFIER      reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    $end            reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    ELSE            reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    RBRACE          reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    RPAREN          reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    COMMA           reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    RBRACKET        reduce using rule 48 (comparison_expression -> arithmetic_expression LESS_THAN arithmetic_expression .)
+    PLUS            shift and go to state 76
+    MINUS           shift and go to state 77
+
+
+state 104
+
+    (49) comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .
+    (53) arithmetic_expression -> arithmetic_expression . PLUS term
+    (54) arithmetic_expression -> arithmetic_expression . MINUS term
+
+    AND             reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    OR              reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    EXPERIMENT      reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    ANALYZE         reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    SIMULATE        reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    BRANCH          reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    METADATA        reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    IDENTIFIER      reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    $end            reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    ELSE            reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    RBRACE          reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    RPAREN          reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    COMMA           reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    RBRACKET        reduce using rule 49 (comparison_expression -> arithmetic_expression GREATER_THAN arithmetic_expression .)
+    PLUS            shift and go to state 76
+    MINUS           shift and go to state 77
+
+
+state 105
+
+    (50) comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .
+    (53) arithmetic_expression -> arithmetic_expression . PLUS term
+    (54) arithmetic_expression -> arithmetic_expression . MINUS term
+
+    AND             reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    OR              reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    EXPERIMENT      reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    ANALYZE         reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    SIMULATE        reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    BRANCH          reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    METADATA        reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    IDENTIFIER      reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    $end            reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    ELSE            reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    RBRACE          reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    RPAREN          reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    COMMA           reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    RBRACKET        reduce using rule 50 (comparison_expression -> arithmetic_expression LESS_EQUAL arithmetic_expression .)
+    PLUS            shift and go to state 76
+    MINUS           shift and go to state 77
+
+
+state 106
+
+    (51) comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .
+    (53) arithmetic_expression -> arithmetic_expression . PLUS term
+    (54) arithmetic_expression -> arithmetic_expression . MINUS term
+
+    AND             reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    OR              reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    EXPERIMENT      reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    ANALYZE         reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    SIMULATE        reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    BRANCH          reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    METADATA        reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    IDENTIFIER      reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    $end            reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    ELSE            reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    RBRACE          reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    RPAREN          reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    COMMA           reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    RBRACKET        reduce using rule 51 (comparison_expression -> arithmetic_expression GREATER_EQUAL arithmetic_expression .)
+    PLUS            shift and go to state 76
+    MINUS           shift and go to state 77
+
+
+state 107
+
+    (53) arithmetic_expression -> arithmetic_expression PLUS term .
+    (56) term -> term . TIMES factor
+    (57) term -> term . DIVIDE factor
+    (58) term -> term . MODULO factor
+
+    EQUALS          reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    NOT_EQUALS      reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    LESS_THAN       reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    GREATER_THAN    reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    LESS_EQUAL      reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    GREATER_EQUAL   reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    PLUS            reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    MINUS           reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    AND             reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    OR              reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    EXPERIMENT      reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    ANALYZE         reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    SIMULATE        reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    BRANCH          reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    METADATA        reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    IDENTIFIER      reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    $end            reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    ELSE            reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    RBRACE          reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    RPAREN          reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    COMMA           reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    RBRACKET        reduce using rule 53 (arithmetic_expression -> arithmetic_expression PLUS term .)
+    TIMES           shift and go to state 79
+    DIVIDE          shift and go to state 80
+    MODULO          shift and go to state 81
+
+
+state 108
+
+    (54) arithmetic_expression -> arithmetic_expression MINUS term .
+    (56) term -> term . TIMES factor
+    (57) term -> term . DIVIDE factor
+    (58) term -> term . MODULO factor
+
+    EQUALS          reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    NOT_EQUALS      reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    LESS_THAN       reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    GREATER_THAN    reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    LESS_EQUAL      reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    GREATER_EQUAL   reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    PLUS            reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    MINUS           reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    AND             reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    OR              reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    EXPERIMENT      reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    ANALYZE         reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    SIMULATE        reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    BRANCH          reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    METADATA        reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    IDENTIFIER      reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    $end            reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    ELSE            reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    RBRACE          reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    RPAREN          reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    COMMA           reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    RBRACKET        reduce using rule 54 (arithmetic_expression -> arithmetic_expression MINUS term .)
+    TIMES           shift and go to state 79
+    DIVIDE          shift and go to state 80
+    MODULO          shift and go to state 81
+
+
+state 109
+
+    (56) term -> term TIMES factor .
+
+    TIMES           reduce using rule 56 (term -> term TIMES factor .)
+    DIVIDE          reduce using rule 56 (term -> term TIMES factor .)
+    MODULO          reduce using rule 56 (term -> term TIMES factor .)
+    EQUALS          reduce using rule 56 (term -> term TIMES factor .)
+    NOT_EQUALS      reduce using rule 56 (term -> term TIMES factor .)
+    LESS_THAN       reduce using rule 56 (term -> term TIMES factor .)
+    GREATER_THAN    reduce using rule 56 (term -> term TIMES factor .)
+    LESS_EQUAL      reduce using rule 56 (term -> term TIMES factor .)
+    GREATER_EQUAL   reduce using rule 56 (term -> term TIMES factor .)
+    PLUS            reduce using rule 56 (term -> term TIMES factor .)
+    MINUS           reduce using rule 56 (term -> term TIMES factor .)
+    AND             reduce using rule 56 (term -> term TIMES factor .)
+    OR              reduce using rule 56 (term -> term TIMES factor .)
+    EXPERIMENT      reduce using rule 56 (term -> term TIMES factor .)
+    ANALYZE         reduce using rule 56 (term -> term TIMES factor .)
+    SIMULATE        reduce using rule 56 (term -> term TIMES factor .)
+    BRANCH          reduce using rule 56 (term -> term TIMES factor .)
+    METADATA        reduce using rule 56 (term -> term TIMES factor .)
+    IDENTIFIER      reduce using rule 56 (term -> term TIMES factor .)
+    $end            reduce using rule 56 (term -> term TIMES factor .)
+    ELSE            reduce using rule 56 (term -> term TIMES factor .)
+    RBRACE          reduce using rule 56 (term -> term TIMES factor .)
+    RPAREN          reduce using rule 56 (term -> term TIMES factor .)
+    COMMA           reduce using rule 56 (term -> term TIMES factor .)
+    RBRACKET        reduce using rule 56 (term -> term TIMES factor .)
+
+
+state 110
+
+    (57) term -> term DIVIDE factor .
+
+    TIMES           reduce using rule 57 (term -> term DIVIDE factor .)
+    DIVIDE          reduce using rule 57 (term -> term DIVIDE factor .)
+    MODULO          reduce using rule 57 (term -> term DIVIDE factor .)
+    EQUALS          reduce using rule 57 (term -> term DIVIDE factor .)
+    NOT_EQUALS      reduce using rule 57 (term -> term DIVIDE factor .)
+    LESS_THAN       reduce using rule 57 (term -> term DIVIDE factor .)
+    GREATER_THAN    reduce using rule 57 (term -> term DIVIDE factor .)
+    LESS_EQUAL      reduce using rule 57 (term -> term DIVIDE factor .)
+    GREATER_EQUAL   reduce using rule 57 (term -> term DIVIDE factor .)
+    PLUS            reduce using rule 57 (term -> term DIVIDE factor .)
+    MINUS           reduce using rule 57 (term -> term DIVIDE factor .)
+    AND             reduce using rule 57 (term -> term DIVIDE factor .)
+    OR              reduce using rule 57 (term -> term DIVIDE factor .)
+    EXPERIMENT      reduce using rule 57 (term -> term DIVIDE factor .)
+    ANALYZE         reduce using rule 57 (term -> term DIVIDE factor .)
+    SIMULATE        reduce using rule 57 (term -> term DIVIDE factor .)
+    BRANCH          reduce using rule 57 (term -> term DIVIDE factor .)
+    METADATA        reduce using rule 57 (term -> term DIVIDE factor .)
+    IDENTIFIER      reduce using rule 57 (term -> term DIVIDE factor .)
+    $end            reduce using rule 57 (term -> term DIVIDE factor .)
+    ELSE            reduce using rule 57 (term -> term DIVIDE factor .)
+    RBRACE          reduce using rule 57 (term -> term DIVIDE factor .)
+    RPAREN          reduce using rule 57 (term -> term DIVIDE factor .)
+    COMMA           reduce using rule 57 (term -> term DIVIDE factor .)
+    RBRACKET        reduce using rule 57 (term -> term DIVIDE factor .)
+
+
+state 111
+
+    (58) term -> term MODULO factor .
+
+    TIMES           reduce using rule 58 (term -> term MODULO factor .)
+    DIVIDE          reduce using rule 58 (term -> term MODULO factor .)
+    MODULO          reduce using rule 58 (term -> term MODULO factor .)
+    EQUALS          reduce using rule 58 (term -> term MODULO factor .)
+    NOT_EQUALS      reduce using rule 58 (term -> term MODULO factor .)
+    LESS_THAN       reduce using rule 58 (term -> term MODULO factor .)
+    GREATER_THAN    reduce using rule 58 (term -> term MODULO factor .)
+    LESS_EQUAL      reduce using rule 58 (term -> term MODULO factor .)
+    GREATER_EQUAL   reduce using rule 58 (term -> term MODULO factor .)
+    PLUS            reduce using rule 58 (term -> term MODULO factor .)
+    MINUS           reduce using rule 58 (term -> term MODULO factor .)
+    AND             reduce using rule 58 (term -> term MODULO factor .)
+    OR              reduce using rule 58 (term -> term MODULO factor .)
+    EXPERIMENT      reduce using rule 58 (term -> term MODULO factor .)
+    ANALYZE         reduce using rule 58 (term -> term MODULO factor .)
+    SIMULATE        reduce using rule 58 (term -> term MODULO factor .)
+    BRANCH          reduce using rule 58 (term -> term MODULO factor .)
+    METADATA        reduce using rule 58 (term -> term MODULO factor .)
+    IDENTIFIER      reduce using rule 58 (term -> term MODULO factor .)
+    $end            reduce using rule 58 (term -> term MODULO factor .)
+    ELSE            reduce using rule 58 (term -> term MODULO factor .)
+    RBRACE          reduce using rule 58 (term -> term MODULO factor .)
+    RPAREN          reduce using rule 58 (term -> term MODULO factor .)
+    COMMA           reduce using rule 58 (term -> term MODULO factor .)
+    RBRACKET        reduce using rule 58 (term -> term MODULO factor .)
+
+
+state 112
+
+    (64) power -> atom POWER factor .
+
+    TIMES           reduce using rule 64 (power -> atom POWER factor .)
+    DIVIDE          reduce using rule 64 (power -> atom POWER factor .)
+    MODULO          reduce using rule 64 (power -> atom POWER factor .)
+    EQUALS          reduce using rule 64 (power -> atom POWER factor .)
+    NOT_EQUALS      reduce using rule 64 (power -> atom POWER factor .)
+    LESS_THAN       reduce using rule 64 (power -> atom POWER factor .)
+    GREATER_THAN    reduce using rule 64 (power -> atom POWER factor .)
+    LESS_EQUAL      reduce using rule 64 (power -> atom POWER factor .)
+    GREATER_EQUAL   reduce using rule 64 (power -> atom POWER factor .)
+    PLUS            reduce using rule 64 (power -> atom POWER factor .)
+    MINUS           reduce using rule 64 (power -> atom POWER factor .)
+    AND             reduce using rule 64 (power -> atom POWER factor .)
+    OR              reduce using rule 64 (power -> atom POWER factor .)
+    EXPERIMENT      reduce using rule 64 (power -> atom POWER factor .)
+    ANALYZE         reduce using rule 64 (power -> atom POWER factor .)
+    SIMULATE        reduce using rule 64 (power -> atom POWER factor .)
+    BRANCH          reduce using rule 64 (power -> atom POWER factor .)
+    METADATA        reduce using rule 64 (power -> atom POWER factor .)
+    IDENTIFIER      reduce using rule 64 (power -> atom POWER factor .)
+    $end            reduce using rule 64 (power -> atom POWER factor .)
+    ELSE            reduce using rule 64 (power -> atom POWER factor .)
+    RBRACE          reduce using rule 64 (power -> atom POWER factor .)
+    RPAREN          reduce using rule 64 (power -> atom POWER factor .)
+    COMMA           reduce using rule 64 (power -> atom POWER factor .)
+    RBRACKET        reduce using rule 64 (power -> atom POWER factor .)
+
+
+state 113
+
+    (66) atom -> LPAREN expression RPAREN .
+
+    POWER           reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    TIMES           reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    MODULO          reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    EQUALS          reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    NOT_EQUALS      reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    LESS_THAN       reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    GREATER_THAN    reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    LESS_EQUAL      reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    GREATER_EQUAL   reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    PLUS            reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    MINUS           reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    AND             reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    OR              reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    EXPERIMENT      reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    ANALYZE         reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    SIMULATE        reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    BRANCH          reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    METADATA        reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    IDENTIFIER      reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    $end            reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    ELSE            reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    RBRACE          reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    COMMA           reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+    RBRACKET        reduce using rule 66 (atom -> LPAREN expression RPAREN .)
+
+
+state 114
+
+    (35) object_literal -> LBRACE property_list . RBRACE
+    (28) property_list -> property_list . COMMA property
+
+    RBRACE          shift and go to state 121
+    COMMA           shift and go to state 61
+
+
+state 115
+
+    (36) object_literal -> LBRACE RBRACE .
+
+    COMMA           reduce using rule 36 (object_literal -> LBRACE RBRACE .)
+    EXPERIMENT      reduce using rule 36 (object_literal -> LBRACE RBRACE .)
+    ANALYZE         reduce using rule 36 (object_literal -> LBRACE RBRACE .)
+    SIMULATE        reduce using rule 36 (object_literal -> LBRACE RBRACE .)
+    BRANCH          reduce using rule 36 (object_literal -> LBRACE RBRACE .)
+    METADATA        reduce using rule 36 (object_literal -> LBRACE RBRACE .)
+    IDENTIFIER      reduce using rule 36 (object_literal -> LBRACE RBRACE .)
+    $end            reduce using rule 36 (object_literal -> LBRACE RBRACE .)
+    ELSE            reduce using rule 36 (object_literal -> LBRACE RBRACE .)
+    RBRACE          reduce using rule 36 (object_literal -> LBRACE RBRACE .)
+
+
+state 116
+
+    (37) array_literal -> LBRACKET expression_list . RBRACKET
+    (39) expression_list -> expression_list . COMMA expression
+
+    RBRACKET        shift and go to state 122
+    COMMA           shift and go to state 123
+
+
+state 117
+
+    (38) array_literal -> LBRACKET RBRACKET .
+
+    COMMA           reduce using rule 38 (array_literal -> LBRACKET RBRACKET .)
+    EXPERIMENT      reduce using rule 38 (array_literal -> LBRACKET RBRACKET .)
+    ANALYZE         reduce using rule 38 (array_literal -> LBRACKET RBRACKET .)
+    SIMULATE        reduce using rule 38 (array_literal -> LBRACKET RBRACKET .)
+    BRANCH          reduce using rule 38 (array_literal -> LBRACKET RBRACKET .)
+    METADATA        reduce using rule 38 (array_literal -> LBRACKET RBRACKET .)
+    IDENTIFIER      reduce using rule 38 (array_literal -> LBRACKET RBRACKET .)
+    $end            reduce using rule 38 (array_literal -> LBRACKET RBRACKET .)
+    ELSE            reduce using rule 38 (array_literal -> LBRACKET RBRACKET .)
+    RBRACE          reduce using rule 38 (array_literal -> LBRACKET RBRACKET .)
+
+
+state 118
+
+    (40) expression_list -> expression .
+
+    RBRACKET        reduce using rule 40 (expression_list -> expression .)
+    COMMA           reduce using rule 40 (expression_list -> expression .)
+
+
+state 119
+
+    (41) expression_list -> empty .
+
+    RBRACKET        reduce using rule 41 (expression_list -> empty .)
+    COMMA           reduce using rule 41 (expression_list -> empty .)
+
+
+state 120
+
+    (22) branch_body -> IF COLON expression . COMMA statement_list
+    (23) branch_body -> IF COLON expression . COMMA statement_list ELSE COLON statement_list
+
+    COMMA           shift and go to state 124
+
+
+state 121
+
+    (35) object_literal -> LBRACE property_list RBRACE .
+
+    COMMA           reduce using rule 35 (object_literal -> LBRACE property_list RBRACE .)
+    EXPERIMENT      reduce using rule 35 (object_literal -> LBRACE property_list RBRACE .)
+    ANALYZE         reduce using rule 35 (object_literal -> LBRACE property_list RBRACE .)
+    SIMULATE        reduce using rule 35 (object_literal -> LBRACE property_list RBRACE .)
+    BRANCH          reduce using rule 35 (object_literal -> LBRACE property_list RBRACE .)
+    METADATA        reduce using rule 35 (object_literal -> LBRACE property_list RBRACE .)
+    IDENTIFIER      reduce using rule 35 (object_literal -> LBRACE property_list RBRACE .)
+    $end            reduce using rule 35 (object_literal -> LBRACE property_list RBRACE .)
+    ELSE            reduce using rule 35 (object_literal -> LBRACE property_list RBRACE .)
+    RBRACE          reduce using rule 35 (object_literal -> LBRACE property_list RBRACE .)
+
+
+state 122
+
+    (37) array_literal -> LBRACKET expression_list RBRACKET .
+
+    COMMA           reduce using rule 37 (array_literal -> LBRACKET expression_list RBRACKET .)
+    EXPERIMENT      reduce using rule 37 (array_literal -> LBRACKET expression_list RBRACKET .)
+    ANALYZE         reduce using rule 37 (array_literal -> LBRACKET expression_list RBRACKET .)
+    SIMULATE        reduce using rule 37 (array_literal -> LBRACKET expression_list RBRACKET .)
+    BRANCH          reduce using rule 37 (array_literal -> LBRACKET expression_list RBRACKET .)
+    METADATA        reduce using rule 37 (array_literal -> LBRACKET expression_list RBRACKET .)
+    IDENTIFIER      reduce using rule 37 (array_literal -> LBRACKET expression_list RBRACKET .)
+    $end            reduce using rule 37 (array_literal -> LBRACKET expression_list RBRACKET .)
+    ELSE            reduce using rule 37 (array_literal -> LBRACKET expression_list RBRACKET .)
+    RBRACE          reduce using rule 37 (array_literal -> LBRACKET expression_list RBRACKET .)
+
+
+state 123
+
+    (39) expression_list -> expression_list COMMA . expression
+    (42) expression -> . logical_expression
+    (43) logical_expression -> . logical_expression AND comparison_expression
+    (44) logical_expression -> . logical_expression OR comparison_expression
+    (45) logical_expression -> . comparison_expression
+    (46) comparison_expression -> . arithmetic_expression EQUALS arithmetic_expression
+    (47) comparison_expression -> . arithmetic_expression NOT_EQUALS arithmetic_expression
+    (48) comparison_expression -> . arithmetic_expression LESS_THAN arithmetic_expression
+    (49) comparison_expression -> . arithmetic_expression GREATER_THAN arithmetic_expression
+    (50) comparison_expression -> . arithmetic_expression LESS_EQUAL arithmetic_expression
+    (51) comparison_expression -> . arithmetic_expression GREATER_EQUAL arithmetic_expression
+    (52) comparison_expression -> . arithmetic_expression
+    (53) arithmetic_expression -> . arithmetic_expression PLUS term
+    (54) arithmetic_expression -> . arithmetic_expression MINUS term
+    (55) arithmetic_expression -> . term
+    (56) term -> . term TIMES factor
+    (57) term -> . term DIVIDE factor
+    (58) term -> . term MODULO factor
+    (59) term -> . factor
+    (60) factor -> . MINUS factor
+    (61) factor -> . PLUS factor
+    (62) factor -> . NOT factor
+    (63) factor -> . power
+    (64) power -> . atom POWER factor
+    (65) power -> . atom
+    (66) atom -> . LPAREN expression RPAREN
+    (67) atom -> . literal
+    (68) atom -> . IDENTIFIER
+    (69) literal -> . NUMBER
+    (70) literal -> . STRING
+    (71) literal -> . boolean_value
+    (72) literal -> . NULL
+    (73) boolean_value -> . BOOLEAN
+
+    MINUS           shift and go to state 49
+    PLUS            shift and go to state 47
+    NOT             shift and go to state 51
+    LPAREN          shift and go to state 54
+    IDENTIFIER      shift and go to state 42
+    NUMBER          shift and go to state 56
+    STRING          shift and go to state 57
+    NULL            shift and go to state 59
+    BOOLEAN         shift and go to state 35
+
+    expression                     shift and go to state 125
+    logical_expression             shift and go to state 44
+    comparison_expression          shift and go to state 45
+    arithmetic_expression          shift and go to state 46
+    term                           shift and go to state 48
+    factor                         shift and go to state 50
+    power                          shift and go to state 52
+    atom                           shift and go to state 53
+    literal                        shift and go to state 55
+    boolean_value                  shift and go to state 58
+
+state 124
+
+    (22) branch_body -> IF COLON expression COMMA . statement_list
+    (23) branch_body -> IF COLON expression COMMA . statement_list ELSE COLON statement_list
+    (2) statement_list -> . statement_list statement
+    (3) statement_list -> . statement
+    (4) statement_list -> . empty
+    (5) statement -> . experiment_statement
+    (6) statement -> . analyze_statement
+    (7) statement -> . simulate_statement
+    (8) statement -> . branch_statement
+    (9) statement -> . metadata_statement
+    (10) statement -> . assignment_statement
+    (74) empty -> .
+    (11) experiment_statement -> . EXPERIMENT COLON experiment_body
+    (14) analyze_statement -> . ANALYZE COLON analyze_body
+    (17) simulate_statement -> . SIMULATE COLON boolean_value
+    (18) simulate_statement -> . SIMULATE COLON simulate_body
+    (21) branch_statement -> . BRANCH COLON LBRACE branch_body RBRACE
+    (24) metadata_statement -> . METADATA COLON metadata_body
+    (27) assignment_statement -> . IDENTIFIER ASSIGN expression
+
+  ! shift/reduce conflict for EXPERIMENT resolved as shift
+  ! shift/reduce conflict for ANALYZE resolved as shift
+  ! shift/reduce conflict for SIMULATE resolved as shift
+  ! shift/reduce conflict for BRANCH resolved as shift
+  ! shift/reduce conflict for METADATA resolved as shift
+  ! shift/reduce conflict for IDENTIFIER resolved as shift
+    ELSE            reduce using rule 74 (empty -> .)
+    RBRACE          reduce using rule 74 (empty -> .)
+    EXPERIMENT      shift and go to state 11
+    ANALYZE         shift and go to state 12
+    SIMULATE        shift and go to state 13
+    BRANCH          shift and go to state 14
+    METADATA        shift and go to state 15
+    IDENTIFIER      shift and go to state 16
+
+  ! EXPERIMENT      [ reduce using rule 74 (empty -> .) ]
+  ! ANALYZE         [ reduce using rule 74 (empty -> .) ]
+  ! SIMULATE        [ reduce using rule 74 (empty -> .) ]
+  ! BRANCH          [ reduce using rule 74 (empty -> .) ]
+  ! METADATA        [ reduce using rule 74 (empty -> .) ]
+  ! IDENTIFIER      [ reduce using rule 74 (empty -> .) ]
+
+    statement_list                 shift and go to state 126
+    statement                      shift and go to state 3
+    empty                          shift and go to state 4
+    experiment_statement           shift and go to state 5
+    analyze_statement              shift and go to state 6
+    simulate_statement             shift and go to state 7
+    branch_statement               shift and go to state 8
+    metadata_statement             shift and go to state 9
+    assignment_statement           shift and go to state 10
+
+state 125
+
+    (39) expression_list -> expression_list COMMA expression .
+
+    RBRACKET        reduce using rule 39 (expression_list -> expression_list COMMA expression .)
+    COMMA           reduce using rule 39 (expression_list -> expression_list COMMA expression .)
+
+
+state 126
+
+    (22) branch_body -> IF COLON expression COMMA statement_list .
+    (23) branch_body -> IF COLON expression COMMA statement_list . ELSE COLON statement_list
+    (2) statement_list -> statement_list . statement
+    (5) statement -> . experiment_statement
+    (6) statement -> . analyze_statement
+    (7) statement -> . simulate_statement
+    (8) statement -> . branch_statement
+    (9) statement -> . metadata_statement
+    (10) statement -> . assignment_statement
+    (11) experiment_statement -> . EXPERIMENT COLON experiment_body
+    (14) analyze_statement -> . ANALYZE COLON analyze_body
+    (17) simulate_statement -> . SIMULATE COLON boolean_value
+    (18) simulate_statement -> . SIMULATE COLON simulate_body
+    (21) branch_statement -> . BRANCH COLON LBRACE branch_body RBRACE
+    (24) metadata_statement -> . METADATA COLON metadata_body
+    (27) assignment_statement -> . IDENTIFIER ASSIGN expression
+
+    RBRACE          reduce using rule 22 (branch_body -> IF COLON expression COMMA statement_list .)
+    ELSE            shift and go to state 127
+    EXPERIMENT      shift and go to state 11
+    ANALYZE         shift and go to state 12
+    SIMULATE        shift and go to state 13
+    BRANCH          shift and go to state 14
+    METADATA        shift and go to state 15
+    IDENTIFIER      shift and go to state 16
+
+    statement                      shift and go to state 17
+    experiment_statement           shift and go to state 5
+    analyze_statement              shift and go to state 6
+    simulate_statement             shift and go to state 7
+    branch_statement               shift and go to state 8
+    metadata_statement             shift and go to state 9
+    assignment_statement           shift and go to state 10
+
+state 127
+
+    (23) branch_body -> IF COLON expression COMMA statement_list ELSE . COLON statement_list
+
+    COLON           shift and go to state 128
+
+
+state 128
+
+    (23) branch_body -> IF COLON expression COMMA statement_list ELSE COLON . statement_list
+    (2) statement_list -> . statement_list statement
+    (3) statement_list -> . statement
+    (4) statement_list -> . empty
+    (5) statement -> . experiment_statement
+    (6) statement -> . analyze_statement
+    (7) statement -> . simulate_statement
+    (8) statement -> . branch_statement
+    (9) statement -> . metadata_statement
+    (10) statement -> . assignment_statement
+    (74) empty -> .
+    (11) experiment_statement -> . EXPERIMENT COLON experiment_body
+    (14) analyze_statement -> . ANALYZE COLON analyze_body
+    (17) simulate_statement -> . SIMULATE COLON boolean_value
+    (18) simulate_statement -> . SIMULATE COLON simulate_body
+    (21) branch_statement -> . BRANCH COLON LBRACE branch_body RBRACE
+    (24) metadata_statement -> . METADATA COLON metadata_body
+    (27) assignment_statement -> . IDENTIFIER ASSIGN expression
+
+  ! shift/reduce conflict for EXPERIMENT resolved as shift
+  ! shift/reduce conflict for ANALYZE resolved as shift
+  ! shift/reduce conflict for SIMULATE resolved as shift
+  ! shift/reduce conflict for BRANCH resolved as shift
+  ! shift/reduce conflict for METADATA resolved as shift
+  ! shift/reduce conflict for IDENTIFIER resolved as shift
+    RBRACE          reduce using rule 74 (empty -> .)
+    EXPERIMENT      shift and go to state 11
+    ANALYZE         shift and go to state 12
+    SIMULATE        shift and go to state 13
+    BRANCH          shift and go to state 14
+    METADATA        shift and go to state 15
+    IDENTIFIER      shift and go to state 16
+
+  ! EXPERIMENT      [ reduce using rule 74 (empty -> .) ]
+  ! ANALYZE         [ reduce using rule 74 (empty -> .) ]
+  ! SIMULATE        [ reduce using rule 74 (empty -> .) ]
+  ! BRANCH          [ reduce using rule 74 (empty -> .) ]
+  ! METADATA        [ reduce using rule 74 (empty -> .) ]
+  ! IDENTIFIER      [ reduce using rule 74 (empty -> .) ]
+
+    statement_list                 shift and go to state 129
+    statement                      shift and go to state 3
+    empty                          shift and go to state 4
+    experiment_statement           shift and go to state 5
+    analyze_statement              shift and go to state 6
+    simulate_statement             shift and go to state 7
+    branch_statement               shift and go to state 8
+    metadata_statement             shift and go to state 9
+    assignment_statement           shift and go to state 10
+
+state 129
+
+    (23) branch_body -> IF COLON expression COMMA statement_list ELSE COLON statement_list .
+    (2) statement_list -> statement_list . statement
+    (5) statement -> . experiment_statement
+    (6) statement -> . analyze_statement
+    (7) statement -> . simulate_statement
+    (8) statement -> . branch_statement
+    (9) statement -> . metadata_statement
+    (10) statement -> . assignment_statement
+    (11) experiment_statement -> . EXPERIMENT COLON experiment_body
+    (14) analyze_statement -> . ANALYZE COLON analyze_body
+    (17) simulate_statement -> . SIMULATE COLON boolean_value
+    (18) simulate_statement -> . SIMULATE COLON simulate_body
+    (21) branch_statement -> . BRANCH COLON LBRACE branch_body RBRACE
+    (24) metadata_statement -> . METADATA COLON metadata_body
+    (27) assignment_statement -> . IDENTIFIER ASSIGN expression
+
+    RBRACE          reduce using rule 23 (branch_body -> IF COLON expression COMMA statement_list ELSE COLON statement_list .)
+    EXPERIMENT      shift and go to state 11
+    ANALYZE         shift and go to state 12
+    SIMULATE        shift and go to state 13
+    BRANCH          shift and go to state 14
+    METADATA        shift and go to state 15
+    IDENTIFIER      shift and go to state 16
+
+    statement                      shift and go to state 17
+    experiment_statement           shift and go to state 5
+    analyze_statement              shift and go to state 6
+    simulate_statement             shift and go to state 7
+    branch_statement               shift and go to state 8
+    metadata_statement             shift and go to state 9
+    assignment_statement           shift and go to state 10
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for EXPERIMENT in state 0 resolved as shift
+WARNING: shift/reduce conflict for ANALYZE in state 0 resolved as shift
+WARNING: shift/reduce conflict for SIMULATE in state 0 resolved as shift
+WARNING: shift/reduce conflict for BRANCH in state 0 resolved as shift
+WARNING: shift/reduce conflict for METADATA in state 0 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 0 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 18 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 19 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 20 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 22 resolved as shift
+WARNING: shift/reduce conflict for RBRACE in state 92 resolved as shift
+WARNING: shift/reduce conflict for RBRACKET in state 93 resolved as shift
+WARNING: shift/reduce conflict for EXPERIMENT in state 124 resolved as shift
+WARNING: shift/reduce conflict for ANALYZE in state 124 resolved as shift
+WARNING: shift/reduce conflict for SIMULATE in state 124 resolved as shift
+WARNING: shift/reduce conflict for BRANCH in state 124 resolved as shift
+WARNING: shift/reduce conflict for METADATA in state 124 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 124 resolved as shift
+WARNING: shift/reduce conflict for EXPERIMENT in state 128 resolved as shift
+WARNING: shift/reduce conflict for ANALYZE in state 128 resolved as shift
+WARNING: shift/reduce conflict for SIMULATE in state 128 resolved as shift
+WARNING: shift/reduce conflict for BRANCH in state 128 resolved as shift
+WARNING: shift/reduce conflict for METADATA in state 128 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 128 resolved as shift

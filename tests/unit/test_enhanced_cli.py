@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from gfl.cli_utils import collect_files, process_file_batch
-from gfl.enhanced_cli import EnhancedCLI, OutputFormatter
+from geneforgelang.cli.utils import collect_files, process_file_batch
+from geneforgelang.cli.enhanced import EnhancedCLI, OutputFormatter
 
 
 class TestOutputFormatter:

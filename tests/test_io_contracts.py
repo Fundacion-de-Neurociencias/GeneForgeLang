@@ -7,8 +7,8 @@ import sys
 # Add the current directory to the path so we can import gfl
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from gfl.api import parse, validate
-from gfl.semantic_validator import EnhancedSemanticValidator
+from geneforgelang.core.api import parse, validate
+from geneforgelang.core.validator import EnhancedSemanticValidator
 
 
 def test_io_contracts():
@@ -16,9 +16,8 @@ def test_io_contracts():
     print("Testing IO Contracts validation...")
 
     # Read the test GFL file
-    with open("test_io_contracts.gfl") as f:
+    with open("tests/test_io_contracts.gfl") as f:
         gfl_content = f.read()
-
     # Parse the GFL content
     ast = parse(gfl_content)
 

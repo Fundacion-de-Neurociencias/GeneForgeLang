@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from gfl.api import parse, validate
+from geneforgelang.core.api import parse, validate
 
 EXAMPLES_DIR = Path("examples")
 

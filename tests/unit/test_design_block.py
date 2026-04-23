@@ -9,8 +9,8 @@ Tests cover:
 
 import pytest
 
-from gfl.api import parse, validate
-from gfl.types import Design
+from geneforgelang.core.api import parse, validate
+from geneforgelang.core.gftypes import Design
 
 
 class TestDesignBlockParsing:

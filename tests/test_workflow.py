@@ -15,13 +15,13 @@ def test_workflow():
 
     try:
         # Import the auto-registration module and register plugins
-        from gfl.plugins.auto_register import _register_genesis_plugins
+        from geneforgelang.plugins.auto_register import _register_genesis_plugins
 
         _register_genesis_plugins()
         print("Plugins registered successfully")
 
         # Import the execution engine
-        from gfl.execution_engine import execute_gfl_ast, validate_execution_requirements
+        from geneforgelang.core.execution import execute_gfl_ast, validate_execution_requirements
 
         print("Execution engine imported successfully")
 
