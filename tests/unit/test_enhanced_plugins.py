@@ -4,7 +4,7 @@ from typing import Any, Dict, List
 
 import pytest
 from geneforgelang.plugins.plugin_registry import (
-    BaseGFLPlugin,
+    BaseGFLPlugin, PluginPriority
 )
 
 

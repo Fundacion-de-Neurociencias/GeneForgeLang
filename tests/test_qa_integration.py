@@ -16,7 +16,6 @@ import requests
 # Add gfl to path
 sys.path.append(os.path.join(os.path.dirname(__file__), "gfl"))
 
-from geneforgelang.core.enhanced_inference_engine import get_engine_capabilities
 from geneforgelang.core.parser import parse_gfl
 from geneforgelang.core.validator import EnhancedSemanticValidator
 
@@ -105,7 +104,6 @@ transcripts:
     exons: [1, 2, 3]
 """
             ast = parse_gfl(test_gfl)
-            capabilities = get_engine_capabilities("advanced")
             validator = EnhancedSemanticValidator(engine_capabilities=capabilities)
             result = validator.validate_ast(ast)
             return len(result.errors) == 0
@@ -137,7 +135,6 @@ rules:
         level: "high"
 """
             ast = parse_gfl(test_gfl)
-            capabilities = get_engine_capabilities("advanced")
             validator = EnhancedSemanticValidator(engine_capabilities=capabilities)
             result = validator.validate_ast(ast)
             return len(result.errors) == 0
@@ -211,7 +208,6 @@ proteins:
       pdb: "1TUP"
 """
             ast = parse_gfl(test_gfl)
-            capabilities = get_engine_capabilities("advanced")
             validator = EnhancedSemanticValidator(engine_capabilities=capabilities)
             result = validator.validate_ast(ast)
 
@@ -231,7 +227,6 @@ transcripts:
     exons: [1, 2, 3]
 """
             ast = parse_gfl(test_gfl)
-            capabilities = get_engine_capabilities("basic")
             validator = EnhancedSemanticValidator(engine_capabilities=capabilities)
             result = validator.validate_ast(ast)
 
