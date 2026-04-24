@@ -1,9 +1,8 @@
 import json
 import sys
 
-from gfl import parser
-from gfl.semantic_validator import validate_ast
-
+from geneforgelang import parser
+from geneforgelang.core.validator import validate_ast
 
 def run_export(file_path):
     print(f"\n📤 Exportando AST de: {file_path}")
