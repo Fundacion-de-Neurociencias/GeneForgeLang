@@ -74,6 +74,8 @@ dev = [
     "mypy>=1.5",
     "pre-commit>=3.0",
     "requests>=2.25.0",
+    "bandit>=1.7",
+    "safety>=2.0",
 ]
 all = [
     "geneforgelang[web,cli,ml,containers,dev]"
