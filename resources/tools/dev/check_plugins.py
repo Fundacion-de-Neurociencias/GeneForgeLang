@@ -8,7 +8,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import and initialize
-from gfl.plugins.plugin_registry import plugin_registry
+from geneforgelang.plugins.plugin_registry import plugin_registry
 
 # Force discovery
 plugin_registry._discover_plugins()
