@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Clinical-Grade Process Prior Graph (PPG)",
+  "description": "Represents the causal distribution of neurobiological processes with explicit temporal, conflict, and provenance modeling for clinical inference.",
+  "type": "object",
+  "properties": {
+    "ppg_version": { "type": "string" },
+    "disease_domain": { "type": "string" },
+    "process_nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "process_id": { "type": "string" },
+          "label": { "type": "string" },
+          "causal_weight": { "type": "number", "description": "Normalized probabilistic causal weight" },
+          "uncertainty": { "type": "number" },
+          "temporal_stage": { 
+            "type": "object",
+            "properties": {
+              "active_stage": { "type": "array", "items": { "type": "string" } },
+              "temporal_directionality": { "type": "string" }
+            }
+          },
+          "evidence_source": {
+             "type": "array",
+             "items": {
+               "type": "object",
+               "properties": {
+                 "dataset": { "type": "string" },
+                 "study_type": { "type": "string" },
+                 "confidence_origin": { "type": "string" }
+               }
+             }
+          },
+          "conflict_score": { "type": "number" },
+          "conflicting_sources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "source": { "type": "string" },
+                "weight": { "type": "number" }
+              }
+            }
+          }
+        },
+        "required": ["process_id", "label", "causal_weight", "temporal_stage", "evidence_source", "conflict_score"]
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "weight": { "type": "number" },
+          "type": { "type": "string" },
+          "directionality_confidence": { "type": "number" },
+          "context_dependency": { "type": "string", "enum": ["stage-dependent", "stable", "cohort-dependent"] }
+        },
+        "required": ["from", "to", "weight", "type", "directionality_confidence", "context_dependency"]
+      }
+    },
+    "global_metrics": {
+      "type": "object",
+      "properties": {
+        "coherence": { "type": "number" },
+        "stability": { "type": "number" },
+        "null_separation_z": { "type": "number" },
+        "cross_cohort_variance": { "type": "number", "description": "Robustness across cohorts" },
+        "calibration_error": { "type": "number", "description": "Calibration error of the causal model" },
+        "modal_conflict_index": { "type": "number" }
+      },
+      "required": ["coherence", "stability", "null_separation_z", "cross_cohort_variance", "calibration_error"]
+    }
+  },
+  "required": ["ppg_version", "disease_domain", "process_nodes", "edges", "global_metrics"]
+}
