@@ -43,7 +43,9 @@ class GFLExecutionEngine:
 
         except ValueError as e:
             available = plugin_registry.list_generators()
-            raise ExecutionError(f"Design model '{model_name}' not available. Available: {available}")
+            raise ExecutionError(
+                f"Design model '{model_name}' not available. Available: {available}"
+            )
 
     def execute_optimize_block(self, optimize_block: dict[str, Any]) -> dict[str, Any]:
         """Execute an optimize block."""
@@ -67,7 +69,9 @@ class GFLExecutionEngine:
 
         except ValueError as e:
             available = plugin_registry.list_optimizers()
-            raise ExecutionError(f"Optimization strategy '{strategy_name}' not supported. Available: {available}")
+            raise ExecutionError(
+                f"Optimization strategy '{strategy_name}' not supported. Available: {available}"
+            )
 
 
 def execute_gfl_ast(ast: dict[str, Any]) -> dict[str, Any]:
@@ -97,7 +101,9 @@ def validate_execution_requirements(ast: dict[str, Any]) -> list[str]:
         if model_name:
             available_generators = plugin_registry.list_generators()
             if model_name not in available_generators:
-                errors.append(f"Design model '{model_name}' not available. Available: {available_generators}")
+                errors.append(
+                    f"Design model '{model_name}' not available. Available: {available_generators}"
+                )
 
     # Check optimize block requirements
     if "optimize" in ast:

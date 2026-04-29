@@ -45,7 +45,9 @@ class PluginRegistry:
         # Discover container images for plugins
         for entry_point in importlib.metadata.entry_points(group="geneforgelang.plugin_containers"):
             try:
-                container_image = entry_point.load() if callable(entry_point.load) else entry_point.value
+                container_image = (
+                    entry_point.load() if callable(entry_point.load) else entry_point.value
+                )
                 self._container_images[entry_point.name] = container_image
             except Exception:
                 pass  # Skip container images that fail to load
@@ -112,7 +114,9 @@ def get_available_optimizers() -> dict[str, type[BaseOptimizerPlugin]]:
     return plugin_registry._optimizers
 
 
-def register_plugin_class(name: str, plugin_class: type[BaseGFLPlugin], version: str = "1.0.0", metadata: dict = None):
+def register_plugin_class(
+    name: str, plugin_class: type[BaseGFLPlugin], version: str = "1.0.0", metadata: dict = None
+):
     """Register a plugin class by name."""
     if issubclass(plugin_class, BaseGeneratorPlugin):
         plugin_registry.register_generator(name, plugin_class)

@@ -21,7 +21,7 @@ import argparse
 import json
 import logging
 import sys
-import traceback 
+import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -47,8 +47,8 @@ except ImportError:
     Console = None
 
 # Import GFL components
-from geneforgelang.core.api import infer, parse, parse_enhanced, validate
 from geneforgelang.cli.utils import CLIUtilsMixin
+from geneforgelang.core.api import infer, parse, parse_enhanced, validate
 from geneforgelang.core.performance import get_monitor, get_optimizer
 
 # Optional imports with fallbacks
@@ -73,12 +73,15 @@ except ImportError:
     HAS_ENHANCED_SCHEMA = False
 
 # Configure logging
-logging.basicConfig(level=logging.WARNING, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.WARNING, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 # Version information
 __version__ = "0.2.0"
 __api_version__ = "2.0.0"
+
 
 class CLIError(Exception):
     """Base exception for CLI errors."""
@@ -293,7 +296,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
             default=0,
             help="Increase verbosity (use multiple times)",
         )
-        parser.add_argument("--quiet", "-q", action="store_true", help="Suppress non-essential output")
+        parser.add_argument(
+            "--quiet", "-q", action="store_true", help="Suppress non-essential output"
+        )
         parser.add_argument("--config", type=Path, help="Configuration file path")
         parser.add_argument("--no-color", action="store_true", help="Disable colored output")
 
@@ -330,7 +335,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
             action="store_true",
             help="Process directories recursively",
         )
-        parser.add_argument("--pattern", default="*.gfl", help="File pattern for recursive processing")
+        parser.add_argument(
+            "--pattern", default="*.gfl", help="File pattern for recursive processing"
+        )
         parser.set_defaults(func=self.cmd_parse)
 
     def _add_validate_command(self, subparsers):
@@ -352,7 +359,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
             action="store_true",
             help="Process directories recursively",
         )
-        parser.add_argument("--fix", action="store_true", help="Apply suggested fixes automatically")
+        parser.add_argument(
+            "--fix", action="store_true", help="Apply suggested fixes automatically"
+        )
         parser.add_argument("--stop-on-first", action="store_true", help="Stop on first error")
         parser.set_defaults(func=self.cmd_validate)
 
@@ -379,7 +388,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
 
         # List plugins
         list_parser = plugin_subparsers.add_parser("list", help="List available plugins")
-        list_parser.add_argument("--active-only", action="store_true", help="Show only active plugins")
+        list_parser.add_argument(
+            "--active-only", action="store_true", help="Show only active plugins"
+        )
 
         # Plugin info
         info_parser = plugin_subparsers.add_parser("info", help="Show plugin information")
@@ -429,7 +440,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
         parser.add_argument("--output-dir", "-o", type=Path, help="Output directory")
         parser.add_argument("--pattern", default="*.gfl", help="File pattern")
         parser.add_argument("--recursive", "-r", action="store_true", help="Process recursively")
-        parser.add_argument("--parallel", "-p", action="store_true", help="Process files in parallel")
+        parser.add_argument(
+            "--parallel", "-p", action="store_true", help="Process files in parallel"
+        )
         parser.add_argument("--workers", type=int, default=4, help="Number of parallel workers")
         parser.set_defaults(func=self.cmd_batch)
 
@@ -454,7 +467,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
         # Benchmark
         benchmark_parser = perf_subparsers.add_parser("benchmark", help="Run performance benchmark")
         benchmark_parser.add_argument("--files", nargs="+", type=Path, help="Files to benchmark")
-        benchmark_parser.add_argument("--iterations", type=int, default=10, help="Number of iterations")
+        benchmark_parser.add_argument(
+            "--iterations", type=int, default=10, help="Number of iterations"
+        )
 
         parser.set_defaults(func=self.cmd_performance)
 
@@ -516,7 +531,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                             content = f.read()
 
                         if args.grammar:
-                            result = parse_enhanced(content, use_grammar=True, filename=str(file_path))
+                            result = parse_enhanced(
+                                content, use_grammar=True, filename=str(file_path)
+                            )
                             if result.is_valid:
                                 ast = result.ast
                             else:
@@ -588,7 +605,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
 
                         # Parse first
                         if self.config.get("use_grammar_parser", False):
-                            parse_result = parse_enhanced(content, use_grammar=True, filename=str(file_path))
+                            parse_result = parse_enhanced(
+                                content, use_grammar=True, filename=str(file_path)
+                            )
                             if not parse_result.is_valid:
                                 # Include syntax errors
                                 results.append(
@@ -616,7 +635,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                         # Validate
                         if args.enhanced:
                             validation_result = validate(ast, enhanced=True)
-                            errors = validation_result.semantic_errors + validation_result.schema_errors
+                            errors = (
+                                validation_result.semantic_errors + validation_result.schema_errors
+                            )
 
                             results.append(
                                 {
@@ -626,9 +647,11 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                                             "message": e.message,
                                             "type": e.category.value,
                                             "severity": e.severity.value,
-                                            "location": f"{e.location.line}:{e.location.column}"
-                                            if e.location
-                                            else None,
+                                            "location": (
+                                                f"{e.location.line}:{e.location.column}"
+                                                if e.location
+                                                else None
+                                            ),
                                             "code": e.code,
                                             "fixes": [f.description for f in e.suggested_fixes],
                                         }
@@ -721,7 +744,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                         # Filter by confidence if specified
                         if "confidence" in inference_result:
                             if inference_result["confidence"] < args.confidence_threshold:
-                                self.formatter.print_warning(f"Low confidence result for {file_path}")
+                                self.formatter.print_warning(
+                                    f"Low confidence result for {file_path}"
+                                )
 
                         results.append(
                             {
@@ -895,7 +920,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                 return 1
 
             # Collect files
-            files = list(input_dir.rglob(args.pattern) if args.recursive else input_dir.glob(args.pattern))
+            files = list(
+                input_dir.rglob(args.pattern) if args.recursive else input_dir.glob(args.pattern)
+            )
 
             if not files:
                 self.formatter.print_error(f"No files found matching pattern: {args.pattern}")
@@ -972,14 +999,16 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
 
                 stats_data = {
                     "cache_statistics": {
-                        name: {
-                            "hits": stats.hits,
-                            "misses": stats.misses,
-                            "hit_rate": stats.hit_rate,
-                            "size": stats.size,
-                        }
-                        if stats
-                        else None
+                        name: (
+                            {
+                                "hits": stats.hits,
+                                "misses": stats.misses,
+                                "hit_rate": stats.hit_rate,
+                                "size": stats.size,
+                            }
+                            if stats
+                            else None
+                        )
                         for name, stats in cache_stats.items()
                     },
                     "performance_statistics": perf_stats,

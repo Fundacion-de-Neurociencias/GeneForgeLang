@@ -20,7 +20,9 @@ import time
 from typing import Dict, Optional
 
 # Set up logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -91,7 +93,9 @@ class GFLServerManager:
         self.servers: dict[str, ServerProcess] = {}
         self.shutdown_requested = False
 
-    def add_api_server(self, host: str = "127.0.0.1", port: int = 8000, reload: bool = False) -> None:
+    def add_api_server(
+        self, host: str = "127.0.0.1", port: int = 8000, reload: bool = False
+    ) -> None:
         """Add API server to management."""
         try:
             from gfl.api_server import run_server
@@ -176,7 +180,9 @@ class GFLServerManager:
         try:
             while not self.shutdown_requested:
                 # Check if any servers have died
-                running_servers = [name for name, server in self.servers.items() if server.is_running()]
+                running_servers = [
+                    name for name, server in self.servers.items() if server.is_running()
+                ]
 
                 if not running_servers:
                     logger.warning("All servers have stopped")
@@ -250,14 +256,12 @@ def check_dependencies() -> dict[str, bool]:
 
 def print_startup_banner(config: dict) -> None:
     """Print startup banner with configuration."""
-    print(
-        """
+    print("""
 ╔═══════════════════════════════════════════════════════════════╗
 ║                    GeneForgeLang Server Suite                 ║
 ║           Genomic Workflow Analysis and Inference            ║
 ╚═══════════════════════════════════════════════════════════════╝
-"""
-    )
+""")
 
     print("Configuration:")
     print("-" * 50)
@@ -299,7 +303,9 @@ Examples:
         help="Start both API server and web interface (default)",
     )
     server_group.add_argument("--api-only", action="store_true", help="Start only the API server")
-    server_group.add_argument("--web-only", action="store_true", help="Start only the web interface")
+    server_group.add_argument(
+        "--web-only", action="store_true", help="Start only the web interface"
+    )
 
     # Network configuration
     parser.add_argument(
@@ -309,8 +315,12 @@ Examples:
     )
     parser.add_argument("--api-host", help="API server host (overrides --host)")
     parser.add_argument("--web-host", help="Web interface host (overrides --host)")
-    parser.add_argument("--api-port", type=int, default=8000, help="API server port (default: 8000)")
-    parser.add_argument("--web-port", type=int, default=7860, help="Web interface port (default: 7860)")
+    parser.add_argument(
+        "--api-port", type=int, default=8000, help="API server port (default: 8000)"
+    )
+    parser.add_argument(
+        "--web-port", type=int, default=7860, help="Web interface port (default: 7860)"
+    )
 
     # Additional options
     parser.add_argument("--reload", action="store_true", help="Enable auto-reload for development")
@@ -393,7 +403,9 @@ Examples:
         manager.add_api_server(host=api_host, port=args.api_port, reload=args.reload)
 
     if web_enabled:
-        manager.add_web_interface(host=web_host, port=args.web_port, share=args.share, debug=args.debug)
+        manager.add_web_interface(
+            host=web_host, port=args.web_port, share=args.share, debug=args.debug
+        )
 
     # Set up signal handlers
     setup_signal_handlers(manager)

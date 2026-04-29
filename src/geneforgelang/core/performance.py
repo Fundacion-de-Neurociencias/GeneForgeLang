@@ -291,7 +291,9 @@ class IntelligentCache(Generic[K, V]):
         """Remove expired entries and return count removed."""
 
         def _cleanup():
-            expired_keys = [key for key, entry in self._entries.items() if entry.is_expired(self.ttl)]
+            expired_keys = [
+                key for key, entry in self._entries.items() if entry.is_expired(self.ttl)
+            ]
 
             for key in expired_keys:
                 del self._entries[key]
@@ -394,7 +396,9 @@ class PerformanceOptimizer:
         """Get a registered cache."""
         return self._caches.get(name)
 
-    def create_lazy_loader(self, loader_func: Callable[[], T], cache_key: str | None = None) -> LazyLoader[T]:
+    def create_lazy_loader(
+        self, loader_func: Callable[[], T], cache_key: str | None = None
+    ) -> LazyLoader[T]:
         """Create a lazy loader."""
         loader = LazyLoader(loader_func, cache_key)
         self._lazy_loaders.add(loader)

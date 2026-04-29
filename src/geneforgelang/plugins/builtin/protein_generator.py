@@ -2,6 +2,7 @@
 
 import random
 from typing import Any, Dict, List
+
 from geneforgelang.plugins.base import BaseGeneratorPlugin
 
 

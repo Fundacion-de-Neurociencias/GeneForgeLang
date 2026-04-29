@@ -5,6 +5,7 @@ Working GFL workflow example.
 This example demonstrates a complete workflow using properly implemented
 plugins that are actually available in the system.
 """
+
 import sys
 from geneforgelang.core.api import execute, parse, validate, list_available_plugins
 

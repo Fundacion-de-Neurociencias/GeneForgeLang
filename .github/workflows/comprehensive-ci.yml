@@ -29,8 +29,8 @@ jobs:
       - name: Run ruff
         run: ruff check src/geneforgelang/ --exit-zero
         continue-on-error: true
-      - name: Run black
-        run: black --check src/geneforgelang/ --diff
+      - name: Run black .
+        run: black . --check src/geneforgelang/ --diff
         continue-on-error: true
       - name: Security check with bandit
         run: bandit -r src/geneforgelang/
@@ -38,7 +38,7 @@ jobs:
       - name: Dependency vulnerability check
         run: |
           pip install pip-audit
-          pip audit 
+          python -m pip_audit
         continue-on-error: true
 
   # Test matrix

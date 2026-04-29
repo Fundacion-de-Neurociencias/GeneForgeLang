@@ -186,7 +186,9 @@ def initialize_inference_engine():
         return False, f"❌ Failed to initialize: {str(e)}"
 
 
-def parse_and_validate_gfl(content: str, use_grammar: bool = False) -> tuple[bool, str, dict | None]:
+def parse_and_validate_gfl(
+    content: str, use_grammar: bool = False
+) -> tuple[bool, str, dict | None]:
     """Parse and validate GFL content."""
     if not content.strip():
         return False, "❌ Empty content", None
@@ -281,7 +283,9 @@ def run_inference(content: str, model_name: str, explain: bool = True) -> tuple[
         # Add feature information if available
         features_used = result.get("features_used", {})
         if features_used:
-            result_parts.extend(["", "🔍 **Features Analyzed**:", json.dumps(features_used, indent=2)])
+            result_parts.extend(
+                ["", "🔍 **Features Analyzed**:", json.dumps(features_used, indent=2)]
+            )
 
         web_stats["analyses_run"] += 1
 
@@ -317,7 +321,9 @@ def compare_models(content: str, selected_models: list[str]) -> tuple[str, str]:
             return "❌ No comparison results available", ""
 
         # Sort by confidence
-        sorted_results = sorted(comparisons.items(), key=lambda x: x[1].get("confidence", 0), reverse=True)
+        sorted_results = sorted(
+            comparisons.items(), key=lambda x: x[1].get("confidence", 0), reverse=True
+        )
 
         result_parts = [
             f"🔬 **Model Comparison Results** ({len(sorted_results)} models)",
@@ -460,8 +466,7 @@ def create_interface() -> gr.Blocks:
         .success-text { color: #2e7d32; }
         """,
     ) as interface:
-        gr.Markdown(
-            """
+        gr.Markdown("""
         # 🧬 GeneForgeLang Web Interface
 
         **Interactive platform for genomic workflow design, validation, and analysis**
@@ -471,8 +476,7 @@ def create_interface() -> gr.Blocks:
         - 🤖 **Inference**: Run AI/ML models on your workflows for predictions and insights
         - 🔬 **Analysis**: Compare multiple models and analyze results
         - 📊 **Management**: Monitor models, system status, and performance metrics
-        """
-        )
+        """)
 
         with gr.Row():
             gr.Markdown(f"**System Status**: {engine_status}")
@@ -556,7 +560,9 @@ def create_interface() -> gr.Blocks:
                             )
                             refresh_models_btn = gr.Button("🔄", scale=0)
 
-                        include_explanation = gr.Checkbox(label="Include Detailed Explanation", value=True)
+                        include_explanation = gr.Checkbox(
+                            label="Include Detailed Explanation", value=True
+                        )
 
                         run_inference_btn = gr.Button("🚀 Run Inference", variant="primary")
 
@@ -605,11 +611,15 @@ def create_interface() -> gr.Blocks:
                     with gr.Column(scale=3):
                         gr.Markdown("### Comparison Results")
 
-                        comparison_output = gr.Textbox(label="Comparison Analysis", lines=15, interactive=False)
+                        comparison_output = gr.Textbox(
+                            label="Comparison Analysis", lines=15, interactive=False
+                        )
 
                         comparison_raw = gr.JSON(label="Detailed Results", visible=False)
 
-                        show_comparison_raw = gr.Checkbox(label="Show Detailed Results", value=False)
+                        show_comparison_raw = gr.Checkbox(
+                            label="Show Detailed Results", value=False
+                        )
 
                 # Event handlers for comparison tab
                 show_comparison_raw.change(
@@ -688,7 +698,9 @@ def create_interface() -> gr.Blocks:
                         process_batch_btn = gr.Button("🔄 Process Batch", variant="primary")
 
                     with gr.Column():
-                        batch_results = gr.Textbox(label="Batch Results", lines=15, interactive=False)
+                        batch_results = gr.Textbox(
+                            label="Batch Results", lines=15, interactive=False
+                        )
 
                 # Batch processing handler (placeholder)
                 def process_batch_files(files, model_name):
@@ -726,8 +738,7 @@ def create_interface() -> gr.Blocks:
                 )
 
         # Footer
-        gr.Markdown(
-            """
+        gr.Markdown("""
         ---
 
         **GeneForgeLang Web Interface v1.0** |
@@ -736,8 +747,7 @@ def create_interface() -> gr.Blocks:
         🐛 [Report Issues](https://github.com/geneforg/geneforg/issues)
 
         *Powered by Gradio, FastAPI, and the Enhanced GeneForgeLang Inference Engine*
-        """
-        )
+        """)
 
     return interface
 
@@ -779,4 +789,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    launch_web_interface(server_name=args.host, server_port=args.port, share=args.share, debug=args.debug)
+    launch_web_interface(
+        server_name=args.host, server_port=args.port, share=args.share, debug=args.debug
+    )

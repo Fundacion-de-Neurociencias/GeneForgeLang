@@ -2,7 +2,11 @@
 
 try:
     from geneforgelang.plugins.base import BaseGeneratorPlugin, BaseGFLPlugin, BaseOptimizerPlugin
-    from geneforgelang.plugins.plugin_registry import get_available_generators, get_available_optimizers, plugin_registry
+    from geneforgelang.plugins.plugin_registry import (
+        get_available_generators,
+        get_available_optimizers,
+        plugin_registry,
+    )
 
     __all__ = [
         "BaseGFLPlugin",

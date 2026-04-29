@@ -48,7 +48,8 @@ def group_texts(examples):
     total_length = (total_length // block_size) * block_size
     # Dividir por chunks de block_size
     result = {
-        k: [t[i : i + block_size] for i in range(0, total_length, block_size)] for k, t in concatenated_examples.items()
+        k: [t[i : i + block_size] for i in range(0, total_length, block_size)]
+        for k, t in concatenated_examples.items()
     }
     result["labels"] = result["input_ids"].copy()
     return result

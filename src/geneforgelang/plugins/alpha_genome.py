@@ -29,7 +29,9 @@ class AlphaGenomePlugin:
             }
 
             for track in tracks:
-                simulated_results["predicted_tracks"][track] = f"Simulated data for {track} on {sequence}"
+                simulated_results["predicted_tracks"][
+                    track
+                ] = f"Simulated data for {track} on {sequence}"
 
             for var in variants:
                 pos = var.get("pos")
@@ -43,7 +45,9 @@ class AlphaGenomePlugin:
 
             return simulated_results
 
-        raise NotImplementedError(f"AlphaGenome method '{method_name}' not implemented in simulation.")
+        raise NotImplementedError(
+            f"AlphaGenome method '{method_name}' not implemented in simulation."
+        )
 
 
 __all__ = ["AlphaGenomePlugin"]

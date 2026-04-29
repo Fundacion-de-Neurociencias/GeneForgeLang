@@ -27,17 +27,17 @@ import contextlib
 import logging
 from typing import Any, Dict, List, Optional, Union, cast
 
-from geneforgelang.utils.prob_rules import default_rules
 from geneforgelang.core import parser as _parser
 from geneforgelang.core.errors import (
-    EnhancedValidationResult,
     EnhancedValidationError,
+    EnhancedValidationResult,
     ErrorCategory,
     ErrorSeverity,
 )
 from geneforgelang.core.inference import InferenceEngine as _InferenceEngine
 from geneforgelang.core.performance import cached, get_monitor
 from geneforgelang.core.validator import validate as _validate
+from geneforgelang.utils.prob_rules import default_rules
 
 # Optional execution engine import
 try:
@@ -59,7 +59,7 @@ except ImportError:
 
 # Optional grammar parser import
 try:
-    from geneforgelang.utils.grammar_parser import parse_gfl_grammar, GFLSyntaxError
+    from geneforgelang.utils.grammar_parser import GFLSyntaxError, parse_gfl_grammar
 
     HAS_GRAMMAR_PARSER = True
 except ImportError:
@@ -146,7 +146,9 @@ def parse(text: str, use_grammar: bool = False, filename: str = "<input>") -> di
 
 
 @cached(cache_name="schema_validation", ttl=600.0, max_size=500)
-def validate(ast: dict[str, Any], enhanced: bool = False) -> Union[list[str], EnhancedValidationResult]:
+def validate(
+    ast: dict[str, Any], enhanced: bool = False
+) -> Union[list[str], EnhancedValidationResult]:
     """Return validation errors for the given AST.
 
     Performs semantic validation on the parsed AST to ensure it follows
@@ -267,7 +269,9 @@ def infer(
         return engine.predict_effect(ast, enhanced=False)
 
 
-def parse_enhanced(text: str, use_grammar: bool = True, filename: str = "<input>") -> EnhancedValidationResult:
+def parse_enhanced(
+    text: str, use_grammar: bool = True, filename: str = "<input>"
+) -> EnhancedValidationResult:
     """Parse GFL source with enhanced error reporting.
 
     This function provides detailed parsing results with rich error information,
@@ -309,7 +313,7 @@ def parse_enhanced(text: str, use_grammar: bool = True, filename: str = "<input>
                 # Add the AST as an attribute instead of constructor param
                 result.ast = ast
                 return result
-            
+
             except Exception as e:
                 error = EnhancedValidationError(
                     message=str(e),
@@ -325,7 +329,9 @@ def parse_enhanced(text: str, use_grammar: bool = True, filename: str = "<input>
 # Enhanced inference convenience functions
 
 
-def infer_enhanced(ast: dict[str, Any], model_name: str = "heuristic", explain: bool = True) -> dict[str, Any]:
+def infer_enhanced(
+    ast: dict[str, Any], model_name: str = "heuristic", explain: bool = True
+) -> dict[str, Any]:
     """Enhanced inference using advanced ML models.
 
     Convenience function for enhanced inference without requiring a model instance.
@@ -370,7 +376,9 @@ def infer_enhanced(ast: dict[str, Any], model_name: str = "heuristic", explain: 
         raise ImportError("Enhanced inference engine not available")
 
 
-def compare_inference_models(ast: dict[str, Any], model_names: list[str] | None = None) -> dict[str, Any]:
+def compare_inference_models(
+    ast: dict[str, Any], model_names: list[str] | None = None
+) -> dict[str, Any]:
     """Compare predictions across multiple inference models.
 
     Args:
@@ -470,7 +478,9 @@ def execute(ast: dict[str, Any], validate_first: bool = True) -> dict[str, Any]:
         Best parameters: {'temperature': 37.2, 'concentration': 75.5}
     """
     if not HAS_EXECUTION_ENGINE:
-        raise ImportError("Execution engine not available. Plugin system may not be properly installed.")
+        raise ImportError(
+            "Execution engine not available. Plugin system may not be properly installed."
+        )
 
     with get_monitor().time_operation("api_execute"):
         if validate_first:

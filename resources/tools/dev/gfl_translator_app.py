@@ -33,7 +33,10 @@ def _configure_gemini() -> None:
         genai.configure(api_key=api_key)
     except (KeyError, AttributeError) as e:
         # Keep message concise but actionable for users
-        print("ERROR: Google API key not found. Create a .env with GOOGLE_API_KEY='your_key'.\n" f"Detail: {e}")
+        print(
+            "ERROR: Google API key not found. Create a .env with GOOGLE_API_KEY='your_key'.\n"
+            f"Detail: {e}"
+        )
         raise
 
 
@@ -178,10 +181,14 @@ def translate_to_gfl(
             code_path = ""
             inf_path = ""
             try:
-                with tempfile.NamedTemporaryFile("w", suffix=".gfl", delete=False, encoding="utf-8") as f:
+                with tempfile.NamedTemporaryFile(
+                    "w", suffix=".gfl", delete=False, encoding="utf-8"
+                ) as f:
                     f.write(code)
                     code_path = f.name
-                with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as f:
+                with tempfile.NamedTemporaryFile(
+                    "w", suffix=".json", delete=False, encoding="utf-8"
+                ) as f:
                     json.dump(inference or {}, f, ensure_ascii=False, indent=2)
                     inf_path = f.name
             except Exception:

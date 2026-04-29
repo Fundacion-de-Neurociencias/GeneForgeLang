@@ -44,7 +44,9 @@ def simulate_geneforge_engine():
                 "genomic_position": f"chr17:{43094495 + np.random.randint(0, 10000)}",
                 "efficiency_confidence": np.random.uniform(0.7, 0.95),
             }
-            candidate["combined_score"] = candidate["on_target_score"] * 0.6 + (1 - candidate["off_target_score"]) * 0.4
+            candidate["combined_score"] = (
+                candidate["on_target_score"] * 0.6 + (1 - candidate["off_target_score"]) * 0.4
+            )
             cycle_candidates.append(candidate)
 
         # Sort by combined score
@@ -194,7 +196,14 @@ def generate_manuscript_table():
 
     # Create Table 1 with top 10 candidates
     table1 = df.head(10)[
-        ["id", "sequence", "combined_score", "on_target_score", "off_target_score", "efficiency_confidence"]
+        [
+            "id",
+            "sequence",
+            "combined_score",
+            "on_target_score",
+            "off_target_score",
+            "efficiency_confidence",
+        ]
     ].copy()
     table1.columns = [
         "Candidate ID",

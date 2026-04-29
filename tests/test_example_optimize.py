@@ -61,7 +61,9 @@ def test_example_optimize_file():
 
     # Check parameter injection
     experiment = optimize["run"]["experiment"]
-    injected_params = [p for p in experiment["params"].values() if isinstance(p, str) and p.startswith("${")]
+    injected_params = [
+        p for p in experiment["params"].values() if isinstance(p, str) and p.startswith("${")
+    ]
     print(f"✓ Found {len(injected_params)} parameter injections:")
     for param in injected_params:
         print(f"   - {param}")

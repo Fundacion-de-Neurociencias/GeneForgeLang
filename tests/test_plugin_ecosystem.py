@@ -232,7 +232,9 @@ optimize:
         assert "optimize" in result, "Optimize block should have executed"
 
         print(f"✓ Design generated {result['design']['count']} molecules")
-        print(f"✓ Optimization found best objective: {result['optimize']['best_objective_value']:.4f}")
+        print(
+            f"✓ Optimization found best objective: {result['optimize']['best_objective_value']:.4f}"
+        )
 
     except Exception as e:
         print(f"❌ Combined workflow execution failed: {e}")

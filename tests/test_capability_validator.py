@@ -158,7 +158,9 @@ loci:
     ast = parse_gfl(loci_content)
     result = validator.validate_ast(ast)
 
-    capability_warnings = [w for w in result.warnings if hasattr(w, "feature") and w.feature == GFLFeature.LOCI_BLOCK]
+    capability_warnings = [
+        w for w in result.warnings if hasattr(w, "feature") and w.feature == GFLFeature.LOCI_BLOCK
+    ]
 
     if capability_warnings:
         print("✓ Loci block correctly flagged as unsupported on basic engine")
@@ -171,7 +173,9 @@ loci:
     validator = EnhancedSemanticValidator(engine_capabilities=advanced_capabilities)
 
     result = validator.validate_ast(ast)
-    capability_warnings = [w for w in result.warnings if hasattr(w, "feature") and w.feature == GFLFeature.LOCI_BLOCK]
+    capability_warnings = [
+        w for w in result.warnings if hasattr(w, "feature") and w.feature == GFLFeature.LOCI_BLOCK
+    ]
 
     if not capability_warnings:
         print("✓ Loci block correctly supported on advanced engine")
@@ -205,7 +209,9 @@ def test_capability_system():
     # Test dependency checking
     missing_deps = checker.check_dependencies(GFLFeature.SPATIAL_SIMULATE)
     if missing_deps:
-        print(f"✓ SPATIAL_SIMULATE correctly identifies missing dependencies: {[d.value for d in missing_deps]}")
+        print(
+            f"✓ SPATIAL_SIMULATE correctly identifies missing dependencies: {[d.value for d in missing_deps]}"
+        )
     else:
         print("✗ SPATIAL_SIMULATE should have missing dependencies on standard engine")
 

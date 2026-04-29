@@ -73,7 +73,9 @@ def test_conformance_suite():
                     # Check if this is expected to pass or fail
                     is_invalid_test = "invalid" in test_name.lower()
                     has_errors = len(result.errors) > 0
-                    has_capability_warnings = len([w for w in result.warnings if hasattr(w, "feature")]) > 0
+                    has_capability_warnings = (
+                        len([w for w in result.warnings if hasattr(w, "feature")]) > 0
+                    )
 
                     if is_invalid_test:
                         # Invalid tests should have errors

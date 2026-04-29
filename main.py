@@ -40,7 +40,7 @@ def main(gfl_file_path):
             logger.error("Execution failed to produce results.")
             return
         logger.info("GFL script execution complete.")
-        #print(execution_result)
+        # print(execution_result)
 
     except Exception as e:
         logger.exception(f"An unexpected error occurred during GFL processing: {e}")

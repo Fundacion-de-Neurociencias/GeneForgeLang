@@ -44,7 +44,9 @@ def parse_gfl(gfl_string: str) -> Optional[dict[str, Any]]:
             return None
 
 
-def parse_gfl_with_schema_imports(gfl_string: str, base_path: Optional[str] = None) -> Optional[dict[str, Any]]:
+def parse_gfl_with_schema_imports(
+    gfl_string: str, base_path: Optional[str] = None
+) -> Optional[dict[str, Any]]:
     """
     Parses a GFL string with schema import support.
 

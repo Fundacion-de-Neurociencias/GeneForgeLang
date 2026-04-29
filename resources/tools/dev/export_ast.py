@@ -4,6 +4,7 @@ import sys
 from geneforgelang import parser
 from geneforgelang.core.validator import validate_ast
 
+
 def run_export(file_path):
     print(f"\n📤 Exportando AST de: {file_path}")
     with open(file_path, encoding="utf-8") as f:

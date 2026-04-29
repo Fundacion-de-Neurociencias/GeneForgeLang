@@ -223,8 +223,12 @@ class ProteinGenerationModel(TransformersModel):
             explanation_parts.append(f"Used seed '{seed}' to generate {length} amino acid sequence")
 
             if result.feature_importance:
-                top_factors = sorted(result.feature_importance.items(), key=lambda x: x[1], reverse=True)
-                explanation_parts.append(f"Quality factors: {', '.join([f'{k} ({v:.2f})' for k, v in top_factors])}")
+                top_factors = sorted(
+                    result.feature_importance.items(), key=lambda x: x[1], reverse=True
+                )
+                explanation_parts.append(
+                    f"Quality factors: {', '.join([f'{k} ({v:.2f})' for k, v in top_factors])}"
+                )
 
         return ". ".join(explanation_parts)
 
@@ -369,7 +373,9 @@ class GenomicClassificationModel(TransformersModel):
             if matched_keywords and category.lower() in prediction.lower():
                 boost = len(matched_keywords) * 0.1
                 confidence = min(confidence + boost, 1.0)
-                explanation_parts.append(f"Confidence boosted by genomic keywords: {', '.join(matched_keywords)}")
+                explanation_parts.append(
+                    f"Confidence boosted by genomic keywords: {', '.join(matched_keywords)}"
+                )
 
         return InferenceResult(
             prediction=prediction,
@@ -430,20 +436,26 @@ class MultiModalGenomicModel(BaseMLModel):
 
         return combined_result
 
-    def _should_generate_protein(self, features: Dict[str, Any], classification: InferenceResult) -> bool:
+    def _should_generate_protein(
+        self, features: Dict[str, Any], classification: InferenceResult
+    ) -> bool:
         """Determine if protein generation is appropriate."""
         # Generate protein if it's a protein-related experiment
         protein_related = any(
-            keyword in str(features).lower() for keyword in ["protein", "peptide", "amino", "sequence"]
+            keyword in str(features).lower()
+            for keyword in ["protein", "peptide", "amino", "sequence"]
         )
 
         classification_suggests_protein = any(
-            keyword in classification.prediction.lower() for keyword in ["edit", "expression", "functional"]
+            keyword in classification.prediction.lower()
+            for keyword in ["edit", "expression", "functional"]
         )
 
         return protein_related or classification_suggests_protein
 
-    def _combine_results(self, results: Dict[str, InferenceResult], features: Dict[str, Any]) -> InferenceResult:
+    def _combine_results(
+        self, results: Dict[str, InferenceResult], features: Dict[str, Any]
+    ) -> InferenceResult:
         """Combine multiple model results into unified prediction."""
         classification = results["classification"]
 
@@ -461,7 +473,9 @@ class MultiModalGenomicModel(BaseMLModel):
             combined_prediction["generated_protein"] = protein_result.prediction
             combined_prediction["protein_confidence"] = protein_result.confidence
 
-            explanation_parts.append(f"Generated protein sequence of {len(protein_result.prediction)} amino acids")
+            explanation_parts.append(
+                f"Generated protein sequence of {len(protein_result.prediction)} amino acids"
+            )
 
         # Calculate overall confidence
         confidences = [r.confidence for r in results.values()]

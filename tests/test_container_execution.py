@@ -49,13 +49,17 @@ class TestContainerExecution(unittest.TestCase):
             self.assertEqual(result, {"sequences": ["ACGT"]})
 
     @patch("gfl.plugins.plugin_registry.plugin_registry.get_container_image")
-    def test_execution_engine_falls_back_to_local_when_container_unavailable(self, mock_get_container_image):
+    def test_execution_engine_falls_back_to_local_when_container_unavailable(
+        self, mock_get_container_image
+    ):
         """Test that execution engine falls back to local execution when container is unavailable."""
         # Mock that a container image is available but Docker is not
         mock_get_container_image.return_value = "biocontainers/samtools:v1.15.1_cv4"
 
         # Mock the container executor to simulate Docker not being available
-        with patch.object(self.engine.container_executor, "is_container_execution_available") as mock_is_available:
+        with patch.object(
+            self.engine.container_executor, "is_container_execution_available"
+        ) as mock_is_available:
             mock_is_available.return_value = False
 
             # Mock the generator to avoid actual execution

@@ -43,21 +43,23 @@ def test_enhanced_inference():
     print("\nTesting enhanced inference...")
     try:
         from geneforgelang.core.enhanced_inference_engine import (
-            EnhancedInferenceEngine, ModelConfig, HeuristicModel
+            EnhancedInferenceEngine,
+            ModelConfig,
+            HeuristicModel,
         )
 
         engine = EnhancedInferenceEngine()
-        
+
         features = {
             "experiment_tool": "CRISPR_cas9",
             "experiment_type": "gene_editing",
-            "target_gene": "TP53"
+            "target_gene": "TP53",
         }
-        
+
         # Llamar directamente al modelo, sin pasar por el caché
         model = engine.models["heuristic"]
         result = model.predict(features)
-        
+
         print(f"✓ Inference successful: {result.prediction} (confidence: {result.confidence:.2%})")
         return True
 
@@ -96,7 +98,7 @@ def test_cli_tools():
         else:
             print(f"✗ gfl CLI failed: {result.stderr}")
             return False
-    
+
     except subprocess.TimeoutExpired:
         print("✗ CLI tools test failed: timeout — el comando tarda demasiado")
         return False
