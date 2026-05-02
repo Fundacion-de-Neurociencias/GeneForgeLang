@@ -1,46 +1,47 @@
 # GFL Epistemic Resolution Contract (ERC)
 
-## 1. Introduction
-The Epistemic Resolution Contract (ERC) establishes the formal hierarchy of authority and the deterministic rules for resolving conflicts between different sources of truth within the GFL ecosystem. It prevents "semantic leakage" and ensures that every resolution is traceable and scientifically justifiable.
+## 1. Introduction: The Principle of Non-Resolution
+The ERC is not a "decision engine" that forces coherence; it is a **formal contract for conflict representation**. Its primary goal is to ensure that the system never "silently decides" between incompatible sources of truth. 
 
-## 2. Hierarchy of Epistemic Precedence
+**Core Mandate**: If a conflict cannot be deterministically resolved via the priority hierarchy, it must be **preserved as a first-class citizen** in the state space.
 
-| Priority | Source | Role | Authority Type |
-| :--- | :--- | :--- | :--- |
-| **1 (Highest)** | **GFL Specifications** | Semantic Invariants | Legislative (Biological Truth Space) |
-| **2** | **GeneForge Core** | Causal Inference | Executive (Simulated/Estimated Reality) |
-| **3 (Lowest)** | **Observation Providers** | Empirical Evidence | Observational (Noisy Projections) |
+## 2. Epistemic States
+Every collision between GFL (Language), GeneForge (Model), and Observation (Evidence) must result in one of three states:
 
-## 3. Conflict Resolution Logic
+### 🟢 2.1 RESOLVABLE (Priority Protocol)
+Conflicts resolved by the fixed hierarchy of authority:
+1.  **GFL Semantic Invariants** (Legislative Truth)
+2.  **GeneForge Core** (Executive Simulation)
+3.  **Observation Providers** (Empirical Evidence)
+*   *Action*: The lower-priority source is superseded, and the resolution is logged.
 
-### 3.1 GFL vs. Observation (OpenMed)
-*   **Rule**: If an observation contradicts a GFL Semantic Invariant, the observation is **REJECTED** as "Invalid Projection".
-*   **Action**: Record as `INVALID_OBSERVATION` with the specific invariant ID violated.
-*   **Exception**: If the observation is high-rigor (Axis 1), it may trigger a **GFL-RFC** to update the language.
+### 🟡 2.2 CONTEXTUAL (Scoped Priority)
+Conflicts where priority depends on specific metadata (e.g., Axis 1 clinical data).
+*   *Action*: The system applies context-specific rules defined in the `Grounding` layer.
 
-### 3.2 GeneForge (Model) vs. Observation (OpenMed)
-*   **Rule**: If the causal model contradicts empirical evidence, the conflict is **PRESERVED**.
-*   **Action**: Mark as **"Biological Tension"** node. This indicates a potential gap in the model or a specific pathology not captured by the general rule.
-*   **Learning**: These tension nodes are the primary fuel for structural learning in GeneForge.
+### 🔴 2.3 IRREDUCIBLE (Preserved Tension)
+Conflicts where neither source can be discarded (e.g., a formal GFL invariant contradicts a high-rigor OpenMed observation).
+*   **MANDATORY RULE**: The system **PROHIBITS** silent resolution.
+*   *Action*: Create a **`Non-Resolved Tension`** node. 
+*   *Result*: The GFL state remains in a superposition of conflicting truths, forcing downstream consumers to acknowledge and handle the ambiguity.
 
-### 3.3 GFL vs. GeneForge (Model)
-*   **Rule**: The model must never violate GFL Invariants.
-*   **Action**: If a simulated state violates an invariant, the simulation is halted as `SEQC_ERROR` (Semantic Error).
-*   **Resolution**: Requires a change in the model's parameters or a GFL-RFC if the invariant is found to be too restrictive for real-world biology.
+## 3. The Role of CAL (Causal Arbitration Layer)
+Under the ERC, CAL is stripped of its "universal judge" role. It becomes a **Conflict Registrar**:
+1.  **Detection**: Identifies collisions between sources.
+2.  **Classification**: Assigns the collision to one of the 3 Epistemic States.
+3.  **Registration**: Logs the conflict with its full provenance.
+4.  **Preservation**: Ensures that `IRREDUCIBLE` tensions are not pruned during optimization or inference.
 
-## 4. Formalization of Uncertainty: "Irreducible Tension"
-The system must not force coherence where it doesn't exist.
-*   A conflict is **IRREDUCIBLE** if neither the model nor the evidence can be discarded with absolute certainty.
-*   **Representation**: The system emits a `TENSION_STATE` with multiple probability distributions, forcing the consumer to acknowledge the ambiguity.
+## 4. Conflict Traceability
+Every conflict registration must contain:
+*   `collision_id`: Unique identifier.
+*   `state`: [RESOLVABLE | CONTEXTUAL | IRREDUCIBLE].
+*   `sources`: List of conflicting evidence/formalisms.
+*   `resolution_path`: The ERC rule applied (or `NONE` for Irreducible).
+*   `version`: Conflicts are versioned to track the evolution of the tension.
 
-## 5. Override Conditions
-An override can only be performed via an **Explicit Epistemic Lock**:
-*   `SEMANTIC_LOCK`: Forces the model to ignore noisy observations.
-*   `EVIDENCE_LOCK`: Forces the system to accept an observation as truth (e.g., in Axis 1 clinical cases), marking the model as "INCONSISTENT_WITH_CASE".
-
-## 6. Traceability and Falsification
-Every resolution decision must be logged with:
-1.  **Conflict ID**: Unique identifier for the collision.
-2.  **ERC Rule**: The specific rule applied (e.g., `ERC-3.1`).
-3.  **Residual Tension**: The remaining uncertainty after resolution.
-4.  **Falsification Trace**: What evidence would be needed to reverse this decision.
+## 5. Standard Compliance
+A GFL-compliant system must:
+*   Identify all semantic collisions.
+*   Reject any "silent decision" that bypasses the ERC hierarchy.
+*   Expose `IRREDUCIBLE` tensions to the user/consumer as a formal part of the biological state.
