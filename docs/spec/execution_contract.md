@@ -11,7 +11,7 @@ GeneForgeLang (GFL) is a platform-agnostic symbolic language. Its execution cont
 *   **Execution (External Runtime)**: The process of mapping GFL instructions to specific actions (e.g., updating a probabilistic model, generating a CRISPR guide, or controlling a liquid handler).
 
 ## 3. The Runtime Boundary (GeneForge and Others)
-GeneForge is the **reference runtime** for GFL, but it is not the only one. 
+GeneForge is the **reference runtime** for GFL, but it is not the only one.
 
 | Layer | Responsibility | Authority |
 | :--- | :--- | :--- |
