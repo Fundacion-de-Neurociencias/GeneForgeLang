@@ -49,6 +49,8 @@ GeneForgeLang is an **open-source project** dedicated to the entire scientific c
 
 ## 📜 Formal Specifications
 To ensure consistency across the ecosystem, GFL maintains a set of formal specifications:
+*   **[Architectural Directive](docs/architecture/ARCHITECTURAL_DIRECTIVE.md)**: The foundational decoupling mandate.
+*   **[RFC Process](docs/rfc/README.md)**: Formal procedure for language evolution.
 *   [Causal Semantics](docs/spec/causal_semantics.md): Rules for biological transformations.
 *   [Biological State Space](docs/spec/state_space.md): Structural definition of the biological world.
 *   [Instruction Set](docs/spec/instruction_set.md): Primitive biological operations.

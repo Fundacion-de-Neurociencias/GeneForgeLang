@@ -1,7 +1,7 @@
 # GFL CONSTITUTION: Structural Decoupling and Governance
 
 ## 1. The Fundamental Mandate
-GeneForgeLang (GFL) is the **sole authority** for defining the symbolic representation of biological reality. This distinction is structural and mandatory.
+GeneForgeLang (GFL) is the **sole authority** for defining the symbolic representation of biological reality. This distinction is structural and mandatory, as detailed in the **[Architectural Directive](docs/architecture/ARCHITECTURAL_DIRECTIVE.md)**.
 
 *   **GFL = The Constitution**: Defines the rules, semantics, and state space.
 *   **GeneForge = The Executive**: Executes the rules, performs inference, and optimizes the state in practice.
@@ -32,10 +32,10 @@ To avoid **Epistemological Collapse**, GeneForge must NEVER:
 2.  Decide on causal validity rules outside the GFL specification.
 3.  Act as the judge of the standard governance.
 
-## 4. Interaction Protocol
+### 4. Interaction Protocol
 1.  **Execution**: GeneForge executes GFL scripts according to the current GFL Specification.
 2.  **Detection**: If GeneForge detects a biological case that is not expressible or is inconsistent within GFL, it must NOT modify its internal logic to "fix" the language.
-3.  **Feedback Loop**: The GeneForge team must propose a **GFL-RFC** (Request for Comments) to the GFL repository.
+3.  **Feedback Loop**: The GeneForge team must propose a **GFL-RFC** (Request for Comments) following the **[RFC Process](docs/rfc/README.md)**.
 4.  **Formalization**: GFL evaluates, versions, and releases the updated specification.
 5.  **Synchronization**: GeneForge updates its runtime to support the new GFL version.
 
