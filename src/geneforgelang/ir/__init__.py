@@ -12,6 +12,17 @@ from geneforgelang.ir.external import (
     RetrievedEvidence,
     RetrievalService,
 )
+from geneforgelang.ir.fase4 import (
+    AsyncRetrievalService,
+    CacheConfig,
+    EmbeddingCache,
+    FeedbackStore,
+    HopResult,
+    MultiHopReasoner,
+    RAGBridge,
+    RAGIntegration,
+    RetrievalFeedback,
+)
 from geneforgelang.ir.instruction import (
     Delete,
     EntityNotFoundError,
@@ -86,4 +97,14 @@ __all__ = [
     "HuggingScienceConnector",
     "RetrievalService",
     "RetrievedEvidence",
+    # Fase 4: Advanced Retrieval
+    "EmbeddingCache",
+    "CacheConfig",
+    "AsyncRetrievalService",
+    "RetrievalFeedback",
+    "FeedbackStore",
+    "MultiHopReasoner",
+    "HopResult",
+    "RAGBridge",
+    "RAGIntegration",
 ]
