@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List
+from typing import Any, Optional
 
 from geneforgelang.ir.instruction import Instruction
 
@@ -9,24 +9,24 @@ from geneforgelang.ir.instruction import Instruction
 @dataclass
 class Constraint:
     expression: str
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class Objective:
     description: str
-    target_entity: str = ""
+    target_entity: Optional[str] = None
     desired_outcome: str = ""
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class Strategy:
     objective: Objective
-    constraints: List[Constraint] = field(default_factory=list)
-    steps: List[Instruction] = field(default_factory=list)
+    constraints: list[Constraint] = field(default_factory=list)
+    steps: list[Instruction] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "objective": {
                 "description": self.objective.description,
@@ -49,13 +49,13 @@ class PlanNode:
 
     condition: Optional[str] = None
     action: Optional[Any] = None  # Instruction or None for pure decision nodes
-    next_nodes: List["PlanNode"] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    next_nodes: list[PlanNode] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def is_decision(self) -> bool:
         return self.condition is not None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "condition": self.condition,
             "action": self.action.to_dict() if self.action else None,
@@ -71,7 +71,7 @@ class PlanGraph:
         self.objective = objective
         self.root = root
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "objective": {
                 "description": self.objective.description,
