@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any
 
 from geneforgelang.ir.state import BiologicalState, Entity
 
@@ -35,7 +35,7 @@ class Instruction(ABC):
     def apply(self, state: BiologicalState) -> BiologicalState:
         raise NotImplementedError
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         raise NotImplementedError
 
 
@@ -64,15 +64,11 @@ class Substitute(Instruction):
 
         seq = str(seq)
         if self.position >= len(seq):
-            raise ReferenceMismatchError(
-                f"Position {self.position} out of bounds for sequence of length {len(seq)}"
-            )
+            raise ReferenceMismatchError(f"Position {self.position} out of bounds for sequence of length {len(seq)}")
 
         actual = seq[self.position].upper()
         if actual != self.ref:
-            raise ReferenceMismatchError(
-                f"Reference mismatch at {self.position}: expected {self.ref}, found {actual}"
-            )
+            raise ReferenceMismatchError(f"Reference mismatch at {self.position}: expected {self.ref}, found {actual}")
 
         new_seq = seq[: self.position] + self.alt + seq[self.position + 1 :]
         if gene.get_attr("original_sequence") is None:
@@ -82,7 +78,7 @@ class Substitute(Instruction):
         new_state.propagate_mutation_effects(self.gene_id)
         return new_state
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "op": "SUBSTITUTE",
             "gene_id": self.gene_id,
@@ -116,9 +112,7 @@ class Insert(Instruction):
 
         seq = str(seq)
         if self.position > len(seq):
-            raise ReferenceMismatchError(
-                f"Position {self.position} out of bounds for sequence of length {len(seq)}"
-            )
+            raise ReferenceMismatchError(f"Position {self.position} out of bounds for sequence of length {len(seq)}")
 
         new_seq = seq[: self.position] + self.sequence + seq[self.position :]
         if gene.get_attr("original_sequence") is None:
@@ -128,7 +122,7 @@ class Insert(Instruction):
         new_state.propagate_mutation_effects(self.gene_id)
         return new_state
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "op": "INSERT",
             "gene_id": self.gene_id,
@@ -160,9 +154,7 @@ class Delete(Instruction):
 
         seq = str(seq)
         if self.end > len(seq):
-            raise ReferenceMismatchError(
-                f"End {self.end} out of bounds for sequence of length {len(seq)}"
-            )
+            raise ReferenceMismatchError(f"End {self.end} out of bounds for sequence of length {len(seq)}")
 
         new_seq = seq[: self.start] + seq[self.end :]
         if gene.get_attr("original_sequence") is None:
@@ -172,7 +164,7 @@ class Delete(Instruction):
         new_state.propagate_mutation_effects(self.gene_id)
         return new_state
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "op": "DELETE",
             "gene_id": self.gene_id,
@@ -204,12 +196,10 @@ class Invert(Instruction):
 
         seq = str(seq)
         if self.end > len(seq):
-            raise ReferenceMismatchError(
-                f"End {self.end} out of bounds for sequence of length {len(seq)}"
-            )
+            raise ReferenceMismatchError(f"End {self.end} out of bounds for sequence of length {len(seq)}")
 
         segment = seq[self.start : self.end]
-        inverted = segment.translate(str.maketrans("ACGT", "TGCA"))[::-1]
+        inverted = segment.translate(str.maketrans("ACGTUN", "TGCAAN"))[::-1]
         new_seq = seq[: self.start] + inverted + seq[self.end :]
         if gene.get_attr("original_sequence") is None:
             gene.set_attr("original_sequence", seq)
@@ -218,7 +208,7 @@ class Invert(Instruction):
         new_state.propagate_mutation_effects(self.gene_id)
         return new_state
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "op": "INVERT",
             "gene_id": self.gene_id,

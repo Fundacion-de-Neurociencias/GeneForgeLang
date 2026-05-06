@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class EntityType:
@@ -28,7 +28,7 @@ class RelationType:
 class Entity:
     id: str
     type: str
-    attrs: Dict[str, Any] = field(default_factory=dict)
+    attrs: dict[str, Any] = field(default_factory=dict)
 
     def get_attr(self, key: str, default: Any = None) -> Any:
         return self.attrs.get(key, default)
@@ -48,7 +48,7 @@ class Relation:
     source: str
     target: str
     type: str
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def copy(self) -> Relation:
         return Relation(
@@ -64,9 +64,9 @@ class Relation:
 
 @dataclass
 class BiologicalState:
-    entities: Dict[str, Entity] = field(default_factory=dict)
-    relations: List[Relation] = field(default_factory=list)
-    properties: Dict[str, Any] = field(default_factory=dict)
+    entities: dict[str, Entity] = field(default_factory=dict)
+    relations: list[Relation] = field(default_factory=list)
+    properties: dict[str, Any] = field(default_factory=dict)
 
     def get_entity(self, entity_id: str) -> Optional[Entity]:
         return self.entities.get(entity_id)
@@ -76,10 +76,7 @@ class BiologicalState:
 
     def remove_entity(self, entity_id: str) -> None:
         self.entities.pop(entity_id, None)
-        self.relations = [
-            r for r in self.relations
-            if r.source != entity_id and r.target != entity_id
-        ]
+        self.relations = [r for r in self.relations if r.source != entity_id and r.target != entity_id]
 
     def add_relation(self, relation: Relation) -> None:
         self.relations.append(relation)
@@ -114,9 +111,7 @@ class BiologicalState:
             if rel.source == source and rel.target == target and rel.type == rel_type:
                 rel.metadata["active"] = True
 
-    def propagate_mutation_effects(
-        self, mutated_entity_id: str, visited: set[str] | None = None
-    ) -> None:
+    def propagate_mutation_effects(self, mutated_entity_id: str, visited: set[str] | None = None) -> None:
         """Propagate mutation effects along DERIVES_FROM and REGULATES edges.
 
         Recursively walks the causal graph so that a gene mutation can
@@ -147,7 +142,6 @@ class BiologicalState:
                     self.propagate_mutation_effects(child.id, visited)
                 elif entity.type in ("GENE", "TRANSCRIPT") and child.type == "PROTEIN":
                     child.set_attr("status", "loss_of_function")
-                    self._propagate_regulatory_loss(child.id)
                     self.propagate_mutation_effects(child.id, visited)
 
         # If the mutated entity itself is a protein and its function is lost,
@@ -157,11 +151,7 @@ class BiologicalState:
 
     def _propagate_regulatory_loss(self, source_id: str) -> None:
         for rel in self.relations:
-            if (
-                rel.source == source_id
-                and rel.type == RelationType.REGULATES
-                and rel.metadata.get("active", True)
-            ):
+            if rel.source == source_id and rel.type == RelationType.REGULATES and rel.metadata.get("active", True):
                 target = self.get_entity(rel.target)
                 if target is not None:
                     target.set_attr("status", "deregulated")

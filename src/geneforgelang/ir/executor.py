@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from geneforgelang.ir.instruction import Instruction
 from geneforgelang.ir.state import BiologicalState
@@ -18,13 +19,13 @@ class StepRecord:
     instruction: Instruction
     state_before: BiologicalState
     state_after: BiologicalState
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class StateTrace:
     initial_state: BiologicalState
-    records: List[StepRecord] = field(default_factory=list)
+    records: list[StepRecord] = field(default_factory=list)
 
     def add(self, record: StepRecord) -> None:
         self.records.append(record)
@@ -52,18 +53,16 @@ class StrategyExecutor:
         self.trace = trace
 
         for idx, step in enumerate(self.strategy.steps):
-            state_before = state.fork()
+            state_before = state
             try:
                 state = apply(state, step)
             except Exception as exc:
-                raise ExecutionError(
-                    f"Step {idx} failed ({step}): {exc}"
-                ) from exc
+                raise ExecutionError(f"Step {idx} failed ({step}): {exc}") from exc
             trace.add(
                 StepRecord(
                     instruction=step,
                     state_before=state_before,
-                    state_after=state.fork(),
+                    state_after=state,
                     metadata={"step_index": idx},
                 )
             )
@@ -72,7 +71,8 @@ class StrategyExecutor:
 
     def evaluate_progress(self, state: BiologicalState) -> float:
         """Return a score in [0, 1] measuring progress toward the strategy objective."""
-        return self.evaluator.evaluate(state, self.strategy.objective)
+        score: float = self.evaluator.evaluate(state, self.strategy.objective)
+        return score
 
     def get_trace(self) -> Optional[StateTrace]:
         return self.trace
@@ -103,13 +103,13 @@ class GraphExecutor:
 
         # Execute action if present
         if node.action is not None:
-            state_before = state.fork()
+            state_before = state
             state = apply(state, node.action)
             self.trace.add(
                 StepRecord(
                     instruction=node.action,
                     state_before=state_before,
-                    state_after=state.fork(),
+                    state_after=state,
                     metadata={"depth": depth, "condition": node.condition},
                 )
             )
@@ -119,29 +119,40 @@ class GraphExecutor:
             self._traverse(child, state, depth=depth + 1)
 
     def _eval_condition(self, condition: str, state: BiologicalState) -> bool:
-        # Minimal safe evaluator — extensible to a real expression engine.
-        # Supports:  entity.status == "knocked_out"
-        #            entity.sequence contains "ATG"
-        #            score > 0.5   (uses self.evaluator)
+        # Robust condition evaluator using regex patterns.
+        # Supports:  entity.status == "knocked_out" (with optional spaces)
+        #            score > 0.5, score >= 0.5
+        import logging
+
+        logger = logging.getLogger(__name__)
+
         try:
-            if condition.startswith("score "):
-                op_val = condition[len("score "):].strip()
-                if ">=" in op_val:
-                    threshold = float(op_val.split(">=")[1].strip())
-                    score = self.evaluator.evaluate(state, self.plan.objective)
-                    return score >= threshold
-                elif ">" in op_val:
-                    threshold = float(op_val.split(">")[1].strip())
-                    score = self.evaluator.evaluate(state, self.plan.objective)
-                    return score > threshold
-                return False
-            # Entity attribute checks: "TP53.status == knocked_out"
-            if ".status == " in condition:
-                parts = condition.split(".status == ")
-                eid = parts[0].strip()
-                val = parts[1].strip().strip('"')
+            # Score-based conditions: "score > 0.5" or "score >= 0.5"
+            score_match = re.match(r"score\s*([>=]+)\s*(\d+(?:\.\d+)?)", condition.strip())
+            if score_match:
+                op = score_match.group(1)
+                threshold = float(score_match.group(2))
+                score: float = self.evaluator.evaluate(state, self.plan.objective)
+                if op == ">=":
+                    result: bool = score >= threshold
+                elif op == ">":
+                    result = score > threshold
+                else:
+                    logger.warning(f"Unknown operator in condition: {condition}")
+                    return False
+                return result
+
+            # Entity attribute checks: "TP53.status == knocked_out" (flexible spacing/quotes)
+            attr_match = re.match(
+                r"(\w+)\.status\s*==\s*['\"]?(\w+)['\"]?", condition.strip()
+            )
+            if attr_match:
+                eid = attr_match.group(1)
+                val = attr_match.group(2)
                 ent = state.get_entity(eid)
                 return ent is not None and ent.get_attr("status") == val
+
             return True  # default pass-through for unknown conditions
-        except Exception:
+        except (ValueError, TypeError, AttributeError) as exc:
+            logger.debug(f"Condition evaluation failed: {condition} - {exc}")
             return False

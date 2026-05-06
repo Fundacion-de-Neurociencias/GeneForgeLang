@@ -16,7 +16,7 @@ class StateEvaluator:
 
     def evaluate(self, state: BiologicalState, objective: Objective) -> float:
         score = 0.0
-        target = objective.target_entity or self._infer_target(objective.description)
+        target = objective.target_entity or self._infer_target(objective.description, state)
 
         if not target:
             return 0.0
@@ -42,12 +42,21 @@ class StateEvaluator:
 
         return min(max(score, 0.0), 1.0)
 
-    def _infer_target(self, description: str) -> Optional[str]:
-        # Naïve keyword extraction — replaceable by NER / LLM grounding.
+    def _infer_target(
+        self, description: str, state: BiologicalState | None = None
+    ) -> Optional[str]:
+        # Extract potential target IDs and validate against known entities if state provided.
         tokens = description.upper().split()
+        # Common operation words to exclude from being identified as targets
+        stopwords = {"KNOCKOUT", "ACTIVATE", "OVEREXPRESS", "RESTORE", "REPAIR", "DISABLE", "LOSS", "GAIN"}
         for t in tokens:
-            if len(t) >= 3 and t.isalnum() and not t.isdigit():
-                return t
+            if len(t) >= 3 and t.isalnum() and not t.isdigit() and t not in stopwords:
+                # If state provided, only return if token matches an actual entity ID
+                if state is not None:
+                    if state.get_entity(t) is not None:
+                        return t
+                else:
+                    return t
         return None
 
     def _sequence_damage_ratio(self, entity: Entity) -> float:
