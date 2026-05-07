@@ -12,7 +12,7 @@ def test_example_optimize_file():
     print("Testing CRISPR optimization example...")
 
     # Read the GFL file
-    with open("example_crispr_optimization.gfl") as f:
+    with open("examples/advanced/crispr_optimization.gfl") as f:
         gfl_content = f.read()
 
     print(f"GFL content ({len(gfl_content)} characters):")

@@ -4,10 +4,6 @@
 # pharmacogenomic risk assessment, specifically for carbamazepine
 # hypersensitivity screening.
 
-# Import custom schemas for Locityper
-import_schemas:
-  - ./schema/locityper_types.yml
-
 # Define the HLA-A locus with reference haplotype panel
 loci:
   - id: HLA_A_Locus
@@ -19,6 +15,7 @@ loci:
 
 # Perform haplotype genotyping using Locityper
 analyze:
+  strategy: "genotyping"
   tool: "locityper"
   target: locus(HLA_A_Locus)
   input: "patient_001_wgs_sorted.bam"
@@ -46,27 +43,27 @@ rules:
   - id: R_Carbamazepine_Hypersensitivity_Risk
     description: "HLA-A*31:01 allele is strongly associated with carbamazepine-induced hypersensitivity (CPIC Level A evidence)"
     if:
-      - genotype_contains:
-          result: hla_a_genotype_result
-          haplotype_id: "HLA-A*31:01"
+      genotype_contains:
+        result: hla_a_genotype_result
+        haplotype_id: "HLA-A*31:01"
     then:
-      - set_risk_profile:
-          drug: "Carbamazepine"
-          risk_level: "high"
-          recommendation: "Avoid carbamazepine; use alternative anti-epileptic"
-          evidence_level: "CPIC_Level_A"
-          reference: "PMID:28198005"
+      set_risk_profile:
+        drug: "Carbamazepine"
+        risk_level: "high"
+        recommendation: "Avoid carbamazepine; use alternative anti-epileptic"
+        evidence_level: "CPIC_Level_A"
+        reference: "PMID:28198005"
 
   - id: R_HLA_A_Quality_Check
     description: "Flag low-quality genotyping results for manual review"
     if:
-      - quality_below_threshold:
-          result: hla_a_genotype_result
-          threshold: 20
+      quality_below_threshold:
+        result: hla_a_genotype_result
+        threshold: 20
     then:
-      - flag_for_manual_review:
-          reason: "low_quality_genotype"
-          reviewer_note: "Consider confirmatory Sanger sequencing"
+      flag_for_manual_review:
+        reason: "low_quality_genotype"
+        reviewer_note: "Consider confirmatory Sanger sequencing"
 
 # Generate comprehensive pharmacogenomic report
 output:

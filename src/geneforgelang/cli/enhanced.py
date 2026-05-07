@@ -498,6 +498,9 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                 parser.print_help()
                 return 0
 
+        except SystemExit as e:
+            # Handle argparse sys.exit() calls (e.g., --help, --version)
+            return e.code if e.code is not None else 0
         except KeyboardInterrupt:
             self.formatter.print_error("Operation cancelled by user")
             return 130

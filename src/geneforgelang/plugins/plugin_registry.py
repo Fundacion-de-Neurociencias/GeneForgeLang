@@ -523,6 +523,8 @@ class PluginRegistry:
         self._discovered = False
         self._hooks: List[PluginLifecycleHook] = []
         self._plugin_order: List[str] = []  # For dependency-based ordering
+        self._generators: Dict[str, Type[Any]] = {}  # For BaseGeneratorPlugin registry
+        self._optimizers: Dict[str, Type[Any]] = {}  # For BaseOptimizerPlugin registry
 
     def add_lifecycle_hook(self, hook: PluginLifecycleHook) -> None:
         """Add a lifecycle hook for plugin state changes."""
@@ -570,6 +572,10 @@ class PluginRegistry:
             plugin._set_state(PluginState.LOADED)
 
         self._plugins[name] = plugin_info
+        
+        # Notify hooks about the loaded state
+        plugin_info._notify_hooks(self._hooks, PluginState.LOADED)
+        
         self._update_plugin_order()
         logger.debug(f"Registered plugin: {name} v{version}")
 
@@ -972,6 +978,11 @@ def list_plugins() -> List[PluginInfo]:
 def get_active_plugins() -> List[PluginInfo]:
     """Get list of active plugins."""
     return plugin_registry.get_active_plugins()
+
+
+def get_plugin(name: str) -> Any:
+    """Get a plugin instance by name, loading if necessary."""
+    return plugin_registry.get(name)
 
 
 def activate_plugin(name: str) -> None:

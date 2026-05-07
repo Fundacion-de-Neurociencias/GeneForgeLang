@@ -8,6 +8,7 @@ Tests cover:
 """
 
 import pytest
+import yaml
 
 from geneforgelang.core.api import parse
 
@@ -128,7 +129,7 @@ class TestParsingEdgeCases:
 
     def test_parse_empty_document(self):
         """Test parsing an empty document."""
-        with pytest.raises((YamlParseError, ValueError)):
+        with pytest.raises((yaml.YAMLError, ValueError)):
             parse("")
 
     def test_parse_whitespace_only(self):
@@ -250,8 +251,9 @@ class TestParsingErrors:
           tool: CRISPR:cas9  # Colon without quotes
           type: gene_editing
         """
-        with pytest.raises(Exception):
-            parse(gfl_text)
+        # YAML successfully parses plain scalars with colons
+        ast = parse(gfl_text)
+        assert ast["experiment"]["tool"] == "CRISPR:cas9"
 
 
 class TestParsingPerformance:

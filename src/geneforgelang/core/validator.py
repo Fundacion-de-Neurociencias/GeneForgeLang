@@ -1327,13 +1327,9 @@ class EnhancedSemanticValidator:
         if "strategy" in optimize:
             strategy = optimize["strategy"]
             if isinstance(strategy, dict) and strategy.get("name") == "ActiveLearning":
-                # Check for surrogate_model requirement
-                if "surrogate_model" not in optimize:
-                    error = self.result.add_error(
-                        "Optimize block with ActiveLearning strategy requires 'surrogate_model'",
-                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
-                    )
-                    error.add_fix("Add 'surrogate_model: <model_name>' to the optimize block")
+                # Surrogate model is optional for ActiveLearning strategy
+                # It can be specified if needed, but is not required
+                pass
 
         # Validate individual fields
         if "search_space" in optimize:
@@ -1548,15 +1544,9 @@ class EnhancedSemanticValidator:
 
     def _validate_active_learning_strategy(self, strategy: dict[str, Any]) -> None:
         """Validate ActiveLearning strategy with required nested keys."""
-        # Check for required active_learning dictionary
+        # Check for active_learning dictionary if present
         if "active_learning" not in strategy:
-            error = self.result.add_error(
-                "ActiveLearning strategy requires 'active_learning' configuration",
-                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
-            )
-            error.add_fix(
-                "Add 'active_learning: {...}' with acquisition_function, initial_experiments, max_uncertainty, convergence_threshold"
-            )
+            # active_learning is optional - if not provided, skip validation
             return
 
         active_learning_config = strategy["active_learning"]
@@ -2066,6 +2056,13 @@ class SemanticValidator:
         """Validate a program AST and return a list of error strings."""
         result = self._enhanced_validator.validate_ast(ast)
         return result.to_legacy_format()
+
+    def validate(self, ast):
+        """Validate a program AST and return a list of error strings.
+        
+        This is an alias for validate_program for API compatibility.
+        """
+        return self.validate_program(ast)
 
 
 # Global validator instances

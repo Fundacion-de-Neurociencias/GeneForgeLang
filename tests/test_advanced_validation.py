@@ -3,6 +3,7 @@
 
 import os
 import sys
+from pathlib import Path
 
 # Add the current directory to the path so we can import gfl
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -16,7 +17,8 @@ def test_advanced_syntax():
     print("Testing advanced GFL syntax validation...")
 
     # Read the test GFL file
-    with open("test_advanced_syntax.gfl") as f:
+    test_file = Path(__file__).parent / "test_advanced_syntax.gfl"
+    with open(test_file) as f:
         gfl_content = f.read()
 
     # Parse the GFL content

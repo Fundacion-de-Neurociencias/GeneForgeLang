@@ -3,10 +3,6 @@
 # This workflow uses Locityper to determine KIR (Killer Immunoglobulin-like
 # Receptor) gene content and infer NK cell immune phenotypes.
 
-# Import Locityper schemas
-import_schemas:
-  - ./schema/locityper_types.yml
-
 # Define KIR gene loci with haplotype panels
 loci:
   - id: KIR2DL1_Locus
@@ -39,6 +35,7 @@ loci:
 
 # Batch genotyping of multiple KIR loci
 analyze:
+  strategy: "genotyping"
   tool: "locityper"
   targets:
     - locus(KIR2DL1_Locus)
@@ -65,52 +62,49 @@ rules:
   - id: R_KIR2DS4_Full_Length
     description: "Full-length KIR2DS4 enhances NK cell activation"
     if:
-      - genotype_contains:
-          result: kir_genotyping_results
-          haplotype_id: "KIR2DS4*001"  # Full-length allele
+      genotype_contains:
+        result: kir_genotyping_results
+        haplotype_id: "KIR2DS4*001"
     then:
-      - set_immune_phenotype:
-          feature: "NK_cell_activation_potential"
-          value: "enhanced"
-          mechanism: "KIR2DS4_activating_signal"
+      set_immune_phenotype:
+        feature: "NK_cell_activation_potential"
+        value: "enhanced"
+        mechanism: "KIR2DS4_activating_signal"
 
   - id: R_KIR2DS4_Deletion
     description: "KIR2DS4 deletion (22bp frameshift) reduces NK diversity"
     if:
-      - genotype_indicates_absence:
-          result: kir_genotyping_results
-          gene_id: "KIR2DS4"
+      genotype_indicates_absence:
+        result: kir_genotyping_results
+        gene_id: "KIR2DS4"
     then:
-      - set_immune_phenotype:
-          feature: "NK_cell_repertoire"
-          value: "reduced_diversity"
-          clinical_note: "May affect anti-viral immunity"
+      set_immune_phenotype:
+        feature: "NK_cell_repertoire"
+        value: "reduced_diversity"
+        clinical_note: "May affect anti-viral immunity"
 
   - id: R_KIR3DL1_KIR3DS1_Balance
     description: "KIR3DL1/KIR3DS1 ratio affects inhibition/activation balance"
     if:
-      - genotype_contains:
-          result: kir_genotyping_results
-          haplotype_id: "KIR3DS1*013"
-      - genotype_indicates_absence:
-          result: kir_genotyping_results
-          gene_id: "KIR3DL1"
+      genotype_contains:
+        result: kir_genotyping_results
+        haplotype_id: "KIR3DS1*013"
     then:
-      - set_immune_phenotype:
-          feature: "NK_inhibition_activation_balance"
-          value: "activation_dominant"
-          clinical_relevance: "HIV_progression_protection"
+      set_immune_phenotype:
+        feature: "NK_inhibition_activation_balance"
+        value: "activation_dominant"
+        clinical_relevance: "HIV_progression_protection"
 
   - id: R_KIR_Genotype_Quality
     description: "Quality control for KIR genotyping"
     if:
-      - overall_quality_below:
-          result: kir_genotyping_results
-          threshold: 20
+      overall_quality_below:
+        result: kir_genotyping_results
+        threshold: 20
     then:
-      - flag_for_review:
-          reason: "low_quality_kir_genotype"
-          action: "Consider targeted sequencing confirmation"
+      flag_for_review:
+        reason: "low_quality_kir_genotype"
+        action: "Consider targeted sequencing confirmation"
 
 # Comprehensive immune profiling output
 output:

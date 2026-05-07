@@ -138,6 +138,7 @@ def parse(text: str, use_grammar: bool = False, filename: str = "<input>") -> di
             else:
                 return {}
         else:
+            # parse_gfl will raise yaml.YAMLError on parsing errors
             result = _parser.parse_gfl(text)
             if result is not None:
                 return cast(dict[str, Any], result)
