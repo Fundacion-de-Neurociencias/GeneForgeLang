@@ -83,11 +83,13 @@ class AdvancedGFLLexer:
         # Core blocks
         "experiment": "EXPERIMENT",
         "analyze": "ANALYZE",
+        "analyse": "ANALYZE",  # British spelling
         "simulate": "SIMULATE",
         "branch": "BRANCH",
         "metadata": "METADATA",
         # Control flow
         "if": "IF",
+        "then": "THEN",
         "else": "ELSE",
         # Logical operators
         "and": "AND",
@@ -96,6 +98,10 @@ class AdvancedGFLLexer:
         # Boolean values
         "true": "BOOLEAN",
         "false": "BOOLEAN",
+        "yes": "BOOLEAN",
+        "no": "BOOLEAN",
+        "on": "BOOLEAN",
+        "off": "BOOLEAN",
         # Null values
         "null": "NULL",
         "none": "NULL",
@@ -132,15 +138,21 @@ class AdvancedGFLLexer:
         "RBRACKET",
         "COMMA",
         "COLON",
+        "SEMICOLON",
+        "DOT",
+        "ARROW",
+        "PIPE",
     ] + [t for t in set(reserved.values()) if t not in ["BOOLEAN", "NULL"]]
 
-    # Token rules
+    # Token rules - order matters for multi-character operators
+    t_ARROW = r"->"
+    t_POWER = r"\*\*"
+
     t_PLUS = r"\+"
     t_MINUS = r"-"
     t_TIMES = r"\*"
     t_DIVIDE = r"/"
     t_MODULO = r"%"
-    t_POWER = r"\*\*"
 
     t_EQUALS = r"=="
     t_NOT_EQUALS = r"!="
@@ -160,6 +172,9 @@ class AdvancedGFLLexer:
 
     t_COMMA = r","
     t_COLON = r":"
+    t_SEMICOLON = r";"
+    t_DOT = r"\."
+    t_PIPE = r"\|"
 
     # Ignored characters (spaces and tabs)
     t_ignore = " \t"
@@ -372,14 +387,17 @@ class AdvancedGFLParser:
         else:
             p[0] = p[1]
 
+    # def p_assignment_statement(self, p):
+    #     """assignment_statement : IDENTIFIER ASSIGN expression"""
+    #     p[0] = {
+    #         "type": "assignment",
+    #         "identifier": p[1],
+    #         "value": p[3],
+    #         "location": self._get_location(p, 1),
+    #     }
     def p_assignment_statement(self, p):
-        """assignment_statement : IDENTIFIER ASSIGN expression"""
-        p[0] = {
-            "type": "assignment",
-            "identifier": p[1],
-            "value": p[3],
-            "location": self._get_location(p, 1),
-        }
+        """assignment_statement : IDENTIFIER COLON value"""
+        p[0] = {"type": p[1], "value": p[3]}
 
     def p_property_list(self, p):
         """property_list : property_list COMMA property
@@ -580,8 +598,8 @@ class AdvancedGFLParser:
                 category=ErrorCategory.SYNTAX,
                 location=location,
                 suggested_fixes=[
-                    ErrorFix(                        
-                        "REMOVE_TOKEN",
+                    ErrorFix(
+                        description="REMOVE_TOKEN",
                     )
                 ],
             )
@@ -594,7 +612,6 @@ class AdvancedGFLParser:
                 suggested_fixes=[
                     ErrorFix(
                         description="Check for missing closing brackets, braces, or statements",
-                        code="CHECK_SYNTAX",
                     )
                 ],
             )

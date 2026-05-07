@@ -58,6 +58,12 @@ class TestNewFeaturesRegression:
             name: ActiveLearning
             uncertainty_metric: entropy
             initial_samples: 8
+            active_learning:
+              acquisition_function: expected_improvement
+              initial_experiments: 5
+              max_uncertainty: 0.5
+              convergence_threshold: 0.01
+          surrogate_model: gaussian_process
           objective:
             maximize: reaction_efficiency
           budget:

@@ -8,9 +8,16 @@ design:
   entity: AlignmentFile
   count: 5
   objective:
-    quality: high
-    coverage: deep
+    maximize: alignment_quality
   output: alignment_samples
+
+experiment:
+  tool: samtools
+  type: alignment
+  params:
+    reference_genome: hg38
+    alignment_method: bwa
+    quality_threshold: 30
 
 optimize:
   strategy:
@@ -18,11 +25,16 @@ optimize:
     parameters:
       max_iterations: 100
   search_space:
-    alignment_parameters:
-      min_mapping_quality: [0, 60]
-      min_base_quality: [10, 40]
+    alignment_parameters: "range(0, 60)"
   objective:
     maximize: alignment_accuracy
-    minimize: processing_time
   budget:
     max_experiments: 50
+  run:
+    experiment:
+      tool: samtools
+      type: alignment
+      params:
+        container_image: "samtools:latest"
+        memory: "4Gi"
+        timeout: "3600"

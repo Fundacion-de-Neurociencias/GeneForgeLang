@@ -22,12 +22,19 @@ def parse_gfl(gfl_string: str) -> Optional[dict[str, Any]]:
 
     Returns:
         Parsed AST as a dictionary, or None if parsing fails.
+        
+    Raises:
+        yaml.YAMLError: If YAML parsing fails (invalid syntax, indentation, etc.)
     """
     with get_monitor().time_operation("gfl_parse"):
         try:
             # Hash the input for cache key generation
             input_hash = hashlib.sha256(gfl_string.encode()).hexdigest()[:16]
             logger.debug(f"Parsing GFL content (hash: {input_hash})")
+
+            # Reject empty documents
+            if len(gfl_string) == 0:
+                raise ValueError("Empty document is not valid GFL")
 
             data = yaml.safe_load(gfl_string)
 
@@ -38,10 +45,11 @@ def parse_gfl(gfl_string: str) -> Optional[dict[str, Any]]:
 
         except yaml.YAMLError as e:
             logger.error(f"Error parsing GFL YAML: {e}")
-            return None
+            raise
+        
         except Exception as e:
             logger.error(f"Unexpected error during GFL parsing: {e}")
-            return None
+            raise
 
 
 def parse_gfl_with_schema_imports(gfl_string: str, base_path: Optional[str] = None) -> Optional[dict[str, Any]]:

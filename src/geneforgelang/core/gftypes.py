@@ -38,6 +38,10 @@ class DataType(str, Enum):
     # Custom types
     CUSTOM = "CUSTOM"
 
+    def __str__(self) -> str:
+        """Return the enum value as string."""
+        return self.value
+
 
 class ExperimentType(str, Enum):
     """Valid experiment types in GFL."""
@@ -48,6 +52,10 @@ class ExperimentType(str, Enum):
     SIMULATION = "simulation"
     VALIDATION = "validation"
 
+    def __str__(self) -> str:
+        """Return the enum value as string."""
+        return self.value
+
 
 class AnalysisStrategy(str, Enum):
     """Valid analysis strategies."""
@@ -57,6 +65,10 @@ class AnalysisStrategy(str, Enum):
     VARIANT = "variant"
     EXPRESSION = "expression"
     STRUCTURAL = "structural"
+
+    def __str__(self) -> str:
+        """Return the enum value as string."""
+        return self.value
 
 
 @dataclass

@@ -491,8 +491,14 @@ class TestOptimizeBlockIntegration:
           strategy:
             name: ActiveLearning
             uncertainty_metric: entropy
+            active_learning:
+              acquisition_function: entropy
+              initial_experiments: 5
+              max_uncertainty: 0.5
+              convergence_threshold: 0.01
           objective:
             maximize: yield
+          surrogate_model: gaussian_process
           budget:
             max_experiments: 75
           run:

@@ -155,7 +155,7 @@ class TestEnhancedValidationError:
         error_str = str(error)
         assert "test.gfl:10:5:" in error_str
         assert "Missing required field 'tool'" in error_str
-        assert "(SEMANTICSEMANTIC001)" in error_str
+        assert "(SEMANTIC001)" in error_str
         assert "Context: block=experiment" in error_str
         assert "Suggested fixes:" in error_str
         assert "Add 'tool: CRISPR_cas9'" in error_str

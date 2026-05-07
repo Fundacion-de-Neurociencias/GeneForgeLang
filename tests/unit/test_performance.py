@@ -419,7 +419,7 @@ class TestIntegrationScenarios:
 
     def test_api_performance_integration(self):
         """Test performance integration with API functions."""
-        from gfl.api import parse, validate
+        from geneforgelang.core.api import parse, validate
 
         # Clear any existing performance data
         get_monitor().clear_metrics()

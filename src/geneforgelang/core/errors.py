@@ -257,6 +257,22 @@ class EnhancedValidationResult:
                 self.errors.append(error)
 
     @property
+    def schema_errors(self) -> list[EnhancedValidationError]:
+        """Get schema errors only."""
+        if self._schema_errors is not None:
+            return self._schema_errors
+        return [e for e in self.errors if e.category == ErrorCategory.SCHEMA]
+
+    @schema_errors.setter
+    def schema_errors(self, value: list[EnhancedValidationError]) -> None:
+        """Set schema errors."""
+        self._schema_errors = value
+        # Also add to main errors list if not already there
+        for error in value:
+            if error not in self.errors:
+                self.errors.append(error)
+
+    @property
     def warnings(self) -> list[EnhancedValidationError]:
         """Get warnings only."""
         return [e for e in self.errors if e.severity == ErrorSeverity.WARNING]
@@ -273,8 +289,8 @@ class EnhancedValidationResult:
 
     @property
     def is_valid(self) -> bool:
-        """True if no critical or semantic errors."""
-        return len(self.critical_errors) == 0 and len(self.semantic_errors) == 0
+        """True if no critical, semantic, or syntax errors."""
+        return len(self.critical_errors) == 0 and len(self.semantic_errors) == 0 and len(self.syntax_errors) == 0
 
     @property
     def has_warnings(self) -> bool:

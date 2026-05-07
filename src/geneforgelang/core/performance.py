@@ -440,7 +440,7 @@ def get_optimizer() -> PerformanceOptimizer:
 
 
 def cached(cache_name: str = "default", ttl: float | None = None, max_size: int = 1000):
-    """Decorator for caching function results."""
+    """Decorator for caching function results with proper concurrent access handling."""
 
     def decorator(func: Callable[..., T]) -> Callable[..., T]:
         # Create cache if it doesn't exist
@@ -448,6 +448,10 @@ def cached(cache_name: str = "default", ttl: float | None = None, max_size: int 
         if cache is None:
             cache = IntelligentCache(max_size=max_size, ttl=ttl)
             _optimizer.register_cache(cache_name, cache)
+
+        # Per-key locks to prevent cache stampede
+        key_locks: Dict[str, Lock] = {}
+        lock_manager = RLock()
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs) -> T:
@@ -457,16 +461,29 @@ def cached(cache_name: str = "default", ttl: float | None = None, max_size: int 
             # Create cache key from arguments
             key = _create_cache_key(func.__name__, args, kwargs)
 
-            # Try to get from cache
+            # Try to get from cache (fast path)
             result = cache.get(key)
             if result is not None:
                 return result
 
-            # Compute and cache result
-            result = func(*args, **kwargs)
-            cache.put(key, result)
+            # Get or create a lock for this key
+            with lock_manager:
+                if key not in key_locks:
+                    key_locks[key] = Lock()
+                key_lock = key_locks[key]
 
-            return result
+            # Use the per-key lock to prevent thundering herd
+            with key_lock:
+                # Double-check: another thread may have computed this while we waited
+                result = cache.get(key)
+                if result is not None:
+                    return result
+
+                # Compute and cache result
+                result = func(*args, **kwargs)
+                cache.put(key, result)
+
+                return result
 
         # Add cache management methods
         wrapper._cache = cache

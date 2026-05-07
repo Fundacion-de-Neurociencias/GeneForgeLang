@@ -96,28 +96,40 @@ rules:
   - id: "ProteinStabilityRule"
     description: "Protein stability depends on domain integrity"
     if:
-      - type: "is_within"
-        element: "TP53_Promoter"
+      {
+        type: "is_within",
+        element: "TP53_Promoter",
         locus: "TP53_GeneLocus"
+      }
     then:
-      - type: "set_activity"
-        element: "p53_protein"
+      {
+        type: "set_activity",
+        element: "p53_protein",
         level: "stable"
+      }
 
   - id: "MetabolicActivityRule"
     description: "ATP production depends on glucose availability"
     if:
-      - type: "distance_between"
-        element_a: "glucose"
-        element_b: "ATP"
+      {
+        type: "distance_between",
+        element_a: "glucose",
+        element_b: "ATP",
         threshold: 1000
+      }
     then:
-      - type: "set_activity"
-        element: "ATP"
+      {
+        type: "set_activity",
+        element: "ATP",
         level: "high"
+      }
 
 # Simulation testing multi-omic interactions
-simulate:
+simulate: true
+
+experiment:
+  tool: "GFL"
+  type: "Simulation"
   name: "MultiOmicInteractionTest"
   description: "Test how protein stability affects metabolic activity"
   action:

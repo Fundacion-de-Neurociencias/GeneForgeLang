@@ -206,6 +206,7 @@ experiment:
                 recursive = False
                 fix = False
                 stop_on_first = False
+                pattern = "*.gfl"
 
             args = MockValidateArgs()
             result = self.cli.cmd_validate(args)
@@ -296,7 +297,7 @@ class TestCLIIntegration:
 
     def test_main_entry_point(self):
         """Test the main CLI entry point."""
-        from gfl.cli_main import main
+        from geneforgelang.cli.enhanced import main
 
         # Test help command
         result = main(["--help"])
@@ -305,7 +306,7 @@ class TestCLIIntegration:
 
     def test_version_command(self):
         """Test version display."""
-        from gfl.enhanced_cli import main
+        from geneforgelang.cli.enhanced import main
 
         # Test version command
         result = main(["--version"])
@@ -313,14 +314,14 @@ class TestCLIIntegration:
 
     def test_no_command(self):
         """Test behavior with no command."""
-        from gfl.enhanced_cli import main
+        from geneforgelang.cli.enhanced import main
 
         result = main([])
         assert result == 0  # Should show help
 
     def test_invalid_command(self):
         """Test behavior with invalid command."""
-        from gfl.enhanced_cli import main
+        from geneforgelang.cli.enhanced import main
 
         result = main(["invalid_command"])
         assert result != 0  # Should return error code
@@ -380,6 +381,7 @@ analyze:
                 (temp_path / f"test{i}.gfl").write_text(f"""
 experiment:
   tool: CRISPR_cas9
+  type: gene_editing
   params:
     target_gene: TP5{i}
                 """)

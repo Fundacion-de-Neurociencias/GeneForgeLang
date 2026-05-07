@@ -44,10 +44,10 @@ rules:
   - id: R_Safety_Advantage
     description: "Epigenetic editing avoids genotoxicity"
     if:
-      - edit_tool_is: "CRISPRoff"
+      edit_tool_is: "CRISPRoff"
     then:
-      - dsb_risk: "none"
-      - reversibility: "yes"
+      dsb_risk: "none"
+      reversibility: "yes"
 
 output:
   - strategy: "CRISPRoff_epigenetic"
