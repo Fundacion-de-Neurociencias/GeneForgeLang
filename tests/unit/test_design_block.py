@@ -298,7 +298,9 @@ class TestDesignBlockValidation:
             }
             errors = validate(ast)
             # Should not have errors specifically about the output identifier
-            output_errors = [e for e in errors if "output" in e.lower() and "identifier" in e.lower()]
+            output_errors = [
+                e for e in errors if "output" in e.lower() and "identifier" in e.lower()
+            ]
             assert len(output_errors) == 0
 
     def test_constraints_validation(self):

@@ -42,7 +42,9 @@ def load_schema() -> Optional[Dict[str, Any]]:
         return None
 
 
-def validate_with_schema(data: Dict[str, Any], schema: Optional[Dict[str, Any]] = None) -> ValidationResult:
+def validate_with_schema(
+    data: Dict[str, Any], schema: Optional[Dict[str, Any]] = None
+) -> ValidationResult:
     """Validate GFL data against JSON schema.
 
     Args:
@@ -65,7 +67,9 @@ def validate_with_schema(data: Dict[str, Any], schema: Optional[Dict[str, Any]] 
     if schema is None:
         schema = load_schema()
         if schema is None:
-            return ValidationResult(errors=[ValidationError(message="GFL schema not found", code="SCHEMA_NOT_FOUND")])
+            return ValidationResult(
+                errors=[ValidationError(message="GFL schema not found", code="SCHEMA_NOT_FOUND")]
+            )
 
     try:
         # Create validator
@@ -77,7 +81,9 @@ def validate_with_schema(data: Dict[str, Any], schema: Optional[Dict[str, Any]] 
 
         for error in validator.iter_errors(data):
             # Determine location
-            location = ".".join(str(p) for p in error.absolute_path) if error.absolute_path else "root"
+            location = (
+                ".".join(str(p) for p in error.absolute_path) if error.absolute_path else "root"
+            )
 
             # Create validation error
             validation_error = ValidationError(

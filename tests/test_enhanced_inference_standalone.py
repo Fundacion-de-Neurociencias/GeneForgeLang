@@ -133,7 +133,9 @@ def test_enhanced_inference():
 
     # Test InferenceResult
     print("1. Testing InferenceResult creation...")
-    result = InferenceResult(prediction="test_prediction", confidence=0.85, explanation="Test explanation")
+    result = InferenceResult(
+        prediction="test_prediction", confidence=0.85, explanation="Test explanation"
+    )
     assert result.prediction == "test_prediction"
     assert result.confidence == 0.85
     print("✓ InferenceResult works correctly")

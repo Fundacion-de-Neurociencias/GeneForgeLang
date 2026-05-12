@@ -18,10 +18,10 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
 from geneforgelang.plugins.plugin_registry import (
-    BaseGFLPlugin, 
-    PluginDependency, 
-    PluginPriority, 
-    plugin_registry
+    BaseGFLPlugin,
+    PluginDependency,
+    PluginPriority,
+    plugin_registry,
 )
 
 logger = logging.getLogger(__name__)
@@ -232,7 +232,11 @@ class OptimizerPlugin(BaseGFLPlugin):
 
     @abstractmethod
     def setup(
-        self, search_space: dict[str, str], strategy: dict[str, Any], objective: dict[str, Any], budget: dict[str, Any]
+        self,
+        search_space: dict[str, str],
+        strategy: dict[str, Any],
+        objective: dict[str, Any],
+        budget: dict[str, Any],
     ) -> None:
         """Initialize the optimization algorithm with problem specification.
 
@@ -271,7 +275,9 @@ class OptimizerPlugin(BaseGFLPlugin):
         """
         pass
 
-    def should_stop(self, experiment_history: list[ExperimentResult], budget: dict[str, Any]) -> bool:
+    def should_stop(
+        self, experiment_history: list[ExperimentResult], budget: dict[str, Any]
+    ) -> bool:
         """Determine if optimization should terminate.
 
         Args:
@@ -333,7 +339,9 @@ class PriorsPlugin(BaseGFLPlugin):
     """
 
     @abstractmethod
-    def specify_priors(self, parameters: dict[str, Any], prior_type: str, **kwargs) -> dict[str, Any]:
+    def specify_priors(
+        self, parameters: dict[str, Any], prior_type: str, **kwargs
+    ) -> dict[str, Any]:
         """Specify prior distributions for experimental parameters.
 
         Args:
@@ -395,7 +403,14 @@ class SequenceGeneratorPlugin(GeneratorPlugin):
 
     def get_supported_constraints(self) -> list[str]:
         """Common sequence constraints."""
-        return ["length", "gc_content", "has_motif", "no_stop_codons", "synthesizability", "secondary_structure"]
+        return [
+            "length",
+            "gc_content",
+            "has_motif",
+            "no_stop_codons",
+            "synthesizability",
+            "secondary_structure",
+        ]
 
 
 class MoleculeGeneratorPlugin(GeneratorPlugin):
@@ -410,7 +425,9 @@ class MoleculeGeneratorPlugin(GeneratorPlugin):
 
         for constraint in constraints:
             # Drug-likeness constraint validation
-            if "molecular_weight" in constraint and not any(op in constraint for op in ["<", ">", "="]):
+            if "molecular_weight" in constraint and not any(
+                op in constraint for op in ["<", ">", "="]
+            ):
                 errors.append(f"Invalid molecular_weight constraint: {constraint}")
             elif "logP" in constraint and not any(op in constraint for op in ["<", ">", "="]):
                 errors.append(f"Invalid logP constraint: {constraint}")

@@ -911,8 +911,9 @@ class PluginRegistry:
         # Discover container images for plugins
         for entry_point in entry_points.select(group="gfl.plugin_containers"):
             try:
-                # For container images, we just need the value, not to load it
-                container_image = entry_point.value
+                container_image = (
+                    entry_point.load() if callable(entry_point.load) else entry_point.value
+                )
                 self._container_images[entry_point.name] = container_image
             except Exception:
                 pass  # Skip container images that fail to load

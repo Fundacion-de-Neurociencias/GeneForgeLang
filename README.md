@@ -17,24 +17,28 @@ GeneForgeLang (GFL) v2.0 is a **next-generation domain-specific language** for c
 ## 🚀 **New in v2.0 - Multi-Omic Capabilities**
 
 ### **Multi-Omic Integration**
+
 - **🧬 Transcripts Block**: Define transcript structures with exon annotations
 - **🔬 Proteins Block**: Annotate proteins with functional domains
 - **⚗️ Metabolites Block**: Chemical formula support with database integration
 - **🔗 External Identifiers**: UniProt, RefSeq, ChEBI, HMDB, KEGG integration
 
 ### **Spatial Genomic Reasoning**
+
 - **📍 Genomic Loci**: Define named genomic regions with coordinates
 - **🎯 Spatial Predicates**: `is_within`, `distance_between`, `is_in_contact`
 - **🧩 3D Chromatin**: Hi-C integration for spatial interactions
 - **📐 Context-Aware Rules**: Spatial constraints in biological reasoning
 
 ### **Advanced Discovery Engine**
+
 - **🔄 Guided Discovery**: Iterative learning and candidate optimization
 - **⚙️ Capability-Aware**: Engine compatibility across deployment scenarios
 - **📋 Rule-Based Logic**: Complex biological constraint expression
 - **🎭 Simulation Framework**: What-if analysis and hypothesis testing
 
 ### **Privacy-Preserving Bio-Skills**
+
 - **🧬 Local Bioinformatics**: High-precision analysis running 100% locally
 - **✅ Scientific Reproducibility**: Automatic generation of Reproducibility Packages (hashes, timestamps, versions)
 - **🧠 Clinical Neuro-Skills**: Specialized skills for PharmGx, Geriatric Risk, and NutriGx
@@ -55,12 +59,14 @@ GeneForgeLang (GFL) v2.0 is a **next-generation domain-specific language** for c
 Our platform has been validated through a comprehensive experiment discovering optimal gRNA candidates for CRISPR gene editing:
 
 ### **Results Summary**
+
 - **🏆 Best Candidate**: BRCA1_gRNA_4_02
 - **📈 Combined Score**: 89.7% efficiency
 - **🎯 On-Target**: 84.8% efficiency with only 3.0% off-target risk
 - **⚡ Discovery Time**: 24 seconds for 50 candidates across 5 cycles
 
 ### **Scientific Impact**
+
 - **Clinical Relevance**: BRCA1 is critical for cancer research
 - **Safety Focus**: <30% off-target risk across all top candidates
 - **Efficiency**: >80% on-target activity for top 10 candidates
@@ -89,59 +95,54 @@ pip install geneforgelang[containers]
 pip install geneforgelang[all]
 ```
 
-### Basic Usage - Multi-Omic gRNA Discovery
+### Basic Usage - Protein Design and Optimization
 
 ```python
 from geneforgelang import parse, validate, execute
 
-# Define a multi-omic gRNA discovery workflow
+# Simple GFL Workflow Example
 workflow = """
-# Multi-omic entity definitions
-transcripts:
-  - id: "BRCA1_transcript"
-    gene_source: "BRCA1"
-    exons: [1, 2, 3, 4, 5]
-    identifiers:
-      refseq: "NM_007294.4"
+design:
+  entity: ProteinSequence
+  model: ProteinVAEGenerator
+  objective:
+    maximize: stability
+  count: 10
+  length: 100
+  output: designed_proteins
 
-proteins:
-  - id: "BRCA1_protein"
-    translates_from: "transcript(BRCA1_transcript)"
-    domains:
-      - id: "BRCT_Domain"
-        start: 1649
-        end: 1736
-    identifiers:
-      uniprot: "P38398"
-
-# Spatial genomic context
-loci:
-  - id: "BRCA1_GeneLocus"
-    chromosome: "chr17"
-    start: 43094495
-    end: 43125483
-    elements:
-      - id: "BRCA1_Promoter"
-        type: "promoter"
-
-# Guided discovery for gRNA candidates
-guided_discovery:
-  name: "BRCA1_gRNA_Discovery"
-  target: "BRCA1_protein"
+optimize:
+  search_space:
+    temperature: "range(25, 42)"
+    pH: "range(6.0, 8.0)"
+    concentration: "range(10, 100)"
   strategy:
-    type: "iterative_refinement"
-    max_iterations: 5
+    name: BayesianOptimization
+  objective:
+    maximize: efficiency
+  budget:
+    max_experiments: 20
+  run:
+    experiment:
+      tool: protein_assay
+      type: efficiency_measurement
+      params:
+        temp: "${temperature}"
+        pH: "${pH}"
+        conc: "${concentration}"
+"""
 
-experiment:
-  tool: CRISPR_cas9
-  type: gene_editing
-  params:
-    target_gene: TP53
-    guide_rna: GCACTGCCATGGAGGAGCCG
+# Parse and validate
+ast = parse(workflow)
+errors = validate(ast)
 
-analysis:
-  type: efficiency_prediction
-  model: cas9_efficiency_v2
+if not errors:
+    print("GFL file successfully validated")
+
+    # Execute workflow
+    result = execute(ast)
+    #print(result)
+    print(f"Done!: {result['design']['count']} proteins generated")
 """
 
 # Parse and validate
@@ -157,17 +158,21 @@ if not errors:
 ### Command Line Interface
 
 ```
-# Parse and validate a workflow
+# Parse a workflow
+gfl parse workflow.gfl
+
+# Validate a workflow
 gfl validate workflow.gfl
 
+# or both!
+gfl parse workflow.gfl --validate
+
 # Execute a workflow
-gfl execute workflow.gfl
+gfl infer workflow.gfl
 
-# Start web interface
-gfl web --port 8080
-
-# Get help
+# Get help (or check full options)
 gfl --help
+gfl -h
 ```
 
 ## Workflow Examples
@@ -228,7 +233,7 @@ src/geneforgelang/
 ├── core/           # Core language functionality
 │   ├── parser.py   # YAML/GFL parser
 │   ├── validator.py # Semantic validation
-│   ├── types.py    # Type system
+│   ├── gftypes.py    # Type system
 │   └── api.py      # Public API
 ├── plugins/        # Plugin system
 ├── web/           # Web interface
@@ -256,7 +261,7 @@ from geneforgelang.plugins import register_plugin
 register_plugin(CustomAnalysisPlugin())
 ```
 
-## Web Interface
+## Web Interface (Not working!)
 
 Launch the web interface for interactive workflow development:
 
@@ -265,6 +270,7 @@ gfl web --host 0.0.0.0 --port 8080
 ```
 
 Features:
+
 - Visual workflow editor
 - Real-time validation
 - Execution monitoring
@@ -278,13 +284,6 @@ Features:
 - `validate(ast: Dict) -> List[str]`: Validate AST semantics
 - `execute(ast: Dict) -> Dict`: Execute workflow
 - `infer(model, ast: Dict) -> Dict`: Run ML inference
-
-### CLI Commands
-
-- `gfl validate <file>`: Validate workflow file
-- `gfl execute <file>`: Execute workflow
-- `gfl web`: Start web interface
-- `gfl plugins`: List available plugins
 
 ## Development
 
@@ -305,25 +304,6 @@ pre-commit install
 pytest
 ```
 
-### Container-Based Execution
-
-GeneForgeLang now supports container-based plugin execution for enhanced reproducibility:
-
-1. Plugins can specify Docker container images through the `gfl.plugin_containers` entry point
-2. The execution engine automatically detects and uses container images when available
-3. Volume mounting is handled automatically for file I/O
-4. Falls back to local execution when Docker is not available
-
-To enable container execution during development:
-
-```
-# Install with container support
-pip install -e .[containers]
-
-# Or install docker package directly
-pip install docker
-```
-
 ### Project Structure
 
 ```
@@ -332,7 +312,7 @@ GeneForgeLang/
 ├── tests/                # Test suite
 ├── docs/                 # Documentation
 ├── examples/             # Usage examples
-├── tools/                # Development tools
+├── resources/            # Dev tools, scripts, ...
 └── pyproject.toml        # Project configuration
 ```
 
@@ -348,9 +328,9 @@ GeneForgeLang/
 
 ## Documentation
 
-- [User Guide](docs/user-guide/) - Complete usage documentation
-- [API Reference](docs/api/) - Detailed API documentation
-- [Architecture](docs/architecture/) - System design and decisions
+- [User Guide](docs/guides/user-guides/) - Complete usage documentation
+- [API Reference](docs/geneforgelang/api.md) - Detailed API documentation
+- [Architecture](docs/dev/decisions/organization.md) - System design and decisions
 - [Examples](examples/) - Practical workflow examples
 
 ## License

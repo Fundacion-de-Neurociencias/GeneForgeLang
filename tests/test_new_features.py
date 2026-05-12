@@ -219,7 +219,9 @@ class TestDesignBlockValidation:
         assert len(errors) > 0, "Conflicting objectives should cause validation error"
 
         error_text = " ".join(str(error) for error in errors).lower()
-        assert "maximize" in error_text and "minimize" in error_text, "Error should mention conflicting objectives"
+        assert (
+            "maximize" in error_text and "minimize" in error_text
+        ), "Error should mention conflicting objectives"
 
     def test_design_block_invalid_output_identifier(self):
         """Test that design block with invalid output identifier fails validation."""
@@ -616,7 +618,9 @@ class TestParameterInjectionRegression:
 
         # Should not have type validation errors for injected parameters
         type_errors = [e for e in errors if "should be" in str(e) and "got str" in str(e)]
-        assert not type_errors, f"Parameter injection should skip type validation, got: {type_errors}"
+        assert (
+            not type_errors
+        ), f"Parameter injection should skip type validation, got: {type_errors}"
 
 
 class TestCombinedFeatureWorkflows:

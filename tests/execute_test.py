@@ -16,7 +16,9 @@ def test_gfl_execution():
 
     # Parse the GFL code
     try:
-        parse_response = requests.post("http://127.0.0.1:8000/api/v2/parse", json={"code": gfl_code})
+        parse_response = requests.post(
+            "http://127.0.0.1:8000/api/v2/parse", json={"code": gfl_code}
+        )
 
         if parse_response.status_code != 200:
             print(f"Parse error: HTTP {parse_response.status_code}")

@@ -46,7 +46,8 @@ class ValidationPipeline:
 # Ejemplo de uso:
 if __name__ == "__main__":
     from geneforgelang.models.dummy import DummyGeneModel
-    #from geneforgelang.utils.data_loader import load_validation_data --- NO ENCONTRADO ---
+
+    # from geneforgelang.utils.data_loader import load_validation_data --- NO ENCONTRADO ---
 
     def extract_features(ast):  # ejemplo simple
         return {

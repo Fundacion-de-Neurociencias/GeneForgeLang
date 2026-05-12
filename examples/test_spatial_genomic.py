@@ -82,7 +82,11 @@ simulate:
 
         # Test spatial condition evaluation
         print("\n3. Testing spatial condition evaluation...")
-        test_condition = {"type": "is_within", "element": "TestGene_Promoter", "locus": "TestGene_Locus"}
+        test_condition = {
+            "type": "is_within",
+            "element": "TestGene_Promoter",
+            "locus": "TestGene_Locus",
+        }
         result = interpreter.evaluate_spatial_condition(test_condition)
         print(f"  Spatial condition result: {result}")
 

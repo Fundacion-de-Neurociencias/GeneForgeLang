@@ -16,7 +16,10 @@ def test_active_learning_optimize():
 
     test_ast = {
         "optimize_active_learning": {
-            "search_space": {"learning_rate": "range(0.001, 0.1)", "batch_size": "choice([32, 64, 128])"},
+            "search_space": {
+                "learning_rate": "range(0.001, 0.1)",
+                "batch_size": "choice([32, 64, 128])",
+            },
             "strategy": {
                 "name": "ActiveLearning",
                 "active_learning": {
@@ -78,7 +81,11 @@ def test_refine_data():
 
     test_ast = {
         "refine_data": {
-            "refinement_config": {"refinement_type": "noise_reduction", "noise_level": 0.1, "target_resolution": "high"}
+            "refinement_config": {
+                "refinement_type": "noise_reduction",
+                "noise_level": 0.1,
+                "target_resolution": "high",
+            }
         }
     }
 
@@ -142,7 +149,12 @@ def main():
     """Run all tests."""
     print("Running comprehensive tests for new GFL features...\n")
 
-    tests = [test_active_learning_optimize, test_inverse_design, test_refine_data, test_guided_discovery]
+    tests = [
+        test_active_learning_optimize,
+        test_inverse_design,
+        test_refine_data,
+        test_guided_discovery,
+    ]
 
     passed = 0
     total = len(tests)

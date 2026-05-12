@@ -91,7 +91,9 @@ class TestEnhancedRegistry:
         """Test plugin ordering based on dependencies."""
         # Create plugins with dependencies
         base_plugin = MockPlugin("base")
-        dependent_plugin = MockPlugin("dependent", dependencies=[PluginDependency("base", optional=False)])
+        dependent_plugin = MockPlugin(
+            "dependent", dependencies=[PluginDependency("base", optional=False)]
+        )
 
         plugin_registry.register("base", base_plugin)
         plugin_registry.register("dependent", dependent_plugin)
@@ -149,9 +151,7 @@ class TestEnhancedRegistry:
         # Plugin with satisfied dependency
         good_plugin = MockPlugin(
             "good",
-            dependencies=[
-                PluginDependency("sys", optional=False)  # sys is always available
-            ],
+            dependencies=[PluginDependency("sys", optional=False)],  # sys is always available
         )
 
         plugin_registry.register("bad", bad_plugin)

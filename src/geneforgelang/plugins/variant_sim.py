@@ -33,7 +33,9 @@ class VariantSimulationPlugin:
         """
         Execute methods related to la variant simulation.
         """
-        logger.info(f"VariantSimulationPlugin: Executing method '{method_name}' with params: {params}")
+        logger.info(
+            f"VariantSimulationPlugin: Executing method '{method_name}' with params: {params}"
+        )
 
         if method_name == "translate_dna":
             dna_sequence = params.get("dna_sequence")

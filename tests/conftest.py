@@ -118,7 +118,11 @@ def complex_design_ast() -> Dict[str, Any]:
             "data": "candidate_molecules",
             "thresholds": {"activity_score": 0.7, "toxicity_score": 0.3},
         },
-        "metadata": {"experiment_id": "DESIGN_001", "researcher": "Dr. Smith", "project": "drug_discovery"},
+        "metadata": {
+            "experiment_id": "DESIGN_001",
+            "researcher": "Dr. Smith",
+            "project": "drug_discovery",
+        },
     }
 
 

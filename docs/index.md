@@ -1,105 +1,165 @@
-# GeneForgeLang (GFL) Documentation
+# GeneForgeLang Documentation Index
 
 > **The Symbolic Language for Biological Reasoning**
 
-Welcome to the official documentation for GeneForgeLang (GFL), the symbolic language for biological reasoning. GFL empowers researchers and developers to create, optimize, and analyze biological entities through structured workflows and AI-powered analysis.
+Welcome to the official documentation for GeneForgeLang (GFL). This index provides easy navigation to all documentation resources.
 
-## 🧬 What is GeneForgeLang?
+## Getting Started
 
-GeneForgeLang is a domain-specific language designed for genomic workflow specification, validation, and execution. It provides a powerful framework for integrating AI/ML tools, experimental systems, and computational biology techniques into reproducible and shareable workflows.
+**New to GeneForgeLang?** Start here:
 
-## 🚀 Quick Start
+- [Installation Guide](guides/user-guides/installation.md) — Install GFL and dependencies
+- [Quick Start](guides/user-guides/quickstart_user.md) — Your first workflow in 5 minutes
+- [Comprehensive Tutorial](guides/user-guides/tutorial.md) — Step-by-step guide to GFL concepts
 
-Get up and running with GeneForgeLang quickly:
+## User Guides
 
-- **[Installation Guide](getting_started/installation.md)** - Install GFL and its dependencies
-- **[User Quickstart](getting_started/quickstart_user.md)** - Create your first workflow
-- **[Plugin Ecosystem](ecosystem/plugins_overview.md)** - Explore available plugins
+Practical guides for using GeneForgeLang:
 
-## 📚 Documentation Structure
-
-### For Users
-- **[Getting Started](getting_started/)** - Installation and basic usage
-- **[Plugin Ecosystem](ecosystem/)** - Available plugins and their capabilities
-- **[Tutorials](tutorials/)** - Step-by-step guides for common tasks
-
-### For Developers
-- **[Development Guide](development/)** - Contributing to GFL
-- **[Creating Plugins](development/creating_plugins.md)** - Build custom plugins
-- **[API Reference](api/)** - Technical documentation
-
-### Advanced Topics
-- **[Architecture](architecture/)** - System design and components
-- **[Language Specification](gfl_yaml/)** - GFL syntax and semantics
-- **[Security](security/)** - Best practices and advisories
-
-## 🔧 Core Features
-
-### Workflow Orchestration
-- Declarative workflow specification
-- Automatic dependency resolution
-- Parallel execution optimization
-- Error handling and recovery
-
-### AI/ML Integration
-- Plugin system for external tools
-- Bayesian optimization support
-- Machine learning model integration
-- Automated parameter tuning
-
-### Biological Entity Design
-- Protein sequence generation
-- DNA/RNA sequence design
-- Molecular structure prediction
-- Experimental validation frameworks
-
-## 🌐 Plugin Ecosystem
-
-GFL's extensible plugin system allows integration with a wide range of tools:
-
-### Core Plugins
-- **[BLAST](ecosystem/core_plugins/blast.md)** - Sequence alignment searches
-- **[GATK](ecosystem/core_plugins/gatk.md)** - Genomic analysis toolkit
-- **[SAMtools](ecosystem/core_plugins/samtools.md)** - Sequence alignment manipulation
-- **[Biopython Tools](ecosystem/core_plugins/biopython.md)** - Bioinformatics utilities
-
-### Genesis Plugins
-- **[On-Target Scorer](ecosystem/genesis_plugins/ontarget_scorer.md)** - CRISPR efficiency prediction
-- **[Off-Target Scorer](ecosystem/genesis_plugins/offtarget_scorer.md)** - CRISPR risk assessment
-- **[CRISPR Evaluator](ecosystem/genesis_plugins/evaluator.md)** - Combined scoring system
-- **[CRISPR Visualizer](ecosystem/genesis_plugins/visualizer.md)** - Results visualization
-
-## 🎯 Use Cases
-
-### Genomics Research
-- CRISPR gene editing design and validation
-- RNA-seq analysis workflows
-- Variant calling and annotation
-- Genome assembly and annotation
-
-### Drug Discovery
-- Protein engineering pipelines
-- Molecular docking simulations
-- Pharmacogenomics analysis
-- Target identification and validation
-
-### Agricultural Biotechnology
-- Crop improvement workflows
-- Marker-assisted selection
-- Genomic selection models
-- Trait prediction and optimization
-
-## 🤝 Community & Support
-
-- **[GitHub Repository](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang)** - Source code and issue tracking
-- **[Contributing Guide](development/contributing.md)** - How to contribute to the project
-- **[Discussion Forum](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/discussions)** - Community discussions
-- **[Security Policy](SECURITY_ADVISORY.md)** - Reporting vulnerabilities
-
-## 📄 License
-
-GeneForgeLang is released under the MIT License. See the [LICENSE](../LICENSE) file for details.
+| Guide | Purpose |
+|-------|---------|
+| [CLI Reference](guides/geneforgelang/cli.md) | Command-line interface documentation |
+| [API Reference](guides/geneforgelang/api.md) | Python API for programmatic access |
+| [Custom Schemas & IO Contracts](guides/user-guides/custom_schemas_io_contracts.md) | Define data structures and contracts |
 
 ---
 
+## Core Features & Capabilities
+
+Learn about GFL's powerful features:
+
+### Workflow Components
+
+- [Design Block](geneforgelang/features/design_block.md) — Generate biological entities
+- [Optimize Block](geneforgelang/features/optimize_block.md) — Parameter optimization and tuning
+- [Data Staging](geneforgelang/features/data_staging.md) — Manage workflow inputs/outputs
+- [Refine Data](geneforgelang/features/refine_data.md) — Post-processing and data refinement
+
+### Analysis & Reasoning
+
+- [Symbolic Reasoning](geneforgelang/features/symbolic_reasoning.md) — Bayesian and rule-based reasoning
+- [Schema Registry](geneforgelang/features/schema_registry.md) — Type definitions and validation
+- [With Priors Clause](geneforgelang/features/with_priors_clause.md) — Bayesian prior integration
+- [IO Contracts](geneforgelang/features/io_contracts.md) — Contract-based data validation
+
+### Specialized Features
+
+- [Guided Discovery](geneforgelang/features/guided_discovery.md) — AI-powered workflow optimization
+- [Container Execution](geneforgelang/features/container_execution.md) — Docker container integration
+- [Spatial Genomic Capabilities](geneforgelang/features/spatial_genomic_capabilities.md) — 3D genome analysis
+- [Locityper Haplotyping](geneforgelang/features/locityper_haplotyping.md) — HLA/KIR genotyping
+- [Epigenetic Editing](geneforgelang/features/epigenetic_editing.md) — CRISPR-based epigenetic modifications
+- [Capability-Aware Validator](geneforgelang/features/capability_aware_validator.md) — Context-aware validation
+
+### Advanced Topics
+
+- [Enhancer Module Specification](geneforgelang/features/Enhancer_Module_Spec.md) — Regulatory element design
+
+---
+
+## Plugin Ecosystem
+
+Extend GFL with plugins:
+
+### Overview & Architecture
+
+- [Plugin Ecosystem Overview](geneforgelang/plugins/plugins_overview.md) — Plugin system architecture
+- [Plugin Ecosystem Documentation](geneforgelang/plugins/PLUGIN_ECOSYSTEM.md) — Complete plugin guide
+
+### Core Plugins
+
+Available in `geneforgelang/plugins/core_plugins/`:
+
+- BLAST — Sequence similarity searches
+- GATK — Genomic variant analysis
+- SAMtools — Sequence manipulation
+- And more...
+
+### Genesis Plugins
+
+Available in `geneforgelang/plugins/genesis_plugins/`:
+
+- On-Target Scoring — CRISPR efficiency
+- Off-Target Scoring — CRISPR risk
+- Evaluator — Combined scoring
+- Visualizer — Results visualization
+
+### Creating Custom Plugins
+
+- [Creating Plugins Guide](guides/dev-guides/creating_plugins.md) — Build your own plugins
+
+---
+
+## Development
+
+For developers and contributors:
+
+### Architecture & Design
+
+- [Organizational Architecture](dev/decisions/organization.md) — System organization
+- [Design Ontology](dev/decisions/ontology.md) — Core concepts and relationships
+- [Design History](dev/decisions/HISTORY.md) — Evolution of design decisions
+
+### Deployment & Operations
+
+- [Deployment Guide](guides/dev-guides/DEPLOYMENT_GUIDE.md) — Production deployment
+
+---
+
+## Additional Resources
+
+- **Examples**: See [examples/](../examples/) directory for workflow examples
+- **Schema**: [schema/](../schema/) contains JSON schemas and type definitions
+- **Source Code**: [src/](../src/) contains the main GeneForgeLang implementation
+
+---
+
+## External Links
+
+- [GitHub Repository](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang) — Source code
+- [Security Policy](../SECURITY_ADVISORY.md) — Security information
+- [Contributing Guide](../CONTRIBUTING.md) — How to contribute
+- [License](../LICENSE) — MIT License
+
+---
+
+## Document Organization
+
+```
+docs/
+├── INDEX.md (this file)
+├── guides/
+│   ├── user-guides/          # User-facing documentation
+│   │   ├── installation.md
+│   │   ├── quickstart_user.md
+│   │   ├── tutorial.md
+│   │   └── custom_schemas_io_contracts.md
+│   └── dev-guides/           # Developer documentation
+│       ├── creating_plugins.md
+│       └── DEPLOYMENT_GUIDE.md
+├── geneforgelang/                 # App documentation
+|   ├── features/                 # Feature documentation
+│   |   ├── design_block.md
+│   |   ├── optimize_block.md
+│   |   ├── symbolic_reasoning.md
+│   |   ├── guided_discovery.md
+│   |   └── ... (15 feature docs total)
+│   ├── plugins/              # Plugin documentation
+|   │   ├── plugins_overview.md
+|   │   ├── PLUGIN_ECOSYSTEM.md
+|   │   ├── core_plugins/
+|   │   └── genesis_plugins/
+|   ├── api.md
+|   └── cli.md
+└── dev/                      # Development resources
+    ├── decisions/            # Architecture decisions
+    │    ├── organization.md
+    │    ├── ontology.md
+    │    └── HISTORY.md
+    └── reports/
+```
+
+---
+
+*Last updated: April 2026*  
 *GeneForgeLang - The Symbolic Language for Biological Reasoning*

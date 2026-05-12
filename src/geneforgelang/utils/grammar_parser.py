@@ -17,14 +17,15 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 from typing import Any, List, Optional
+
 from geneforgelang.core.errors import (
-        EnhancedValidationError,
-        EnhancedValidationResult,
-        ErrorCategory,
-        ErrorFix,
-        ErrorSeverity,
-        SourceLocation,
-    )
+    EnhancedValidationError,
+    EnhancedValidationResult,
+    ErrorCategory,
+    ErrorFix,
+    ErrorSeverity,
+    SourceLocation,
+)
 
 # Check for PLY availability
 try:
@@ -623,7 +624,9 @@ class AdvancedGFLParser:
         """Get source location for a parser token."""
         if hasattr(p, "lineno") and hasattr(p, "lexpos"):
             return SourceLocation(
-                line=p.lineno(index) if callable(p.lineno) else getattr(p.slice[index], "lineno", 1),
+                line=(
+                    p.lineno(index) if callable(p.lineno) else getattr(p.slice[index], "lineno", 1)
+                ),
                 column=getattr(p.slice[index], "lexpos", 0),
                 file_path=getattr(self, "current_file", "<input>"),
             )

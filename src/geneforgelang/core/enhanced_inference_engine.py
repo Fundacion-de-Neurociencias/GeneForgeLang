@@ -266,11 +266,15 @@ class HeuristicModel(BaseMLModel):
         explanation_parts = [result.explanation]
 
         if result.feature_importance:
-            important_features = sorted(result.feature_importance.items(), key=lambda x: x[1], reverse=True)[
+            important_features = sorted(
+                result.feature_importance.items(), key=lambda x: x[1], reverse=True
+            )[
                 :3
             ]  # Top 3 features
 
-            explanation_parts.append(f"Key factors: {', '.join([f'{k} ({v:.2f})' for k, v in important_features])}")
+            explanation_parts.append(
+                f"Key factors: {', '.join([f'{k} ({v:.2f})' for k, v in important_features])}"
+            )
 
         return ". ".join(explanation_parts)
 
@@ -397,7 +401,9 @@ class TransformersModel(BaseMLModel):
 
         return ". ".join(text_parts) if text_parts else "No text features available"
 
-    def _process_outputs(self, outputs, inputs: Dict[str, Any], features: Dict[str, Any]) -> InferenceResult:
+    def _process_outputs(
+        self, outputs, inputs: Dict[str, Any], features: Dict[str, Any]
+    ) -> InferenceResult:
         """Process model outputs into InferenceResult."""
         if hasattr(outputs, "logits"):
             # Classification or causal LM case
@@ -414,7 +420,9 @@ class TransformersModel(BaseMLModel):
 
             # Generate prediction label
             if hasattr(self._model.config, "id2label"):
-                prediction = self._model.config.id2label.get(predicted_class, f"class_{predicted_class}")
+                prediction = self._model.config.id2label.get(
+                    predicted_class, f"class_{predicted_class}"
+                )
             else:
                 prediction = f"class_{predicted_class}"
 
@@ -501,7 +509,9 @@ class EnhancedInferenceEngine:
         self.models[name] = model
         logger.info(f"Registered model: {name}")
 
-    def load_transformers_model(self, name: str, model_name: str, model_type: str = "auto", **kwargs) -> None:
+    def load_transformers_model(
+        self, name: str, model_name: str, model_type: str = "auto", **kwargs
+    ) -> None:
         """Load a HuggingFace transformers model."""
         if not HAS_ML_DEPS:
             raise ImportError("ML dependencies required for transformers models")
@@ -512,12 +522,16 @@ class EnhancedInferenceEngine:
         self.register_model(name, model)
 
     @cached(cache_name="inference_results", ttl=300.0, max_size=1000)
-    def predict(self, model_name: Optional[str], features: Dict[str, Any], explain: bool = True) -> InferenceResult:
+    def predict(
+        self, model_name: Optional[str], features: Dict[str, Any], explain: bool = True
+    ) -> InferenceResult:
         """Make predictions using specified model."""
         model_name = model_name or self.default_model
 
         if model_name not in self.models:
-            raise ValueError(f"Model '{model_name}' not found. Available: {list(self.models.keys())}")
+            raise ValueError(
+                f"Model '{model_name}' not found. Available: {list(self.models.keys())}"
+            )
 
         model = self.models[model_name]
 
@@ -541,7 +555,9 @@ class EnhancedInferenceEngine:
 
             return result
 
-    def batch_predict(self, model_name: Optional[str], feature_list: List[Dict[str, Any]]) -> List[InferenceResult]:
+    def batch_predict(
+        self, model_name: Optional[str], feature_list: List[Dict[str, Any]]
+    ) -> List[InferenceResult]:
         """Make batch predictions."""
         return [self.predict(model_name, features, explain=False) for features in feature_list]
 

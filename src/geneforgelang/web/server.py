@@ -58,7 +58,9 @@ except ImportError:
     Limiter = None
 
 # Set up logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 # Global state
@@ -189,7 +191,9 @@ async def lifespan(app: FastAPI):
             multimodal_model = create_multimodal_genomic_model()
             inference_engine.register_model("multimodal", multimodal_model)
 
-            logger.info(f"Inference engine initialized with models: {inference_engine.list_models()}")
+            logger.info(
+                f"Inference engine initialized with models: {inference_engine.list_models()}"
+            )
         except Exception as e:
             logger.warning(f"Could not initialize enhanced inference engine: {e}")
 
@@ -265,7 +269,9 @@ def create_error_response(message: str, status_code: int = 400) -> JSONResponse:
     )
 
 
-def create_success_response(data: Any, message: str = "Success", execution_time: float = None) -> dict[str, Any]:
+def create_success_response(
+    data: Any, message: str = "Success", execution_time: float = None
+) -> dict[str, Any]:
     """Create standardized success response."""
     return {
         "success": True,
@@ -524,7 +530,9 @@ async def get_model_info(model_name: str):
 async def upload_and_parse(request: Request, file: UploadFile = File(...)):
     """Upload and parse a GFL file."""
     if not file.filename.endswith((".gfl", ".yml", ".yaml", ".txt")):
-        raise HTTPException(status_code=400, detail="Invalid file type. Use .gfl, .yml, .yaml, or .txt")
+        raise HTTPException(
+            status_code=400, detail="Invalid file type. Use .gfl, .yml, .yaml, or .txt"
+        )
 
     try:
         content = await file.read()
@@ -580,7 +588,9 @@ async def get_stats():
 
 # Async workflow execution (placeholder for future enhancement)
 @app.post("/workflow/execute")
-async def execute_workflow(background_tasks: BackgroundTasks, gfl_request: WorkflowExecutionRequest):
+async def execute_workflow(
+    background_tasks: BackgroundTasks, gfl_request: WorkflowExecutionRequest
+):
     """Execute a GFL workflow asynchronously."""
     # For now, this is a placeholder that performs validation and inference
     try:
@@ -597,7 +607,11 @@ async def execute_workflow(background_tasks: BackgroundTasks, gfl_request: Workf
             data={
                 "workflow_id": workflow_id,
                 "status": "queued" if not gfl_request.dry_run else "dry_run_complete",
-                "message": "Workflow queued for execution" if not gfl_request.dry_run else "Dry run validation passed",
+                "message": (
+                    "Workflow queued for execution"
+                    if not gfl_request.dry_run
+                    else "Dry run validation passed"
+                ),
             },
             message="Workflow processing initiated",
         )

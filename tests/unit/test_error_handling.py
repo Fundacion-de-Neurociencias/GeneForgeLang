@@ -193,7 +193,9 @@ class TestEnhancedValidationResult:
         """Test adding error to result."""
         result = EnhancedValidationResult()
 
-        error = result.add_error("Test error", "TEST001", ErrorSeverity.ERROR, ErrorCategory.SEMANTIC)
+        error = result.add_error(
+            "Test error", "TEST001", ErrorSeverity.ERROR, ErrorCategory.SEMANTIC
+        )
 
         assert len(result.errors) == 1
         assert result.errors[0] is error
@@ -301,7 +303,9 @@ class TestErrorCreationHelpers:
     def test_create_semantic_error(self):
         """Test creating semantic error."""
         loc = SourceLocation(line=5, column=10)
-        error = create_semantic_error("Missing required field", loc, ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD)
+        error = create_semantic_error(
+            "Missing required field", loc, ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD
+        )
 
         assert error.severity == ErrorSeverity.ERROR
         assert error.category == ErrorCategory.SEMANTIC

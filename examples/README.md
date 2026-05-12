@@ -5,6 +5,7 @@ This directory contains example GFL workflows demonstrating the language syntax 
 ## simple_workflow.gfl
 
 A basic example showing:
+
 - Protein sequence design using a generator plugin
 - Parameter optimization using search strategies
 - Workflow variable substitution
@@ -12,7 +13,7 @@ A basic example showing:
 ## Running Examples
 
 ```python
-from gfl.api import parse, validate, execute
+from geneforgelang import parse, validate, execute
 
 # Load and parse a GFL file
 with open('examples/simple_workflow.gfl', 'r') as f:
@@ -31,6 +32,7 @@ else:
 ## Plugin Requirements
 
 The examples use these plugins:
+
 - `ProteinVAEGenerator`: Simple protein sequence generator (maps to SimpleProteinGenerator)
 - `BayesianOptimization`: Parameter optimization (maps to SimpleOptimizer)
 

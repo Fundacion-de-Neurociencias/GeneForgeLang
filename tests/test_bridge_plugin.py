@@ -36,7 +36,7 @@ try:
             print(f"Error loading plugin instance: {e}")
     else:
         print("\nBridge Editor plugin NOT found in registry!")
-        
+
 except Exception as e:
     print(f"Error: {e}")
     import traceback

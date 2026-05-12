@@ -51,7 +51,9 @@ class TestDesignCandidate:
     def test_design_candidate_with_metadata(self):
         """Test DesignCandidate with metadata."""
         metadata = {"model_version": "v1.2", "temperature": 0.8}
-        candidate = DesignCandidate(sequence="ATCGATCGATCG", properties={"gc_content": 0.5}, metadata=metadata)
+        candidate = DesignCandidate(
+            sequence="ATCGATCGATCG", properties={"gc_content": 0.5}, metadata=metadata
+        )
 
         assert candidate.metadata["model_version"] == "v1.2"
         assert candidate.metadata["temperature"] == 0.8
@@ -77,7 +79,10 @@ class TestExperimentResult:
     def test_experiment_result_failure(self):
         """Test failed experiment result."""
         result = ExperimentResult(
-            parameters={"temperature": 95.0}, objective_value=0.0, success=False, error_message="Temperature too high"
+            parameters={"temperature": 95.0},
+            objective_value=0.0,
+            success=False,
+            error_message="Temperature too high",
         )
 
         assert result.success is False
@@ -98,7 +103,9 @@ class TestOptimizationStep:
 
     def test_optimization_step_with_metrics(self):
         """Test OptimizationStep with acquisition function metrics."""
-        step = OptimizationStep(parameters={"param1": 1.5}, iteration=10, expected_improvement=0.25, uncertainty=0.15)
+        step = OptimizationStep(
+            parameters={"param1": 1.5}, iteration=10, expected_improvement=0.25, uncertainty=0.15
+        )
 
         assert step.expected_improvement == 0.25
         assert step.uncertainty == 0.15
@@ -131,7 +138,9 @@ class MockGeneratorPlugin(GeneratorPlugin):
                 sequence = "ATCG" * (10 + i)
 
             candidates.append(
-                DesignCandidate(sequence=sequence, properties={"mock_property": 0.5 + i * 0.1}, confidence=0.8)
+                DesignCandidate(
+                    sequence=sequence, properties={"mock_property": 0.5 + i * 0.1}, confidence=0.8
+                )
             )
 
         return candidates
@@ -162,7 +171,11 @@ class MockOptimizerPlugin(OptimizerPlugin):
         return [OptimizationStrategy.BAYESIAN_OPTIMIZATION, OptimizationStrategy.RANDOM_SEARCH]
 
     def setup(
-        self, search_space: Dict[str, str], strategy: Dict[str, Any], objective: Dict[str, Any], budget: Dict[str, Any]
+        self,
+        search_space: Dict[str, str],
+        strategy: Dict[str, Any],
+        objective: Dict[str, Any],
+        budget: Dict[str, Any],
     ) -> None:
         """Mock setup."""
         self.setup_called = True
@@ -170,7 +183,9 @@ class MockOptimizerPlugin(OptimizerPlugin):
     def suggest_next(self, experiment_history: List[ExperimentResult]) -> OptimizationStep:
         """Mock suggestion."""
         self.iteration += 1
-        return OptimizationStep(parameters={"param1": self.iteration * 0.1}, iteration=self.iteration)
+        return OptimizationStep(
+            parameters={"param1": self.iteration * 0.1}, iteration=self.iteration
+        )
 
     def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Process method required by BaseGFLPlugin."""
@@ -194,7 +209,10 @@ class TestGeneratorPlugin:
         generator = MockGeneratorPlugin()
 
         candidates = generator.generate(
-            entity="ProteinSequence", objective={"maximize": "stability"}, constraints=["length(20, 50)"], count=3
+            entity="ProteinSequence",
+            objective={"maximize": "stability"},
+            constraints=["length(20, 50)"],
+            count=3,
         )
 
         assert len(candidates) == 3
@@ -340,7 +358,12 @@ class TestSequenceGeneratorPlugin:
                 return [EntityType.PROTEIN_SEQUENCE]
 
             def generate(
-                self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
+                self,
+                entity: str,
+                objective: Dict[str, Any],
+                constraints: List[str],
+                count: int,
+                **kwargs,
             ) -> List[DesignCandidate]:
                 return []
 
@@ -376,7 +399,12 @@ class TestSequenceGeneratorPlugin:
                 return [EntityType.PROTEIN_SEQUENCE]
 
             def generate(
-                self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
+                self,
+                entity: str,
+                objective: Dict[str, Any],
+                constraints: List[str],
+                count: int,
+                **kwargs,
             ) -> List[DesignCandidate]:
                 return []
 
@@ -417,7 +445,12 @@ class TestMoleculeGeneratorPlugin:
                 return [EntityType.SMALL_MOLECULE]
 
             def generate(
-                self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
+                self,
+                entity: str,
+                objective: Dict[str, Any],
+                constraints: List[str],
+                count: int,
+                **kwargs,
             ) -> List[DesignCandidate]:
                 return []
 
@@ -453,7 +486,12 @@ class TestMoleculeGeneratorPlugin:
                 return [EntityType.SMALL_MOLECULE]
 
             def generate(
-                self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
+                self,
+                entity: str,
+                objective: Dict[str, Any],
+                constraints: List[str],
+                count: int,
+                **kwargs,
             ) -> List[DesignCandidate]:
                 return []
 
@@ -568,7 +606,10 @@ class TestExampleImplementations:
 
         # Test generation
         candidates = generator.generate(
-            entity="ProteinSequence", objective={"maximize": "stability"}, constraints=["length(50, 100)"], count=2
+            entity="ProteinSequence",
+            objective={"maximize": "stability"},
+            constraints=["length(50, 100)"],
+            count=2,
         )
 
         assert len(candidates) == 2

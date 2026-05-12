@@ -374,7 +374,9 @@ class GFLAST:
                 objective=dict(design_data["objective"]),
                 count=int(design_data["count"]),
                 output=str(design_data["output"]),
-                constraints=list(design_data["constraints"]) if "constraints" in design_data else None,
+                constraints=(
+                    list(design_data["constraints"]) if "constraints" in design_data else None
+                ),
             )
 
         if "optimize" in data:

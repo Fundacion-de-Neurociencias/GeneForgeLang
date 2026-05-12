@@ -76,7 +76,9 @@ def test_schema_registry_validation():
 
     # Check for schema-related errors
     schema_errors = [
-        error for error in result.errors if "schema" in error.message.lower() or "attribute" in error.message.lower()
+        error
+        for error in result.errors
+        if "schema" in error.message.lower() or "attribute" in error.message.lower()
     ]
     if schema_errors:
         print(f"Found {len(schema_errors)} schema-related errors:")
@@ -100,7 +102,12 @@ def test_simple_schema_usage():
             "type": "sequencing",
             "contract": {
                 "inputs": {"raw_sequences": {"type": "FASTQ_PairedEnd"}},
-                "outputs": {"aligned_reads": {"type": "BAM_Indexed", "attributes": {"sorted": True, "indexed": True}}},
+                "outputs": {
+                    "aligned_reads": {
+                        "type": "BAM_Indexed",
+                        "attributes": {"sorted": True, "indexed": True},
+                    }
+                },
             },
         },
     }

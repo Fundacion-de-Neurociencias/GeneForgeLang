@@ -49,13 +49,17 @@ def default_rules() -> List[ProbRule]:
         ProbRule(
             "vector_tropism_match",
             3.0,
-            lambda n: n.get("type") == "vector" and "tropism=retina" in str(n.get("attrs", {}).get("val", "")),
+            lambda n: n.get("type") == "vector"
+            and "tropism=retina" in str(n.get("attrs", {}).get("val", "")),
         ),
         ProbRule(
             "non_equity_governance",
             0.5,
             lambda n: n.get("type") == "governance"
-            and not any(k in str(n.get("attrs", {}).get("val", "")) for k in ("equity", "transparency", "stewardship")),
+            and not any(
+                k in str(n.get("attrs", {}).get("val", ""))
+                for k in ("equity", "transparency", "stewardship")
+            ),
         ),
         ProbRule(
             "high_offtarget",

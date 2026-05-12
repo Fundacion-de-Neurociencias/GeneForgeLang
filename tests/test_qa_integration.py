@@ -23,7 +23,14 @@ class QAIntegrationTester:
     """Comprehensive QA testing for GeneForge platform."""
 
     def __init__(self):
-        self.results = {"total_tests": 0, "passed": 0, "failed": 0, "warnings": 0, "bugs_found": [], "test_details": {}}
+        self.results = {
+            "total_tests": 0,
+            "passed": 0,
+            "failed": 0,
+            "warnings": 0,
+            "bugs_found": [],
+            "test_details": {},
+        }
         self.base_url = "http://localhost:8000"
 
     def run_test(self, test_name: str, test_func) -> bool:
@@ -43,7 +50,9 @@ class QAIntegrationTester:
         except Exception as e:
             self.results["failed"] += 1
             print(f"❌ ERROR in {test_name}: {e}")
-            self.results["bugs_found"].append({"test": test_name, "error": str(e), "type": "exception"})
+            self.results["bugs_found"].append(
+                {"test": test_name, "error": str(e), "type": "exception"}
+            )
             return False
 
     def test_gfl_service_health(self) -> bool:
@@ -89,7 +98,10 @@ proteins:
 """
             ast = parse_gfl(test_gfl)
             return (
-                "transcripts" in ast and "proteins" in ast and len(ast["transcripts"]) > 0 and len(ast["proteins"]) > 0
+                "transcripts" in ast
+                and "proteins" in ast
+                and len(ast["transcripts"]) > 0
+                and len(ast["proteins"]) > 0
             )
         except Exception:
             return False
@@ -146,7 +158,10 @@ rules:
         try:
             # Run the conformance suite test
             result = subprocess.run(
-                [sys.executable, "test_conformance_suite_v1_3_0.py"], capture_output=True, text=True, timeout=60
+                [sys.executable, "test_conformance_suite_v1_3_0.py"],
+                capture_output=True,
+                text=True,
+                timeout=60,
             )
 
             # Check if tests passed (look for success indicators in output)
@@ -159,7 +174,10 @@ rules:
         try:
             # Run the multi-omic test suite
             result = subprocess.run(
-                [sys.executable, "test_multi_omic_v2_0.py"], capture_output=True, text=True, timeout=60
+                [sys.executable, "test_multi_omic_v2_0.py"],
+                capture_output=True,
+                text=True,
+                timeout=60,
             )
 
             # Check if tests passed
@@ -171,13 +189,11 @@ rules:
         """Test 8: API Endpoints Functionality"""
         try:
             # Test parse endpoint
-            test_data = {
-                "gfl_content": """
+            test_data = {"gfl_content": """
 experiment:
   name: "api_test"
   description: "API endpoint test"
-"""
-            }
+"""}
 
             response = requests.post(f"{self.base_url}/parse", json=test_data, timeout=10)
 
@@ -362,7 +378,9 @@ def main():
         for bug in results["bugs_found"]:
             print(f"  - {bug['test']}: {bug['error']}")
 
-    success_rate = (results["passed"] / results["total_tests"] * 100) if results["total_tests"] > 0 else 0
+    success_rate = (
+        (results["passed"] / results["total_tests"] * 100) if results["total_tests"] > 0 else 0
+    )
     print(f"\nSuccess Rate: {success_rate:.1f}%")
 
     if success_rate >= 90:
