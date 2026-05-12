@@ -156,6 +156,7 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
+GeneForgeLang/
 *.gfl.bak
 *.yaml.bak
 *.json.bak
@@ -163,6 +164,7 @@ temp_*
 debug_*
 test_output/
 logs/
+parsetab.py
 
 # AI/LLM generated artifacts (to prevent)
 *_SUMMARY.md
