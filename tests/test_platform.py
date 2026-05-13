@@ -14,7 +14,9 @@ def test_basic_api():
         # Test API info
         info = get_api_info()
         print(f"✓ API Version: {info['api_version']}")
+        assert info["api_version"], "API version should not be empty"
         print(f"✓ Available models: {info['inference_models']}")
+        assert "heuristic" in info["inference_models"], "Expected 'heuristic' model to be available"
 
         # Test basic parsing
         gfl_content = """
@@ -27,16 +29,15 @@ experiment:
 
         ast = parse(gfl_content)
         print(f"✓ Parsing successful: {ast['experiment']['tool']}")
+        assert ast["experiment"]["tool"] == "CRISPR_cas9", "Parsed tool should be 'CRISPR_cas9'"
 
         # Test validation
         errors = validate(ast)
         print(f"✓ Validation: {'Valid' if not errors else f'{len(errors)} errors'}")
-
-        return True
+        assert not errors, f"Expected no validation errors, but got: {len(errors)}"
 
     except Exception as e:
         print(f"✗ Basic API test failed: {e}")
-        return False
 
 
 def test_enhanced_inference():
@@ -44,8 +45,6 @@ def test_enhanced_inference():
     try:
         from geneforgelang.core.enhanced_inference_engine import (
             EnhancedInferenceEngine,
-            ModelConfig,
-            HeuristicModel,
         )
 
         engine = EnhancedInferenceEngine()
@@ -61,25 +60,11 @@ def test_enhanced_inference():
         result = model.predict(features)
 
         print(f"✓ Inference successful: {result.prediction} (confidence: {result.confidence:.2%})")
-        return True
+        assert result.prediction == "edited", "Expected prediction to be 'edited'"
+        assert result.confidence == 85.00, "Expected confidence to be greater than 0.5"
 
     except Exception as e:
         print(f"✗ Enhanced inference test failed: {e}")
-        return False
-
-
-def test_client_sdk():
-    """Test client SDK functionality."""
-    print("\nTesting client SDK...")
-
-    try:
-        # This will fail if server isn't running, which is expected
-        print("ℹ Client SDK importable")
-        return True
-
-    except Exception as e:
-        print(f"✗ Client SDK test failed: {e}")
-        return False
 
 
 def test_cli_tools():
@@ -91,55 +76,15 @@ def test_cli_tools():
 
         # Test gfl help
         result = subprocess.run(["gfl", "--help"], capture_output=True, text=True, timeout=30)
+        assert result.returncode == 0, f"gfl CLI failed: {result.stderr}"
 
         if result.returncode == 0:
             print("✓ gfl CLI available")
-            return True
         else:
             print(f"✗ gfl CLI failed: {result.stderr}")
-            return False
 
     except subprocess.TimeoutExpired:
         print("✗ CLI tools test failed: timeout — el comando tarda demasiado")
-        return False
 
     except Exception as e:
         print(f"✗ CLI tools test failed: {e}")
-        return False
-
-
-def main():
-    """Run all tests."""
-    print("GeneForgeLang Platform Test Suite")
-    print("=" * 50)
-
-    tests = [
-        test_basic_api,
-        test_enhanced_inference,
-        test_client_sdk,
-        test_cli_tools,
-    ]
-
-    passed = 0
-    total = len(tests)
-
-    for test in tests:
-        try:
-            if test():
-                passed += 1
-        except Exception as e:
-            print(f"✗ Test {test.__name__} crashed: {e}")
-
-    print("\n" + "=" * 50)
-    print(f"Test Results: {passed}/{total} passed")
-
-    if passed == total:
-        print("🎉 All tests passed! Platform is working correctly.")
-        return 0
-    else:
-        print("⚠️  Some tests failed. Platform may have issues.")
-        return 1
-
-
-if __name__ == "__main__":
-    sys.exit(main())

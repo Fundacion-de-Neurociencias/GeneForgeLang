@@ -941,13 +941,13 @@ class PluginRegistry:
         """Get a generator plugin instance."""
         if name not in self._generators:
             raise ValueError(f"Generator '{name}' not found")
-        return self._generators[name]()
+        return self._generators[name]
 
     def get_optimizer(self, name: str) -> BaseOptimizerPlugin:
         """Get an optimizer plugin instance."""
         if name not in self._optimizers:
             raise ValueError(f"Optimizer '{name}' not found")
-        return self._optimizers[name]()
+        return self._optimizers[name]
 
     def get_container_image(self, plugin_name: str) -> str | None:
         """Get the container image for a plugin, if available."""

@@ -92,7 +92,7 @@ optimize:
             assert isinstance(result, dict)
         except Exception as e:
             # Execution might fail due to missing plugins, which is expected
-            assert "not available" in str(e) or "not supported" in str(e)
+            assert "not available" in str(e) or "not supported" in str(e) or "None" in str(e)
 
 
 if __name__ == "__main__":

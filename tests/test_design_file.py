@@ -10,7 +10,7 @@ def test_real_gfl_file():
     """Test parsing and validating a real GFL file with design block."""
 
     print("Testing real GFL file with design block...")
-    gfl_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "examples", "example_protein_design.gfl")
+    gfl_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "examples", "features", "example_protein_design.gfl")
 
     # Read the GFL file
     with open(gfl_file_path) as f:
@@ -26,7 +26,7 @@ def test_real_gfl_file():
 
     if ast is None:
         print("❌ Failed to parse GFL file")
-        return False
+        raise AssertionError("Failed to parse GFL file")
 
     print("✓ Successfully parsed GFL file")
 
@@ -39,7 +39,7 @@ def test_real_gfl_file():
             print(f"✓ Found {block} block")
         else:
             print(f"❌ Missing {block} block")
-            return False
+            raise AssertionError(f"Missing {block} block")
 
     # Check design block details
     print("\n3. Validating design block structure...")
@@ -51,7 +51,7 @@ def test_real_gfl_file():
             print(f"✓ Found design.{field}: {design[field]}")
         else:
             print(f"❌ Missing design.{field}")
-            return False
+            raise AssertionError(f"Missing design.{field}")
 
     # Validate the AST
     print("\n4. Running semantic validation...")
@@ -61,13 +61,11 @@ def test_real_gfl_file():
         print("❌ Validation errors found:")
         for error in errors:
             print(f"  - {error}")
-        return False
+        raise AssertionError("Validation errors found")
     else:
         print("✓ No validation errors")
 
     print("\n🎉 All tests passed! Design block implementation works correctly with GFL files.")
-    return True
-
 
 if __name__ == "__main__":
     success = test_real_gfl_file()

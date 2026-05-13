@@ -29,7 +29,7 @@ def test_design_schema_validation():
         print("❌ Validation errors for valid design:")
         for error in result.errors:
             print(f"  - {error.message}")
-        return False
+        raise AssertionError("Valid design block should not have validation errors")
     else:
         print("✓ Valid design block passes schema validation")
 
@@ -51,7 +51,7 @@ def test_design_schema_validation():
     # Should have validation errors or warnings
     if not result.errors and not result.warnings:
         print("❌ Should have validation issues for invalid entity")
-        return False
+        raise AssertionError("Invalid entity should have validation issues")
     else:
         print("✓ Invalid entity properly flagged")
 
@@ -71,7 +71,7 @@ def test_design_schema_validation():
 
     if not result.errors:
         print("❌ Should have errors for missing count field")
-        return False
+        raise AssertionError("Missing count field should have validation errors")
     else:
         print("✓ Missing count field properly detected")
 
@@ -93,13 +93,11 @@ def test_design_schema_validation():
 
     if not result.errors:
         print("❌ Should have errors for conflicting objectives")
-        return False
+        raise AssertionError("Conflicting objectives should have validation errors")
     else:
         print("✓ Conflicting objectives properly detected")
 
     print("\n🎉 All schema validation tests passed!")
-    return True
-
 
 if __name__ == "__main__":
     success = test_design_schema_validation()

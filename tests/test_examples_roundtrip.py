@@ -10,8 +10,8 @@ EXAMPLES_DIR = Path("examples")
 @pytest.mark.parametrize(
     "path,expect_errors",
     [
-        (EXAMPLES_DIR / "test_valid_semantics.gfl", False),
-        (EXAMPLES_DIR / "test_invalid_semantics.gfl", True),
+        (EXAMPLES_DIR / "syntax" / "example_valid_semantics.gfl", False),
+        (EXAMPLES_DIR / "syntax" / "example_invalid_semantics.gfl", True),
     ],
 )
 def test_known_validity_examples(path: Path, expect_errors: bool):

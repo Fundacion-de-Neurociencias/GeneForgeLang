@@ -12,7 +12,7 @@ def test_example_optimize_file():
     print("Testing CRISPR optimization example...")
 
     # Read the GFL file
-    with open("examples/advanced/crispr_optimization.gfl") as f:
+    with open("examples/features/crispr_optimization.gfl") as f:
         gfl_content = f.read()
 
     print(f"GFL content ({len(gfl_content)} characters):")
@@ -26,7 +26,7 @@ def test_example_optimize_file():
 
     if ast is None:
         print("❌ Failed to parse GFL file")
-        return False
+        raise AssertionError("Failed to parse GFL file")
 
     print("✓ Successfully parsed GFL file")
 
@@ -39,7 +39,7 @@ def test_example_optimize_file():
             print(f"✓ Found {block} block")
         else:
             print(f"❌ Missing {block} block")
-            return False
+            raise AssertionError(f"Missing {block} block")
 
     # Check optimize block details
     print("\n3. Validating optimize block structure...")
@@ -51,7 +51,7 @@ def test_example_optimize_file():
             print(f"✓ Found optimize.{field}")
         else:
             print(f"❌ Missing optimize.{field}")
-            return False
+            raise AssertionError(f"Missing optimize.{field}")
 
     # Check search space
     search_space = optimize["search_space"]
@@ -76,13 +76,11 @@ def test_example_optimize_file():
         print("❌ Validation errors found:")
         for error in errors:
             print(f"  - {error}")
-        return False
+        raise AssertionError("Validation errors found")
     else:
         print("✓ No validation errors")
 
     print("\n🎉 CRISPR optimization example works perfectly!")
-    return True
-
 
 if __name__ == "__main__":
     success = test_example_optimize_file()

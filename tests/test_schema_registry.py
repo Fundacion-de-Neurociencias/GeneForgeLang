@@ -20,36 +20,25 @@ def test_schema_loader():
     result = EnhancedValidationResult()
 
     # Test loading valid schema file
-    success = loader.load_schema_file("test_custom_types.yml", result)
+    success = loader.load_schema_file("tests/test_custom_types.yml", result)
 
     if not success:
         print("❌ Failed to load schema file:")
         for error in result.errors:
             print(f"  - {error.message}")
-        return False
+        raise AssertionError("Schema loading failed")
 
     # Check that schemas were loaded
     schemas = loader.get_all_schemas()
-    if len(schemas) != 3:
-        print(f"❌ Expected 3 schemas, got {len(schemas)}")
-        return False
+    assert len(schemas) == 3, f"Expected 3 schemas, got {len(schemas)}"
 
     # Check specific schema
-    if "FASTQ_PairedEnd" not in schemas:
-        print("❌ FASTQ_PairedEnd schema not found")
-        return False
+    assert "FASTQ_PairedEnd" in schemas, "FASTQ_PairedEnd schema not found"
 
     fastq_schema = schemas["FASTQ_PairedEnd"]
-    if fastq_schema.base_type != "FASTQ":
-        print(f"❌ Expected base type 'FASTQ', got '{fastq_schema.base_type}'")
-        return False
+    assert fastq_schema.base_type == "FASTQ", f"Expected base type 'FASTQ', got '{fastq_schema.base_type}'"
 
-    if "layout" not in fastq_schema.attributes:
-        print("❌ 'layout' attribute not found in FASTQ_PairedEnd schema")
-        return False
-
-    print("✓ SchemaLoader tests passed")
-    return True
+    assert "layout" in fastq_schema.attributes, "❌ 'layout' attribute not found in FASTQ_PairedEnd schema"
 
 
 def test_schema_registry_validation():
@@ -60,12 +49,14 @@ def test_schema_registry_validation():
     with open("tests/test_schema_registry.gfl") as f:
         gfl_content = f.read()
 
+    assert gfl_content is not None, "Failed to read GFL content from file"
+
     # Parse the GFL content
     ast = parse(gfl_content)
 
     if ast is None:
         print("❌ Failed to parse GFL content")
-        return False
+        raise AssertionError("Failed to parse GFL content")
 
     print("✓ Parsed AST successfully")
 
@@ -73,6 +64,7 @@ def test_schema_registry_validation():
     result = validate(ast, enhanced=True)
 
     print(f"Validation result: {'Valid' if result.is_valid else 'Invalid'}")
+    assert result.errors, "Expected validation errors due to schema issues, but got none"
 
     # Check for schema-related errors
     schema_errors = [
@@ -84,10 +76,6 @@ def test_schema_registry_validation():
         print(f"Found {len(schema_errors)} schema-related errors:")
         for error in schema_errors:
             print(f"  - {error.message}")
-
-    # We expect some errors for the invalid test cases
-    # But the valid cases should pass
-    return True
 
 
 def test_simple_schema_usage():
@@ -116,23 +104,5 @@ def test_simple_schema_usage():
     result = validator.validate_ast(test_ast)
 
     print(f"Simple validation result: {'Valid' if result.is_valid else 'Invalid'}")
-
-    if not result.is_valid:
-        print(f"Found {len(result.errors)} errors:")
-        for error in result.errors:
-            print(f"  - {error.message}")
-
-    return result.is_valid
-
-
-if __name__ == "__main__":
-    success1 = test_schema_loader()
-    success2 = test_schema_registry_validation()
-    success3 = test_simple_schema_usage()
-
-    if success1 and success2 and success3:
-        print("\n🎉 All tests passed!")
-        sys.exit(0)
-    else:
-        print("\n❌ Some tests failed!")
-        sys.exit(1)
+    assert result, "Expected simple schema usage to be valid"
+    assert result.errors, "Expected validation errors due to schema issues, but got none"

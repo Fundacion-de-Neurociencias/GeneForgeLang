@@ -93,7 +93,7 @@ def test_protein_design_example():
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
-        return False
+        raise AssertionError("Workflow validation failed")
     else:
         print("✓ Workflow validation passed")
 
@@ -106,10 +106,7 @@ def test_protein_design_example():
         print("✓ Inference completed successfully")
     except Exception as e:
         print(f"❌ Inference failed: {e}")
-        return False
-
-    return True
-
+        raise AssertionError("Inference failed")
 
 def test_dna_design_example():
     """Test DNA sequence design workflow."""
@@ -143,11 +140,8 @@ def test_dna_design_example():
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
-        return False
+        raise AssertionError("DNA design validation failed")
     print("✓ DNA design validation passed")
-
-    return True
-
 
 def test_small_molecule_design_example():
     """Test small molecule design workflow."""
@@ -203,11 +197,8 @@ def test_small_molecule_design_example():
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
-        return False
+        raise AssertionError("Small molecule design validation failed")
     print("✓ Small molecule design validation passed")
-
-    return True
-
 
 def test_multi_objective_design_error():
     """Test that conflicting objectives are properly detected."""
@@ -236,9 +227,6 @@ def test_multi_objective_design_error():
     assert "maximize" in error_text and "minimize" in error_text
     print("✓ Correctly detected conflicting objectives")
 
-    return True
-
-
 def run_all_tests():
     """Run all design block tests."""
     print("GeneForgeLang Design Block Implementation Test")
@@ -250,28 +238,11 @@ def run_all_tests():
         test_small_molecule_design_example,
         test_multi_objective_design_error,
     ]
-
-    passed = 0
-    total = len(tests)
-
-    for test_func in tests:
+    for test in tests:
         try:
-            if test_func():
-                passed += 1
-            else:
-                print(f"❌ {test_func.__name__} failed")
-        except Exception as e:
-            print(f"❌ {test_func.__name__} raised exception: {e}")
-
-    print("\n=== Test Summary ===")
-    print(f"Passed: {passed}/{total}")
-
-    if passed == total:
-        print("🎉 All tests passed! Design block implementation is working correctly.")
-        return True
-    else:
-        print("❌ Some tests failed. Check the output above for details.")
-        return False
+            test()
+        except AssertionError as e:
+            print(f"❌ {test.__name__} failed: {e}")
 
 
 if __name__ == "__main__":

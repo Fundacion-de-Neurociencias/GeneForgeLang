@@ -2,7 +2,7 @@
 
 from typing import Any, Dict, List
 
-from geneforgelang.plugins.plugin_registry import plugin_registry
+from geneforgelang.plugins.plugin_registry import PluginRegistry
 
 
 class ExecutionError(Exception):
@@ -17,22 +17,20 @@ class GFLExecutionEngine:
     def __init__(self):
         self.workflow_state = {}
 
-    def execute_design_block(self, design_block: dict[str, Any]) -> dict[str, Any]:
+    def execute_design_block(self, design_block: dict[str, Any], registry: PluginRegistry) -> dict[str, Any]:
         """Execute a design block."""
+        print(design_block)
         model_name = design_block.get("model")
         if not model_name:
             raise ExecutionError("Design block missing 'model' parameter")
 
         try:
-            generator = plugin_registry.get_generator(model_name)
-            params = {
-                "count": design_block.get("count", 10),
-                "entity": design_block.get("entity", "ProteinSequence"),
-                "objective": design_block.get("objective", {}),
-                "length": design_block.get("length", 100),
-            }
-
-            result = generator.generate(params)
+            generator = registry.get_generator(model_name)
+            result = generator.generate(
+                entity=design_block.get("entity", "ProteinSequence"), 
+                objective=design_block.get("objective", {}), 
+                constraints=design_block.get("constraints", []), 
+                count=design_block.get("count", 10))
 
             # Store in workflow state if output specified
             output_var = design_block.get("output")
@@ -42,12 +40,12 @@ class GFLExecutionEngine:
             return result
 
         except ValueError as e:
-            available = plugin_registry.list_generators()
+            available = registry.list_generators()
             raise ExecutionError(
                 f"Design model '{model_name}' not available. Available: {available}"
             )
 
-    def execute_optimize_block(self, optimize_block: dict[str, Any]) -> dict[str, Any]:
+    def execute_optimize_block(self, optimize_block: dict[str, Any], registry: PluginRegistry   ) -> dict[str, Any]:
         """Execute an optimize block."""
         strategy = optimize_block.get("strategy", {})
         strategy_name = strategy.get("name") if isinstance(strategy, dict) else strategy
@@ -56,7 +54,7 @@ class GFLExecutionEngine:
             raise ExecutionError("Optimize block missing strategy name")
 
         try:
-            optimizer = plugin_registry.get_optimizer(strategy_name)
+            optimizer = registry.get_optimizer(strategy_name)
             params = {
                 "search_space": optimize_block.get("search_space", {}),
                 "objective": optimize_block.get("objective", {}),
@@ -68,30 +66,30 @@ class GFLExecutionEngine:
             return result
 
         except ValueError as e:
-            available = plugin_registry.list_optimizers()
+            available = registry.list_optimizers()
             raise ExecutionError(
                 f"Optimization strategy '{strategy_name}' not supported. Available: {available}"
             )
 
 
-def execute_gfl_ast(ast: dict[str, Any]) -> dict[str, Any]:
+def execute_gfl_ast(ast: dict[str, Any], registry: PluginRegistry) -> dict[str, Any]:
     """Execute a complete GFL AST."""
     engine = GFLExecutionEngine()
     results = {}
 
     # Execute design blocks
     if "design" in ast:
-        results["design"] = engine.execute_design_block(ast["design"])
+        results["design"] = engine.execute_design_block(ast["design"], registry)
 
     # Execute optimize blocks
     if "optimize" in ast:
-        results["optimize"] = engine.execute_optimize_block(ast["optimize"])
+        results["optimize"] = engine.execute_optimize_block(ast["optimize"], registry)
 
     results["workflow_state"] = engine.workflow_state
     return results
 
 
-def validate_execution_requirements(ast: dict[str, Any]) -> list[str]:
+def validate_execution_requirements(ast: dict[str, Any], registry: PluginRegistry) -> list[str]:
     """Validate that required plugins are available."""
     errors = []
 
@@ -99,7 +97,7 @@ def validate_execution_requirements(ast: dict[str, Any]) -> list[str]:
     if "design" in ast:
         model_name = ast["design"].get("model")
         if model_name:
-            available_generators = plugin_registry.list_generators()
+            available_generators = registry.list_generators()
             if model_name not in available_generators:
                 errors.append(
                     f"Design model '{model_name}' not available. Available: {available_generators}"
@@ -110,7 +108,7 @@ def validate_execution_requirements(ast: dict[str, Any]) -> list[str]:
         strategy = ast["optimize"].get("strategy", {})
         strategy_name = strategy.get("name") if isinstance(strategy, dict) else strategy
         if strategy_name:
-            available_optimizers = plugin_registry.list_optimizers()
+            available_optimizers = registry.list_optimizers()
             if strategy_name not in available_optimizers:
                 errors.append(
                     f"Optimization strategy '{strategy_name}' not supported. Available: {available_optimizers}"

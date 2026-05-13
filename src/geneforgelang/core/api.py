@@ -37,6 +37,7 @@ from geneforgelang.core.errors import (
 from geneforgelang.core.inference import InferenceEngine as _InferenceEngine
 from geneforgelang.core.performance import cached, get_monitor
 from geneforgelang.core.validator import validate as _validate
+from geneforgelang.plugins.plugin_registry import PluginRegistry
 from geneforgelang.utils.prob_rules import default_rules
 
 # Optional execution engine import
@@ -418,7 +419,7 @@ def compare_inference_models(
         raise ImportError("Enhanced inference engine not available")
 
 
-def execute(ast: dict[str, Any], validate_first: bool = True) -> dict[str, Any]:
+def execute(ast: dict[str, Any], registry: PluginRegistry = None, validate_first: bool = True) -> dict[str, Any]:
     """Execute a GFL workflow by dispatching to appropriate plugins.
 
     This function orchestrates the execution of design and optimize blocks
@@ -426,6 +427,7 @@ def execute(ast: dict[str, Any], validate_first: bool = True) -> dict[str, Any]:
 
     Args:
         ast: Dictionary AST from parse(). Should contain 'design' and/or 'optimize' blocks.
+        registry: Plugin registry to use. If None, uses the default plugin registry.
         validate_first: If True, validate AST and plugin requirements before execution.
 
     Returns:
@@ -498,14 +500,14 @@ def execute(ast: dict[str, Any], validate_first: bool = True) -> dict[str, Any]:
 
             # Validate plugin requirements
             if validate_execution_requirements is not None:
-                plugin_errors = validate_execution_requirements(ast)
+                plugin_errors = validate_execution_requirements(ast, registry)
                 if plugin_errors:
                     error_msg = "; ".join(plugin_errors)
                     raise ValueError(f"Plugin requirements not met: {error_msg}")
 
         # Execute workflow
         if execute_gfl_ast is not None:
-            return execute_gfl_ast(ast)
+            return execute_gfl_ast(ast,registry)
         else:
             raise ImportError("Execution engine not properly initialized")
 

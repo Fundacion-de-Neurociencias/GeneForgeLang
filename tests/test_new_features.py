@@ -63,7 +63,7 @@ class TestNewFeaturesRegression:
               initial_experiments: 5
               max_uncertainty: 0.5
               convergence_threshold: 0.01
-          surrogate_model: gaussian_process
+            surrogate_model: gaussian_process
           objective:
             maximize: reaction_efficiency
           budget:

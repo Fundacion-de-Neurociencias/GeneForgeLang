@@ -148,7 +148,7 @@ class TestOptimizeBlockValidation:
         ast = {
             "optimize": {
                 "search_space": {"parameter1": "range(0, 10)", "parameter2": "choice([a, b, c])"},
-                "strategy": {"name": "ActiveLearning"},
+                "strategy": {"name": "ActiveLearning", "surrogate_model": "gaussian_process"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 50},
                 "run": {
@@ -496,9 +496,9 @@ class TestOptimizeBlockIntegration:
               initial_experiments: 5
               max_uncertainty: 0.5
               convergence_threshold: 0.01
+            surrogate_model: gaussian_process
           objective:
             maximize: yield
-          surrogate_model: gaussian_process
           budget:
             max_experiments: 75
           run:

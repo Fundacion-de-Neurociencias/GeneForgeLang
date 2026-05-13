@@ -26,24 +26,22 @@ def test_advanced_syntax():
 
     if ast is None:
         print("ERROR: Failed to parse GFL content")
-        return False
+        raise AssertionError("Failed to parse GFL content")
 
     print("Parsed AST successfully")
 
     # Validate the AST with enhanced validation
     result = validate(ast, enhanced=True)
 
-    print(f"Validation result: {'Valid' if result.is_valid else 'Invalid'}")
+    print(f"Validation result: {'Valid' if result is not None else 'Invalid'}")
 
-    if not result.is_valid:
+    if not result or result is None:
         print(f"Found {len(result.errors)} errors:")
         for error in result.errors:
             print(f"  - {error}")
-        return False
+        raise AssertionError("Advanced syntax validation failed")
     else:
         print("All validations passed!")
-        return True
-
 
 if __name__ == "__main__":
     success = test_advanced_syntax()

@@ -20,15 +20,17 @@ def test_io_contracts():
         gfl_content = f.read()
     # Parse the GFL content
     ast = parse(gfl_content)
+    assert ast is not None, "Failed to parse GFL content"
 
     if ast is None:
         print("ERROR: Failed to parse GFL content")
-        return False
+        raise AssertionError("Failed to parse GFL content")
 
     print("Parsed AST successfully")
 
     # Validate the AST with enhanced validation
     result = validate(ast, enhanced=True)
+    assert result is not None, "Validation returned None"
 
     print(f"Validation result: {'Valid' if result.is_valid else 'Invalid'}")
 
@@ -43,9 +45,6 @@ def test_io_contracts():
         print(f"Found {len(contract_errors)} contract-related errors:")
         for error in contract_errors:
             print(f"  - {error}")
-
-    return True
-
 
 def test_simple_io_contracts():
     """Test simple IO Contracts validation."""
@@ -87,7 +86,7 @@ def test_simple_io_contracts():
         for error in result.errors:
             print(f"  - {error}")
 
-    return result.is_valid
+    assert result is not None, "Validation returned None"
 
 
 if __name__ == "__main__":

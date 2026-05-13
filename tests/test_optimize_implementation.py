@@ -32,6 +32,7 @@ def test_active_learning_optimization():
         name: ActiveLearning
         uncertainty_metric: entropy
         initial_samples: 5
+        surrogate_model: gaussian_process
 
       # Optimization objective
       objective:
@@ -86,6 +87,7 @@ def test_active_learning_optimization():
     strategy = optimize["strategy"]
     assert strategy["name"] == "ActiveLearning"
     assert strategy["uncertainty_metric"] == "entropy"
+    assert strategy["surrogate_model"] == "gaussian_process"
     print("✓ Strategy configuration is correct")
 
     # Check objective
@@ -113,12 +115,9 @@ def test_active_learning_optimization():
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
-        return False
+        raise AssertionError(f"Expected workflow to be valid, but got errors: {errors}")      
     else:
         print("✓ Workflow validation passed")
-
-    return True
-
 
 def test_bayesian_optimization():
     """Test Bayesian optimization for drug discovery."""
@@ -167,8 +166,6 @@ def test_bayesian_optimization():
     errors = validate(ast)
     assert len(errors) > 0, "Expected validation errors for conflicting objectives"
     print("✓ Correctly detected conflicting objectives")
-
-    return True
 
 
 def test_genetic_algorithm_optimization():
@@ -232,10 +229,8 @@ def test_genetic_algorithm_optimization():
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
-        return False
+        raise AssertionError(f"Expected genetic algorithm configuration to be valid, but got errors: {errors}")
     print("✓ Genetic algorithm validation passed")
-
-    return True
 
 
 def test_optimize_with_analyze_block():
@@ -288,11 +283,8 @@ def test_optimize_with_analyze_block():
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
-        return False
+        raise AssertionError(f"Expected optimization with analysis to be valid, but got errors: {errors}")
     print("✓ Optimize with analyze validation passed")
-
-    return True
-
 
 def test_parameter_injection_validation():
     """Test parameter injection validation."""
@@ -339,10 +331,8 @@ def test_parameter_injection_validation():
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
-        return False
+        raise AssertionError(f"Expected parameter injection to be valid, but got errors: {errors}")
     print("✓ Parameter injection validation passed")
-
-    return True
 
 
 def test_invalid_optimize_blocks():
@@ -355,7 +345,7 @@ def test_invalid_optimize_blocks():
         # Missing search_space
         {
             "optimize": {
-                "strategy": {"name": "ActiveLearning"},
+                "strategy": {"name": "ActiveLearning", "surrogate_model": "gaussian_process"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 10},
                 "run": {"experiment": {"tool": "PCR", "type": "validation"}},
@@ -365,7 +355,7 @@ def test_invalid_optimize_blocks():
         {
             "optimize": {
                 "search_space": {},
-                "strategy": {"name": "ActiveLearning"},
+                "strategy": {"name": "ActiveLearning", "surrogate_model": "gaussian_process"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 10},
                 "run": {"experiment": {"tool": "PCR", "type": "validation"}},
@@ -385,7 +375,7 @@ def test_invalid_optimize_blocks():
         {
             "optimize": {
                 "search_space": {"param": "range(0, 10)"},
-                "strategy": {"name": "ActiveLearning"},
+                "strategy": {"name": "ActiveLearning", "surrogate_model": "gaussian_process"},
                 "objective": {"maximize": "efficiency", "minimize": "cost"},
                 "budget": {"max_experiments": 10},
                 "run": {"experiment": {"tool": "PCR", "type": "validation"}},
@@ -395,7 +385,7 @@ def test_invalid_optimize_blocks():
         {
             "optimize": {
                 "search_space": {"param": "range(0, 10)"},
-                "strategy": {"name": "ActiveLearning"},
+                "strategy": {"name": "ActiveLearning", "surrogate_model": "gaussian_process"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {},
                 "run": {"experiment": {"tool": "PCR", "type": "validation"}},
@@ -405,7 +395,7 @@ def test_invalid_optimize_blocks():
         {
             "optimize": {
                 "search_space": {"param": "range(0, 10)"},
-                "strategy": {"name": "ActiveLearning"},
+                "strategy": {"name": "ActiveLearning", "surrogate_model": "gaussian_process"},
                 "objective": {"maximize": "efficiency"},
                 "budget": {"max_experiments": 10},
             }
@@ -416,47 +406,3 @@ def test_invalid_optimize_blocks():
         errors = validate(invalid_ast)
         assert len(errors) > 0, f"Configuration {i} should have validation errors"
         print(f"✓ Configuration {i}: Correctly detected validation errors")
-
-    return True
-
-
-def run_all_tests():
-    """Run all optimize block tests."""
-    print("GeneForgeLang Optimize Block Implementation Test")
-    print("=" * 50)
-
-    tests = [
-        test_active_learning_optimization,
-        test_bayesian_optimization,
-        test_genetic_algorithm_optimization,
-        test_optimize_with_analyze_block,
-        test_parameter_injection_validation,
-        test_invalid_optimize_blocks,
-    ]
-
-    passed = 0
-    total = len(tests)
-
-    for test_func in tests:
-        try:
-            if test_func():
-                passed += 1
-            else:
-                print(f"❌ {test_func.__name__} failed")
-        except Exception as e:
-            print(f"❌ {test_func.__name__} raised exception: {e}")
-
-    print("\\n=== Test Summary ===")
-    print(f"Passed: {passed}/{total}")
-
-    if passed == total:
-        print("🎉 All tests passed! Optimize block implementation is working correctly.")
-        return True
-    else:
-        print("❌ Some tests failed. Check the output above for details.")
-        return False
-
-
-if __name__ == "__main__":
-    success = run_all_tests()
-    exit(0 if success else 1)

@@ -8,7 +8,7 @@ from typing import Any, Dict, List
 
 import pytest
 
-from examples.example_implementations import (
+from geneforgelang.utils.example_implementations import (
     BayesianOptimizer,
     MoleculeTransformerGenerator,
     ProteinVAEGenerator,

@@ -22,6 +22,7 @@ optimize:
     uncertainty_metric: entropy
     initial_samples: 5
     batch_size: 3
+    surrogate_model: gaussian_process
 
   # Optimization objective
   objective:
