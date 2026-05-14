@@ -25,7 +25,7 @@ def get_schema_path() -> Path:
     return Path(__file__).parent.parent / "schema" / "gfl.schema.json"
 
 
-def load_schema() -> Optional[Dict[str, Any]]:
+def load_schema() -> dict[str, Any] | None:
     """Load the GFL JSON schema.
 
     Returns:
@@ -43,7 +43,7 @@ def load_schema() -> Optional[Dict[str, Any]]:
 
 
 def validate_with_schema(
-    data: Dict[str, Any], schema: Optional[Dict[str, Any]] = None
+    data: dict[str, Any], schema: dict[str, Any] | None = None
 ) -> ValidationResult:
     """Validate GFL data against JSON schema.
 
@@ -112,7 +112,7 @@ def validate_with_schema(
         )
 
 
-def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
+def validate_gfl_format(data: dict[str, Any]) -> ValidationResult:
     """Validate GFL format and structure.
 
     This performs format-specific validation beyond JSON schema,
@@ -124,9 +124,9 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
     Returns:
         ValidationResult with format validation errors
     """
-    errors: List[ValidationError] = []
-    warnings: List[ValidationError] = []
-    info: List[ValidationError] = []
+    errors: list[ValidationError] = []
+    warnings: list[ValidationError] = []
+    info: list[ValidationError] = []
 
     # Check for required top-level blocks
     has_experiment = "experiment" in data
@@ -162,16 +162,15 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
             "ATACseq": ["sequencing", "analysis"],
         }
 
-        if tool in tool_type_compat:
-            if exp_type not in tool_type_compat[tool]:
-                warnings.append(
-                    ValidationError(
-                        message=f"Tool '{tool}' may not be compatible with type '{exp_type}'",
-                        location="experiment",
-                        severity="warning",
-                        code="TOOL_TYPE_MISMATCH",
-                    )
+        if tool in tool_type_compat and exp_type not in tool_type_compat[tool]:
+            warnings.append(
+                ValidationError(
+                    message=f"Tool '{tool}' may not be compatible with type '{exp_type}'",
+                    location="experiment",
+                    severity="warning",
+                    code="TOOL_TYPE_MISMATCH",
                 )
+            )
 
     # Validate design block
     if has_design:
@@ -447,7 +446,7 @@ def validate_gfl_format(data: Dict[str, Any]) -> ValidationResult:
     return ValidationResult(errors=errors, warnings=warnings, info=info)
 
 
-def comprehensive_validate(data: Dict[str, Any]) -> ValidationResult:
+def comprehensive_validate(data: dict[str, Any]) -> ValidationResult:
     """Perform comprehensive validation combining schema and format checks.
 
     Args:

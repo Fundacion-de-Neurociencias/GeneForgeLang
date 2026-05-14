@@ -113,7 +113,7 @@ class SchemaLoader:
         self.loaded_files: list[str] = []
 
     def load_schema_file(
-        self, file_path: Union[str, Path], result: EnhancedValidationResult
+        self, file_path: str | Path, result: EnhancedValidationResult
     ) -> bool:
         """Load and parse a schema definition file.
 
@@ -256,7 +256,7 @@ def get_global_schema_loader() -> SchemaLoader:
 
 
 def load_schemas_from_files(
-    file_paths: list[Union[str, Path]], result: EnhancedValidationResult
+    file_paths: list[str | Path], result: EnhancedValidationResult
 ) -> bool:
     """Load schemas from multiple files.
 

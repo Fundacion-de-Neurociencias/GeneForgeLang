@@ -61,7 +61,7 @@ def print_output(content: str, style: str = "info") -> None:
         print(content)
 
 
-def load_gfl_file(file_path: str) -> Optional[dict[str, Any]]:
+def load_gfl_file(file_path: str) -> dict[str, Any] | None:
     """Load and parse a GFL file."""
     try:
         with open(file_path, encoding="utf-8") as f:
@@ -178,7 +178,7 @@ def demo_inference_models():
 
 
 def test_inference_file(
-    file_path: str, model_name: Optional[str] = None, output_file: Optional[str] = None
+    file_path: str, model_name: str | None = None, output_file: str | None = None
 ):
     """Test inference on a specific GFL file."""
     if not HAS_GFL_API:

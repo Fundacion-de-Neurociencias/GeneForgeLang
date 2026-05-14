@@ -8,6 +8,13 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Dict, List
 
+
+try:
+    import rich
+    HAS_RICH = True
+except ImportError:
+    HAS_RICH = False
+
 try:
     import yaml
 

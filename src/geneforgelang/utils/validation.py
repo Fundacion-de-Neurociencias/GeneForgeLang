@@ -1,6 +1,7 @@
 # gfl/validation_pipeline.py
 
-from typing import Any, Callable, Dict
+from collections.abc import Callable
+from typing import Any, Dict
 
 import pandas as pd
 from sklearn.metrics import classification_report
@@ -58,7 +59,7 @@ if __name__ == "__main__":
 
     pipeline = ValidationPipeline(
         model=DummyGeneModel(),
-        data_loader=load_validation_data,
+        #data_loader=load_validation_data,
         label_column="true_effect",
         feature_extractor=extract_features,
     )

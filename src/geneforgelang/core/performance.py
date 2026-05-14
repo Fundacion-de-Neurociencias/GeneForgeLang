@@ -17,9 +17,10 @@ import pickle
 import time
 import weakref
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass
 from threading import Lock, RLock
-from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar
+from typing import Any, Dict, Generic, List, Optional, TypeVar
 
 logger = logging.getLogger(__name__)
 

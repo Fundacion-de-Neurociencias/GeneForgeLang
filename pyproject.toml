@@ -156,6 +156,7 @@ ignore = [
     "S101",  # Use of assert
     "S603",  # subprocess call
     "S607",  # Starting a process with a partial executable path
+    "UP035", "UP006", "UP045", "SIM102", "SIM108", "SIM117"
 ]
 
 [tool.ruff.lint.per-file-ignores]

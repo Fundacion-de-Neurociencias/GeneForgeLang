@@ -17,8 +17,14 @@ import logging
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 from urllib.parse import urljoin
+
+try:
+    import rich
+    HAS_RICH = True
+except ImportError:
+    HAS_RICH = False
 
 try:
     import httpx
@@ -174,7 +180,7 @@ class GFLClient:
                     try:
                         error_data = response.json()
                         error_message = error_data.get("message", f"HTTP {response.status_code}")
-                    except:
+                    except Exception as e:
                         error_message = f"HTTP {response.status_code}: {response.text[:100]}"
 
                     raise GFLAPIError(error_message, response.status_code)
@@ -190,7 +196,7 @@ class GFLClient:
                         execution_time_ms=data.get("execution_time_ms"),
                         timestamp=data.get("timestamp"),
                     )
-                except json.JSONDecodeError:
+                except Exception as e:
                     return APIResponse(
                         success=True,
                         data=response.text,
@@ -363,7 +369,7 @@ class GFLClient:
 
         return response.data
 
-    def upload_and_parse(self, file_path: Union[str, Path]) -> ParseResult:
+    def upload_and_parse(self, file_path: str | Path) -> ParseResult:
         """Upload and parse a GFL file.
 
         Args:
@@ -502,7 +508,7 @@ class AsyncGFLClient:
                     try:
                         error_data = response.json()
                         error_message = error_data.get("message", f"HTTP {response.status_code}")
-                    except:
+                    except Exception:
                         error_message = f"HTTP {response.status_code}: {response.text[:100]}"
 
                     raise GFLAPIError(error_message, response.status_code)
@@ -518,7 +524,7 @@ class AsyncGFLClient:
                         execution_time_ms=data.get("execution_time_ms"),
                         timestamp=data.get("timestamp"),
                     )
-                except:
+                except Exception as e:
                     return APIResponse(
                         success=True,
                         data=response.text,

@@ -10,7 +10,7 @@ import traceback
 from typing import List, Optional
 
 
-def main(args: Optional[List[str]] = None) -> int:
+def main(args: list[str] | None = None) -> int:
     """Main entry point for the GFL CLI."""
     try:
         # Try to use the enhanced CLI first

@@ -70,7 +70,7 @@ logger = logging.getLogger(__name__)
 class GFLSyntaxError(Exception):
     """Exception raised for GFL syntax errors."""
 
-    def __init__(self, message: str, location: Optional[SourceLocation] = None):
+    def __init__(self, message: str, location: SourceLocation | None = None):
         self.message = message
         self.location = location
         super().__init__(message)
@@ -276,7 +276,7 @@ class AdvancedGFLLexer:
         logger.error(f"Illegal character '{t.value[0]}' at line {t.lineno}")
         t.lexer.skip(1)
 
-    def tokenize(self, data: str) -> List[Any]:
+    def tokenize(self, data: str) -> list[Any]:
         """Tokenize input data and return list of tokens."""
         self.lexer.input(data)
         tokens = []
@@ -291,11 +291,11 @@ class AdvancedGFLLexer:
 class AdvancedGFLParser:
     """Advanced parser for GeneForgeLang with comprehensive grammar support."""
 
-    def __init__(self, lexer: Optional[AdvancedGFLLexer] = None):
+    def __init__(self, lexer: AdvancedGFLLexer | None = None):
         self.lexer = lexer or AdvancedGFLLexer()
         self.tokens = self.lexer.tokens
         self.parser = None
-        self.errors: List[EnhancedValidationError] = []
+        self.errors: list[EnhancedValidationError] = []
         self._build()
 
     def _build(self):
@@ -703,7 +703,7 @@ def create_lexer() -> AdvancedGFLLexer:
     return AdvancedGFLLexer()
 
 
-def create_parser(lexer: Optional[AdvancedGFLLexer] = None) -> AdvancedGFLParser:
+def create_parser(lexer: AdvancedGFLLexer | None = None) -> AdvancedGFLParser:
     """Create a new GFL parser instance."""
     return AdvancedGFLParser(lexer)
 

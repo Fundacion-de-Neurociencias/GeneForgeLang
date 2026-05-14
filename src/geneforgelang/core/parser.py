@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 @cached(cache_name="ast_parse", ttl=300.0, max_size=100)
-def parse_gfl(gfl_string: str) -> Optional[dict[str, Any]]:
+def parse_gfl(gfl_string: str) -> dict[str, Any] | None:
     """
     Parses a GFL string (in YAML format) into a Python dictionary.
 
@@ -45,8 +45,8 @@ def parse_gfl(gfl_string: str) -> Optional[dict[str, Any]]:
 
 
 def parse_gfl_with_schema_imports(
-    gfl_string: str, base_path: Optional[str] = None
-) -> Optional[dict[str, Any]]:
+    gfl_string: str, base_path: str | None = None
+) -> dict[str, Any] | None:
     """
     Parses a GFL string with schema import support.
 

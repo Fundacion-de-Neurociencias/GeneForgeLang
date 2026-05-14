@@ -290,7 +290,7 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
 
         return target_props
 
-    def _parse_molecular_weight_constraint(self, constraints: list[str]) -> Optional[tuple]:
+    def _parse_molecular_weight_constraint(self, constraints: list[str]) -> tuple | None:
         """Parse molecular weight constraints."""
         for constraint in constraints:
             if "molecular_weight" in constraint and "<" in constraint:
@@ -298,7 +298,7 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
                 return (0, value)
         return None
 
-    def _parse_logp_constraint(self, constraints: list[str]) -> Optional[tuple]:
+    def _parse_logp_constraint(self, constraints: list[str]) -> tuple | None:
         """Parse lipophilicity constraints."""
         for constraint in constraints:
             if "logP" in constraint and "<" in constraint:
@@ -308,8 +308,8 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
 
     def _generate_smiles(
         self,
-        mw_constraint: Optional[tuple],
-        logp_constraint: Optional[tuple],
+        mw_constraint: tuple | None,
+        logp_constraint: tuple | None,
         target_props: dict[str, Any],
     ) -> str:
         """Generate SMILES string using transformer model (simulated)."""
@@ -635,7 +635,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
 
     def estimate_remaining_time(
         self, experiment_history: list[ExperimentResult], budget: dict[str, Any]
-    ) -> Optional[float]:
+    ) -> float | None:
         """Estimate remaining optimization time."""
 
         if "max_experiments" in budget:

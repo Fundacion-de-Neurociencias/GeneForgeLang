@@ -27,7 +27,7 @@ class EnhancedSemanticValidator:
     including location tracking, error codes, and suggested fixes.
     """
 
-    def __init__(self, file_path: Optional[str] = None):
+    def __init__(self, file_path: str | None = None):
         """Initialize validator.
 
         Args:
@@ -35,7 +35,7 @@ class EnhancedSemanticValidator:
         """
         self.symbol_table: dict[str, dict[str, Any]] = {}
         self.result = EnhancedValidationResult(file_path=file_path)
-        self.current_block: Optional[str] = None
+        self.current_block: str | None = None
         self.nested_level = 0
         self.schema_loader = get_global_schema_loader()
 
@@ -2109,7 +2109,7 @@ _enhanced_validator = EnhancedSemanticValidator()
 
 def validate(
     ast: dict[str, Any], enhanced: bool = False
-) -> Union[list[str], EnhancedValidationResult]:
+) -> list[str] | EnhancedValidationResult:
     """Validate a GFL AST and return validation results.
 
     Args:

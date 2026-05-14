@@ -148,7 +148,7 @@ def parse(text: str, use_grammar: bool = False, filename: str = "<input>") -> di
 @cached(cache_name="schema_validation", ttl=600.0, max_size=500)
 def validate(
     ast: dict[str, Any], enhanced: bool = False
-) -> Union[list[str], EnhancedValidationResult]:
+) -> list[str] | EnhancedValidationResult:
     """Return validation errors for the given AST.
 
     Performs semantic validation on the parsed AST to ensure it follows

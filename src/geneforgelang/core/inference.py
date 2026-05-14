@@ -71,7 +71,7 @@ class InferenceEngine:
         self,
         ast_dict: dict[str, Any],
         enhanced: bool = True,
-        model_name: Optional[str] = None,
+        model_name: str | None = None,
     ) -> dict[str, Any]:
         """Predict genomic effects with optional enhanced inference.
 
@@ -164,7 +164,7 @@ class InferenceEngine:
         }
 
     def compare_models(
-        self, ast_dict: dict[str, Any], model_names: Optional[list] = None
+        self, ast_dict: dict[str, Any], model_names: list | None = None
     ) -> dict[str, Any]:
         """Compare predictions across multiple models."""
         if not self.enhanced_engine:
