@@ -2,6 +2,8 @@ from copy import deepcopy
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
+import pytest
+
 from geneforgelang.adapters.carbon import CarbonCapabilities
 from geneforgelang.semantic import (
     AgentAction,
@@ -10,8 +12,10 @@ from geneforgelang.semantic import (
     CapabilityRegistry,
     CompressibilityEngine,
     EpistemicStatus,
+    EvidenceNode,
     EvidenceView,
     HypothesisNode,
+    InferenceNode,
     KnowledgeValidityWindow,
     MultiViewEvidenceTriangulator,
     ObservationStatus,
@@ -104,6 +108,21 @@ def test_carbon_is_registered_as_capability_engine():
     assert score.confidence > 0
 
 
+def test_capability_registry_rejects_non_protocol_engine():
+    registry = CapabilityRegistry()
+
+    with pytest.raises(TypeError, match="CapabilityEngine protocol"):
+        registry.register(object())  # type: ignore[arg-type]
+
+
+def test_capability_registry_missing_engine_error_lists_available():
+    registry = CapabilityRegistry()
+    registry.register(CarbonCapabilities())
+
+    with pytest.raises(KeyError, match="missing.*carbon"):
+        registry.get("missing")
+
+
 def test_semantic_document_serializes_epistemic_nodes():
     document = SemanticDocument(
         nodes=[
@@ -128,6 +147,22 @@ def test_semantic_document_serializes_epistemic_nodes():
     assert serialized["version"] == "gfl.semantic.v2"
     assert serialized["nodes"][0]["node_type"] == "HypothesisNode"
     assert serialized["nodes"][1]["kind"] == "epistemic"
+
+
+def test_semantic_document_serializes_nested_dataclasses_recursively():
+    document = SemanticDocument(
+        nodes=[
+            InferenceNode(
+                id="i1",
+                conclusion="derived claim",
+                provenance={"evidence": EvidenceNode(id="e1", source="assay", claim="primary claim")},
+            )
+        ]
+    )
+
+    serialized = document.to_dict()
+
+    assert serialized["nodes"][0]["provenance"]["evidence"]["source"] == "assay"
 
 
 def test_perturbation_algebra_tracks_non_linear_risk():

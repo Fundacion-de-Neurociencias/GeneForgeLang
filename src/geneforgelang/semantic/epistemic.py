@@ -253,7 +253,8 @@ class BeliefState:
         self.beliefs[estimate.claim] = estimate
         target = (
             EpistemicStatus.CONFLICTED
-            if estimate.contradiction_edges or estimate.consensus_instability >= 0.35
+            if estimate.contradiction_edges
+            or estimate.consensus_instability >= MultiViewEvidenceTriangulator.contradiction_threshold
             else EpistemicStatus.SUPPORTED
         )
         self.transition(estimate.claim, target, "evidence accumulated")

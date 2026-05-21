@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field, fields, is_dataclass
-from typing import Any
+from dataclasses import asdict, dataclass, field, is_dataclass
+from typing import Any, cast
 
 
 class BiologicalScale:
@@ -159,4 +159,4 @@ class SemanticDocument:
     def _serialize_dataclass(node: object) -> dict[str, Any]:
         if not is_dataclass(node) or isinstance(node, type):
             raise TypeError("expected a dataclass instance")
-        return {item.name: getattr(node, item.name) for item in fields(node)}
+        return cast(dict[str, Any], asdict(cast(Any, node)))

@@ -78,21 +78,14 @@ class CapabilityRegistry:
         self._engines: dict[str, CapabilityEngine] = {}
 
     def register(self, engine: CapabilityEngine) -> None:
-        missing = [
-            method
-            for method in (
-                "score_variant",
-                "embedding",
-                "complete_sequence",
-                "species_similarity",
-            )
-            if not callable(getattr(engine, method, None))
-        ]
-        if missing:
-            raise TypeError(f"Capability engine {engine!r} is missing: {', '.join(missing)}")
+        if not isinstance(engine, CapabilityEngine):
+            raise TypeError(f"Object {engine!r} does not implement CapabilityEngine protocol")
         self._engines[engine.name] = engine
 
     def get(self, name: str) -> CapabilityEngine:
+        if name not in self._engines:
+            available = ", ".join(self.available()) or "<none>"
+            raise KeyError(f"Capability engine '{name}' not found. Available: {available}")
         return self._engines[name]
 
     def available(self) -> tuple[str, ...]:
