@@ -23,7 +23,7 @@ import logging
 import sys
 import traceback
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 # Rich output formatting (optional dependency)
 try:
@@ -38,8 +38,6 @@ try:
     )
     from rich.syntax import Syntax
     from rich.table import Table
-    from rich.text import Text
-    from rich.tree import Tree
 
     HAS_RICH = True
 except ImportError:
@@ -66,7 +64,7 @@ except ImportError:
     HAS_PLUGINS = False
 
 try:
-    from geneforgelang.utils.enhanced_schema_validator import EnhancedSchemaValidator
+    pass
 
     HAS_ENHANCED_SCHEMA = True
 except ImportError:
@@ -86,7 +84,6 @@ __api_version__ = "2.0.0"
 class CLIError(Exception):
     """Base exception for CLI errors."""
 
-    pass
 
 
 class OutputFormatter:

@@ -23,7 +23,6 @@ from gfl.enhanced_inference_engine import (
 try:
     import torch
     import torch.nn.functional as F
-    from transformers import AutoModelForCausalLM, AutoTokenizer
 
     HAS_ML_DEPS = True
 except ImportError:

@@ -13,7 +13,6 @@ import yaml
 from geneforgelang.core.api import parse
 
 
-
 class TestBasicParsing:
     """Test basic parsing functionality."""
 

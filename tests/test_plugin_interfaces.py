@@ -8,11 +8,6 @@ from typing import Any, Dict, List
 
 import pytest
 
-from geneforgelang.utils.example_implementations import (
-    BayesianOptimizer,
-    MoleculeTransformerGenerator,
-    ProteinVAEGenerator,
-)
 from geneforgelang.plugins.interfaces import (
     BayesianOptimizerPlugin,
     DesignCandidate,
@@ -23,12 +18,16 @@ from geneforgelang.plugins.interfaces import (
     OptimizationStep,
     OptimizationStrategy,
     OptimizerPlugin,
-    PriorsPlugin,
     SequenceGeneratorPlugin,
     get_available_generators,
     get_available_optimizers,
     register_generator_plugin,
     register_optimizer_plugin,
+)
+from geneforgelang.utils.example_implementations import (
+    BayesianOptimizer,
+    MoleculeTransformerGenerator,
+    ProteinVAEGenerator,
 )
 
 

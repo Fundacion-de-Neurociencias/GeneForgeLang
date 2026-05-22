@@ -8,7 +8,7 @@ import argparse
 import json
 import time
 import traceback
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 # Import GFL API
 try:
@@ -26,18 +26,16 @@ except ImportError as e:
     HAS_GFL_API = False
 
 try:
-    import torch
+    pass
 
     HAS_TORCH = True
 except ImportError:
     HAS_TORCH = False
 
 try:
-    from rich import print as rich_print
     from rich.console import Console
     from rich.panel import Panel
     from rich.table import Table
-    from rich.text import Text
 
     HAS_RICH = True
     console = Console()

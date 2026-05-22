@@ -26,7 +26,6 @@ try:
     import torch
     import torch.nn.functional as F
     from transformers import (
-        AutoConfig,
         AutoModel,
         AutoModelForCausalLM,
         AutoModelForSequenceClassification,
@@ -125,17 +124,14 @@ class BaseMLModel(ABC):
     @abstractmethod
     def load_model(self) -> None:
         """Load the model and tokenizer."""
-        pass
 
     @abstractmethod
     def predict(self, features: Dict[str, Any]) -> InferenceResult:
         """Make predictions on input features."""
-        pass
 
     @abstractmethod
     def explain_prediction(self, features: Dict[str, Any], result: InferenceResult) -> str:
         """Provide explanation for the prediction."""
-        pass
 
     def is_loaded(self) -> bool:
         """Check if model is loaded."""

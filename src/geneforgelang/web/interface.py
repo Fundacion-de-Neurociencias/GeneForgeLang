@@ -15,7 +15,6 @@ import json
 import logging
 import time
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
 
 import gradio as gr
 
@@ -23,7 +22,6 @@ import gradio as gr
 try:
     from gfl.api import (
         compare_inference_models,
-        get_api_info,
         infer_enhanced,
         parse,
         validate,

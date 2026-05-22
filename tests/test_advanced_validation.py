@@ -9,7 +9,6 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from geneforgelang.core.api import parse, validate
-from geneforgelang.core.validator import EnhancedSemanticValidator
 
 
 def test_advanced_syntax():

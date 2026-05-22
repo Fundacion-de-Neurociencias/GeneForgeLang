@@ -191,11 +191,9 @@ class AdvancedGFLLexer:
     def t_COMMENT(self, t):
         r"\#.*"
         # Comments are ignored
-        pass
 
     def t_MULTILINE_COMMENT(self, t):
         r"/\*([^*]|\*+[^*/])*\*+/"
-        pass
         # Multi-line comments are ignored
         #t.lexer.lineno += t.value.count("\\n")
 
@@ -582,7 +580,6 @@ class AdvancedGFLParser:
 
     def p_empty(self, p):
         """empty :"""
-        pass
 
     def p_error(self, p):
         """Handle syntax errors."""

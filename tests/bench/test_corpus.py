@@ -2,7 +2,7 @@ import glob
 
 import pytest
 
-from geneforgelang.utils.grammar_parser import AdvancedGFLParser 
+from geneforgelang.utils.grammar_parser import AdvancedGFLParser
 
 parser = AdvancedGFLParser()
 files = sorted(glob.glob("bench/corpus/*.gfl"))

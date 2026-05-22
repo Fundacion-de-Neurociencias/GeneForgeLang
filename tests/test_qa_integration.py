@@ -4,12 +4,10 @@ QA Integration Test Suite for GeneForge Platform
 Executes comprehensive testing across all critical areas.
 """
 
-import json
 import os
 import subprocess
 import sys
 import time
-from typing import Dict, List, Tuple
 
 import requests
 
@@ -18,6 +16,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "gfl"))
 
 from geneforgelang.core.parser import parse_gfl
 from geneforgelang.core.validator import EnhancedSemanticValidator
+
 
 class QAIntegrationTester:
     """Comprehensive QA testing for GeneForge platform."""

@@ -7,9 +7,8 @@ files that define custom data types and their attributes for use in IO contracts
 from __future__ import annotations
 
 import logging
-import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Union
 
 import yaml
 

@@ -1,6 +1,6 @@
 # gfl/validation_pipeline.py
 
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 import pandas as pd
 from sklearn.metrics import classification_report

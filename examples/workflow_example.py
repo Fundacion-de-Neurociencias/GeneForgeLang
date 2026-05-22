@@ -7,7 +7,8 @@ plugins that are actually available in the system.
 """
 
 import sys
-from geneforgelang.core.api import execute, parse, validate, list_available_plugins
+
+from geneforgelang.core.api import execute, list_available_plugins, parse, validate
 
 
 def main():

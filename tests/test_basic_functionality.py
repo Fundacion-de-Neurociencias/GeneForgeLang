@@ -1,6 +1,7 @@
 """Basic functionality tests for GeneForgeLang."""
 
 import pytest
+
 from geneforgelang import execute, parse, validate
 
 

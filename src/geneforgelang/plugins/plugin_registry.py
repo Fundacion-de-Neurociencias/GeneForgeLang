@@ -3,26 +3,26 @@
 from __future__ import annotations
 
 import importlib.metadata
-from typing import Any, Dict, List, Optional, Type
-
-
-import logging
 import json
+import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional, Protocol, Type
 
 try:
-    from importlib.metadata import entry_points as _entry_points, version
+    from importlib.metadata import entry_points as _entry_points
+    from importlib.metadata import version
 
     HAS_ENTRY_POINTS = True
 except ImportError:
     try:
         from importlib_metadata import (
             entry_points as _entry_points,
-            version,
         )  # Python < 3.8
+        from importlib_metadata import (
+            version,
+        )
 
         HAS_ENTRY_POINTS = True
     except ImportError:
@@ -59,6 +59,7 @@ class PluginPriority(Enum):
 
 # Define PluginLifecycleHook type
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from typing import Callable
     PluginLifecycleHook = Callable[[str, PluginState, "PluginInfo"], None]
@@ -147,13 +148,11 @@ class BaseGFLPlugin(ABC):
     @abstractmethod
     def name(self) -> str:
         """Plugin name."""
-        pass
 
     @property
     @abstractmethod
     def version(self) -> str:
         """Plugin version."""
-        pass
 
     @property
     def priority(self) -> PluginPriority:
@@ -182,24 +181,19 @@ class BaseGFLPlugin(ABC):
 
     def on_load(self) -> None:
         """Called when plugin is loaded. Override to add custom logic."""
-        pass
 
     def on_unload(self) -> None:
         """Called when plugin is unloaded. Override to add custom logic."""
-        pass
 
     def on_activate(self) -> None:
         """Called when plugin becomes active. Override to add custom logic."""
-        pass
 
     def on_deactivate(self) -> None:
         """Called when plugin is deactivated. Override to add custom logic."""
-        pass
 
     @abstractmethod
     def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Process GFL data and return results."""
-        pass
 
     def validate_config(self, config: Dict[str, Any]) -> List[str]:
         """Validate plugin configuration. Return list of errors."""
@@ -230,6 +224,7 @@ class BaseGFLPlugin(ABC):
 import hashlib
 import time
 
+
 class GeneForgeSkill(BaseGFLPlugin):
     """
     ClawBio-inspired Base Class for all scientific "Bio-Skills".
@@ -241,13 +236,11 @@ class GeneForgeSkill(BaseGFLPlugin):
     @abstractmethod
     def author(self) -> str:
         """Skill author or organization."""
-        pass
-    
+
     @property
     @abstractmethod
     def description(self) -> str:
         """Short scientific description of the skill."""
-        pass
 
     @property
     def skill_type(self) -> str:
@@ -260,15 +253,15 @@ class GeneForgeSkill(BaseGFLPlugin):
         Wraps the internal _analyze method to build the reproducibility package.
         """
         start_time = time.time()
-        
+
         # Determine the input hash to prove reproducibility
         inputs_str = json.dumps(inputs, sort_keys=True)
         input_hash = hashlib.sha256(inputs_str.encode("utf-8")).hexdigest()
-        
+
         try:
             # Subclasses MUST implement _analyze instead of process directly
             result_data = self._analyze(inputs)
-            
+
             return {
                 "success": True,
                 "data": result_data,
@@ -284,21 +277,20 @@ class GeneForgeSkill(BaseGFLPlugin):
                     input_hash, start_time, failed=True
                 )
             }
-            
+
     @abstractmethod
     def _analyze(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Internal scientific analysis implementation.
         Must return a structured dict representing the scientific outcome.
         """
-        pass
-        
+
     def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Implements BaseGFLPlugin.process by routing to the secure execute method.
         """
         return self.execute(data)
-        
+
     def _generate_reproducibility_package(self, input_hash: str, start_time: float, failed: bool = False) -> Dict[str, Any]:
         """
         Generates the standard metadata package proving the analysis was run locally.
@@ -307,7 +299,7 @@ class GeneForgeSkill(BaseGFLPlugin):
             from gfl import __version__ as gfl_version
         except ImportError:
             gfl_version = "unknown"
-            
+
         return {
             "timestamp": time.time(),
             "execution_time_ms": int((time.time() - start_time) * 1000),
@@ -572,10 +564,10 @@ class PluginRegistry:
             plugin._set_state(PluginState.LOADED)
 
         self._plugins[name] = plugin_info
-        
+
         # Notify hooks about the loaded state
         plugin_info._notify_hooks(self._hooks, PluginState.LOADED)
-        
+
         self._update_plugin_order()
         logger.debug(f"Registered plugin: {name} v{version}")
 
@@ -1040,6 +1032,7 @@ def register_plugin_class(
 
 # Define PluginLifecycleHook type for export
 from typing import Callable
+
 PluginLifecycleHook = Callable[[str, PluginState, PluginInfo], None]
 
 

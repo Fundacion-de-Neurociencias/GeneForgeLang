@@ -6,7 +6,7 @@ import json
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 try:
     import yaml
@@ -58,7 +58,7 @@ def check_dependencies() -> dict[str, bool]:
 
     # Check PLY
     try:
-        import ply
+        pass
 
         dependencies["ply"] = True
     except ImportError:
@@ -66,7 +66,7 @@ def check_dependencies() -> dict[str, bool]:
 
     # Check Rich
     try:
-        import rich
+        pass
 
         dependencies["rich"] = True
     except ImportError:
@@ -74,7 +74,7 @@ def check_dependencies() -> dict[str, bool]:
 
     # Check PyYAML
     try:
-        import yaml
+        pass
 
         dependencies["pyyaml"] = True
     except ImportError:
@@ -82,7 +82,7 @@ def check_dependencies() -> dict[str, bool]:
 
     # Check transformers
     try:
-        import transformers
+        pass
 
         dependencies["transformers"] = True
     except ImportError:
@@ -90,7 +90,7 @@ def check_dependencies() -> dict[str, bool]:
 
     # Check torch
     try:
-        import torch
+        pass
 
         dependencies["torch"] = True
     except ImportError:

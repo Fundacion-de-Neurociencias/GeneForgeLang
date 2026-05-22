@@ -7,7 +7,7 @@ reporting, including location tracking, error codes, and suggested fixes.
 import logging
 import os
 import re
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from geneforgelang.core.errors import (
     EnhancedValidationResult,

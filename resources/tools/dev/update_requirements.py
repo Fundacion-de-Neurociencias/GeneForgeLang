@@ -22,7 +22,7 @@ def find_imports(root_dir):
         for filename in filenames:
             if filename.endswith(".py"):
                 filepath = os.path.join(dirpath, filename)
-                with open(filepath, "r", encoding="utf-8") as f:
+                with open(filepath, encoding="utf-8") as f:
                     try:
                         tree = ast.parse(f.read(), filename=filepath)
                         for node in ast.walk(tree):
@@ -39,7 +39,7 @@ def find_imports(root_dir):
 
 def update_requirements(imported_modules):
     if os.path.exists(REQUIREMENTS_FILE):
-        with open(REQUIREMENTS_FILE, "r", encoding="utf-8") as f:
+        with open(REQUIREMENTS_FILE, encoding="utf-8") as f:
             existing = set(line.strip().split("==")[0] for line in f if line.strip())
     else:
         existing = set()

@@ -36,7 +36,7 @@ def predict_variant_carrier(
     """
     # Encode clinical diagnosis
     diagnosis_mapping = {"AD": 0, "FTD": 1, "VaD": 2, "PDD": 3}
-    diagnosis_encoded = diagnosis_mapping.get(clinical_diagnosis.upper(), None)
+    diagnosis_encoded = diagnosis_mapping.get(clinical_diagnosis.upper())
     if diagnosis_encoded is None:
         raise ValueError("Invalid clinical_diagnosis. Must be one of: AD, FTD, VaD, PDD.")
 

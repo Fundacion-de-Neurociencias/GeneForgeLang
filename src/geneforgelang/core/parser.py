@@ -1,6 +1,6 @@
 import hashlib
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import yaml
 
@@ -46,7 +46,7 @@ def parse_gfl(gfl_string: str) -> Optional[dict[str, Any]]:
         except yaml.YAMLError as e:
             logger.error(f"Error parsing GFL YAML: {e}")
             raise
-        
+
         except Exception as e:
             logger.error(f"Unexpected error during GFL parsing: {e}")
             raise

@@ -7,7 +7,6 @@ Tests cover:
 - Design-specific constraints and objectives
 """
 
-import pytest
 
 from geneforgelang.core.api import parse, validate
 from geneforgelang.core.gftypes import Design

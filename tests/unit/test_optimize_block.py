@@ -10,7 +10,6 @@ Tests cover:
 - Parameter injection syntax validation
 """
 
-import pytest
 
 from geneforgelang.core.api import parse, validate
 from geneforgelang.core.gftypes import Optimize

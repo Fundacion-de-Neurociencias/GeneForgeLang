@@ -19,7 +19,7 @@ import weakref
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from threading import Lock, RLock
-from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar
+from typing import Any, Callable, Dict, Generic, TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -84,12 +84,10 @@ class CacheEvictionPolicy(ABC):
     @abstractmethod
     def should_evict(self, entry: CacheEntry, **kwargs) -> bool:
         """Determine if an entry should be evicted."""
-        pass
 
     @abstractmethod
     def select_victim(self, entries: dict[Any, CacheEntry]) -> Any:
         """Select which entry to evict."""
-        pass
 
 
 class LRUEvictionPolicy(CacheEvictionPolicy):

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Simple test script to verify GeneForgeLang platform functionality."""
 
-import sys
 
 
 def test_basic_api():

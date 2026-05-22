@@ -17,7 +17,6 @@ import multiprocessing as mp
 import signal
 import sys
 import time
-from typing import Dict, Optional
 
 # Set up logging
 logging.basicConfig(
@@ -220,8 +219,7 @@ def check_dependencies() -> dict[str, bool]:
 
     # FastAPI for API server
     try:
-        import fastapi
-        import uvicorn
+        pass
 
         deps["fastapi"] = True
     except ImportError:
@@ -229,7 +227,7 @@ def check_dependencies() -> dict[str, bool]:
 
     # Gradio for web interface
     try:
-        import gradio
+        pass
 
         deps["gradio"] = True
     except ImportError:
@@ -237,7 +235,7 @@ def check_dependencies() -> dict[str, bool]:
 
     # GFL API
     try:
-        from gfl.api import parse
+        pass
 
         deps["gfl_api"] = True
     except ImportError:
@@ -245,7 +243,7 @@ def check_dependencies() -> dict[str, bool]:
 
     # Enhanced inference engine
     try:
-        from gfl.enhanced_inference_engine import get_inference_engine
+        pass
 
         deps["enhanced_inference"] = True
     except ImportError:

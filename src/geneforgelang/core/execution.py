@@ -1,6 +1,6 @@
 """GFL Execution Engine with proper plugin integration."""
 
-from typing import Any, Dict, List
+from typing import Any
 
 from geneforgelang.plugins.plugin_registry import PluginRegistry
 
@@ -8,7 +8,6 @@ from geneforgelang.plugins.plugin_registry import PluginRegistry
 class ExecutionError(Exception):
     """Exception raised during workflow execution."""
 
-    pass
 
 
 class GFLExecutionEngine:
@@ -27,9 +26,9 @@ class GFLExecutionEngine:
         try:
             generator = registry.get_generator(model_name)
             result = generator.generate(
-                entity=design_block.get("entity", "ProteinSequence"), 
-                objective=design_block.get("objective", {}), 
-                constraints=design_block.get("constraints", []), 
+                entity=design_block.get("entity", "ProteinSequence"),
+                objective=design_block.get("objective", {}),
+                constraints=design_block.get("constraints", []),
                 count=design_block.get("count", 10))
 
             # Store in workflow state if output specified

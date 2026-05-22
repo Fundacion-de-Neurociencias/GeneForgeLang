@@ -25,7 +25,7 @@ from __future__ import annotations
 
 import contextlib
 import logging
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, Union, cast
 
 from geneforgelang.core import parser as _parser
 from geneforgelang.core.errors import (
@@ -69,7 +69,7 @@ except ImportError:
 
 # Auto-register example plugins to ensure they're available
 with contextlib.suppress(ImportError):
-    from geneforgelang.plugins import auto_register
+    pass
 
 
 def parse(text: str, use_grammar: bool = False, filename: str = "<input>") -> dict[str, Any]:

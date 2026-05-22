@@ -9,7 +9,6 @@ Tests cover:
 - Entity reference validation
 """
 
-import pytest
 
 from geneforgelang.core.api import validate
 

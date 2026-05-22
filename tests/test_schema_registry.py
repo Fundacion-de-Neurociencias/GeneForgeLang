@@ -8,8 +8,8 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from geneforgelang.core.api import parse, validate
-from geneforgelang.utils.schema import SchemaLoader
 from geneforgelang.core.validator import EnhancedSemanticValidator, EnhancedValidationResult
+from geneforgelang.utils.schema import SchemaLoader
 
 
 def test_schema_loader():

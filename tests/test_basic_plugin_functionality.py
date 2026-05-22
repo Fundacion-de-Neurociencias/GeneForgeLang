@@ -4,11 +4,10 @@ Test basic plugin functionality without entry point discovery.
 """
 from geneforgelang.core.api import execute, get_api_info, parse, validate
 from geneforgelang.plugins.plugin_registry import PluginRegistry
-
 from geneforgelang.utils.example_implementations import (
-    ProteinVAEGenerator,
+    BayesianOptimizer,
     MoleculeTransformerGenerator,
-    BayesianOptimizer
+    ProteinVAEGenerator,
 )
 
 registry = PluginRegistry()

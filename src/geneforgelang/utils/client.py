@@ -17,7 +17,7 @@ import logging
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Union
 from urllib.parse import urljoin
 
 try:
@@ -101,13 +101,11 @@ class ModelInfo:
 class GFLClientError(Exception):
     """Base exception for GFL client errors."""
 
-    pass
 
 
 class GFLConnectionError(GFLClientError):
     """Connection-related errors."""
 
-    pass
 
 
 class GFLAPIError(GFLClientError):

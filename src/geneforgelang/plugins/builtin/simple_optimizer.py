@@ -1,7 +1,7 @@
 """Simple optimization plugin."""
 
 import random
-from typing import Any, Dict, List
+from typing import Any
 
 from geneforgelang.plugins.base import BaseOptimizerPlugin
 

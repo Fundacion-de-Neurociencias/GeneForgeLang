@@ -1,9 +1,7 @@
-import asyncio
 import os
 
 # Importamos nuestras propias herramientas de GFL directamente desde el proyecto
 import sys
-from typing import List
 
 from lsprotocol.types import (
     CompletionItem,

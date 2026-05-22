@@ -1,7 +1,7 @@
-import sys
 import logging
+import sys
 
-from geneforgelang.core import parse_gfl, validate, execute
+from geneforgelang.core import execute, parse_gfl, validate
 
 # Configure logging
 logging.basicConfig(

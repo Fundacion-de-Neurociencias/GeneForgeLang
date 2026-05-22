@@ -6,7 +6,7 @@ loops, as described in the proposal. It shows how to define parameter search
 spaces, optimization strategies, and automated experimentation loops.
 """
 
-from geneforgelang.core.api import infer, parse, validate
+from geneforgelang.core.api import parse, validate
 
 
 def test_active_learning_optimization():
@@ -115,7 +115,7 @@ def test_active_learning_optimization():
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
-        raise AssertionError(f"Expected workflow to be valid, but got errors: {errors}")      
+        raise AssertionError(f"Expected workflow to be valid, but got errors: {errors}")
     else:
         print("✓ Workflow validation passed")
 

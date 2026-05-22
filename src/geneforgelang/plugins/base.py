@@ -1,7 +1,7 @@
 """Base plugin classes for GFL."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any
 
 
 class BaseGFLPlugin(ABC):
@@ -15,7 +15,6 @@ class BaseGFLPlugin(ABC):
     @abstractmethod
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process data and return results."""
-        pass
 
 
 class BaseGeneratorPlugin(BaseGFLPlugin):
@@ -24,7 +23,6 @@ class BaseGeneratorPlugin(BaseGFLPlugin):
     @abstractmethod
     def generate(self, params: dict[str, Any]) -> dict[str, Any]:
         """Generate new entities based on parameters."""
-        pass
 
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process method that calls generate."""
@@ -37,7 +35,6 @@ class BaseOptimizerPlugin(BaseGFLPlugin):
     @abstractmethod
     def optimize(self, params: dict[str, Any]) -> dict[str, Any]:
         """Optimize parameters based on objective."""
-        pass
 
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process method that calls optimize."""

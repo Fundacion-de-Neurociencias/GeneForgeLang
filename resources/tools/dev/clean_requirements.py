@@ -10,7 +10,7 @@ def is_valid_pypi_package(pkg):
         return False
 
 
-with open("requirements.txt", "r") as f:
+with open("requirements.txt") as f:
     lines = f.readlines()
 
 cleaned = []

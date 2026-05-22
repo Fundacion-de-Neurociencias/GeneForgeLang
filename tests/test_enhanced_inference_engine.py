@@ -24,7 +24,7 @@ except ImportError:
 
 # Mock torch and transformers if not available
 try:
-    import torch
+    pass
 
     HAS_TORCH = True
 except ImportError:
