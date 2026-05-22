@@ -69,10 +69,7 @@ def generate_experiment():
             params.append(f"beta_diversity_metric: \"{random.choice(['bray_curtis', 'unifrac'])}")
 
     params_str = ",\n    ".join(params)
-    if params_str:
-        params_block = f"\n  params: {{\n    {params_str}\n  }}"
-    else:
-        params_block = ""
+    params_block = f"\n  params: {{\n    {params_str}\n  }}" if params_str else ""
 
     return f"experiment {{\n  tool: {selected_tool}\n  type: {selected_type}{params_block}\n}}"
 
@@ -104,13 +101,9 @@ def generate_analyze():
             thresholds.append(f"hazard_ratio_threshold: {round(random.uniform(1.0, 3.0), 1)}")
 
     thresholds_str = ",\n    ".join(thresholds)
-    if thresholds_str:
-        thresholds_block = f"\n  thresholds: {{\n    {thresholds_str}\n  }}"
-    else:
-        thresholds_block = ""
+    thresholds_block = f"\n  thresholds: {{\n    {thresholds_str}\n  }}" if thresholds_str else ""
 
     return f"analyze {{\n  strategy: {selected_strategy}{thresholds_block}\n}}"
-
 
 def generate_branch():
     conditions = [

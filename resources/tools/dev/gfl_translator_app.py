@@ -1,7 +1,6 @@
 import json
 import os
 import tempfile
-from typing import Tuple
 
 import google.generativeai as genai
 import gradio as gr
@@ -101,7 +100,7 @@ def _pick_model(model_name: str):
 
 def translate_to_gfl(
     natural_language_input: str, model_name: str, selected_model_state: str
-) -> Tuple[str, str, str, str, dict, str, str, str]:
+) -> tuple[str, str, str, str, dict, str, str, str]:
     """Generate GFL from NL and provide validation feedback."""
     if not natural_language_input:
         status = "Validation: waiting for input."

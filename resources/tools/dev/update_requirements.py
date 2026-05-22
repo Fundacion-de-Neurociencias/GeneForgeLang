@@ -29,9 +29,8 @@ def find_imports(root_dir):
                             if isinstance(node, ast.Import):
                                 for alias in node.names:
                                     imported.add(alias.name.split(".")[0])
-                            elif isinstance(node, ast.ImportFrom):
-                                if node.module:
-                                    imported.add(node.module.split(".")[0])
+                            elif isinstance(node, ast.ImportFrom) and node.module:
+                                imported.add(node.module.split(".")[0])
                     except SyntaxError:
                         print(f"[WARN] Invalid syntax in {filepath}, skipping.")
     return imported

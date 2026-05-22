@@ -42,7 +42,7 @@ block_size = 128  # Tamaño del bloque de tokens para el entrenamiento
 
 def group_texts(examples):
     # Concatenar todos los textos.
-    concatenated_examples = {k: sum(examples[k], []) for k in examples.keys()}
+    concatenated_examples = {k: sum(examples[k], []) for k in examples}
     total_length = len(concatenated_examples[list(examples.keys())[0]])
     # Eliminamos el exceso para que todos los bloques tengan el mismo tamaño
     total_length = (total_length // block_size) * block_size

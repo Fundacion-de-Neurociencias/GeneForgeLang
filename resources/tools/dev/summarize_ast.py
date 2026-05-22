@@ -5,7 +5,7 @@ with open("output_ast.json", encoding="utf-8") as f:
     ast = json.load(f)
 
 summary = defaultdict(list)
-for op, args in ast:
+for _op, args in ast:
     for k, v in args.items():
         summary[k].append(v)
 
