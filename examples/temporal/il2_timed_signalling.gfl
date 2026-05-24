@@ -1,0 +1,7 @@
+entity IL2R
+
+perturbation cytokine_gate:
+    activate
+    dwell(brief)
+    dissociate(facilitated)
+    rebound(minimal)
