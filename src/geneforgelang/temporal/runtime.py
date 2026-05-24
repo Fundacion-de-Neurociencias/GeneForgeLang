@@ -6,6 +6,12 @@ from typing import Protocol, runtime_checkable
 from geneforgelang.temporal.constraints import TemporalConstraintEngine, TemporalValidationResult
 from geneforgelang.temporal.ir import TemporalPerturbationIR
 from geneforgelang.temporal.operators import TemporalPerturbationComposition
+from geneforgelang.temporal.stability import (
+    TemporalStabilityInvariant,
+    TemporalStabilityReport,
+    TemporalStabilityTester,
+    TemporalStressProfile,
+)
 
 
 @dataclass(frozen=True)
@@ -56,6 +62,10 @@ class TemporalExecutionRuntime:
     constraint_engine: TemporalConstraintEngine = field(default_factory=TemporalConstraintEngine)
     providers: dict[str, TemporalCapabilityProvider] = field(default_factory=dict)
     compiler: CrossScaleTemporalCompiler = field(default_factory=CrossScaleTemporalCompiler)
+    stability_tester: TemporalStabilityTester = field(init=False)
+
+    def __post_init__(self) -> None:
+        self.stability_tester = TemporalStabilityTester(self.constraint_engine)
 
     def register_provider(self, provider: TemporalCapabilityProvider) -> None:
         if not isinstance(provider, TemporalCapabilityProvider):
@@ -67,3 +77,27 @@ class TemporalExecutionRuntime:
 
     def validate_composition(self, composition: TemporalPerturbationComposition) -> TemporalValidationResult:
         return self.constraint_engine.validate_composition(composition)
+
+    def test_temporal_stability(
+        self,
+        temporal_ir: TemporalPerturbationIR,
+        profiles: tuple[TemporalStressProfile, ...] | None = None,
+        invariants: tuple[TemporalStabilityInvariant, ...] = (),
+    ) -> TemporalStabilityReport:
+        return self.stability_tester.test_ir(
+            temporal_ir,
+            profiles=profiles,
+            invariants=invariants,
+        )
+
+    def test_composition_stability(
+        self,
+        composition: TemporalPerturbationComposition,
+        profiles: tuple[TemporalStressProfile, ...] | None = None,
+        invariants: tuple[TemporalStabilityInvariant, ...] = (),
+    ) -> TemporalStabilityReport:
+        return self.stability_tester.test_composition(
+            composition,
+            profiles=profiles,
+            invariants=invariants,
+        )

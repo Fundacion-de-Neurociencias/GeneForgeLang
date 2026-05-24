@@ -8,6 +8,8 @@ from geneforgelang.temporal import (
     TemporalExecutionRuntime,
     TemporalPerturbationIR,
     TemporalRegimeAssessment,
+    TemporalStabilityInvariant,
+    TemporalStressProfile,
     activate,
     concurrent,
     facilitated_dissociation,
@@ -83,6 +85,49 @@ def test_temporal_runtime_is_backend_independent():
 
     assert result.valid
     assert runtime.providers == {}
+
+
+def test_temporal_stability_tests_time_not_description():
+    runtime = TemporalExecutionRuntime()
+
+    report = runtime.test_temporal_stability(facilitated_dissociation("IL2R"))
+
+    assert report.stability_score > 0
+    assert report.outcomes
+    assert report.max_sensitivity > 0
+
+
+def test_temporal_stability_detects_invariant_failure_under_stress():
+    runtime = TemporalExecutionRuntime()
+    invariant = TemporalStabilityInvariant(
+        name="facilitated_release_preserved",
+        field="dissociation_mode",
+        expected=DissociationMode.FACILITATED,
+    )
+    stress = TemporalStressProfile(
+        name="force_passive_release",
+        dissociation_shift=DissociationMode.PASSIVE,
+        severity=0.2,
+    )
+
+    report = runtime.test_temporal_stability(
+        facilitated_dissociation("IL2R"),
+        profiles=(stress,),
+        invariants=(invariant,),
+    )
+
+    assert not report.stable
+    assert report.invariant_failures == ("invariant:facilitated_release_preserved",)
+
+
+def test_composition_stability_includes_composition_penalty():
+    runtime = TemporalExecutionRuntime()
+    schedule = concurrent(activate("IL2R"), facilitated_dissociation("IL2R"))
+
+    report = runtime.test_composition_stability(schedule)
+
+    assert report.stability_score < 1
+    assert report.outcomes
 
 
 class MockTemporalProvider:

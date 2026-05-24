@@ -33,6 +33,14 @@ from geneforgelang.temporal.runtime import (
     TemporalRegimeAssessment,
 )
 from geneforgelang.temporal.semantics import parse_temporal_program
+from geneforgelang.temporal.stability import (
+    TemporalStabilityInvariant,
+    TemporalStabilityReport,
+    TemporalStabilityTester,
+    TemporalStressOutcome,
+    TemporalStressProfile,
+    default_stress_profiles,
+)
 
 __all__ = [
     "ActivationProfile",
@@ -48,11 +56,17 @@ __all__ = [
     "TemporalPerturbationComposition",
     "TemporalPerturbationIR",
     "TemporalRegimeAssessment",
+    "TemporalStabilityInvariant",
+    "TemporalStabilityReport",
+    "TemporalStabilityTester",
+    "TemporalStressOutcome",
+    "TemporalStressProfile",
     "TemporalUncertainty",
     "TemporalValidationResult",
     "activate",
     "activation",
     "concurrent",
+    "default_stress_profiles",
     "delayed_activation",
     "dissociate",
     "dwell",
