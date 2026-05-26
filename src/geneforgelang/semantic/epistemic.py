@@ -6,6 +6,7 @@ from typing import Any, Protocol
 from geneforgelang.semantic.constraints import (
     ConstraintPropagationEngine,
     ConstraintSatisfaction,
+    ConstraintSeverity,
 )
 from geneforgelang.semantic.provenance import ProvenanceGraph
 
@@ -313,7 +314,11 @@ class EpistemicRuntime:
 
     def apply_constraint_satisfaction(self, satisfaction: ConstraintSatisfaction) -> None:
         for violation in satisfaction.violations:
-            status = EpistemicStatus.RETRACTED if violation.severity == "error" else EpistemicStatus.CONFLICTED
+            status = (
+                EpistemicStatus.RETRACTED
+                if violation.severity in ("error", ConstraintSeverity.HARD)
+                else EpistemicStatus.CONFLICTED
+            )
             self.belief_state.transition(violation.target, status, violation.message)
             for downstream in violation.downstream:
                 target = self.constraints.graph.constraints[downstream].target

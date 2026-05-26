@@ -10,6 +10,8 @@ class ConstraintKind:
     BOUNDED_UNCERTAINTY = "bounded_uncertainty"
     TOPOLOGICAL_INTEGRITY = "topological_integrity"
     IDENTIFIABILITY = "identifiability"
+    EPISTEMIC_CONSISTENCY = "epistemic_consistency"
+    CROSS_SCALE_COMPATIBILITY = "cross_scale_compatibility"
 
 
 class ConstraintRelationType:
@@ -50,6 +52,8 @@ class ConstraintViolation:
     message: str
     severity: str = "error"
     downstream: tuple[str, ...] = ()
+    influence: float = 1.0
+    recoverable: bool = False
 
 
 @dataclass(frozen=True)
@@ -75,10 +79,20 @@ class ConstraintGraph:
         self.relations.append(relation)
 
     def downstream_of(self, constraint_id: str) -> tuple[str, ...]:
+        return tuple(item[0] for item in self.downstream_paths(constraint_id))
+
+    def downstream_paths(
+        self,
+        constraint_id: str,
+        max_depth: int | None = None,
+    ) -> tuple[tuple[str, int, float], ...]:
         seen: set[str] = set()
-        frontier = [constraint_id]
+        frontier = [(constraint_id, 0, 1.0)]
+        downstream: list[tuple[str, int, float]] = []
         while frontier:
-            current = frontier.pop()
+            current, depth, influence = frontier.pop()
+            if max_depth is not None and depth >= max_depth:
+                continue
             for relation in self.relations:
                 if (
                     relation.source == current
@@ -86,13 +100,48 @@ class ConstraintGraph:
                     and relation.target not in seen
                 ):
                     seen.add(relation.target)
-                    frontier.append(relation.target)
-        return tuple(seen)
+                    propagated_influence = influence * relation.weight
+                    downstream.append((relation.target, depth + 1, propagated_influence))
+                    frontier.append((relation.target, depth + 1, propagated_influence))
+        return tuple(downstream)
+
+
+@dataclass(frozen=True)
+class PropagationPolicy:
+    propagation_decay: float = 0.65
+    influence_threshold: float = 0.1
+    max_depth: int = 4
+    confidence_attenuation: float = 0.2
+    stability_hysteresis: float = 0.05
+
+    def __post_init__(self) -> None:
+        for field_name in (
+            "propagation_decay",
+            "influence_threshold",
+            "confidence_attenuation",
+            "stability_hysteresis",
+        ):
+            value = getattr(self, field_name)
+            if not 0 <= value <= 1:
+                raise ValueError(f"{field_name} must be in [0, 1]")
+        if self.max_depth < 0:
+            raise ValueError("max_depth must be non-negative")
+
+
+class ConstraintSeverity:
+    HARD = "hard"
+    SOFT = "soft"
+    RECOVERABLE = "recoverable"
 
 
 class ConstraintPropagationEngine:
-    def __init__(self, graph: ConstraintGraph | None = None):
+    def __init__(
+        self,
+        graph: ConstraintGraph | None = None,
+        policy: PropagationPolicy | None = None,
+    ):
         self.graph = graph or ConstraintGraph()
+        self.policy = policy or PropagationPolicy()
 
     def evaluate(
         self,
@@ -105,7 +154,14 @@ class ConstraintPropagationEngine:
             score, violation = self._evaluate_constraint(constraint, observation)
             scores.append(score)
             if violation is not None:
-                downstream = self.graph.downstream_of(constraint.id)
+                downstream = tuple(
+                    target
+                    for target, _depth, influence in self.graph.downstream_paths(
+                        constraint.id,
+                        max_depth=self.policy.max_depth,
+                    )
+                    if influence * self.policy.propagation_decay >= self.policy.influence_threshold
+                )
                 violations.append(
                     ConstraintViolation(
                         constraint_id=violation.constraint_id,
@@ -114,12 +170,14 @@ class ConstraintPropagationEngine:
                         message=violation.message,
                         severity=violation.severity,
                         downstream=downstream,
+                        influence=violation.influence,
+                        recoverable=violation.recoverable,
                     )
                 )
                 violations.extend(self._propagate_violation(violation, downstream))
         mean_score = sum(scores) / len(scores) if scores else 1.0
         return ConstraintSatisfaction(
-            satisfied=not any(item.severity == "error" for item in violations),
+            satisfied=not violations,
             score=mean_score,
             violations=tuple(violations),
         )
@@ -151,6 +209,7 @@ class ConstraintPropagationEngine:
                 constraint.target,
                 "topological_rupture",
                 f"Topology ruptured for {constraint.target}",
+                severity=ConstraintSeverity.HARD,
             )
         if constraint.kind == ConstraintKind.MONOTONICITY:
             previous = float(observation.values.get("previous", 0.0))
@@ -162,7 +221,23 @@ class ConstraintPropagationEngine:
                 constraint.target,
                 "monotonicity_violation",
                 f"Current value {current} is below previous value {previous}",
+                severity=ConstraintSeverity.RECOVERABLE,
+                recoverable=True,
             )
+        if constraint.kind == ConstraintKind.EPISTEMIC_CONSISTENCY:
+            consistent = bool(observation.values.get("epistemic_consistent", False))
+            if consistent:
+                return 1.0, None
+            return 0.0, ConstraintViolation(
+                constraint.id,
+                constraint.target,
+                "epistemic_inconsistency",
+                f"Epistemic state is inconsistent for {constraint.target}",
+                severity=ConstraintSeverity.RECOVERABLE,
+                recoverable=True,
+            )
+        if constraint.kind == ConstraintKind.CROSS_SCALE_COMPATIBILITY:
+            return self._minimum_value(constraint, observation, "scale_compatibility")
         return 0.0, ConstraintViolation(
             constraint.id,
             constraint.target,
@@ -184,6 +259,9 @@ class ConstraintPropagationEngine:
             constraint.target,
             f"{key}_below_threshold",
             f"{key}={value} below threshold {constraint.threshold}",
+            severity=ConstraintSeverity.SOFT if value > 0 else ConstraintSeverity.HARD,
+            influence=max(0.0, constraint.threshold - value),
+            recoverable=value > 0,
         )
 
     def _maximum_value(
@@ -200,6 +278,9 @@ class ConstraintPropagationEngine:
             constraint.target,
             f"{key}_above_threshold",
             f"{key}={value} above threshold {constraint.threshold}",
+            severity=ConstraintSeverity.SOFT,
+            influence=min(1.0, value - constraint.threshold),
+            recoverable=True,
         )
 
     def _propagate_violation(
@@ -207,14 +288,88 @@ class ConstraintPropagationEngine:
         violation: ConstraintViolation,
         downstream: tuple[str, ...],
     ) -> tuple[ConstraintViolation, ...]:
-        return tuple(
-            ConstraintViolation(
-                constraint_id=constraint_id,
-                target=self.graph.constraints[constraint_id].target,
-                code="propagated_constraint_violation",
-                message=f"Upstream violation {violation.constraint_id} propagates to {constraint_id}",
-                severity="warning",
+        propagated: list[ConstraintViolation] = []
+        for constraint_id in downstream:
+            if constraint_id not in self.graph.constraints:
+                continue
+            influence = violation.influence * self.policy.propagation_decay
+            if influence < self.policy.influence_threshold:
+                continue
+            propagated.append(
+                ConstraintViolation(
+                    constraint_id=constraint_id,
+                    target=self.graph.constraints[constraint_id].target,
+                    code="propagated_constraint_violation",
+                    message=f"Upstream violation {violation.constraint_id} propagates to {constraint_id}",
+                    severity="warning",
+                    influence=influence,
+                    recoverable=violation.recoverable,
+                )
             )
-            for constraint_id in downstream
-            if constraint_id in self.graph.constraints
+        return tuple(propagated)
+
+
+@dataclass(frozen=True)
+class SemanticConvergenceReport:
+    convergence_reached: bool
+    oscillation_detected: bool
+    unstable_attractor: bool
+    contradiction_loop: bool
+    fixed_point_confidence: float
+    iterations: int
+    history: tuple[tuple[str, ...], ...]
+
+
+class SemanticConvergenceEngine:
+    def __init__(
+        self,
+        propagation: ConstraintPropagationEngine,
+        max_iterations: int = 8,
+        fixed_point_tolerance: float = 0.0,
+    ):
+        self.propagation = propagation
+        self.max_iterations = max_iterations
+        self.fixed_point_tolerance = fixed_point_tolerance
+
+    def converge(
+        self,
+        observations: dict[str, ConstraintObservation],
+    ) -> SemanticConvergenceReport:
+        history: list[tuple[str, ...]] = []
+        previous_signature: tuple[str, ...] | None = None
+        seen: set[tuple[str, ...]] = set()
+        for iteration in range(1, self.max_iterations + 1):
+            satisfaction = self.propagation.evaluate(observations)
+            signature = tuple(sorted(item.code + ":" + item.target for item in satisfaction.violations))
+            history.append(signature)
+            if signature == previous_signature:
+                return SemanticConvergenceReport(
+                    convergence_reached=True,
+                    oscillation_detected=False,
+                    unstable_attractor=False,
+                    contradiction_loop=False,
+                    fixed_point_confidence=satisfaction.score,
+                    iterations=iteration,
+                    history=tuple(history),
+                )
+            if signature in seen:
+                return SemanticConvergenceReport(
+                    convergence_reached=False,
+                    oscillation_detected=True,
+                    unstable_attractor=True,
+                    contradiction_loop=any("epistemic_inconsistency" in item for item in signature),
+                    fixed_point_confidence=0.0,
+                    iterations=iteration,
+                    history=tuple(history),
+                )
+            seen.add(signature)
+            previous_signature = signature
+        return SemanticConvergenceReport(
+            convergence_reached=False,
+            oscillation_detected=False,
+            unstable_attractor=True,
+            contradiction_loop=False,
+            fixed_point_confidence=0.0,
+            iterations=self.max_iterations,
+            history=tuple(history),
         )

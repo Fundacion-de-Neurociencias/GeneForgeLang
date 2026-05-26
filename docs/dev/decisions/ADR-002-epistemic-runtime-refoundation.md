@@ -45,6 +45,13 @@ The kernel supports operational constraint kinds such as reachability, monotonic
 uncertainty, topological integrity and identifiability. These are abstract epistemic invariants, not
 hardcoded biological entities.
 
+Constraint propagation includes damping, influence thresholds, max-depth control and recoverable
+violations to avoid propagation explosion. The kernel distinguishes soft degradation, hard
+invalidation and recoverable constraint failures.
+
+The kernel also includes a `SemanticConvergenceEngine` to iterate constraint propagation until a
+fixed point is reached or oscillation/unstable attractors are detected.
+
 ## Verification
 
 The initial implementation is covered by `tests/unit/semantic/test_refoundation.py` and preserves

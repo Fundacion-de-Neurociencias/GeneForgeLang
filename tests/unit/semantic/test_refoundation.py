@@ -27,8 +27,10 @@ from geneforgelang.semantic import (
     Perturbation,
     PerturbationAlgebra,
     PerturbationSet,
+    PropagationPolicy,
     ScaleCompiler,
     SemanticConstraint,
+    SemanticConvergenceEngine,
     SemanticDocument,
     SemanticRuntime,
     UncertaintyNode,
@@ -402,5 +404,89 @@ def test_epistemic_runtime_degrades_beliefs_from_constraint_propagation():
     )
     runtime.epistemic.apply_constraint_satisfaction(satisfaction)
 
-    assert runtime.epistemic.belief_state.statuses["hypothesis_a"] == EpistemicStatus.RETRACTED
+    assert runtime.epistemic.belief_state.statuses["hypothesis_a"] == EpistemicStatus.CONFLICTED
     assert runtime.epistemic.belief_state.statuses["downstream_hypothesis"] == EpistemicStatus.CONFLICTED
+
+
+def test_constraint_engine_detects_epistemic_consistency_violation():
+    graph = ConstraintGraph()
+    graph.add_constraint(
+        SemanticConstraint(
+            id="c_epistemic",
+            target="claim_h",
+            kind=ConstraintKind.EPISTEMIC_CONSISTENCY,
+        )
+    )
+
+    result = ConstraintPropagationEngine(graph).evaluate(
+        {
+            "claim_h": ConstraintObservation(
+                target="claim_h",
+                values={"epistemic_consistent": False},
+            )
+        }
+    )
+
+    assert not result.satisfied
+    assert result.violations[0].code == "epistemic_inconsistency"
+    assert result.violations[0].recoverable
+
+
+def test_constraint_engine_detects_cross_scale_compatibility_violation():
+    graph = ConstraintGraph()
+    graph.add_constraint(
+        SemanticConstraint(
+            id="c_scale",
+            target="phenotype_projection",
+            kind=ConstraintKind.CROSS_SCALE_COMPATIBILITY,
+            threshold=0.8,
+        )
+    )
+
+    result = ConstraintPropagationEngine(graph).evaluate(
+        {
+            "phenotype_projection": ConstraintObservation(
+                target="phenotype_projection",
+                values={"scale_compatibility": 0.4},
+            )
+        }
+    )
+
+    assert not result.satisfied
+    assert result.violations[0].code == "scale_compatibility_below_threshold"
+
+
+def test_constraint_propagation_damping_limits_downstream_explosion():
+    graph = ConstraintGraph()
+    graph.add_constraint(SemanticConstraint("root", "root_claim", ConstraintKind.REACHABILITY, threshold=0.8))
+    graph.add_constraint(SemanticConstraint("mid", "mid_claim", ConstraintKind.REACHABILITY, threshold=0.8))
+    graph.add_constraint(SemanticConstraint("leaf", "leaf_claim", ConstraintKind.REACHABILITY, threshold=0.8))
+    graph.add_relation(ConstraintRelation("root", "mid", weight=0.5))
+    graph.add_relation(ConstraintRelation("mid", "leaf", weight=0.5))
+    engine = ConstraintPropagationEngine(
+        graph,
+        policy=PropagationPolicy(propagation_decay=0.5, influence_threshold=0.2, max_depth=4),
+    )
+
+    result = engine.evaluate(
+        {
+            "root_claim": ConstraintObservation("root_claim", {"reachability": 0.1}),
+            "mid_claim": ConstraintObservation("mid_claim", {"reachability": 0.9}),
+            "leaf_claim": ConstraintObservation("leaf_claim", {"reachability": 0.9}),
+        }
+    )
+
+    propagated_targets = [item.target for item in result.violations if item.code == "propagated_constraint_violation"]
+    assert propagated_targets == ["mid_claim"]
+
+
+def test_semantic_convergence_engine_reaches_fixed_point():
+    graph = ConstraintGraph()
+    graph.add_constraint(SemanticConstraint("c_reach", "stable_claim", ConstraintKind.REACHABILITY, threshold=0.8))
+    engine = SemanticConvergenceEngine(ConstraintPropagationEngine(graph))
+
+    report = engine.converge({"stable_claim": ConstraintObservation("stable_claim", {"reachability": 0.9})})
+
+    assert report.convergence_reached
+    assert not report.oscillation_detected
+    assert report.fixed_point_confidence == 0.9
