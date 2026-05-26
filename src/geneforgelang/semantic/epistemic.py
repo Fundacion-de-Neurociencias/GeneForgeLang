@@ -3,6 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 
+from geneforgelang.semantic.constraints import (
+    ConstraintPropagationEngine,
+    ConstraintSatisfaction,
+)
 from geneforgelang.semantic.provenance import ProvenanceGraph
 
 
@@ -288,6 +292,7 @@ class EpistemicRuntime:
     invalidation: CausalInvalidationEngine = field(default_factory=CausalInvalidationEngine)
     compressibility: CompressibilityEngine = field(default_factory=CompressibilityEngine)
     provenance: ProvenanceGraph = field(default_factory=ProvenanceGraph)
+    constraints: ConstraintPropagationEngine = field(default_factory=ConstraintPropagationEngine)
 
     def ingest_evidence(self, views: list[EvidenceView]) -> ConsensusEstimate:
         estimate = self.triangulator.estimate(views)
@@ -305,3 +310,15 @@ class EpistemicRuntime:
         record = self.invalidation.invalidate(state, entity_id, reason)
         self.belief_state.mark_invalidated(record)
         return record
+
+    def apply_constraint_satisfaction(self, satisfaction: ConstraintSatisfaction) -> None:
+        for violation in satisfaction.violations:
+            status = EpistemicStatus.RETRACTED if violation.severity == "error" else EpistemicStatus.CONFLICTED
+            self.belief_state.transition(violation.target, status, violation.message)
+            for downstream in violation.downstream:
+                target = self.constraints.graph.constraints[downstream].target
+                self.belief_state.transition(
+                    target,
+                    EpistemicStatus.CONFLICTED,
+                    f"Downstream of constraint violation {violation.constraint_id}",
+                )

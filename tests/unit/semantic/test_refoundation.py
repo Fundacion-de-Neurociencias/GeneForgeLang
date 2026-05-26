@@ -11,6 +11,11 @@ from geneforgelang.semantic import (
     BiologicalScale,
     CapabilityRegistry,
     CompressibilityEngine,
+    ConstraintGraph,
+    ConstraintKind,
+    ConstraintObservation,
+    ConstraintPropagationEngine,
+    ConstraintRelation,
     EpistemicStatus,
     EvidenceNode,
     EvidenceView,
@@ -23,6 +28,7 @@ from geneforgelang.semantic import (
     PerturbationAlgebra,
     PerturbationSet,
     ScaleCompiler,
+    SemanticConstraint,
     SemanticDocument,
     SemanticRuntime,
     UncertaintyNode,
@@ -322,3 +328,79 @@ def test_agent_execution_requires_determinism_and_checkpoints_state():
     state.get_entity("TP53").set_attr("status", "mutated")
 
     assert checkpoint.state.get_entity("TP53").get_attr("status") is None
+
+
+def test_constraint_propagation_marks_downstream_violations():
+    graph = ConstraintGraph()
+    graph.add_constraint(
+        SemanticConstraint(
+            id="c_reachability",
+            target="pathway_timing",
+            kind=ConstraintKind.REACHABILITY,
+            threshold=0.8,
+        )
+    )
+    graph.add_constraint(
+        SemanticConstraint(
+            id="c_identifiability",
+            target="phenotype_claim",
+            kind=ConstraintKind.IDENTIFIABILITY,
+            threshold=0.7,
+        )
+    )
+    graph.add_relation(ConstraintRelation("c_reachability", "c_identifiability"))
+
+    result = ConstraintPropagationEngine(graph).evaluate(
+        {
+            "pathway_timing": ConstraintObservation(
+                target="pathway_timing",
+                values={"reachability": 0.3},
+            ),
+            "phenotype_claim": ConstraintObservation(
+                target="phenotype_claim",
+                values={"identifiability": 0.9},
+            ),
+        }
+    )
+
+    assert not result.satisfied
+    assert result.violations[0].downstream == ("c_identifiability",)
+    assert any(item.code == "propagated_constraint_violation" for item in result.violations)
+
+
+def test_epistemic_runtime_degrades_beliefs_from_constraint_propagation():
+    runtime = SemanticRuntime()
+    runtime.epistemic.constraints.graph.add_constraint(
+        SemanticConstraint(
+            id="c_uncertainty",
+            target="hypothesis_a",
+            kind=ConstraintKind.BOUNDED_UNCERTAINTY,
+            threshold=0.2,
+        )
+    )
+    runtime.epistemic.constraints.graph.add_constraint(
+        SemanticConstraint(
+            id="c_reachability",
+            target="downstream_hypothesis",
+            kind=ConstraintKind.REACHABILITY,
+            threshold=0.7,
+        )
+    )
+    runtime.epistemic.constraints.graph.add_relation(ConstraintRelation("c_uncertainty", "c_reachability"))
+
+    satisfaction = runtime.epistemic.constraints.evaluate(
+        {
+            "hypothesis_a": ConstraintObservation(
+                target="hypothesis_a",
+                values={"uncertainty": 0.9},
+            ),
+            "downstream_hypothesis": ConstraintObservation(
+                target="downstream_hypothesis",
+                values={"reachability": 0.8},
+            ),
+        }
+    )
+    runtime.epistemic.apply_constraint_satisfaction(satisfaction)
+
+    assert runtime.epistemic.belief_state.statuses["hypothesis_a"] == EpistemicStatus.RETRACTED
+    assert runtime.epistemic.belief_state.statuses["downstream_hypothesis"] == EpistemicStatus.CONFLICTED
