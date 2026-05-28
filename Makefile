@@ -68,6 +68,9 @@ ci:  ## Run all CI checks locally
 	$(MAKE) security
 	$(MAKE) test
 
+constitutional:  ## Run GFL constitutional verification (architectural boundaries & excision simulation)
+	python scripts/architectural_audit.py
+
 setup-genesis-data:  ## Setup data environment for GFL Genesis project
 	@echo "-> Configurando el entorno de datos para el proyecto GFL Genesis..."
 	@/bin/bash examples/gfl-genesis/scripts/fetch_data.sh
