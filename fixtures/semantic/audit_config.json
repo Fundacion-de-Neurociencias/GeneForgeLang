@@ -1,0 +1,17 @@
+{
+  "seed": 42,
+  "tier_a": {
+    "enabled": true
+  },
+  "tier_b": {
+    "sequence_lengths": [3, 4, 5],
+    "samples": 5000
+  },
+  "tier_c": {
+    "mutations": 10000
+  },
+  "thresholds": {
+    "min_rsi": 0.999,
+    "max_illegal_collapses": 0
+  }
+}
