@@ -244,7 +244,7 @@ def completions(params):
             if isinstance(ast, dict) and "pathways" in ast:
                 pathways = ast["pathways"]
                 if isinstance(pathways, dict):
-                    for pathway_name in pathways.keys():
+                    for pathway_name in pathways:
                         items.append(
                             CompletionItem(
                                 label=pathway_name,
@@ -259,7 +259,7 @@ def completions(params):
             if isinstance(ast, dict) and "complexes" in ast:
                 complexes = ast["complexes"]
                 if isinstance(complexes, dict):
-                    for complex_name in complexes.keys():
+                    for complex_name in complexes:
                         items.append(
                             CompletionItem(
                                 label=complex_name,

@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 class ProteinGenerationModel(TransformersModel):
     """Specialized model for protein sequence generation using ProtGPT2."""
 
-    def __init__(self, config: Optional[ModelConfig] = None):
+    def __init__(self, config: ModelConfig | None = None):
         if config is None:
             config = ModelConfig(
                 model_name="nferruz/ProtGPT2",
@@ -62,7 +62,7 @@ class ProteinGenerationModel(TransformersModel):
             "default": "M",
         }
 
-    def predict(self, features: Dict[str, Any]) -> InferenceResult:
+    def predict(self, features: dict[str, Any]) -> InferenceResult:
         """Generate protein sequence based on GFL features."""
         if not self.is_loaded():
             self.load_model()
@@ -107,7 +107,7 @@ class ProteinGenerationModel(TransformersModel):
                 raw_output={"error": str(e)},
             )
 
-    def _extract_protein_seed(self, features: Dict[str, Any]) -> str:
+    def _extract_protein_seed(self, features: dict[str, Any]) -> str:
         """Extract appropriate protein seed from GFL features."""
         # Check for specific protein features mentioned in the GFL code
         feature_text = str(features).lower()
@@ -161,7 +161,7 @@ class ProteinGenerationModel(TransformersModel):
 
         return generated_sequence
 
-    def _analyze_protein_sequence(self, sequence: str) -> Dict[str, Any]:
+    def _analyze_protein_sequence(self, sequence: str) -> dict[str, Any]:
         """Analyze generated protein sequence."""
         if not sequence:
             return {
@@ -211,7 +211,7 @@ class ProteinGenerationModel(TransformersModel):
             },
         }
 
-    def explain_prediction(self, features: Dict[str, Any], result: InferenceResult) -> str:
+    def explain_prediction(self, features: dict[str, Any], result: InferenceResult) -> str:
         """Explain protein generation prediction."""
         explanation_parts = [result.explanation]
 
@@ -235,7 +235,7 @@ class ProteinGenerationModel(TransformersModel):
 class GenomicClassificationModel(TransformersModel):
     """Model for classifying genomic experiments and their outcomes."""
 
-    def __init__(self, config: Optional[ModelConfig] = None):
+    def __init__(self, config: ModelConfig | None = None):
         if config is None:
             config = ModelConfig(
                 model_name="microsoft/DialoGPT-medium",  # Can be replaced with specialized model
@@ -268,7 +268,7 @@ class GenomicClassificationModel(TransformersModel):
             },
         }
 
-    def predict(self, features: Dict[str, Any]) -> InferenceResult:
+    def predict(self, features: dict[str, Any]) -> InferenceResult:
         """Classify genomic experiment type and significance."""
         if not self.is_loaded():
             # Use heuristic classification if model not loaded
@@ -290,7 +290,7 @@ class GenomicClassificationModel(TransformersModel):
             logger.warning(f"Transformers classification failed, using heuristic: {e}")
             return self._heuristic_classification(features)
 
-    def _prepare_classification_input(self, features: Dict[str, Any]) -> str:
+    def _prepare_classification_input(self, features: dict[str, Any]) -> str:
         """Prepare structured input for genomic classification."""
         input_parts = []
 
@@ -320,7 +320,7 @@ class GenomicClassificationModel(TransformersModel):
 
         return ". ".join(input_parts) if input_parts else "Genomic analysis task"
 
-    def _heuristic_classification(self, features: Dict[str, Any]) -> InferenceResult:
+    def _heuristic_classification(self, features: dict[str, Any]) -> InferenceResult:
         """Fallback heuristic classification."""
         feature_text = str(features).lower()
 
@@ -356,7 +356,7 @@ class GenomicClassificationModel(TransformersModel):
         )
 
     def _enhance_genomic_classification(
-        self, features: Dict[str, Any], base_result: InferenceResult
+        self, features: dict[str, Any], base_result: InferenceResult
     ) -> InferenceResult:
         """Enhance base classification with genomic domain knowledge."""
         # Apply genomic-specific rules to boost confidence
@@ -390,7 +390,7 @@ class GenomicClassificationModel(TransformersModel):
 class MultiModalGenomicModel(BaseMLModel):
     """Multi-modal model that combines different specialized models."""
 
-    def __init__(self, config: Optional[ModelConfig] = None):
+    def __init__(self, config: ModelConfig | None = None):
         if config is None:
             config = ModelConfig(model_name="multimodal_genomic", model_type="multimodal")
         super().__init__(config)
@@ -412,7 +412,7 @@ class MultiModalGenomicModel(BaseMLModel):
         # Classification model uses heuristics as fallback
         self._model = "loaded"  # Mark as loaded
 
-    def predict(self, features: Dict[str, Any]) -> InferenceResult:
+    def predict(self, features: dict[str, Any]) -> InferenceResult:
         """Multi-modal prediction combining classification and generation."""
         if not self.is_loaded():
             self.load_model()
@@ -436,7 +436,7 @@ class MultiModalGenomicModel(BaseMLModel):
         return combined_result
 
     def _should_generate_protein(
-        self, features: Dict[str, Any], classification: InferenceResult
+        self, features: dict[str, Any], classification: InferenceResult
     ) -> bool:
         """Determine if protein generation is appropriate."""
         # Generate protein if it's a protein-related experiment
@@ -453,7 +453,7 @@ class MultiModalGenomicModel(BaseMLModel):
         return protein_related or classification_suggests_protein
 
     def _combine_results(
-        self, results: Dict[str, InferenceResult], features: Dict[str, Any]
+        self, results: dict[str, InferenceResult], features: dict[str, Any]
     ) -> InferenceResult:
         """Combine multiple model results into unified prediction."""
         classification = results["classification"]
@@ -495,7 +495,7 @@ class MultiModalGenomicModel(BaseMLModel):
             },
         )
 
-    def explain_prediction(self, features: Dict[str, Any], result: InferenceResult) -> str:
+    def explain_prediction(self, features: dict[str, Any], result: InferenceResult) -> str:
         """Explain multi-modal prediction."""
         explanation_parts = [result.explanation]
 

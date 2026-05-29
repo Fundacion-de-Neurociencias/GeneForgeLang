@@ -8,7 +8,9 @@ import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Protocol, Type
+from typing import Any, Protocol
+
+from src.geneforgelang.plugins.base import BaseGeneratorPlugin, BaseOptimizerPlugin
 
 try:
     from importlib.metadata import entry_points as _entry_points
@@ -72,9 +74,9 @@ class PluginDependency:
     """Represents a plugin dependency."""
 
     name: str
-    version_spec: Optional[str] = None  # e.g., ">=1.0.0", "~=2.1"
+    version_spec: str | None = None  # e.g., ">=1.0.0", "~=2.1"
     optional: bool = False
-    import_name: Optional[str] = None  # Package import name if different
+    import_name: str | None = None  # Package import name if different
 
     def is_satisfied(self) -> bool:
         """Check if this dependency is satisfied."""
@@ -132,7 +134,7 @@ class GFLPlugin(Protocol):
         """Plugin version."""
         ...
 
-    def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process GFL data and return results."""
         ...
 
@@ -142,7 +144,7 @@ class BaseGFLPlugin(ABC):
 
     def __init__(self):
         self._state = PluginState.UNLOADED
-        self._error: Optional[str] = None
+        self._error: str | None = None
 
     @property
     @abstractmethod
@@ -160,7 +162,7 @@ class BaseGFLPlugin(ABC):
         return PluginPriority.NORMAL
 
     @property
-    def dependencies(self) -> List[PluginDependency]:
+    def dependencies(self) -> list[PluginDependency]:
         """Plugin dependencies (default: none)."""
         return []
 
@@ -170,11 +172,11 @@ class BaseGFLPlugin(ABC):
         return self._state
 
     @property
-    def error(self) -> Optional[str]:
+    def error(self) -> str | None:
         """Last error message if in ERROR state."""
         return self._error
 
-    def _set_state(self, state: PluginState, error: Optional[str] = None) -> None:
+    def _set_state(self, state: PluginState, error: str | None = None) -> None:
         """Internal method to update plugin state."""
         self._state = state
         self._error = error
@@ -192,14 +194,14 @@ class BaseGFLPlugin(ABC):
         """Called when plugin is deactivated. Override to add custom logic."""
 
     @abstractmethod
-    def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process GFL data and return results."""
 
-    def validate_config(self, config: Dict[str, Any]) -> List[str]:
+    def validate_config(self, config: dict[str, Any]) -> list[str]:
         """Validate plugin configuration. Return list of errors."""
         return []
 
-    def get_metadata(self) -> Dict[str, Any]:
+    def get_metadata(self) -> dict[str, Any]:
         """Get comprehensive plugin metadata."""
         return {
             "name": self.name,
@@ -247,7 +249,7 @@ class GeneForgeSkill(BaseGFLPlugin):
         """Type of skill (e.g., 'Neuro-PharmGx', 'Metagenomics')."""
         return "GenericBioSkill"
 
-    def execute(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def execute(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Public method to execute the skill.
         Wraps the internal _analyze method to build the reproducibility package.
@@ -279,19 +281,19 @@ class GeneForgeSkill(BaseGFLPlugin):
             }
 
     @abstractmethod
-    def _analyze(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def _analyze(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Internal scientific analysis implementation.
         Must return a structured dict representing the scientific outcome.
         """
 
-    def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """
         Implements BaseGFLPlugin.process by routing to the secure execute method.
         """
         return self.execute(data)
 
-    def _generate_reproducibility_package(self, input_hash: str, start_time: float, failed: bool = False) -> Dict[str, Any]:
+    def _generate_reproducibility_package(self, input_hash: str, start_time: float, failed: bool = False) -> dict[str, Any]:
         """
         Generates the standard metadata package proving the analysis was run locally.
         """
@@ -319,25 +321,25 @@ class PluginInfo:
 
     name: str
     version: str
-    plugin_class: Type[Any]
-    instance: Optional[Any] = None
-    entry_point: Optional[str] = None
+    plugin_class: type[Any]
+    instance: Any | None = None
+    entry_point: str | None = None
     state: PluginState = PluginState.UNLOADED
-    load_error: Optional[str] = None
-    dependencies: List[PluginDependency] = field(default_factory=list)
+    load_error: str | None = None
+    dependencies: list[PluginDependency] = field(default_factory=list)
     priority: PluginPriority = PluginPriority.NORMAL
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    config: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
+    config: dict[str, Any] = field(default_factory=dict)
     # Containerization information
     is_containerized: bool = False
-    container_image: Optional[str] = None
+    container_image: str | None = None
 
     @property
     def is_loaded(self) -> bool:
         """Check if plugin is loaded."""
         return self.state in (PluginState.LOADED, PluginState.ACTIVE)
 
-    def check_dependencies(self) -> List[str]:
+    def check_dependencies(self) -> list[str]:
         """Check plugin dependencies and return list of missing ones."""
         missing = []
         for dep in self.dependencies:
@@ -350,7 +352,7 @@ class PluginInfo:
                     missing.append(f"{dep.name}{dep.version_spec or ''}")
         return missing
 
-    def load(self, registry_hooks: Optional[List[PluginLifecycleHook]] = None) -> Any:
+    def load(self, registry_hooks: list[PluginLifecycleHook] | None = None) -> Any:
         """Load the plugin instance with dependency checking and lifecycle hooks."""
         if self.state == PluginState.LOADED and self.instance is not None:
             return self.instance
@@ -400,7 +402,7 @@ class PluginInfo:
             raise
 
     def unload(
-        self, registry_hooks: Optional[List[PluginLifecycleHook]] = None
+        self, registry_hooks: list[PluginLifecycleHook] | None = None
     ) -> None:
         """Unload the plugin instance."""
         if self.state == PluginState.UNLOADED:
@@ -429,7 +431,7 @@ class PluginInfo:
             logger.error(f"Failed to unload plugin {self.name}: {e}")
 
     def activate(
-        self, registry_hooks: Optional[List[PluginLifecycleHook]] = None
+        self, registry_hooks: list[PluginLifecycleHook] | None = None
     ) -> None:
         """Activate the plugin."""
         if self.state != PluginState.LOADED:
@@ -455,7 +457,7 @@ class PluginInfo:
             logger.error(f"Failed to activate plugin {self.name}: {e}")
 
     def deactivate(
-        self, registry_hooks: Optional[List[PluginLifecycleHook]] = None
+        self, registry_hooks: list[PluginLifecycleHook] | None = None
     ) -> None:
         """Deactivate the plugin."""
         if self.state != PluginState.ACTIVE:
@@ -494,7 +496,7 @@ class PluginInfo:
             self.instance._set_state(PluginState.ERROR, error_msg)
 
     def _notify_hooks(
-        self, hooks: Optional[List[PluginLifecycleHook]], state: PluginState
+        self, hooks: list[PluginLifecycleHook] | None, state: PluginState
     ) -> None:
         """Notify registry hooks of state change."""
         if not hooks:
@@ -511,12 +513,12 @@ class PluginRegistry:
     """Enhanced plugin registry with entry point discovery, dependency management and lifecycle hooks."""
 
     def __init__(self):
-        self._plugins: Dict[str, PluginInfo] = {}
+        self._plugins: dict[str, PluginInfo] = {}
         self._discovered = False
-        self._hooks: List[PluginLifecycleHook] = []
-        self._plugin_order: List[str] = []  # For dependency-based ordering
-        self._generators: Dict[str, Type[Any]] = {}  # For BaseGeneratorPlugin registry
-        self._optimizers: Dict[str, Type[Any]] = {}  # For BaseOptimizerPlugin registry
+        self._hooks: list[PluginLifecycleHook] = []
+        self._plugin_order: list[str] = []  # For dependency-based ordering
+        self._generators: dict[str, type[Any]] = {}  # For BaseGeneratorPlugin registry
+        self._optimizers: dict[str, type[Any]] = {}  # For BaseOptimizerPlugin registry
 
     def add_lifecycle_hook(self, hook: PluginLifecycleHook) -> None:
         """Add a lifecycle hook for plugin state changes."""
@@ -532,7 +534,7 @@ class PluginRegistry:
         name: str,
         plugin: Any,
         version: str = "unknown",
-        config: Optional[Dict[str, Any]] = None,
+        config: dict[str, Any] | None = None,
     ) -> None:
         """Register a plugin instance with enhanced metadata."""
         if hasattr(plugin, "name"):
@@ -574,9 +576,9 @@ class PluginRegistry:
     def register_class(
         self,
         name: str,
-        plugin_class: Type[Any],
+        plugin_class: type[Any],
         version: str = "unknown",
-        config: Optional[Dict[str, Any]] = None,
+        config: dict[str, Any] | None = None,
     ) -> None:
         """Register a plugin class (lazy loading) with enhanced metadata."""
         # Try to get static information from class
@@ -679,7 +681,7 @@ class PluginRegistry:
         plugin_info = self.get_info(name)
         plugin_info.unload(self._hooks)
 
-    def get_active_plugins(self) -> List[PluginInfo]:
+    def get_active_plugins(self) -> list[PluginInfo]:
         """Get list of active plugins in execution order."""
         if not self._discovered:
             self._discover_plugins()
@@ -691,7 +693,7 @@ class PluginRegistry:
         ]
         return active
 
-    def get_plugins_by_state(self, state: PluginState) -> List[PluginInfo]:
+    def get_plugins_by_state(self, state: PluginState) -> list[PluginInfo]:
         """Get plugins filtered by state."""
         if not self._discovered:
             self._discover_plugins()
@@ -702,7 +704,7 @@ class PluginRegistry:
             if plugin_info.state == state
         ]
 
-    def validate_all_dependencies(self) -> Dict[str, List[str]]:
+    def validate_all_dependencies(self) -> dict[str, list[str]]:
         """Validate dependencies for all plugins. Returns dict of plugin_name -> missing_deps."""
         if not self._discovered:
             self._discover_plugins()
@@ -715,14 +717,14 @@ class PluginRegistry:
 
         return results
 
-    def names(self) -> List[str]:
+    def names(self) -> list[str]:
         """Get list of available plugin names in execution order."""
         if not self._discovered:
             self._discover_plugins()
 
         return self._plugin_order.copy()
 
-    def list_plugins(self) -> List[PluginInfo]:
+    def list_plugins(self) -> list[PluginInfo]:
         """Get list of all plugin info in execution order."""
         if not self._discovered:
             self._discover_plugins()
@@ -732,8 +734,8 @@ class PluginRegistry:
         ]
 
     def process_with_plugins(
-        self, data: Dict[str, Any], plugin_names: Optional[List[str]] = None
-    ) -> Dict[str, Any]:
+        self, data: dict[str, Any], plugin_names: list[str] | None = None
+    ) -> dict[str, Any]:
         """Process data through active plugins in dependency order."""
         if plugin_names is None:
             # Use all active plugins
@@ -963,12 +965,12 @@ def get_available_generators() -> dict[str, type[BaseGeneratorPlugin]]:
     return plugin_registry._generators
 
 
-def list_plugins() -> List[PluginInfo]:
+def list_plugins() -> list[PluginInfo]:
     """List all available plugins."""
     return plugin_registry.list_plugins()
 
 
-def get_active_plugins() -> List[PluginInfo]:
+def get_active_plugins() -> list[PluginInfo]:
     """Get list of active plugins."""
     return plugin_registry.get_active_plugins()
 
@@ -989,13 +991,13 @@ def deactivate_plugin(name: str) -> None:
 
 
 def process_with_plugins(
-    data: Dict[str, Any], plugin_names: Optional[List[str]] = None
-) -> Dict[str, Any]:
+    data: dict[str, Any], plugin_names: list[str] | None = None
+) -> dict[str, Any]:
     """Process data through plugins."""
     return plugin_registry.process_with_plugins(data, plugin_names)
 
 
-def validate_plugin_dependencies() -> Dict[str, List[str]]:
+def validate_plugin_dependencies() -> dict[str, list[str]]:
     """Validate all plugin dependencies."""
     return plugin_registry.validate_all_dependencies()
 
@@ -1014,7 +1016,7 @@ def register_plugin(
     name: str,
     plugin: Any,
     version: str = "unknown",
-    config: Optional[Dict[str, Any]] = None,
+    config: dict[str, Any] | None = None,
 ) -> None:
     """Register a plugin."""
     plugin_registry.register(name, plugin, version, config)
@@ -1022,9 +1024,9 @@ def register_plugin(
 
 def register_plugin_class(
     name: str,
-    plugin_class: Type[Any],
+    plugin_class: type[Any],
     version: str = "unknown",
-    config: Optional[Dict[str, Any]] = None,
+    config: dict[str, Any] | None = None,
 ) -> None:
     """Register a plugin class for lazy loading."""
     plugin_registry.register_class(name, plugin_class, version, config)

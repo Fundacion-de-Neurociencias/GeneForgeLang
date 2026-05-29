@@ -2097,7 +2097,7 @@ class SemanticValidator:
 
     def validate(self, ast):
         """Validate a program AST and return a list of error strings.
-        
+
         This is an alias for validate_program for API compatibility.
         """
         return self.validate_program(ast)

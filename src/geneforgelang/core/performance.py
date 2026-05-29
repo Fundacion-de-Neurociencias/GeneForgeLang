@@ -452,7 +452,7 @@ def cached(cache_name: str = "default", ttl: float | None = None, max_size: int 
             _optimizer.register_cache(cache_name, cache)
 
         # Per-key locks to prevent cache stampede
-        key_locks: Dict[str, Lock] = {}
+        key_locks: dict[str, Lock] = {}
         lock_manager = RLock()
 
         @functools.wraps(func)

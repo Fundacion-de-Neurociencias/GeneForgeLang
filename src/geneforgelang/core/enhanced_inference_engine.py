@@ -60,13 +60,13 @@ class InferenceResult:
     prediction: Any
     confidence: float
     explanation: str
-    raw_output: Optional[Dict[str, Any]] = None
-    feature_importance: Optional[Dict[str, float]] = None
-    attention_weights: Optional[List[float]] = None
-    model_metadata: Optional[Dict[str, Any]] = None
-    processing_time: Optional[float] = None
+    raw_output: dict[str, Any] | None = None
+    feature_importance: dict[str, float] | None = None
+    attention_weights: list[float] | None = None
+    model_metadata: dict[str, Any] | None = None
+    processing_time: float | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "prediction": self.prediction,
@@ -86,8 +86,8 @@ class ModelConfig:
 
     model_name: str
     model_type: str = "heuristic"  # heuristic, transformers, custom
-    model_path: Optional[str] = None
-    tokenizer_name: Optional[str] = None
+    model_path: str | None = None
+    tokenizer_name: str | None = None
     device: str = "cpu"
     max_length: int = 512
     batch_size: int = 1
@@ -107,7 +107,7 @@ class ModelConfig:
         if self.trust_remote_code:
             warnings.warn(
                 "trust_remote_code=True is a security risk. " "Setting to False for safety.",
-                UserWarning,
+                UserWarning, stacklevel=2,
             )
             self.trust_remote_code = False
 
@@ -126,11 +126,11 @@ class BaseMLModel(ABC):
         """Load the model and tokenizer."""
 
     @abstractmethod
-    def predict(self, features: Dict[str, Any]) -> InferenceResult:
+    def predict(self, features: dict[str, Any]) -> InferenceResult:
         """Make predictions on input features."""
 
     @abstractmethod
-    def explain_prediction(self, features: Dict[str, Any], result: InferenceResult) -> str:
+    def explain_prediction(self, features: dict[str, Any], result: InferenceResult) -> str:
         """Provide explanation for the prediction."""
 
     def is_loaded(self) -> bool:
@@ -145,7 +145,7 @@ class HeuristicModel(BaseMLModel):
         super().__init__(config)
         self.rules = self._load_rules()
 
-    def _load_rules(self) -> Dict[str, Dict[str, Any]]:
+    def _load_rules(self) -> dict[str, dict[str, Any]]:
         """Load heuristic rules for inference."""
         return {
             "gene_editing": {
@@ -179,7 +179,7 @@ class HeuristicModel(BaseMLModel):
         """Heuristic model doesn't need loading."""
         self._model = "loaded"  # Mark as loaded
 
-    def predict(self, features: Dict[str, Any]) -> InferenceResult:
+    def predict(self, features: dict[str, Any]) -> InferenceResult:
         """Make heuristic predictions with explanations."""
         if not self.is_loaded():
             self.load_model()
@@ -203,10 +203,10 @@ class HeuristicModel(BaseMLModel):
                 model_metadata={"model_type": "heuristic", "rules_applied": 0},
             )
 
-    def _extract_text_features(self, features: Dict[str, Any]) -> str:
+    def _extract_text_features(self, features: dict[str, Any]) -> str:
         """Extract text content from features for analysis."""
         text_parts = []
-        for key, value in features.items():
+        for _key, value in features.items():
             if isinstance(value, str):
                 text_parts.append(value.lower())
             elif isinstance(value, dict):
@@ -214,8 +214,8 @@ class HeuristicModel(BaseMLModel):
         return " ".join(text_parts)
 
     def _apply_rule(
-        self, rule_name: str, rule: Dict[str, Any], features: Dict[str, Any], text: str
-    ) -> Optional[InferenceResult]:
+        self, rule_name: str, rule: dict[str, Any], features: dict[str, Any], text: str
+    ) -> InferenceResult | None:
         """Apply a single heuristic rule."""
         # Keyword-based rules
         if "keywords" in rule:
@@ -257,7 +257,7 @@ class HeuristicModel(BaseMLModel):
 
         return None
 
-    def explain_prediction(self, features: Dict[str, Any], result: InferenceResult) -> str:
+    def explain_prediction(self, features: dict[str, Any], result: InferenceResult) -> str:
         """Provide detailed explanation for heuristic predictions."""
         explanation_parts = [result.explanation]
 
@@ -336,7 +336,7 @@ class TransformersModel(BaseMLModel):
                 logger.error(f"Failed to load model {self.config.model_name}: {e}")
                 raise
 
-    def predict(self, features: Dict[str, Any]) -> InferenceResult:
+    def predict(self, features: dict[str, Any]) -> InferenceResult:
         """Make predictions using the transformers model."""
         if not self.is_loaded():
             self.load_model()
@@ -376,7 +376,7 @@ class TransformersModel(BaseMLModel):
                     raw_output={"error": str(e)},
                 )
 
-    def _prepare_input_text(self, features: Dict[str, Any]) -> str:
+    def _prepare_input_text(self, features: dict[str, Any]) -> str:
         """Prepare input text from features dictionary."""
         text_parts = []
 
@@ -398,7 +398,7 @@ class TransformersModel(BaseMLModel):
         return ". ".join(text_parts) if text_parts else "No text features available"
 
     def _process_outputs(
-        self, outputs, inputs: Dict[str, Any], features: Dict[str, Any]
+        self, outputs, inputs: dict[str, Any], features: dict[str, Any]
     ) -> InferenceResult:
         """Process model outputs into InferenceResult."""
         if hasattr(outputs, "logits"):
@@ -464,7 +464,7 @@ class TransformersModel(BaseMLModel):
                 },
             )
 
-    def explain_prediction(self, features: Dict[str, Any], result: InferenceResult) -> str:
+    def explain_prediction(self, features: dict[str, Any], result: InferenceResult) -> str:
         """Provide explanation for transformers predictions."""
         explanation_parts = [result.explanation]
 
@@ -489,7 +489,7 @@ class EnhancedInferenceEngine:
     """Enhanced inference engine with advanced ML model integration."""
 
     def __init__(self):
-        self.models: Dict[str, BaseMLModel] = {}
+        self.models: dict[str, BaseMLModel] = {}
         self.default_model = "heuristic"
         self._register_default_models()
 
@@ -519,7 +519,7 @@ class EnhancedInferenceEngine:
 
     @cached(cache_name="inference_results", ttl=300.0, max_size=1000)
     def predict(
-        self, model_name: Optional[str], features: Dict[str, Any], explain: bool = True
+        self, model_name: str | None, features: dict[str, Any], explain: bool = True
     ) -> InferenceResult:
         """Make predictions using specified model."""
         model_name = model_name or self.default_model
@@ -552,14 +552,14 @@ class EnhancedInferenceEngine:
             return result
 
     def batch_predict(
-        self, model_name: Optional[str], feature_list: List[Dict[str, Any]]
-    ) -> List[InferenceResult]:
+        self, model_name: str | None, feature_list: list[dict[str, Any]]
+    ) -> list[InferenceResult]:
         """Make batch predictions."""
         return [self.predict(model_name, features, explain=False) for features in feature_list]
 
     def compare_models(
-        self, features: Dict[str, Any], model_names: Optional[List[str]] = None
-    ) -> Dict[str, InferenceResult]:
+        self, features: dict[str, Any], model_names: list[str] | None = None
+    ) -> dict[str, InferenceResult]:
         """Compare predictions across multiple models."""
         model_names = model_names or list(self.models.keys())
         results = {}
@@ -578,7 +578,7 @@ class EnhancedInferenceEngine:
 
         return results
 
-    def get_model_info(self, model_name: str) -> Dict[str, Any]:
+    def get_model_info(self, model_name: str) -> dict[str, Any]:
         """Get information about a registered model."""
         if model_name not in self.models:
             raise ValueError(f"Model '{model_name}' not found")
@@ -591,18 +591,18 @@ class EnhancedInferenceEngine:
             "config": model.config.__dict__ if hasattr(model, "config") else {},
         }
 
-    def list_models(self) -> List[str]:
+    def list_models(self) -> list[str]:
         """List all registered models."""
         return list(self.models.keys())
 
-    def _hash_features(self, features: Dict[str, Any]) -> str:
+    def _hash_features(self, features: dict[str, Any]) -> str:
         """Create hash of features for caching."""
         feature_str = json.dumps(features, sort_keys=True, default=str)
         return hashlib.sha256(feature_str.encode()).hexdigest()[:16]
 
 
 # Global inference engine instance
-_inference_engine: Optional[EnhancedInferenceEngine] = None
+_inference_engine: EnhancedInferenceEngine | None = None
 
 
 def get_inference_engine() -> EnhancedInferenceEngine:
@@ -614,7 +614,7 @@ def get_inference_engine() -> EnhancedInferenceEngine:
 
 
 # Convenience functions for backward compatibility
-def predict_with_model(model_name: str, features: Dict[str, Any]) -> InferenceResult:
+def predict_with_model(model_name: str, features: dict[str, Any]) -> InferenceResult:
     """Convenience function for model prediction."""
     return get_inference_engine().predict(model_name, features)
 

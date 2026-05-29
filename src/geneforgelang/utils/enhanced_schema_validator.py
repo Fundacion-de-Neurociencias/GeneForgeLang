@@ -37,21 +37,21 @@ logger = logging.getLogger(__name__)
 class EnhancedSchemaValidator:
     """Enhanced JSON Schema validator with rich error reporting."""
 
-    def __init__(self, schema_path: Optional[Path] = None):
+    def __init__(self, schema_path: Path | None = None):
         """Initialize the schema validator.
 
         Args:
             schema_path: Optional custom path to schema file.
         """
         self.schema_path = schema_path or self._get_default_schema_path()
-        self._schema: Optional[Dict[str, Any]] = None
-        self._validator: Optional[Draft202012Validator] = None
+        self._schema: dict[str, Any] | None = None
+        self._validator: Draft202012Validator | None = None
 
     def _get_default_schema_path(self) -> Path:
         """Get the default GFL schema path."""
         return Path(__file__).parent.parent / "schema" / "gfl.schema.json"
 
-    def _load_schema(self) -> Dict[str, Any]:
+    def _load_schema(self) -> dict[str, Any]:
         """Load and cache the JSON schema."""
         if self._schema is not None:
             return self._schema
@@ -74,7 +74,7 @@ class EnhancedSchemaValidator:
         return self._validator
 
     def validate(
-        self, data: Dict[str, Any], file_path: Optional[str] = None
+        self, data: dict[str, Any], file_path: str | None = None
     ) -> EnhancedValidationResult:
         """Validate GFL data against the JSON schema.
 
@@ -196,8 +196,8 @@ class EnhancedSchemaValidator:
                     error.add_fix(f"Change value to {expected_type} type")
 
     def get_completion_suggestions(
-        self, data: Dict[str, Any], cursor_path: List[str]
-    ) -> List[Dict[str, Any]]:
+        self, data: dict[str, Any], cursor_path: list[str]
+    ) -> list[dict[str, Any]]:
         """Get autocompletion suggestions for the given cursor position.
 
         Args:
@@ -262,7 +262,7 @@ class EnhancedSchemaValidator:
 
         return suggestions
 
-    def validate_property(self, value: Any, property_path: List[str]) -> EnhancedValidationResult:
+    def validate_property(self, value: Any, property_path: list[str]) -> EnhancedValidationResult:
         """Validate a specific property value against its schema.
 
         Args:
@@ -316,7 +316,7 @@ _schema_validator = EnhancedSchemaValidator()
 
 
 def validate_with_enhanced_schema(
-    data: Dict[str, Any], file_path: Optional[str] = None
+    data: dict[str, Any], file_path: str | None = None
 ) -> EnhancedValidationResult:
     """Validate GFL data with enhanced schema validation.
 
@@ -331,8 +331,8 @@ def validate_with_enhanced_schema(
 
 
 def get_autocompletion_suggestions(
-    data: Dict[str, Any], cursor_path: List[str]
-) -> List[Dict[str, Any]]:
+    data: dict[str, Any], cursor_path: list[str]
+) -> list[dict[str, Any]]:
     """Get IDE autocompletion suggestions.
 
     Args:
@@ -345,7 +345,7 @@ def get_autocompletion_suggestions(
     return _schema_validator.get_completion_suggestions(data, cursor_path)
 
 
-def validate_property_value(value: Any, property_path: List[str]) -> EnhancedValidationResult:
+def validate_property_value(value: Any, property_path: list[str]) -> EnhancedValidationResult:
     """Validate a specific property value.
 
     Args:
