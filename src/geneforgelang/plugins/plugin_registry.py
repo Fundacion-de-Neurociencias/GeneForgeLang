@@ -135,6 +135,7 @@ class GFLPlugin(Protocol):
         """Plugin version."""
         ...
 
+    @abstractmethod
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process GFL data and return results."""
         ...
@@ -198,6 +199,7 @@ class BaseGFLPlugin(ABC):
     def on_deactivate(self) -> None:
         """Called when plugin is deactivated. Override to add custom logic."""
 
+    @abstractmethod
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process GFL data and return results."""
 
@@ -1035,7 +1037,7 @@ def register_plugin_class(
 
 
 # Define PluginLifecycleHook type for export
-from typing import Callable
+
 
 PluginLifecycleHook = Callable[[str, PluginState, PluginInfo], None]
 

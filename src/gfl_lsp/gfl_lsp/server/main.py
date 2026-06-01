@@ -457,9 +457,7 @@ def hover(params):
                 )
 
         # B. Hover sobre Tipos de Esquemas
-        if "type:" in document.lines[pos.line]:
-            # Buscar esquemas importados
-            if "import_schemas" in ast and isinstance(ast["import_schemas"], list):
+        if "type:" in document.lines[pos.line] and "import_schemas" in ast and isinstance(ast["import_schemas"], list):
                 schema_files = ast["import_schemas"]
                 for schema_file in schema_files:
                     try:

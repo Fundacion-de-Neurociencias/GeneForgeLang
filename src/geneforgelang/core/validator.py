@@ -1351,13 +1351,11 @@ class EnhancedSemanticValidator:
             strategy = optimize["strategy"]
             if isinstance(strategy, dict) and strategy.get("name") == "ActiveLearning" and "surrogate_model" not in strategy:
                 # Check for surrogate_model requirement
-                if "surrogate_model" not in strategy:
-                    error = self.result.add_error(
-                        "Optimize block with ActiveLearning strategy requires 'surrogate_model'",
-                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
-                    )
-                    error.add_fix("Add 'surrogate_model: <model_name>' to the optimize block")
-
+                error = self.result.add_error(
+                    "Optimize block with ActiveLearning strategy requires 'surrogate_model'",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                )
+                error.add_fix("Add 'surrogate_model: <model_name>' to the optimize block")
         # Validate individual fields
         if "search_space" in optimize:
             self._validate_optimize_search_space(optimize["search_space"])

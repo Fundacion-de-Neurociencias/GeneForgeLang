@@ -13,7 +13,6 @@ from __future__ import annotations
 import logging
 from abc import abstractmethod
 from dataclasses import dataclass, field
-from email import errors
 from enum import Enum
 from typing import Any
 
