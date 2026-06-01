@@ -238,7 +238,7 @@ def test_performance():
     iterations = 1000
     start_time = time.perf_counter()
 
-    for i in range(iterations):
+    for _i in range(iterations):
         engine.predict("heuristic", test_features)
 
     end_time = time.perf_counter()

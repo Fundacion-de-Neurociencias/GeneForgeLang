@@ -5,14 +5,13 @@ import logging
 import os
 import sys
 
+from geneforgelang.plugins.plugin_registry import plugin_registry
+
 # Enable logging
 logging.basicConfig(level=logging.DEBUG)
 
 # Add current directory to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-# Import and test
-from geneforgelang.plugins.plugin_registry import plugin_registry
 
 # Force discovery
 print("Discovering plugins...")

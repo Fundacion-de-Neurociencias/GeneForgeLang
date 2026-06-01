@@ -4,7 +4,7 @@ This module tests the specialized plugin interfaces for design and optimize
 blocks, ensuring they provide proper contracts for external tool integration.
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
 
@@ -122,19 +122,16 @@ class MockGeneratorPlugin(GeneratorPlugin):
         return "1.0.0"
 
     @property
-    def supported_entities(self) -> List[EntityType]:
+    def supported_entities(self) -> list[EntityType]:
         return [EntityType.PROTEIN_SEQUENCE, EntityType.DNA_SEQUENCE]
 
     def generate(
-        self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs
-    ) -> List[DesignCandidate]:
+        self, entity: str, objective: dict[str, Any], constraints: list[str], count: int, **kwargs
+    ) -> list[DesignCandidate]:
         """Generate mock candidates."""
         candidates = []
         for i in range(count):
-            if entity == EntityType.PROTEIN_SEQUENCE.value:
-                sequence = "MKLLVL" + "A" * (20 + i)
-            else:
-                sequence = "ATCG" * (10 + i)
+            sequence = "MKLLVL" + "A" * (20 + i) if entity == EntityType.PROTEIN_SEQUENCE.value else "ATCG" * (10 + i)
 
             candidates.append(
                 DesignCandidate(
@@ -144,7 +141,7 @@ class MockGeneratorPlugin(GeneratorPlugin):
 
         return candidates
 
-    def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process method required by BaseGFLPlugin."""
         return {"processed": True}
 
@@ -166,27 +163,27 @@ class MockOptimizerPlugin(OptimizerPlugin):
         return "1.0.0"
 
     @property
-    def supported_strategies(self) -> List[OptimizationStrategy]:
+    def supported_strategies(self) -> list[OptimizationStrategy]:
         return [OptimizationStrategy.BAYESIAN_OPTIMIZATION, OptimizationStrategy.RANDOM_SEARCH]
 
     def setup(
         self,
-        search_space: Dict[str, str],
-        strategy: Dict[str, Any],
-        objective: Dict[str, Any],
-        budget: Dict[str, Any],
+        search_space: dict[str, str],
+        strategy: dict[str, Any],
+        objective: dict[str, Any],
+        budget: dict[str, Any],
     ) -> None:
         """Mock setup."""
         self.setup_called = True
 
-    def suggest_next(self, experiment_history: List[ExperimentResult]) -> OptimizationStep:
+    def suggest_next(self, experiment_history: list[ExperimentResult]) -> OptimizationStep:
         """Mock suggestion."""
         self.iteration += 1
         return OptimizationStep(
             parameters={"param1": self.iteration * 0.1}, iteration=self.iteration
         )
 
-    def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process method required by BaseGFLPlugin."""
         return {"processed": True}
 
@@ -353,20 +350,20 @@ class TestSequenceGeneratorPlugin:
                 return "1.0.0"
 
             @property
-            def supported_entities(self) -> List[EntityType]:
+            def supported_entities(self) -> list[EntityType]:
                 return [EntityType.PROTEIN_SEQUENCE]
 
             def generate(
                 self,
                 entity: str,
-                objective: Dict[str, Any],
-                constraints: List[str],
+                objective: dict[str, Any],
+                constraints: list[str],
                 count: int,
                 **kwargs,
-            ) -> List[DesignCandidate]:
+            ) -> list[DesignCandidate]:
                 return []
 
-            def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+            def process(self, data: dict[str, Any]) -> dict[str, Any]:
                 return {}
 
         generator = MockSequenceGenerator()
@@ -394,20 +391,20 @@ class TestSequenceGeneratorPlugin:
                 return "1.0.0"
 
             @property
-            def supported_entities(self) -> List[EntityType]:
+            def supported_entities(self) -> list[EntityType]:
                 return [EntityType.PROTEIN_SEQUENCE]
 
             def generate(
                 self,
                 entity: str,
-                objective: Dict[str, Any],
-                constraints: List[str],
+                objective: dict[str, Any],
+                constraints: list[str],
                 count: int,
                 **kwargs,
-            ) -> List[DesignCandidate]:
+            ) -> list[DesignCandidate]:
                 return []
 
-            def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+            def process(self, data: dict[str, Any]) -> dict[str, Any]:
                 return {}
 
         generator = MockSequenceGenerator()
@@ -440,20 +437,20 @@ class TestMoleculeGeneratorPlugin:
                 return "1.0.0"
 
             @property
-            def supported_entities(self) -> List[EntityType]:
+            def supported_entities(self) -> list[EntityType]:
                 return [EntityType.SMALL_MOLECULE]
 
             def generate(
                 self,
                 entity: str,
-                objective: Dict[str, Any],
-                constraints: List[str],
+                objective: dict[str, Any],
+                constraints: list[str],
                 count: int,
                 **kwargs,
-            ) -> List[DesignCandidate]:
+            ) -> list[DesignCandidate]:
                 return []
 
-            def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+            def process(self, data: dict[str, Any]) -> dict[str, Any]:
                 return {}
 
         generator = MockMoleculeGenerator()
@@ -481,20 +478,20 @@ class TestMoleculeGeneratorPlugin:
                 return "1.0.0"
 
             @property
-            def supported_entities(self) -> List[EntityType]:
+            def supported_entities(self) -> list[EntityType]:
                 return [EntityType.SMALL_MOLECULE]
 
             def generate(
                 self,
                 entity: str,
-                objective: Dict[str, Any],
-                constraints: List[str],
+                objective: dict[str, Any],
+                constraints: list[str],
                 count: int,
                 **kwargs,
-            ) -> List[DesignCandidate]:
+            ) -> list[DesignCandidate]:
                 return []
 
-            def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+            def process(self, data: dict[str, Any]) -> dict[str, Any]:
                 return {}
 
         generator = MockMoleculeGenerator()
@@ -530,17 +527,17 @@ class TestBayesianOptimizerPlugin:
 
             def setup(
                 self,
-                search_space: Dict[str, str],
-                strategy: Dict[str, Any],
-                objective: Dict[str, Any],
-                budget: Dict[str, Any],
+                search_space: dict[str, str],
+                strategy: dict[str, Any],
+                objective: dict[str, Any],
+                budget: dict[str, Any],
             ) -> None:
                 pass
 
-            def suggest_next(self, experiment_history: List[ExperimentResult]) -> OptimizationStep:
+            def suggest_next(self, experiment_history: list[ExperimentResult]) -> OptimizationStep:
                 return OptimizationStep(parameters={}, iteration=1)
 
-            def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+            def process(self, data: dict[str, Any]) -> dict[str, Any]:
                 return {}
 
         optimizer = MockBayesianOptimizer()
@@ -563,17 +560,17 @@ class TestBayesianOptimizerPlugin:
 
             def setup(
                 self,
-                search_space: Dict[str, str],
-                strategy: Dict[str, Any],
-                objective: Dict[str, Any],
-                budget: Dict[str, Any],
+                search_space: dict[str, str],
+                strategy: dict[str, Any],
+                objective: dict[str, Any],
+                budget: dict[str, Any],
             ) -> None:
                 pass
 
-            def suggest_next(self, experiment_history: List[ExperimentResult]) -> OptimizationStep:
+            def suggest_next(self, experiment_history: list[ExperimentResult]) -> OptimizationStep:
                 return OptimizationStep(parameters={}, iteration=1)
 
-            def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+            def process(self, data: dict[str, Any]) -> dict[str, Any]:
                 return {}
 
         optimizer = MockBayesianOptimizer()

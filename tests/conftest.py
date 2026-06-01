@@ -5,7 +5,7 @@ for unit, integration, and performance tests.
 """
 
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -28,7 +28,7 @@ def test_data_dir() -> Path:
 
 
 @pytest.fixture
-def valid_experiment_ast() -> Dict[str, Any]:
+def valid_experiment_ast() -> dict[str, Any]:
     """Valid experiment AST for testing."""
     return {
         "experiment": {
@@ -44,7 +44,7 @@ def valid_experiment_ast() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def valid_analysis_ast() -> Dict[str, Any]:
+def valid_analysis_ast() -> dict[str, Any]:
     """Valid analysis AST for testing."""
     return {
         "analyze": {
@@ -57,13 +57,13 @@ def valid_analysis_ast() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def valid_simulation_ast() -> Dict[str, Any]:
+def valid_simulation_ast() -> dict[str, Any]:
     """Valid simulation AST for testing."""
     return {"simulate": True, "metadata": {"confidence": 0.95}}
 
 
 @pytest.fixture
-def valid_design_ast() -> Dict[str, Any]:
+def valid_design_ast() -> dict[str, Any]:
     """Valid design AST for testing."""
     return {
         "design": {
@@ -78,7 +78,7 @@ def valid_design_ast() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def complex_ast() -> Dict[str, Any]:
+def complex_ast() -> dict[str, Any]:
     """Complex AST with multiple blocks for testing."""
     return {
         "experiment": {
@@ -102,7 +102,7 @@ def complex_ast() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def complex_design_ast() -> Dict[str, Any]:
+def complex_design_ast() -> dict[str, Any]:
     """Complex AST with design and analysis blocks for testing."""
     return {
         "design": {
@@ -127,7 +127,7 @@ def complex_design_ast() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def invalid_ast_missing_tool() -> Dict[str, Any]:
+def invalid_ast_missing_tool() -> dict[str, Any]:
     """Invalid AST missing required tool field."""
     return {
         "experiment": {
@@ -138,7 +138,7 @@ def invalid_ast_missing_tool() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def invalid_ast_unknown_strategy() -> Dict[str, Any]:
+def invalid_ast_unknown_strategy() -> dict[str, Any]:
     """Invalid AST with unknown analysis strategy."""
     return {
         "analyze": {
@@ -152,14 +152,14 @@ class GFLTestUtils:
     """Utility class for common test operations."""
 
     @staticmethod
-    def parse_and_validate(gfl_text: str) -> tuple[Dict[str, Any], list[str]]:
+    def parse_and_validate(gfl_text: str) -> tuple[dict[str, Any], list[str]]:
         """Parse GFL text and return AST and validation errors."""
         ast = parse(gfl_text)
         errors = validate(ast)
         return ast, errors
 
     @staticmethod
-    def assert_valid_gfl(gfl_text: str) -> Dict[str, Any]:
+    def assert_valid_gfl(gfl_text: str) -> dict[str, Any]:
         """Assert that GFL text is valid and return the AST."""
         ast, errors = GFLTestUtils.parse_and_validate(gfl_text)
         assert not errors, f"Expected valid GFL but got errors: {errors}"

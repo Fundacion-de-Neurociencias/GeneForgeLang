@@ -215,7 +215,7 @@ class TestParsingErrors:
           type: gene_editing
             invalid_indentation: value
         """
-        with pytest.raises(Exception):  # Should raise YAML parsing error
+        with pytest.raises(yaml.YAMLError):  # Should raise YAML parsing error
             parse(gfl_text)
 
     def test_duplicate_keys(self):
@@ -240,7 +240,7 @@ class TestParsingErrors:
             - filter2
             invalid_item
         """
-        with pytest.raises(Exception):
+        with pytest.raises(yaml.YAMLError):
             parse(gfl_text)
 
     def test_unquoted_special_characters(self):

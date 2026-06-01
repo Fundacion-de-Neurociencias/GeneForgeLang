@@ -12,7 +12,8 @@ def main():
     failed = []
     for f in files:
         # Leer con utf-8-sig para que Python quite el BOM si existe
-        text = open(f, encoding="utf-8-sig").read()
+        with open(f, encoding="utf-8-sig") as file:
+            text = file.read()
         try:
             parser.parse(text)
             success += 1

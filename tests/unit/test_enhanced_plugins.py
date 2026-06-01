@@ -1,6 +1,6 @@
 """Tests for enhanced plugin system with dependencies and lifecycle hooks."""
 
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
 
@@ -26,7 +26,7 @@ class MockPlugin(BaseGFLPlugin):
         name: str = "mock",
         version: str = "1.0.0",
         priority: PluginPriority = PluginPriority.NORMAL,
-        dependencies: List[PluginDependency] = None,
+        dependencies: list[PluginDependency] = None,
     ):
         super().__init__()
         self._name = name
@@ -51,7 +51,7 @@ class MockPlugin(BaseGFLPlugin):
         return self._priority
 
     @property
-    def dependencies(self) -> List[PluginDependency]:
+    def dependencies(self) -> list[PluginDependency]:
         return self._dependencies
 
     def on_load(self) -> None:
@@ -66,7 +66,7 @@ class MockPlugin(BaseGFLPlugin):
     def on_deactivate(self) -> None:
         self.deactivate_called = True
 
-    def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def process(self, data: dict[str, Any]) -> dict[str, Any]:
         result = data.copy()
         result[f"processed_by_{self.name}"] = True
         return result

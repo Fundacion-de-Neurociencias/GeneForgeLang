@@ -6,8 +6,7 @@ Tests cover:
 - AST construction from dictionaries
 - Backward compatibility with dict-based API
 """
-
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -507,7 +506,7 @@ class TestTypesPerformance:
         import time
 
         # Create AST with large parameter set
-        large_extra: Dict[str, Any] = {f"param_{i}": f"value_{i}" for i in range(1000)}
+        large_extra: dict[str, Any] = {f"param_{i}": f"value_{i}" for i in range(1000)}
         params = ExperimentParams(target_gene="TP53", extra=large_extra)
         exp = Experiment(tool="CRISPR_cas9", type="gene_editing", params=params)
         ast = GFLAST(experiment=exp)

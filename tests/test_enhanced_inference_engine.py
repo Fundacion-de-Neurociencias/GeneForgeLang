@@ -16,6 +16,7 @@ try:
         GenomicClassificationModel,
         MultiModalGenomicModel,
         ProteinGenerationModel,
+        TransformersModel,
     )
 
     HAS_ENHANCED_ENGINE = True
@@ -176,14 +177,12 @@ class TestTransformersModel(unittest.TestCase):
         config = ModelConfig(model_name="distilbert-base-uncased", model_type="auto", device="cpu")
 
         # Don't actually load the model in tests
-        with patch("gfl.enhanced_inference_engine.AutoTokenizer"):
-            with patch("gfl.enhanced_inference_engine.AutoModel"):
-                from geneforgelang.models.advanced_models import TransformersModel
+        with patch("gfl.enhanced_inference_engine.AutoTokenizer") and patch("gfl.enhanced_inference_engine.AutoModel"):
 
-                model = TransformersModel(config)
+            model = TransformersModel(config)
 
-                self.assertEqual(model.config.model_name, "distilbert-base-uncased")
-                self.assertFalse(model.is_loaded())
+            self.assertEqual(model.config.model_name, "distilbert-base-uncased")
+            self.assertFalse(model.is_loaded())
 
 
 class TestAdvancedModels(unittest.TestCase):
@@ -311,7 +310,7 @@ class TestEnhancedInferenceEngine(unittest.TestCase):
         self.assertIn("heuristic", results)
 
         # Each result should be an InferenceResult
-        for model_name, result in results.items():
+        for _model_name, result in results.items():
             self.assertIsInstance(result, InferenceResult)
 
     def test_batch_prediction(self):

@@ -2,7 +2,7 @@
 
 import pytest
 
-from geneforgelang import execute, parse, validate
+from geneforgelang.core.api import execute, parse, validate
 
 
 def test_package_import():

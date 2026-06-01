@@ -304,7 +304,7 @@ class TestPerformanceMonitor:
         monitor = PerformanceMonitor()
 
         # Record multiple operations
-        for i in range(3):
+        for _i in range(3):
             with monitor.time_operation("batch_op"):
                 time.sleep(0.001)  # 1ms each
 

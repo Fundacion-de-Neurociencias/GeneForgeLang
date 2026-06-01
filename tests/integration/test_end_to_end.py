@@ -6,8 +6,8 @@ Tests cover:
 - Real-world usage scenarios
 - Performance with realistic data
 """
-
 import pytest
+import yaml
 
 from geneforgelang.core.api import infer, parse, validate
 from geneforgelang.models.dummy import DummyGeneModel
@@ -123,7 +123,7 @@ class TestErrorHandling:
             invalid_indentation: value
         """
 
-        with pytest.raises(Exception):
+        with pytest.raises(yaml.YAMLError):
             parse(invalid_gfl)
 
     def test_validation_error_handling(self, gfl_utils):
@@ -461,7 +461,7 @@ class TestPerformanceIntegration:
         start_time = time.time()
 
         # Run workflow multiple times
-        for i in range(50):
+        for _i in range(50):
             ast = parse(gfl_text)
             errors = validate(ast)
             assert not errors
