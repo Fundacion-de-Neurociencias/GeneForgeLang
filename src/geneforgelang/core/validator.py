@@ -1349,7 +1349,7 @@ class EnhancedSemanticValidator:
         # Special validation for ActiveLearning strategy
         if "strategy" in optimize:
             strategy = optimize["strategy"]
-            if isinstance(strategy, dict) and strategy.get("name") == "ActiveLearning":
+            if isinstance(strategy, dict) and strategy.get("name") == "ActiveLearning" and "surrogate_model" not in strategy:
                 # Check for surrogate_model requirement
                 if "surrogate_model" not in strategy:
                     error = self.result.add_error(
@@ -1727,13 +1727,12 @@ class EnhancedSemanticValidator:
                             ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                         )
                         error.add_fix(f"Use format like '24h', '7d', '30m' for '{constraint}'")
-            elif constraint in ["max_cost", "convergence_threshold"]:
-                if not isinstance(value, (int, float)) or value <= 0:
-                    error = self.result.add_error(
+            elif constraint in ["max_cost", "convergence_threshold"] and (not isinstance(value, (int, float)) or value <= 0):
+                error = self.result.add_error(
                         f"Budget constraint '{constraint}' must be a positive number, got {value}",
                         ErrorCodes.TYPE_INVALID_TYPE,
                     )
-                    error.add_fix(f"Use a positive number for '{constraint}'")
+                error.add_fix(f"Use a positive number for '{constraint}'")
 
     def _validate_optimize_run(self, run: Any) -> None:
         """Validate the run field in optimize block."""

@@ -19,7 +19,7 @@ import weakref
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from threading import Lock, RLock
-from typing import Any, Callable, Dict, Generic, TypeVar
+from typing import Any, Callable, Generic, TypeVar
 
 logger = logging.getLogger(__name__)
 

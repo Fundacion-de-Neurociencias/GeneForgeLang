@@ -9,6 +9,12 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from rich.tree import Tree
+    HAS_RICH = True
+except ImportError:
+    HAS_RICH = False
+
+try:
     import yaml
 
     HAS_YAML = True
@@ -321,7 +327,7 @@ class CLIUtilsMixin:
             self.formatter.print(str(ast))
             return
 
-        from rich.tree import Tree
+
 
         def add_to_tree(node, data):
             if isinstance(data, dict):
@@ -377,8 +383,7 @@ class CLIUtilsMixin:
         """Process files in parallel."""
         results = []
 
-        with ProcessPoolExecutor(max_workers=args.workers) as executor:
-            with self.formatter.progress(f"Batch {args.action} (parallel)") as progress:
+        with ProcessPoolExecutor(max_workers=args.workers) as executor, self.formatter.progress(f"Batch {args.action} (parallel)") as progress:
                 task = progress.add_task("Processing", total=len(files))
 
                 # Submit all tasks

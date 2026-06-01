@@ -13,6 +13,7 @@ from __future__ import annotations
 import logging
 from abc import abstractmethod
 from dataclasses import dataclass, field
+from email import errors
 from enum import Enum
 from typing import Any
 
@@ -467,12 +468,11 @@ class BayesianOptimizerPlugin(OptimizerPlugin):
                         float(parts[1])
                 except (ValueError, IndexError):
                     errors.append(f"Invalid range syntax for parameter {param}: {definition}")
-            elif definition.startswith("choice("):
+            elif definition.startswith("choice(") and definition == "choice([])":
                 # Validate discrete parameter choices
-                if definition == "choice([])":
-                    errors.append(f"Empty choice list for parameter {param}")
+                 errors.append(f"Empty choice list for parameter {param}")
 
-        return errors
+            return errors
 
 
 # Utility functions for plugin developers

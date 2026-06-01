@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
+import hashlib
 import importlib.metadata
 import json
 import logging
+import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Any, Callable, Protocol
 
 from src.geneforgelang.plugins.base import BaseGeneratorPlugin, BaseOptimizerPlugin
 
@@ -60,10 +62,9 @@ class PluginPriority(Enum):
     BACKGROUND = 10
 
 # Define PluginLifecycleHook type
-from typing import TYPE_CHECKING
+
 
 if TYPE_CHECKING:
-    from typing import Callable
     PluginLifecycleHook = Callable[[str, PluginState, "PluginInfo"], None]
 else:
     PluginLifecycleHook = object
@@ -181,19 +182,22 @@ class BaseGFLPlugin(ABC):
         self._state = state
         self._error = error
 
+    @abstractmethod
     def on_load(self) -> None:
         """Called when plugin is loaded. Override to add custom logic."""
 
+    @abstractmethod
     def on_unload(self) -> None:
         """Called when plugin is unloaded. Override to add custom logic."""
 
+    @abstractmethod
     def on_activate(self) -> None:
         """Called when plugin becomes active. Override to add custom logic."""
 
+    @abstractmethod
     def on_deactivate(self) -> None:
         """Called when plugin is deactivated. Override to add custom logic."""
 
-    @abstractmethod
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process GFL data and return results."""
 
@@ -223,8 +227,6 @@ class BaseGFLPlugin(ABC):
         }
 
 
-import hashlib
-import time
 
 
 class GeneForgeSkill(BaseGFLPlugin):

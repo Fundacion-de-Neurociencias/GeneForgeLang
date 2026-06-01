@@ -2,6 +2,7 @@ import os
 
 # Importamos nuestras propias herramientas de GFL directamente desde el proyecto
 import sys
+from turtle import pos
 
 from lsprotocol.types import (
     CompletionItem,
@@ -207,10 +208,10 @@ def completions(params):
         # C. Autocompletado de Tipos de Esquemas
         elif "type:" in current_line:
             # Buscar esquemas importados
-            if isinstance(ast, dict) and "import_schemas" in ast:
+            if "type:" in document.lines[pos.line] and "import_schemas" in ast and isinstance(ast["import_schemas"], list):
+                 # B. Hover sobre Tipos de Esquemas
                 schema_files = ast["import_schemas"]
-                if isinstance(schema_files, list):
-                    for schema_file in schema_files:
+                for schema_file in schema_files:
                         try:
                             # Cargar esquemas usando el schema loader
                             from gfl.error_handling import EnhancedValidationResult
