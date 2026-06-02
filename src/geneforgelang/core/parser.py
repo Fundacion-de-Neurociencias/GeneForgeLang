@@ -22,7 +22,7 @@ def parse_gfl(gfl_string: str) -> Optional[dict[str, Any]]:
 
     Returns:
         Parsed AST as a dictionary, or None if parsing fails.
-        
+
     Raises:
         yaml.YAMLError: If YAML parsing fails (invalid syntax, indentation, etc.)
     """

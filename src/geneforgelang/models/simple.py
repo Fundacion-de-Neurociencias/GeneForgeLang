@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 
 class SimpleHeuristicModel:
@@ -10,7 +10,7 @@ class SimpleHeuristicModel:
     - Else -> label "benign"
     """
 
-    def predict(self, features: Dict[str, Any]) -> Dict[str, Any]:
+    def predict(self, features: dict[str, Any]) -> dict[str, Any]:
         p = features.get("p_value")
         tool = str(features.get("experiment_tool", "")).lower()
         exp_type = str(features.get("experiment_type", "")).lower()

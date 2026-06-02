@@ -1,31 +1,31 @@
 from __future__ import annotations
 
 import math
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable
 
 
 class ProbRule:
     """Simple likelihood-ratio rule used by the probabilistic reasoner."""
 
-    def __init__(self, name: str, lr: float, condition: Callable[[Dict[str, Any]], bool]):
+    def __init__(self, name: str, lr: float, condition: Callable[[dict[str, Any]], bool]):
         self.name = name
         self.lr = lr
         self.condition = condition
 
-    def applies(self, node: Dict[str, Any]) -> bool:
+    def applies(self, node: dict[str, Any]) -> bool:
         return bool(self.condition(node))
 
 
 class ProbReasoner:
     """Naive-Bayes style post-processing over an AST using LR rules."""
 
-    def __init__(self, rules: List[ProbRule], prior: float = 0.5):
+    def __init__(self, rules: list[ProbRule], prior: float = 0.5):
         self.rules = rules
         self.prior = prior
 
-    def posterior(self, ast: Dict[str, Any]) -> Dict[str, Any]:
+    def posterior(self, ast: dict[str, Any]) -> dict[str, Any]:
         log_odds = math.log(self.prior / (1 - self.prior))
-        fired: List[str] = []
+        fired: list[str] = []
         for n in ast.get("children", []):
             for r in self.rules:
                 try:
@@ -39,7 +39,7 @@ class ProbReasoner:
         return {"confidence": round(post, 2), "fired_rules": fired or None}
 
 
-def default_rules() -> List[ProbRule]:
+def default_rules() -> list[ProbRule]:
     """Reference set of lightweight heuristic rules.
 
     These are intentionally simple and operate on a minimal AST shape:

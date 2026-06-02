@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
     pipeline = ValidationPipeline(
         model=DummyGeneModel(),
-        data_loader=load_validation_data,
+        #data_loader=load_validation_data,
         label_column="true_effect",
         feature_extractor=extract_features,
     )

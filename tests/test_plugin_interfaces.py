@@ -7,6 +7,11 @@ blocks, ensuring they provide proper contracts for external tool integration.
 from typing import Any
 
 import pytest
+from geneforgelang.utils.example_implementations import (
+    BayesianOptimizer,
+    MoleculeTransformerGenerator,
+    ProteinVAEGenerator,
+)
 
 from geneforgelang.plugins.interfaces import (
     BayesianOptimizerPlugin,
@@ -23,11 +28,6 @@ from geneforgelang.plugins.interfaces import (
     get_available_optimizers,
     register_generator_plugin,
     register_optimizer_plugin,
-)
-from geneforgelang.utils.example_implementations import (
-    BayesianOptimizer,
-    MoleculeTransformerGenerator,
-    ProteinVAEGenerator,
 )
 
 

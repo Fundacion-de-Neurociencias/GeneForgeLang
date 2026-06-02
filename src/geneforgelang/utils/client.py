@@ -172,7 +172,7 @@ class GFLClient:
                     try:
                         error_data = response.json()
                         error_message = error_data.get("message", f"HTTP {response.status_code}")
-                    except:
+                    except Exception:
                         error_message = f"HTTP {response.status_code}: {response.text[:100]}"
 
                     raise GFLAPIError(error_message, response.status_code)
@@ -500,7 +500,7 @@ class AsyncGFLClient:
                     try:
                         error_data = response.json()
                         error_message = error_data.get("message", f"HTTP {response.status_code}")
-                    except:
+                    except Exception:
                         error_message = f"HTTP {response.status_code}: {response.text[:100]}"
 
                     raise GFLAPIError(error_message, response.status_code)
@@ -516,7 +516,7 @@ class AsyncGFLClient:
                         execution_time_ms=data.get("execution_time_ms"),
                         timestamp=data.get("timestamp"),
                     )
-                except:
+                except Exception:
                     return APIResponse(
                         success=True,
                         data=response.text,

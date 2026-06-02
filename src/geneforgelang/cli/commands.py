@@ -7,10 +7,10 @@ supporting both the legacy CLI and the new enhanced CLI.
 
 import sys
 import traceback
-from typing import List, Optional
+from typing import Optional
 
 
-def main(args: Optional[List[str]] = None) -> int:
+def main(args: Optional[list[str]] = None) -> int:
     """Main entry point for the GFL CLI."""
     try:
         # Try to use the enhanced CLI first

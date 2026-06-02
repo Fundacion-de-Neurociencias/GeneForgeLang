@@ -2,6 +2,7 @@ import os
 
 # Importamos nuestras propias herramientas de GFL directamente desde el proyecto
 import sys
+from turtle import pos
 
 from lsprotocol.types import (
     CompletionItem,
@@ -207,10 +208,10 @@ def completions(params):
         # C. Autocompletado de Tipos de Esquemas
         elif "type:" in current_line:
             # Buscar esquemas importados
-            if isinstance(ast, dict) and "import_schemas" in ast:
+            if "type:" in document.lines[pos.line] and "import_schemas" in ast and isinstance(ast["import_schemas"], list):
+                 # B. Hover sobre Tipos de Esquemas
                 schema_files = ast["import_schemas"]
-                if isinstance(schema_files, list):
-                    for schema_file in schema_files:
+                for schema_file in schema_files:
                         try:
                             # Cargar esquemas usando el schema loader
                             from gfl.error_handling import EnhancedValidationResult
@@ -244,7 +245,7 @@ def completions(params):
             if isinstance(ast, dict) and "pathways" in ast:
                 pathways = ast["pathways"]
                 if isinstance(pathways, dict):
-                    for pathway_name in pathways.keys():
+                    for pathway_name in pathways:
                         items.append(
                             CompletionItem(
                                 label=pathway_name,
@@ -259,7 +260,7 @@ def completions(params):
             if isinstance(ast, dict) and "complexes" in ast:
                 complexes = ast["complexes"]
                 if isinstance(complexes, dict):
-                    for complex_name in complexes.keys():
+                    for complex_name in complexes:
                         items.append(
                             CompletionItem(
                                 label=complex_name,
@@ -456,9 +457,7 @@ def hover(params):
                 )
 
         # B. Hover sobre Tipos de Esquemas
-        if "type:" in document.lines[pos.line]:
-            # Buscar esquemas importados
-            if "import_schemas" in ast and isinstance(ast["import_schemas"], list):
+        if "type:" in document.lines[pos.line] and "import_schemas" in ast and isinstance(ast["import_schemas"], list):
                 schema_files = ast["import_schemas"]
                 for schema_file in schema_files:
                     try:

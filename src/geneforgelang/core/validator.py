@@ -1349,15 +1349,13 @@ class EnhancedSemanticValidator:
         # Special validation for ActiveLearning strategy
         if "strategy" in optimize:
             strategy = optimize["strategy"]
-            if isinstance(strategy, dict) and strategy.get("name") == "ActiveLearning":
+            if isinstance(strategy, dict) and strategy.get("name") == "ActiveLearning" and "surrogate_model" not in strategy:
                 # Check for surrogate_model requirement
-                if "surrogate_model" not in strategy:
-                    error = self.result.add_error(
-                        "Optimize block with ActiveLearning strategy requires 'surrogate_model'",
-                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
-                    )
-                    error.add_fix("Add 'surrogate_model: <model_name>' to the optimize block")
-
+                error = self.result.add_error(
+                    "Optimize block with ActiveLearning strategy requires 'surrogate_model'",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                )
+                error.add_fix("Add 'surrogate_model: <model_name>' to the optimize block")
         # Validate individual fields
         if "search_space" in optimize:
             self._validate_optimize_search_space(optimize["search_space"])
@@ -1727,13 +1725,12 @@ class EnhancedSemanticValidator:
                             ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                         )
                         error.add_fix(f"Use format like '24h', '7d', '30m' for '{constraint}'")
-            elif constraint in ["max_cost", "convergence_threshold"]:
-                if not isinstance(value, (int, float)) or value <= 0:
-                    error = self.result.add_error(
+            elif constraint in ["max_cost", "convergence_threshold"] and (not isinstance(value, (int, float)) or value <= 0):
+                error = self.result.add_error(
                         f"Budget constraint '{constraint}' must be a positive number, got {value}",
                         ErrorCodes.TYPE_INVALID_TYPE,
                     )
-                    error.add_fix(f"Use a positive number for '{constraint}'")
+                error.add_fix(f"Use a positive number for '{constraint}'")
 
     def _validate_optimize_run(self, run: Any) -> None:
         """Validate the run field in optimize block."""
@@ -2097,7 +2094,7 @@ class SemanticValidator:
 
     def validate(self, ast):
         """Validate a program AST and return a list of error strings.
-        
+
         This is an alias for validate_program for API compatibility.
         """
         return self.validate_program(ast)
