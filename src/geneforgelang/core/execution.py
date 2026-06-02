@@ -9,14 +9,15 @@ class ExecutionError(Exception):
     """Exception raised during workflow execution."""
 
 
-
 class GFLExecutionEngine:
     """Engine for executing GFL workflows."""
 
     def __init__(self):
         self.workflow_state = {}
 
-    def execute_design_block(self, design_block: dict[str, Any], registry: PluginRegistry) -> dict[str, Any]:
+    def execute_design_block(
+        self, design_block: dict[str, Any], registry: PluginRegistry
+    ) -> dict[str, Any]:
         """Execute a design block."""
         print(design_block)
         model_name = design_block.get("model")
@@ -29,7 +30,8 @@ class GFLExecutionEngine:
                 entity=design_block.get("entity", "ProteinSequence"),
                 objective=design_block.get("objective", {}),
                 constraints=design_block.get("constraints", []),
-                count=design_block.get("count", 10))
+                count=design_block.get("count", 10),
+            )
 
             # Store in workflow state if output specified
             output_var = design_block.get("output")
@@ -44,7 +46,9 @@ class GFLExecutionEngine:
                 f"Design model '{model_name}' not available. Available: {available}"
             )
 
-    def execute_optimize_block(self, optimize_block: dict[str, Any], registry: PluginRegistry   ) -> dict[str, Any]:
+    def execute_optimize_block(
+        self, optimize_block: dict[str, Any], registry: PluginRegistry
+    ) -> dict[str, Any]:
         """Execute an optimize block."""
         strategy = optimize_block.get("strategy", {})
         strategy_name = strategy.get("name") if isinstance(strategy, dict) else strategy

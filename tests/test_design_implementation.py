@@ -108,6 +108,7 @@ def test_protein_design_example():
         print(f"❌ Inference failed: {e}")
         raise AssertionError("Inference failed")
 
+
 def test_dna_design_example():
     """Test DNA sequence design workflow."""
 
@@ -142,6 +143,7 @@ def test_dna_design_example():
         print(f"❌ Validation errors: {errors}")
         raise AssertionError("DNA design validation failed")
     print("✓ DNA design validation passed")
+
 
 def test_small_molecule_design_example():
     """Test small molecule design workflow."""
@@ -200,6 +202,7 @@ def test_small_molecule_design_example():
         raise AssertionError("Small molecule design validation failed")
     print("✓ Small molecule design validation passed")
 
+
 def test_multi_objective_design_error():
     """Test that conflicting objectives are properly detected."""
 
@@ -226,6 +229,7 @@ def test_multi_objective_design_error():
     error_text = " ".join(errors).lower()
     assert "maximize" in error_text and "minimize" in error_text
     print("✓ Correctly detected conflicting objectives")
+
 
 def run_all_tests():
     """Run all design block tests."""

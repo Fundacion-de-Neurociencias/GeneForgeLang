@@ -6,6 +6,7 @@ Tests cover:
 - AST construction from dictionaries
 - Backward compatibility with dict-based API
 """
+
 from typing import Any
 
 import pytest

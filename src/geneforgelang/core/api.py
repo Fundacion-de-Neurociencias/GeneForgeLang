@@ -419,7 +419,9 @@ def compare_inference_models(
         raise ImportError("Enhanced inference engine not available")
 
 
-def execute(ast: dict[str, Any], registry: PluginRegistry = None, validate_first: bool = True) -> dict[str, Any]:
+def execute(
+    ast: dict[str, Any], registry: PluginRegistry = None, validate_first: bool = True
+) -> dict[str, Any]:
     """Execute a GFL workflow by dispatching to appropriate plugins.
 
     This function orchestrates the execution of design and optimize blocks
@@ -507,7 +509,7 @@ def execute(ast: dict[str, Any], registry: PluginRegistry = None, validate_first
 
         # Execute workflow
         if execute_gfl_ast is not None:
-            return execute_gfl_ast(ast,registry)
+            return execute_gfl_ast(ast, registry)
         else:
             raise ImportError("Execution engine not properly initialized")
 

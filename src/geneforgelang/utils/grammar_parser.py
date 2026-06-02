@@ -195,7 +195,7 @@ class AdvancedGFLLexer:
     def t_MULTILINE_COMMENT(self, t):
         r"/\*([^*]|\*+[^*/])*\*+/"
         # Multi-line comments are ignored
-        #t.lexer.lineno += t.value.count("\\n")
+        # t.lexer.lineno += t.value.count("\\n")
 
     def t_NUMBER(self, t):
         r"\d+(\.\d*)?([eE][+-]?\d+)?"
@@ -210,7 +210,7 @@ class AdvancedGFLLexer:
         return t
 
     def t_STRING(self, t):
-        r'"([^"\\]|\\.)*"|\'([^\'\\]|\\.)*\''
+        r'"([^"\\]|\\.)*"|\'([^\'\\]|\\.)*\' '
         # Remove quotes and handle escape sequences
         content = t.value[1:-1]
         # Basic escape sequence handling

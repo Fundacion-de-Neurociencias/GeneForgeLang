@@ -46,6 +46,7 @@ def test_io_contracts():
         for error in contract_errors:
             print(f"  - {error}")
 
+
 def test_simple_io_contracts():
     """Test simple IO Contracts validation."""
     print("\nTesting simple IO Contracts validation...")

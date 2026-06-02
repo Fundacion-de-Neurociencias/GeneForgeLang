@@ -10,6 +10,7 @@ from typing import Any
 
 try:
     from rich.tree import Tree
+
     HAS_RICH = True
 except ImportError:
     HAS_RICH = False
@@ -327,8 +328,6 @@ class CLIUtilsMixin:
             self.formatter.print(str(ast))
             return
 
-
-
         def add_to_tree(node, data):
             if isinstance(data, dict):
                 for key, value in data.items():
@@ -383,20 +382,23 @@ class CLIUtilsMixin:
         """Process files in parallel."""
         results = []
 
-        with ProcessPoolExecutor(max_workers=args.workers) as executor, self.formatter.progress(f"Batch {args.action} (parallel)") as progress:
-                task = progress.add_task("Processing", total=len(files))
+        with (
+            ProcessPoolExecutor(max_workers=args.workers) as executor,
+            self.formatter.progress(f"Batch {args.action} (parallel)") as progress,
+        ):
+            task = progress.add_task("Processing", total=len(files))
 
-                # Submit all tasks
-                future_to_file = {
-                    executor.submit(process_file_batch, file_path, args.action): file_path
-                    for file_path in files
-                }
+            # Submit all tasks
+            future_to_file = {
+                executor.submit(process_file_batch, file_path, args.action): file_path
+                for file_path in files
+            }
 
-                # Collect results as they complete
-                for future in as_completed(future_to_file):
-                    result = future.result()
-                    results.append(result)
-                    progress.update(task, advance=1)
+            # Collect results as they complete
+            for future in as_completed(future_to_file):
+                result = future.result()
+                results.append(result)
+                progress.update(task, advance=1)
 
         # Sort results by filename for consistent output
         results.sort(key=lambda x: x["file"])

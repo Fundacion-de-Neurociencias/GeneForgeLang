@@ -6,6 +6,7 @@ Tests cover:
 - Real-world usage scenarios
 - Performance with realistic data
 """
+
 import pytest
 import yaml
 

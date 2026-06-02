@@ -288,9 +288,7 @@ class TestAdvancedGFLParser:
         metadata = statements[0]
         assert metadata["type"] == "metadata"
 
-    @pytest.mark.xfail(
-        reason="Assignment statements not yet supported by parser grammar"
-    )
+    @pytest.mark.xfail(reason="Assignment statements not yet supported by parser grammar")
     def test_assignment_statement(self):
         """Test parsing assignment statements."""
         code = "target_gene = TP53"
@@ -323,9 +321,7 @@ class TestAdvancedGFLParser:
             result = self.parser.parse(code)
             assert result.is_valid, f"Failed to parse: {expr}"
 
-    @pytest.mark.xfail(
-        reason="Object literals in assignments not yet supported by parser grammar"
-    )
+    @pytest.mark.xfail(reason="Object literals in assignments not yet supported by parser grammar")
     def test_object_literals(self):
         """Test parsing object literals."""
         code = """
@@ -341,9 +337,7 @@ class TestAdvancedGFLParser:
         result = self.parser.parse(code)
         assert result.is_valid
 
-    @pytest.mark.xfail(
-        reason="Array literals in assignments not yet supported by parser grammar"
-    )
+    @pytest.mark.xfail(reason="Array literals in assignments not yet supported by parser grammar")
     def test_array_literals(self):
         """Test parsing array literals."""
         code = """

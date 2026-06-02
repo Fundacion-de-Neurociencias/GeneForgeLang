@@ -60,13 +60,13 @@ def generate_experiment():
     elif selected_tool == "flowjo":
         if random.random() < 0.8:
             params.append(
-                f"gating_strategy: \"{random.choice(['T_cells', 'B_cells', 'Macrophages'])}\""
+                f'gating_strategy: "{random.choice(["T_cells", "B_cells", "Macrophages"])}"'
             )
     elif selected_tool == "qiime2":
         if random.random() < 0.8:
-            params.append(f"alpha_diversity_metric: \"{random.choice(['shannon', 'simpson'])}\"")
+            params.append(f'alpha_diversity_metric: "{random.choice(["shannon", "simpson"])}"')
         if random.random() < 0.5:
-            params.append(f"beta_diversity_metric: \"{random.choice(['bray_curtis', 'unifrac'])}")
+            params.append(f'beta_diversity_metric: "{random.choice(["bray_curtis", "unifrac"])}')
 
     params_str = ",\n    ".join(params)
     params_block = f"\n  params: {{\n    {params_str}\n  }}" if params_str else ""
@@ -104,6 +104,7 @@ def generate_analyze():
     thresholds_block = f"\n  thresholds: {{\n    {thresholds_str}\n  }}" if thresholds_str else ""
 
     return f"analyze {{\n  strategy: {selected_strategy}{thresholds_block}\n}}"
+
 
 def generate_branch():
     conditions = [

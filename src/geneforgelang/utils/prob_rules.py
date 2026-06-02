@@ -55,17 +55,21 @@ def default_rules() -> list[ProbRule]:
         ProbRule(
             "non_equity_governance",
             0.5,
-            lambda n: n.get("type") == "governance"
-            and not any(
-                k in str(n.get("attrs", {}).get("val", ""))
-                for k in ("equity", "transparency", "stewardship")
+            lambda n: (
+                n.get("type") == "governance"
+                and not any(
+                    k in str(n.get("attrs", {}).get("val", ""))
+                    for k in ("equity", "transparency", "stewardship")
+                )
             ),
         ),
         ProbRule(
             "high_offtarget",
             0.4,
-            lambda n: n.get("type") == "risk"
-            and _parse_float_after_colon(str(n.get("attrs", {}).get("val", "0:0"))) > 0.6,
+            lambda n: (
+                n.get("type") == "risk"
+                and _parse_float_after_colon(str(n.get("attrs", {}).get("val", "0:0"))) > 0.6
+            ),
         ),
         ProbRule("repeat_interruption", 4.0, lambda n: n.get("type") == "repeat_edit"),
     ]

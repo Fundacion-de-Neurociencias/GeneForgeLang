@@ -119,6 +119,7 @@ def test_active_learning_optimization():
     else:
         print("✓ Workflow validation passed")
 
+
 def test_bayesian_optimization():
     """Test Bayesian optimization for drug discovery."""
 
@@ -229,7 +230,9 @@ def test_genetic_algorithm_optimization():
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
-        raise AssertionError(f"Expected genetic algorithm configuration to be valid, but got errors: {errors}")
+        raise AssertionError(
+            f"Expected genetic algorithm configuration to be valid, but got errors: {errors}"
+        )
     print("✓ Genetic algorithm validation passed")
 
 
@@ -283,8 +286,11 @@ def test_optimize_with_analyze_block():
     errors = validate(ast)
     if errors:
         print(f"❌ Validation errors: {errors}")
-        raise AssertionError(f"Expected optimization with analysis to be valid, but got errors: {errors}")
+        raise AssertionError(
+            f"Expected optimization with analysis to be valid, but got errors: {errors}"
+        )
     print("✓ Optimize with analyze validation passed")
+
 
 def test_parameter_injection_validation():
     """Test parameter injection validation."""

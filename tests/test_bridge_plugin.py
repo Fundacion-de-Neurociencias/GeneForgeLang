@@ -28,9 +28,9 @@ try:
         try:
             plugin_instance = plugin_registry.get_plugin("bridge_editor")
             print(f"Plugin instance loaded: {plugin_instance}")
-            if hasattr(plugin_instance, 'name'):
+            if hasattr(plugin_instance, "name"):
                 print(f"Plugin name: {plugin_instance.name}")
-            if hasattr(plugin_instance, 'version'):
+            if hasattr(plugin_instance, "version"):
                 print(f"Plugin version: {plugin_instance.version}")
         except Exception as e:
             print(f"Error loading plugin instance: {e}")
@@ -40,4 +40,5 @@ try:
 except Exception as e:
     print(f"Error: {e}")
     import traceback
+
     traceback.print_exc()

@@ -298,7 +298,11 @@ class EnhancedValidationResult:
     @property
     def is_valid(self) -> bool:
         """True if no critical, semantic, or syntax errors."""
-        return len(self.critical_errors) == 0 and len(self.semantic_errors) == 0 and len(self.syntax_errors) == 0
+        return (
+            len(self.critical_errors) == 0
+            and len(self.semantic_errors) == 0
+            and len(self.syntax_errors) == 0
+        )
 
     @property
     def has_warnings(self) -> bool:

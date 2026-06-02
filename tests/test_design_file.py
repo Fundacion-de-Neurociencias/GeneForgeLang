@@ -2,6 +2,7 @@
 """
 Test the design block implementation with a real GFL file.
 """
+
 import os
 
 from geneforgelang.core.api import parse, validate
@@ -11,7 +12,12 @@ def test_real_gfl_file():
     """Test parsing and validating a real GFL file with design block."""
 
     print("Testing real GFL file with design block...")
-    gfl_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "examples", "features", "example_protein_design.gfl")
+    gfl_file_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "examples",
+        "features",
+        "example_protein_design.gfl",
+    )
 
     # Read the GFL file
     with open(gfl_file_path) as f:
@@ -67,6 +73,7 @@ def test_real_gfl_file():
         print("✓ No validation errors")
 
     print("\n🎉 All tests passed! Design block implementation works correctly with GFL files.")
+
 
 if __name__ == "__main__":
     success = test_real_gfl_file()

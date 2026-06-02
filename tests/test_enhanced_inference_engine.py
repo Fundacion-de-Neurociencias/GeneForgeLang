@@ -177,8 +177,9 @@ class TestTransformersModel(unittest.TestCase):
         config = ModelConfig(model_name="distilbert-base-uncased", model_type="auto", device="cpu")
 
         # Don't actually load the model in tests
-        with patch("gfl.enhanced_inference_engine.AutoTokenizer") and patch("gfl.enhanced_inference_engine.AutoModel"):
-
+        with patch("gfl.enhanced_inference_engine.AutoTokenizer") and patch(
+            "gfl.enhanced_inference_engine.AutoModel"
+        ):
             model = TransformersModel(config)
 
             self.assertEqual(model.config.model_name, "distilbert-base-uncased")
@@ -367,6 +368,7 @@ class TestIntegrationWithLegacyEngine(unittest.TestCase):
         try:
             from geneforgelang.cli.inference import InferenceEngine
             from geneforgelang.models.dummy import DummyGeneModel
+
             # Create legacy engine with dummy model
             legacy_model = DummyGeneModel()
             engine = InferenceEngine(legacy_model)

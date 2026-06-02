@@ -167,7 +167,7 @@ def save_results(results):
     # Subplot 4: Top 10 candidates
     plt.subplot(2, 2, 4)
     top_10 = results["final_rankings"][:10]
-    candidate_ids = [f"C{i+1}" for i in range(10)]
+    candidate_ids = [f"C{i + 1}" for i in range(10)]
     top_scores = [c["combined_score"] for c in top_10]
     plt.bar(candidate_ids, top_scores, color="coral", alpha=0.8)
     plt.xlabel("Candidate Rank")

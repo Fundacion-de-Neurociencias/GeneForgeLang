@@ -42,6 +42,7 @@ def test_advanced_syntax():
     else:
         print("All validations passed!")
 
+
 if __name__ == "__main__":
     success = test_advanced_syntax()
     sys.exit(0 if success else 1)

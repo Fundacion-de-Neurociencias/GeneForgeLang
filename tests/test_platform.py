@@ -2,7 +2,6 @@
 """Simple test script to verify GeneForgeLang platform functionality."""
 
 
-
 def test_basic_api():
     """Test basic GFL API functionality."""
     print("Testing basic GFL API...")

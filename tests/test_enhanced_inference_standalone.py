@@ -247,8 +247,8 @@ def test_performance():
     avg_time = total_time / iterations
 
     print(f"Ran {iterations} predictions in {total_time:.4f} seconds")
-    print(f"Average time per prediction: {avg_time*1000:.2f} ms")
-    print(f"Predictions per second: {1/avg_time:.0f}")
+    print(f"Average time per prediction: {avg_time * 1000:.2f} ms")
+    print(f"Predictions per second: {1 / avg_time:.0f}")
 
 
 if __name__ == "__main__":

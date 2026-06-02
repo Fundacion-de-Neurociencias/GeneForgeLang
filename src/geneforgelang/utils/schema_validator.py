@@ -393,14 +393,16 @@ def validate_gfl_format(data: dict[str, Any]) -> ValidationResult:
                                         code="INVALID_BUDGET_VALUE",
                                     )
                                 )
-                    elif constraint in ["max_cost", "convergence_threshold"] and (not isinstance(value, (int, float)) or value <= 0):
-                            errors.append(
-                                ValidationError(
-                                    message=f"Budget constraint '{constraint}' must be a positive number",
-                                    location=f"optimize.budget.{constraint}",
-                                    code="INVALID_BUDGET_VALUE",
-                                )
+                    elif constraint in ["max_cost", "convergence_threshold"] and (
+                        not isinstance(value, (int, float)) or value <= 0
+                    ):
+                        errors.append(
+                            ValidationError(
+                                message=f"Budget constraint '{constraint}' must be a positive number",
+                                location=f"optimize.budget.{constraint}",
+                                code="INVALID_BUDGET_VALUE",
                             )
+                        )
             else:
                 errors.append(
                     ValidationError(

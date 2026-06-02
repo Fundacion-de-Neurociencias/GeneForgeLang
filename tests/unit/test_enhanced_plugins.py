@@ -72,7 +72,6 @@ class MockPlugin(BaseGFLPlugin):
         return result
 
 
-
 class TestEnhancedRegistry:
     """Test enhanced plugin registry functionality."""
 

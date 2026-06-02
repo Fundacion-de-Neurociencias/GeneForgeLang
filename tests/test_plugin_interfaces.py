@@ -131,7 +131,11 @@ class MockGeneratorPlugin(GeneratorPlugin):
         """Generate mock candidates."""
         candidates = []
         for i in range(count):
-            sequence = "MKLLVL" + "A" * (20 + i) if entity == EntityType.PROTEIN_SEQUENCE.value else "ATCG" * (10 + i)
+            sequence = (
+                "MKLLVL" + "A" * (20 + i)
+                if entity == EntityType.PROTEIN_SEQUENCE.value
+                else "ATCG" * (10 + i)
+            )
 
             candidates.append(
                 DesignCandidate(

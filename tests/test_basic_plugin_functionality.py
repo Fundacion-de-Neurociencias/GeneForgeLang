@@ -2,6 +2,7 @@
 """
 Test basic plugin functionality without entry point discovery.
 """
+
 from geneforgelang.core.api import execute, get_api_info, parse, validate
 from geneforgelang.plugins.plugin_registry import PluginRegistry
 from geneforgelang.utils.example_implementations import (
@@ -94,6 +95,7 @@ design:
     print("✓ Manual plugin registration works")
     print("✓ Design block execution works")
     print("✓ Parameter injection works")
+
 
 if __name__ == "__main__":
     success = test_basic_plugin_functionality()

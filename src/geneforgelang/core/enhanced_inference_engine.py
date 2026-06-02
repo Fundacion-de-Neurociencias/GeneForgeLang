@@ -106,8 +106,9 @@ class ModelConfig:
         """Validate configuration after initialization."""
         if self.trust_remote_code:
             warnings.warn(
-                "trust_remote_code=True is a security risk. " "Setting to False for safety.",
-                UserWarning, stacklevel=2,
+                "trust_remote_code=True is a security risk. Setting to False for safety.",
+                UserWarning,
+                stacklevel=2,
             )
             self.trust_remote_code = False
 

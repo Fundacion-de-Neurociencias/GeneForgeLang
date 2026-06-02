@@ -21,7 +21,7 @@ def main():
             failed.append((f, str(e)))
         except Exception:
             failed.append((f, "Unexpected: " + traceback.format_exc().splitlines()[-1]))
-    print(f"Parsed successfully: {success}/{total} ({success/total*100:.1f}% coverage)")
+    print(f"Parsed successfully: {success}/{total} ({success / total * 100:.1f}% coverage)")
     if failed:
         print("\n-- Failures --")
         for fn, err in failed:

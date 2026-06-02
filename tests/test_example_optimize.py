@@ -82,6 +82,7 @@ def test_example_optimize_file():
 
     print("\n🎉 CRISPR optimization example works perfectly!")
 
+
 if __name__ == "__main__":
     success = test_example_optimize_file()
     exit(0 if success else 1)

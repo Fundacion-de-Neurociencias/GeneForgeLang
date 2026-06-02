@@ -61,6 +61,7 @@ class PluginPriority(Enum):
     LOW = 25
     BACKGROUND = 10
 
+
 # Define PluginLifecycleHook type
 
 
@@ -112,8 +113,7 @@ class PluginDependency:
             required_parts = required.split(".")
             if len(current_parts) >= 2 and len(required_parts) >= 2:
                 return (
-                    current_parts[0] == required_parts[0]
-                    and current_parts[1] == required_parts[1]
+                    current_parts[0] == required_parts[0] and current_parts[1] == required_parts[1]
                 )
         elif spec.startswith("=="):
             required = spec[2:].strip()
@@ -135,7 +135,7 @@ class GFLPlugin(Protocol):
         """Plugin version."""
         ...
 
-    @abstractmethod
+    
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process GFL data and return results."""
         ...
@@ -149,12 +149,12 @@ class BaseGFLPlugin(ABC):
         self._error: str | None = None
 
     @property
-    @abstractmethod
+    
     def name(self) -> str:
         """Plugin name."""
 
     @property
-    @abstractmethod
+    
     def version(self) -> str:
         """Plugin version."""
 
@@ -183,23 +183,21 @@ class BaseGFLPlugin(ABC):
         self._state = state
         self._error = error
 
-    @abstractmethod
     def on_load(self) -> None:
         """Called when plugin is loaded. Override to add custom logic."""
 
-    @abstractmethod
     def on_unload(self) -> None:
         """Called when plugin is unloaded. Override to add custom logic."""
 
-    @abstractmethod
+    
     def on_activate(self) -> None:
         """Called when plugin becomes active. Override to add custom logic."""
 
-    @abstractmethod
+    
     def on_deactivate(self) -> None:
         """Called when plugin is deactivated. Override to add custom logic."""
 
-    @abstractmethod
+    
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process GFL data and return results."""
 
@@ -229,8 +227,6 @@ class BaseGFLPlugin(ABC):
         }
 
 
-
-
 class GeneForgeSkill(BaseGFLPlugin):
     """
     ClawBio-inspired Base Class for all scientific "Bio-Skills".
@@ -239,12 +235,12 @@ class GeneForgeSkill(BaseGFLPlugin):
     """
 
     @property
-    @abstractmethod
+    
     def author(self) -> str:
         """Skill author or organization."""
 
     @property
-    @abstractmethod
+    
     def description(self) -> str:
         """Short scientific description of the skill."""
 
@@ -273,7 +269,7 @@ class GeneForgeSkill(BaseGFLPlugin):
                 "data": result_data,
                 "reproducibility_package": self._generate_reproducibility_package(
                     input_hash, start_time
-                )
+                ),
             }
         except Exception as e:
             return {
@@ -281,10 +277,10 @@ class GeneForgeSkill(BaseGFLPlugin):
                 "error": str(e),
                 "reproducibility_package": self._generate_reproducibility_package(
                     input_hash, start_time, failed=True
-                )
+                ),
             }
 
-    @abstractmethod
+    
     def _analyze(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Internal scientific analysis implementation.
@@ -297,7 +293,9 @@ class GeneForgeSkill(BaseGFLPlugin):
         """
         return self.execute(data)
 
-    def _generate_reproducibility_package(self, input_hash: str, start_time: float, failed: bool = False) -> dict[str, Any]:
+    def _generate_reproducibility_package(
+        self, input_hash: str, start_time: float, failed: bool = False
+    ) -> dict[str, Any]:
         """
         Generates the standard metadata package proving the analysis was run locally.
         """
@@ -315,7 +313,7 @@ class GeneForgeSkill(BaseGFLPlugin):
             "gfl_core_version": gfl_version,
             "input_hash_sha256": input_hash,
             "local_execution": True,
-            "status": "FAILED" if failed else "SUCCESS"
+            "status": "FAILED" if failed else "SUCCESS",
         }
 
 
@@ -405,9 +403,7 @@ class PluginInfo:
             logger.error(f"Failed to load plugin {self.name}: {e}")
             raise
 
-    def unload(
-        self, registry_hooks: list[PluginLifecycleHook] | None = None
-    ) -> None:
+    def unload(self, registry_hooks: list[PluginLifecycleHook] | None = None) -> None:
         """Unload the plugin instance."""
         if self.state == PluginState.UNLOADED:
             return
@@ -434,9 +430,7 @@ class PluginInfo:
             self._set_error_state(error_msg)
             logger.error(f"Failed to unload plugin {self.name}: {e}")
 
-    def activate(
-        self, registry_hooks: list[PluginLifecycleHook] | None = None
-    ) -> None:
+    def activate(self, registry_hooks: list[PluginLifecycleHook] | None = None) -> None:
         """Activate the plugin."""
         if self.state != PluginState.LOADED:
             raise RuntimeError(f"Plugin {self.name} must be loaded before activation")
@@ -460,9 +454,7 @@ class PluginInfo:
             self._set_error_state(error_msg)
             logger.error(f"Failed to activate plugin {self.name}: {e}")
 
-    def deactivate(
-        self, registry_hooks: list[PluginLifecycleHook] | None = None
-    ) -> None:
+    def deactivate(self, registry_hooks: list[PluginLifecycleHook] | None = None) -> None:
         """Deactivate the plugin."""
         if self.state != PluginState.ACTIVE:
             return
@@ -499,9 +491,7 @@ class PluginInfo:
         if self.instance and hasattr(self.instance, "_set_state"):
             self.instance._set_state(PluginState.ERROR, error_msg)
 
-    def _notify_hooks(
-        self, hooks: list[PluginLifecycleHook] | None, state: PluginState
-    ) -> None:
+    def _notify_hooks(self, hooks: list[PluginLifecycleHook] | None, state: PluginState) -> None:
         """Notify registry hooks of state change."""
         if not hooks:
             return
@@ -702,11 +692,7 @@ class PluginRegistry:
         if not self._discovered:
             self._discover_plugins()
 
-        return [
-            plugin_info
-            for plugin_info in self._plugins.values()
-            if plugin_info.state == state
-        ]
+        return [plugin_info for plugin_info in self._plugins.values() if plugin_info.state == state]
 
     def validate_all_dependencies(self) -> dict[str, list[str]]:
         """Validate dependencies for all plugins. Returns dict of plugin_name -> missing_deps."""
@@ -733,9 +719,7 @@ class PluginRegistry:
         if not self._discovered:
             self._discover_plugins()
 
-        return [
-            self._plugins[name] for name in self._plugin_order if name in self._plugins
-        ]
+        return [self._plugins[name] for name in self._plugin_order if name in self._plugins]
 
     def process_with_plugins(
         self, data: dict[str, Any], plugin_names: list[str] | None = None
@@ -784,7 +768,7 @@ class PluginRegistry:
             else:  # Python 3.8-3.9
                 all_entry_points = _entry_points()
                 # Handle both dict-like and list-like entry points APIs
-                if hasattr(all_entry_points, 'get'):
+                if hasattr(all_entry_points, "get"):
                     gfl_plugins = all_entry_points.get("gfl.plugins", [])
                 else:
                     # For newer versions where entry_points() returns a different type
@@ -893,7 +877,6 @@ class PluginRegistry:
 
         # Rediscover
         self._discover_plugins()
-
 
     def _discover_plugins(self):
         """Discover and register external plugins via entry points."""

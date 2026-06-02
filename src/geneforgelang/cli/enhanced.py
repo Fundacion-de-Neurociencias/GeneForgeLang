@@ -85,7 +85,6 @@ class CLIError(Exception):
     """Base exception for CLI errors."""
 
 
-
 class OutputFormatter:
     """Handles output formatting with optional rich formatting."""
 
@@ -742,10 +741,11 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
                         inference_result = infer(model, ast)
 
                         # Filter by confidence if specified
-                        if "confidence" in inference_result and inference_result["confidence"] < args.confidence_threshold:
-                            self.formatter.print_warning(
-                                f"Low confidence result for {file_path}"
-                            )
+                        if (
+                            "confidence" in inference_result
+                            and inference_result["confidence"] < args.confidence_threshold
+                        ):
+                            self.formatter.print_warning(f"Low confidence result for {file_path}")
 
                         results.append(
                             {

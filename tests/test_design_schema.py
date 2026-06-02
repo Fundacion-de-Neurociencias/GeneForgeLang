@@ -101,6 +101,7 @@ def test_design_schema_validation():
 
     print("\n🎉 All schema validation tests passed!")
 
+
 if __name__ == "__main__":
     success = test_design_schema_validation()
     exit(0 if success else 1)

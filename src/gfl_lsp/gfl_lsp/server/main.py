@@ -208,36 +208,40 @@ def completions(params):
         # C. Autocompletado de Tipos de Esquemas
         elif "type:" in current_line:
             # Buscar esquemas importados
-            if "type:" in document.lines[pos.line] and "import_schemas" in ast and isinstance(ast["import_schemas"], list):
-                 # B. Hover sobre Tipos de Esquemas
+            if (
+                "type:" in document.lines[pos.line]
+                and "import_schemas" in ast
+                and isinstance(ast["import_schemas"], list)
+            ):
+                # B. Hover sobre Tipos de Esquemas
                 schema_files = ast["import_schemas"]
                 for schema_file in schema_files:
-                        try:
-                            # Cargar esquemas usando el schema loader
-                            from gfl.error_handling import EnhancedValidationResult
-                            from gfl.schema_loader import (
-                                get_global_schema_loader,
-                                load_schemas_from_files,
-                            )
+                    try:
+                        # Cargar esquemas usando el schema loader
+                        from gfl.error_handling import EnhancedValidationResult
+                        from gfl.schema_loader import (
+                            get_global_schema_loader,
+                            load_schemas_from_files,
+                        )
 
-                            result = EnhancedValidationResult()
-                            load_schemas_from_files([schema_file], result)
-                            loader = get_global_schema_loader()
-                            schemas = loader.get_all_schemas()
+                        result = EnhancedValidationResult()
+                        load_schemas_from_files([schema_file], result)
+                        loader = get_global_schema_loader()
+                        schemas = loader.get_all_schemas()
 
-                            for schema_name, schema_def in schemas.items():
-                                if isinstance(schema_def, dict) and "type" in schema_def:
-                                    items.append(
-                                        CompletionItem(
-                                            label=schema_name,
-                                            kind=CompletionItemKind.Class,
-                                            detail=f"Schema type: {schema_name}",
-                                            documentation=f"Use schema type {schema_name} from {schema_file}",
-                                        )
+                        for schema_name, schema_def in schemas.items():
+                            if isinstance(schema_def, dict) and "type" in schema_def:
+                                items.append(
+                                    CompletionItem(
+                                        label=schema_name,
+                                        kind=CompletionItemKind.Class,
+                                        detail=f"Schema type: {schema_name}",
+                                        documentation=f"Use schema type {schema_name} from {schema_file}",
                                     )
-                        except Exception:
-                            # Si no se puede cargar el esquema, continuar
-                            continue
+                                )
+                    except Exception:
+                        # Si no se puede cargar el esquema, continuar
+                        continue
 
         # D. Autocompletado de Entidades Biológicas
         elif "pathway(" in current_line or current_line.endswith("pathway("):
@@ -457,41 +461,47 @@ def hover(params):
                 )
 
         # B. Hover sobre Tipos de Esquemas
-        if "type:" in document.lines[pos.line] and "import_schemas" in ast and isinstance(ast["import_schemas"], list):
-                schema_files = ast["import_schemas"]
-                for schema_file in schema_files:
-                    try:
-                        from gfl.error_handling import EnhancedValidationResult
-                        from gfl.schema_loader import (
-                            get_global_schema_loader,
-                            load_schemas_from_files,
+        if (
+            "type:" in document.lines[pos.line]
+            and "import_schemas" in ast
+            and isinstance(ast["import_schemas"], list)
+        ):
+            schema_files = ast["import_schemas"]
+            for schema_file in schema_files:
+                try:
+                    from gfl.error_handling import EnhancedValidationResult
+                    from gfl.schema_loader import (
+                        get_global_schema_loader,
+                        load_schemas_from_files,
+                    )
+
+                    result = EnhancedValidationResult()
+                    load_schemas_from_files([schema_file], result)
+                    loader = get_global_schema_loader()
+                    loaded_schemas = loader.get_all_schemas()
+
+                    if word in loaded_schemas:
+                        schema_def = loaded_schemas[word]
+                        contents_md = f"**Schema: `{word}`**\n\n---\n\n"
+                        contents_md += f"**Base Type:** `{schema_def.base_type}`\n\n"
+
+                        if schema_def.description:
+                            contents_md += f"**Description:** {schema_def.description}\n\n"
+
+                        if schema_def.attributes:
+                            contents_md += "**Attributes:**\n"
+                            for attr, props in schema_def.attributes.items():
+                                required = props.get("required", False)
+                                attr_type = props.get("type", "unknown")
+                                contents_md += (
+                                    f"- `{attr}`: (type: `{attr_type}`, required: `{required}`)\n"
+                                )
+
+                        return Hover(
+                            contents=MarkupContent(kind=MarkupKind.Markdown, value=contents_md)
                         )
-
-                        result = EnhancedValidationResult()
-                        load_schemas_from_files([schema_file], result)
-                        loader = get_global_schema_loader()
-                        loaded_schemas = loader.get_all_schemas()
-
-                        if word in loaded_schemas:
-                            schema_def = loaded_schemas[word]
-                            contents_md = f"**Schema: `{word}`**\n\n---\n\n"
-                            contents_md += f"**Base Type:** `{schema_def.base_type}`\n\n"
-
-                            if schema_def.description:
-                                contents_md += f"**Description:** {schema_def.description}\n\n"
-
-                            if schema_def.attributes:
-                                contents_md += "**Attributes:**\n"
-                                for attr, props in schema_def.attributes.items():
-                                    required = props.get("required", False)
-                                    attr_type = props.get("type", "unknown")
-                                    contents_md += f"- `{attr}`: (type: `{attr_type}`, required: `{required}`)\n"
-
-                            return Hover(
-                                contents=MarkupContent(kind=MarkupKind.Markdown, value=contents_md)
-                            )
-                    except Exception:
-                        continue
+                except Exception:
+                    continue
 
         # C. Hover sobre Entidades Biológicas (Pathways)
         if "pathways" in ast and isinstance(ast["pathways"], dict):

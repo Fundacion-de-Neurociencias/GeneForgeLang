@@ -102,10 +102,8 @@ class GFLClientError(Exception):
     """Base exception for GFL client errors."""
 
 
-
 class GFLConnectionError(GFLClientError):
     """Connection-related errors."""
-
 
 
 class GFLAPIError(GFLClientError):
