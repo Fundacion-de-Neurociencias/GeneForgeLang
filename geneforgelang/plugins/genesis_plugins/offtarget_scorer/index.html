@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../../img/favicon.ico" />
+    <title>Off-Target Scorer Plugin - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Off-Target Scorer Plugin";
+        var mkdocs_page_input_path = "geneforgelang/plugins/genesis_plugins/offtarget_scorer.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Plugins</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../../PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" >Genesis plugins</a>
+    <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="#">Off-Target Scorer Plugin</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#description">Description</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#features">Features</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#installation">Installation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#usage">Usage</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#input-parameters">Input Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#output">Output</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#api-reference">API Reference</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#development">Development</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#troubleshooting">Troubleshooting</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#integration-with-other-plugins">Integration with Other Plugins</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#license">License</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#author">Author</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Plugins</li>
+          <li class="breadcrumb-item">Genesis plugins</li>
+      <li class="breadcrumb-item active">Off-Target Scorer Plugin</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="off-target-scorer-plugin">Off-Target Scorer Plugin</h1>
+<p>A plugin that identifies potential off-target cutting sites and calculates a global risk score for CRISPR gene editing applications.</p>
+<h2 id="description">Description</h2>
+<p>This plugin identifies potential CRISPR-Cas9 off-target cutting sites and calculates a global risk score. It takes a gRNA sequence as input and uses tools like BLASTn to search for similar sequences in a reference genome (e.g., GRCh38). For each potential off-target site found, it calculates a risk score using algorithms like CFD (Cutting Frequency Determination). Finally, it returns an aggregated global risk score, where lower values indicate less off-target risk.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li><strong>Genome Search</strong>: Uses BLAST-like search against reference genomes</li>
+<li><strong>Risk Scoring</strong>: Calculates risk scores using the CFD algorithm</li>
+<li><strong>Configurable Parameters</strong>: Supports mismatch limits and genome references</li>
+<li><strong>Structured Output</strong>: Returns risk scores and site details in JSON format</li>
+<li><strong>GFL Integration</strong>: Seamlessly integrates with GeneForgeLang's plugin system</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<pre><code class="language-bash">pip install gfl-plugin-offtarget-scorer
+</code></pre>
+<h2 id="usage">Usage</h2>
+<p>Once installed, the plugin is automatically discovered by the GeneForgeLang service through entry points.</p>
+<h3 id="example-gfl-workflow">Example GFL Workflow</h3>
+<pre><code class="language-gfl">run:
+  - plugin: &quot;gfl-offtarget-scorer&quot;
+    input_data: {
+      &quot;grna_sequence&quot;: &quot;GCAATGGAGCGGCTTGCGGA&quot;
+    }
+    params: {
+      &quot;max_mismatches&quot;: 3,
+      &quot;genome_reference&quot;: &quot;GRCh38&quot;
+    }
+    as_var: &quot;risk_results&quot;
+
+output:
+  - global_risk_score: &quot;${risk_results.result.global_risk_score}&quot;
+</code></pre>
+<h2 id="input-parameters">Input Parameters</h2>
+<p>The plugin expects a dictionary with the following key:
+- <code>grna_sequence</code>: The 20-nucleotide gRNA sequence (string)</p>
+<p>Optional parameters:
+- <code>max_mismatches</code>: Maximum number of mismatches to consider (default: 3)
+- <code>genome_reference</code>: Reference genome to search against (default: "GRCh38")</p>
+<h2 id="output">Output</h2>
+<p>The plugin returns a dictionary with:
+- <code>global_risk_score</code>: A float between 0 and 1 representing the global off-target risk (lower is better)
+- <code>grna_sequence</code>: The input gRNA sequence
+- <code>genome_reference</code>: The genome reference used
+- <code>max_mismatches</code>: The maximum mismatches parameter used
+- <code>off_target_sites</code>: List of potential off-target sites with details
+- <code>algorithm_used</code>: The algorithm used for risk calculation</p>
+<h2 id="configuration">Configuration</h2>
+<p>The plugin accepts optional configuration parameters:</p>
+<pre><code class="language-python">config = {
+    &quot;blast_db_path&quot;: &quot;/path/to/blast/db&quot;,  # Path to BLAST database
+    &quot;cfd_model_path&quot;: &quot;/path/to/cfd/model&quot;  # Path to CFD model
+}
+
+plugin = ScorerPlugin(config=config)
+</code></pre>
+<h2 id="api-reference">API Reference</h2>
+<h3 id="class-scorerplugin">Class: ScorerPlugin</h3>
+<h4 id="methods">Methods</h4>
+<h5 id="__init__self-config-optionaldictstr-any-none"><code>__init__(self, config: Optional[Dict[str, Any]] = None)</code></h5>
+<p>Initialize the Off-Target Scorer plugin.</p>
+<p><strong>Parameters:</strong>
+- <code>config</code>: Optional configuration dictionary</p>
+<h5 id="runself-input_data-any-params-optionaldictstr-any-none-dictstr-any"><code>run(self, input_data: Any, params: Optional[Dict[str, Any]] = None) -&gt; Dict[str, Any]</code></h5>
+<p>Execute the off-target risk scoring.</p>
+<p><strong>Parameters:</strong>
+- <code>input_data</code>: Input data containing gRNA sequence
+- <code>params</code>: Optional parameters for the scoring process</p>
+<p><strong>Returns:</strong>
+- Dictionary containing risk scoring results</p>
+<h5 id="validate_inputself-input_data-any-bool"><code>validate_input(self, input_data: Any) -&gt; bool</code></h5>
+<p>Validate input data for the plugin.</p>
+<p><strong>Parameters:</strong>
+- <code>input_data</code>: Input data to validate</p>
+<p><strong>Returns:</strong>
+- True if input is valid, False otherwise</p>
+<h5 id="_process_dataself-input_data-any-params-dictstr-any-any"><code>_process_data(self, input_data: Any, params: Dict[str, Any]) -&gt; Any</code></h5>
+<p>Process the input data according to plugin logic.</p>
+<p><strong>Parameters:</strong>
+- <code>input_data</code>: Input data to process
+- <code>params</code>: Parameters for processing</p>
+<p><strong>Returns:</strong>
+- Processed data with risk score</p>
+<h5 id="_validate_sequenceself-sequence-str-bool"><code>_validate_sequence(self, sequence: str) -&gt; bool</code></h5>
+<p>Validate DNA sequence format.</p>
+<p><strong>Parameters:</strong>
+- <code>sequence</code>: DNA sequence to validate</p>
+<p><strong>Returns:</strong>
+- True if sequence is valid, False otherwise</p>
+<h5 id="_find_off_target_sitesself-grna_sequence-str-max_mismatches-int-genome_reference-str-listdictstr-any"><code>_find_off_target_sites(self, grna_sequence: str, max_mismatches: int, genome_reference: str) -&gt; List[Dict[str, Any]]</code></h5>
+<p>Find potential off-target sites using a BLAST-like approach.</p>
+<p><strong>Parameters:</strong>
+- <code>grna_sequence</code>: The gRNA sequence to search for
+- <code>max_mismatches</code>: Maximum number of mismatches to consider
+- <code>genome_reference</code>: Reference genome to search against</p>
+<p><strong>Returns:</strong>
+- List of potential off-target sites with their details</p>
+<h5 id="_calculate_global_risk_scoreself-off_target_sites-listdictstr-any-float"><code>_calculate_global_risk_score(self, off_target_sites: List[Dict[str, Any]]) -&gt; float</code></h5>
+<p>Calculate global off-target risk score using the CFD algorithm.</p>
+<p><strong>Parameters:</strong>
+- <code>off_target_sites</code>: List of potential off-target sites</p>
+<p><strong>Returns:</strong>
+- Global risk score (lower is better)</p>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>numpy &gt;= 1.24.0</li>
+<li>pandas &gt;= 2.0.0</li>
+<li>biopython &gt;= 1.80</li>
+</ul>
+<h2 id="development">Development</h2>
+<h3 id="setting-up-for-development">Setting Up for Development</h3>
+<pre><code class="language-bash">git clone &lt;repository-url&gt;
+cd gfl-plugin-offtarget-scorer
+pip install -e &quot;.[dev]&quot;
+</code></pre>
+<h3 id="running-tests">Running Tests</h3>
+<pre><code class="language-bash">pytest
+</code></pre>
+<h3 id="code-formatting">Code Formatting</h3>
+<pre><code class="language-bash">black gfl_plugin_offtarget_scorer/
+ruff check gfl_plugin_offtarget_scorer/
+</code></pre>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<ol>
+<li><strong>Sequence Format Errors</strong>: Ensure input sequences contain only valid nucleotides (A, C, G, T, N)</li>
+<li><strong>Database Issues</strong>: Verify BLAST database paths and permissions</li>
+<li><strong>Performance Issues</strong>: For large genomes, consider limiting search regions</li>
+</ol>
+<h3 id="debugging">Debugging</h3>
+<p>Enable verbose logging:</p>
+<pre><code class="language-python">import logging
+logging.basicConfig(level=logging.DEBUG)
+</code></pre>
+<h2 id="examples">Examples</h2>
+<h3 id="basic-risk-scoring">Basic Risk Scoring</h3>
+<pre><code class="language-gfl">input:
+  grna_sequence: &quot;GCAATGGAGCGGCTTGCGGA&quot;
+
+run:
+  - plugin: &quot;gfl-offtarget-scorer&quot;
+    input_data: {
+      &quot;grna_sequence&quot;: &quot;${grna_sequence}&quot;
+    }
+    params: {
+      &quot;max_mismatches&quot;: 3,
+      &quot;genome_reference&quot;: &quot;GRCh38&quot;
+    }
+    as_var: &quot;risk_result&quot;
+
+output:
+  - global_risk_score: &quot;${risk_result.result.global_risk_score}&quot;
+  - off_target_sites: &quot;${risk_result.result.off_target_sites}&quot;
+</code></pre>
+<h3 id="comprehensive-off-target-analysis">Comprehensive Off-Target Analysis</h3>
+<pre><code class="language-gfl">input:
+  grna_candidates: [
+    &quot;GCAATGGAGCGGCTTGCGGA&quot;,
+    &quot;GTCGATCGATCGATCGATCG&quot;,
+    &quot;ATCGATCGATCGATCGATCG&quot;
+  ]
+  genome_reference: &quot;GRCh38&quot;
+
+process:
+  - name: &quot;analyze_candidate&quot;
+    for_each: &quot;sequence in grna_candidates&quot;
+    run:
+      - plugin: &quot;gfl-offtarget-scorer&quot;
+        input_data: {
+          &quot;grna_sequence&quot;: &quot;${sequence}&quot;
+        }
+        params: {
+          &quot;max_mismatches&quot;: 4,
+          &quot;genome_reference&quot;: &quot;${genome_reference}&quot;
+        }
+        as_var: &quot;analysis_result_${loop.index}&quot;
+
+    output:
+      - analyzed_candidates: [
+          {
+            &quot;sequence&quot;: &quot;${sequence}&quot;,
+            &quot;risk_score&quot;: &quot;${analysis_result_${loop.index}.result.global_risk_score}&quot;,
+            &quot;sites_found&quot;: &quot;${len(analysis_result_${loop.index}.result.off_target_sites)}&quot;
+          }
+          for sequence in grna_candidates
+        ]
+
+output:
+  - risk_analysis: &quot;${analyzed_candidates}&quot;
+</code></pre>
+<h3 id="advanced-configuration-with-custom-parameters">Advanced Configuration with Custom Parameters</h3>
+<pre><code class="language-gfl">input:
+  grna_sequence: &quot;GCAATGGAGCGGCTTGCGGA&quot;
+
+run:
+  - plugin: &quot;gfl-offtarget-scorer&quot;
+    input_data: {
+      &quot;grna_sequence&quot;: &quot;${grna_sequence}&quot;
+    }
+    params: {
+      &quot;max_mismatches&quot;: 2,
+      &quot;genome_reference&quot;: &quot;GRCh38&quot;,
+      &quot;chromosomes&quot;: [&quot;chr1&quot;, &quot;chr2&quot;, &quot;chr3&quot;],  # Limit search to specific chromosomes
+      &quot;exclude_regions&quot;: [&quot;chr1:1000000-2000000&quot;]  # Exclude specific regions
+    }
+    as_var: &quot;custom_result&quot;
+
+output:
+  - custom_analysis: &quot;${custom_result}&quot;
+</code></pre>
+<h2 id="integration-with-other-plugins">Integration with Other Plugins</h2>
+<p>The Off-Target Scorer plugin is designed to work with other Genesis plugins:</p>
+<ul>
+<li><strong><a href="../ontarget_scorer/">On-Target Scorer</a></strong>: For comprehensive CRISPR efficiency assessment</li>
+<li><strong><a href="../evaluator/">CRISPR Evaluator</a></strong>: For combining efficiency and risk scores</li>
+<li><strong><a href="../visualizer/">CRISPR Visualizer</a></strong>: For visualizing risk scoring results</li>
+</ul>
+<h2 id="license">License</h2>
+<p>This plugin is part of the GeneForgeLang ecosystem and is licensed under the MIT License.</p>
+<h2 id="author">Author</h2>
+<p>Manuel Menendez Gonzalez - manuelmenendes@fneurociencias.org</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../evaluator/" class="btn btn-neutral float-left" title="CRISPR Evaluator Plugin"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../ontarget_scorer/" class="btn btn-neutral float-right" title="On-Target Scorer Plugin">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../evaluator/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../ontarget_scorer/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

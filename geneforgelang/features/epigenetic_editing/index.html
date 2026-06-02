@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Epigenetic Editing in GFL - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Epigenetic Editing in GFL";
+        var mkdocs_page_input_path = "geneforgelang/features/epigenetic_editing.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Features</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Epigenetic Editing in GFL</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#conceptual-foundation">Conceptual Foundation</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#epigenetic-vs-genetic-editing">Epigenetic vs Genetic Editing</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#why-model-epigenetic-state">Why Model Epigenetic State?</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#gfl-syntax-for-epigenetic-editing">GFL Syntax for Epigenetic Editing</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-representing-epigenetic-state">1. Representing Epigenetic State</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-epigenetic-editing-operations">2. Epigenetic Editing Operations</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-comparing-editing-modalities">3. Comparing Editing Modalities</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-epigenetic-state-queries-in-rules">4. Epigenetic State Queries in Rules</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#5-temporal-dynamics-of-epigenetic-changes">5. Temporal Dynamics of Epigenetic Changes</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#complete-example-therapeutic-vegfa-silencing">Complete Example: Therapeutic VEGFA Silencing</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#epigenetic-state-predicates">Epigenetic State Predicates</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#new-predicates-for-rules">New Predicates for Rules</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#integration-with-existing-gfl-features">Integration with Existing GFL Features</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#combining-with-spatial-genomics">Combining with Spatial Genomics</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#integration-with-multi-omic-reasoning">Integration with Multi-Omic Reasoning</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#use-cases">Use Cases</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-precision-oncology">1. Precision Oncology</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-neurodegenerative-diseases">2. Neurodegenerative Diseases</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-metabolic-engineering">3. Metabolic Engineering</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-developmental-biology-research">4. Developmental Biology Research</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#key-advantages-modeled">Key Advantages Modeled</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#technical-considerations">Technical Considerations</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#methylation-patterns">Methylation Patterns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#histone-modifications">Histone Modifications</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#tool-mechanisms">Tool Mechanisms</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#references">References</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#see-also">See Also</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Features</li>
+      <li class="breadcrumb-item active">Epigenetic Editing in GFL</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="epigenetic-editing-in-gfl">Epigenetic Editing in GFL</h1>
+<h2 id="overview">Overview</h2>
+<p>GFL v1.6.0 introduces support for <strong>epigenetic editing</strong> - the ability to modify gene expression through changes to chromatin state rather than DNA sequence alterations. This capability models tools like CRISPRoff and CRISPRon that create heritable, reversible changes in gene expression without causing DNA double-strand breaks.</p>
+<h2 id="conceptual-foundation">Conceptual Foundation</h2>
+<h3 id="epigenetic-vs-genetic-editing">Epigenetic vs Genetic Editing</h3>
+<p>Traditional CRISPR (Cas9) creates <strong>permanent DNA sequence changes</strong>:
+- Causes double-strand breaks (DSBs)
+- Risk of off-target mutations
+- Irreversible modifications</p>
+<p>Epigenetic editors (CRISPRoff/on) create <strong>reversible expression changes</strong>:
+- Modify DNA methylation patterns
+- No DNA sequence alteration
+- Heritable through cell divisions
+- Reversible with opposing tools</p>
+<h3 id="why-model-epigenetic-state">Why Model Epigenetic State?</h3>
+<p>Understanding and manipulating epigenetic state enables:
+- <strong>Safer gene silencing</strong>: No DSBs or permanent mutations
+- <strong>Reversible therapeutics</strong>: Can be undone if needed
+- <strong>Long-lasting effects</strong>: Methylation persists through divisions
+- <strong>Complex regulation</strong>: Model real biological gene regulation</p>
+<h2 id="gfl-syntax-for-epigenetic-editing">GFL Syntax for Epigenetic Editing</h2>
+<h3 id="1-representing-epigenetic-state">1. Representing Epigenetic State</h3>
+<p>Define the epigenetic state of genomic regions using the <code>epigenetic_state</code> block:</p>
+<pre><code class="language-yaml">epigenetic_state:
+  - region: locus(VEGFA_Promoter)
+    marks:
+      - type: &quot;DNA_methylation&quot;
+        pattern: &quot;CpG_islands&quot;
+        level: &quot;hypermethylated&quot;  # hypermethylated, hypomethylated, normal
+        percentage: 85.0
+      - type: &quot;histone_modification&quot;
+        mark: &quot;H3K9me3&quot;
+        enrichment: &quot;high&quot;
+    expression_consequence: &quot;silenced&quot;
+
+  - region: locus(MYC_Enhancer)
+    marks:
+      - type: &quot;DNA_methylation&quot;
+        level: &quot;hypomethylated&quot;
+        percentage: 15.0
+      - type: &quot;histone_modification&quot;
+        mark: &quot;H3K27ac&quot;
+        enrichment: &quot;high&quot;
+    expression_consequence: &quot;active&quot;
+</code></pre>
+<p><strong>Key Concepts:</strong>
+- <code>region</code>: References a locus or genomic element
+- <code>marks</code>: List of epigenetic modifications
+  - <code>DNA_methylation</code>: CpG methylation state
+  - <code>histone_modification</code>: Chromatin marks (H3K4me3, H3K27ac, etc.)
+- <code>expression_consequence</code>: Predicted effect on gene expression</p>
+<h3 id="2-epigenetic-editing-operations">2. Epigenetic Editing Operations</h3>
+<p>Use the <code>edit</code> block with epigenetic modifiers:</p>
+<h4 id="crisproff-add-dna-methylation-gene-silencing">CRISPRoff - Add DNA Methylation (Gene Silencing)</h4>
+<pre><code class="language-yaml">loci:
+  - id: VEGFA_Promoter
+    chromosome: &quot;chr6&quot;
+    start: 43737946
+    end: 43738946
+    description: &quot;VEGFA promoter region for therapeutic silencing&quot;
+
+edit:
+  tool: &quot;CRISPRoff&quot;
+  target: locus(VEGFA_Promoter)
+  guide_rna: &quot;GGGCGAGCGCGGCGGCTCGG&quot;
+  operation:
+    add_methylation:
+      region: locus(VEGFA_Promoter)
+      pattern: &quot;CpG_islands&quot;
+      target_level: &quot;hypermethylated&quot;
+      mechanism: &quot;DNMT3A_DNMT3L_recruitment&quot;
+  expected_outcome:
+    expression_change:
+      gene: &quot;VEGFA&quot;
+      from_level: &quot;normal&quot;
+      to_level: &quot;silenced&quot;
+      persistence: &quot;heritable&quot;
+      reversibility: true
+</code></pre>
+<h4 id="crispron-remove-dna-methylation-gene-activation">CRISPRon - Remove DNA Methylation (Gene Activation)</h4>
+<pre><code class="language-yaml">loci:
+  - id: BDNF_Promoter_IV
+    chromosome: &quot;chr11&quot;
+    start: 27722824
+    end: 27723824
+    description: &quot;BDNF promoter IV, therapeutically silenced by methylation&quot;
+
+edit:
+  tool: &quot;CRISPRon&quot;
+  target: locus(BDNF_Promoter_IV)
+  guide_rna: &quot;GCCGAGCGCGGCGATCGCGG&quot;
+  operation:
+    remove_methylation:
+      region: locus(BDNF_Promoter_IV)
+      mechanism: &quot;TET1_recruitment&quot;
+      target_level: &quot;hypomethylated&quot;
+  expected_outcome:
+    expression_change:
+      gene: &quot;BDNF&quot;
+      from_level: &quot;silenced&quot;
+      to_level: &quot;reactivated&quot;
+      persistence: &quot;stable_through_divisions&quot;
+</code></pre>
+<h3 id="3-comparing-editing-modalities">3. Comparing Editing Modalities</h3>
+<p>GFL can now express and compare different gene regulation strategies:</p>
+<pre><code class="language-yaml"># Define the target gene locus
+loci:
+  - id: Target_Gene_Locus
+    chromosome: &quot;chr1&quot;
+    start: 1000000
+    end: 1050000
+
+# Strategy 1: Traditional Cas9 knockout
+experiment:
+  name: &quot;Cas9_Knockout_Strategy&quot;
+  tool: &quot;CRISPR_cas9&quot;
+  edit_type: &quot;knockout&quot;
+  target: locus(Target_Gene_Locus)
+  characteristics:
+    permanence: &quot;irreversible&quot;
+    safety_risk: &quot;DSBs_off_target_mutations&quot;
+    expression_outcome: &quot;complete_loss&quot;
+
+# Strategy 2: CRISPRi repression (requires continuous expression)
+experiment:
+  name: &quot;CRISPRi_Repression_Strategy&quot;
+  tool: &quot;CRISPRi_dCas9_KRAB&quot;
+  target: locus(Target_Gene_Locus)
+  characteristics:
+    permanence: &quot;transient_requires_maintenance&quot;
+    safety_risk: &quot;minimal&quot;
+    expression_outcome: &quot;reversible_silencing&quot;
+
+# Strategy 3: CRISPRoff epigenetic silencing
+experiment:
+  name: &quot;CRISPRoff_Epigenetic_Strategy&quot;
+  tool: &quot;CRISPRoff&quot;
+  operation:
+    add_methylation:
+      region: locus(Target_Gene_Locus)
+  characteristics:
+    permanence: &quot;heritable_long_lasting&quot;
+    safety_risk: &quot;no_DSBs&quot;
+    expression_outcome: &quot;stable_silencing&quot;
+    reversibility: &quot;can_reverse_with_CRISPRon&quot;
+
+# Reasoning: Choose optimal strategy based on requirements
+rules:
+  - id: R_Strategy_Selection
+    description: &quot;Select editing strategy based on therapeutic requirements&quot;
+    if:
+      - requires_reversibility: true
+      - requires_heritability: true
+      - minimize_genotoxicity: true
+    then:
+      - select_strategy: &quot;CRISPRoff_Epigenetic_Strategy&quot;
+      - rationale: &quot;Combines reversibility, heritability, and safety&quot;
+</code></pre>
+<h3 id="4-epigenetic-state-queries-in-rules">4. Epigenetic State Queries in Rules</h3>
+<p>Reason about epigenetic modifications and their consequences:</p>
+<pre><code class="language-yaml">rules:
+  - id: R_Methylation_Silencing_Link
+    description: &quot;Promoter hypermethylation leads to gene silencing&quot;
+    if:
+      - epigenetic_state_is:
+          region: locus(VEGFA_Promoter)
+          mark_type: &quot;DNA_methylation&quot;
+          level: &quot;hypermethylated&quot;
+          threshold: 70.0
+    then:
+      - predict_expression:
+          gene: &quot;VEGFA&quot;
+          level: &quot;silenced&quot;
+          mechanism: &quot;methylation_mediated_silencing&quot;
+
+  - id: R_H3K27ac_Activation_Link
+    description: &quot;H3K27ac enrichment indicates active regulatory regions&quot;
+    if:
+      - epigenetic_state_is:
+          region: locus(Enhancer_Region)
+          mark_type: &quot;histone_modification&quot;
+          mark: &quot;H3K27ac&quot;
+          enrichment: &quot;high&quot;
+    then:
+      - predict_activity:
+          element: &quot;Enhancer_Region&quot;
+          state: &quot;active&quot;
+</code></pre>
+<h3 id="5-temporal-dynamics-of-epigenetic-changes">5. Temporal Dynamics of Epigenetic Changes</h3>
+<p>Model the establishment and maintenance of epigenetic modifications:</p>
+<pre><code class="language-yaml">timeline:
+  - at: &quot;t0&quot;
+    description: &quot;Baseline state before CRISPRoff treatment&quot;
+    actions:
+      - measure_epigenetic_state:
+          region: locus(Target_Promoter)
+          output: &quot;baseline_methylation&quot;
+
+  - at: &quot;t1_CRISPRoff_treatment&quot;
+    description: &quot;Apply CRISPRoff for 48 hours&quot;
+    actions:
+      - apply_edit:
+          tool: &quot;CRISPRoff&quot;
+          operation:
+            add_methylation:
+              region: locus(Target_Promoter)
+          duration: &quot;48_hours&quot;
+
+  - at: &quot;t2_post_treatment_72h&quot;
+    description: &quot;72 hours after CRISPRoff removal&quot;
+    actions:
+      - measure_epigenetic_state:
+          region: locus(Target_Promoter)
+          output: &quot;early_methylation&quot;
+      - measure_expression:
+          gene: &quot;Target_Gene&quot;
+          output: &quot;early_expression&quot;
+
+  - at: &quot;t3_post_treatment_30days&quot;
+    description: &quot;30 days post-treatment (assess heritability)&quot;
+    actions:
+      - measure_epigenetic_state:
+          region: locus(Target_Promoter)
+          output: &quot;stable_methylation&quot;
+      - measure_expression:
+          gene: &quot;Target_Gene&quot;
+          output: &quot;stable_expression&quot;
+
+  - at: &quot;t4_reversal_CRISPRon&quot;
+    description: &quot;Apply CRISPRon to reverse silencing&quot;
+    actions:
+      - apply_edit:
+          tool: &quot;CRISPRon&quot;
+          operation:
+            remove_methylation:
+              region: locus(Target_Promoter)
+          duration: &quot;48_hours&quot;
+
+  - at: &quot;t5_post_reversal&quot;
+    description: &quot;Verify gene reactivation&quot;
+    actions:
+      - measure_expression:
+          gene: &quot;Target_Gene&quot;
+          output: &quot;reactivated_expression&quot;
+
+# Validate expected dynamics
+rules:
+  - id: R_Methylation_Persistence
+    description: &quot;CRISPRoff-induced methylation persists after tool removal&quot;
+    if:
+      - methylation_at_t3_greater_than:
+          threshold: 70.0
+    then:
+      - validation_passed: &quot;methylation_is_heritable&quot;
+
+  - id: R_Expression_Correlates_Methylation
+    description: &quot;Gene expression inversely correlates with methylation&quot;
+    if:
+      - methylation_level: &quot;hypermethylated&quot;
+    then:
+      - expression_should_be: &quot;low_or_silenced&quot;
+</code></pre>
+<h2 id="complete-example-therapeutic-vegfa-silencing">Complete Example: Therapeutic VEGFA Silencing</h2>
+<pre><code class="language-yaml"># Therapeutic Silencing of VEGFA for Anti-Angiogenesis
+# =====================================================
+# Models CRISPRoff-mediated epigenetic silencing as described in
+# Nunez et al. (2021) Cell
+
+# Define target locus
+loci:
+  - id: VEGFA_Promoter
+    chromosome: &quot;chr6&quot;
+    start: 43737946
+    end: 43738946
+    description: &quot;VEGFA promoter - target for anti-angiogenic therapy&quot;
+    cpg_islands:
+      - start: 43738100
+        end: 43738600
+        density: &quot;high&quot;
+
+# Baseline epigenetic state
+epigenetic_state:
+  - region: locus(VEGFA_Promoter)
+    baseline_marks:
+      - type: &quot;DNA_methylation&quot;
+        level: &quot;hypomethylated&quot;
+        percentage: 20.0
+    expression_consequence: &quot;active&quot;
+
+# Apply CRISPRoff for therapeutic silencing
+edit:
+  name: &quot;VEGFA_Therapeutic_Silencing&quot;
+  tool: &quot;CRISPRoff&quot;
+  target: locus(VEGFA_Promoter)
+  guide_rnas:
+    - &quot;GGGCGAGCGCGGCGGCTCGG&quot;
+    - &quot;GCGGCGGCTCGGCGCTGAGG&quot;  # Tiling strategy
+  operation:
+    add_methylation:
+      region: locus(VEGFA_Promoter)
+      target_cpgs: &quot;promoter_cpg_islands&quot;
+      target_level: &quot;hypermethylated&quot;
+      target_percentage: 85.0
+      mechanism:
+        effector: &quot;DNMT3A_DNMT3L_fusion&quot;
+        recruitment: &quot;dCas9_guided&quot;
+  parameters:
+    delivery_method: &quot;AAV9_vector&quot;
+    dosage: &quot;1e11_genome_copies&quot;
+    treatment_duration: &quot;48_hours&quot;
+
+# Expected outcomes and validation
+hypothesis:
+  id: &quot;H_CRISPRoff_Durable_Silencing&quot;
+  description: &quot;CRISPRoff induces heritable VEGFA silencing without DSBs&quot;
+  if:
+    - epigenetic_edit_applied:
+        tool: &quot;CRISPRoff&quot;
+        target: locus(VEGFA_Promoter)
+  then:
+    - methylation_increases:
+        from: 20.0
+        to: &quot;&gt;80.0&quot;
+        timeline: &quot;within_72_hours&quot;
+    - expression_decreases:
+        gene: &quot;VEGFA&quot;
+        from: &quot;normal&quot;
+        to: &quot;silenced&quot;
+        reduction: &quot;&gt;90_percent&quot;
+    - modification_persists:
+        duration: &quot;&gt;30_days_post_treatment&quot;
+    - no_dsbs_detected:
+        method: &quot;GUIDE-seq&quot;
+    - reversible_with:
+        tool: &quot;CRISPRon&quot;
+
+# Safety and reversibility rules
+rules:
+  - id: R_Epigenetic_Safety_Advantage
+    description: &quot;Epigenetic editing avoids genotoxicity of Cas9&quot;
+    if:
+      - edit_tool_is: &quot;CRISPRoff&quot;
+    then:
+      - safety_profile:
+          dsb_risk: &quot;none&quot;
+          off_target_mutations: &quot;none&quot;
+          reversibility: &quot;yes_with_CRISPRon&quot;
+
+  - id: R_Silencing_Persistence
+    description: &quot;Methylation-based silencing is mitotically heritable&quot;
+    if:
+      - methylation_level_exceeds: 70.0
+      - region_is: &quot;promoter&quot;
+    then:
+      - expression_state: &quot;silenced&quot;
+      - heritability: &quot;stable_through_divisions&quot;
+      - maintenance: &quot;passive_via_DNMT1&quot;
+
+# Comparison with alternative strategies
+design:
+  goal: &quot;Therapeutic VEGFA downregulation for anti-angiogenesis&quot;
+  candidate_strategies:
+    - strategy_1:
+        name: &quot;Cas9_Knockout&quot;
+        tool: &quot;CRISPR_cas9&quot;
+        permanence: &quot;irreversible&quot;
+        safety: &quot;DSB_risk&quot;
+        outcome: &quot;complete_loss_of_function&quot;
+
+    - strategy_2:
+        name: &quot;CRISPRi_Repression&quot;
+        tool: &quot;dCas9_KRAB&quot;
+        permanence: &quot;transient&quot;
+        safety: &quot;high&quot;
+        outcome: &quot;requires_continuous_expression&quot;
+        limitation: &quot;not_heritable&quot;
+
+    - strategy_3:
+        name: &quot;CRISPRoff_Epigenetic&quot;
+        tool: &quot;CRISPRoff&quot;
+        permanence: &quot;heritable_but_reversible&quot;
+        safety: &quot;no_DSBs&quot;
+        outcome: &quot;stable_silencing&quot;
+        advantage: &quot;best_of_both_worlds&quot;
+
+  optimization_criteria:
+    - maximize: &quot;safety&quot;
+    - maximize: &quot;durability&quot;
+    - require: &quot;reversibility&quot;
+    - minimize: &quot;off_target_effects&quot;
+
+  selected_strategy: &quot;strategy_3&quot;
+  rationale: &quot;CRISPRoff provides heritable silencing without genotoxicity, with option for reversal&quot;
+
+# Output comprehensive epigenetic editing report
+output:
+  - editing_tool: &quot;CRISPRoff&quot;
+  - target_locus: &quot;VEGFA_Promoter&quot;
+  - methylation_change: &quot;${baseline -&gt; post_treatment}&quot;
+  - expression_change: &quot;${normal -&gt; silenced}&quot;
+  - safety_profile: &quot;${no_DSBs_no_mutations}&quot;
+  - reversibility_option: &quot;CRISPRon_available&quot;
+  - clinical_application: &quot;Anti-angiogenic_therapy_macular_degeneration&quot;
+</code></pre>
+<h2 id="epigenetic-state-predicates">Epigenetic State Predicates</h2>
+<h3 id="new-predicates-for-rules">New Predicates for Rules</h3>
+<h4 id="epigenetic_state_is">epigenetic_state_is()</h4>
+<pre><code class="language-yaml">if:
+  - epigenetic_state_is:
+      region: locus(Promoter)
+      mark_type: &quot;DNA_methylation&quot;
+      level: &quot;hypermethylated&quot;
+</code></pre>
+<h4 id="histone_mark_present">histone_mark_present()</h4>
+<pre><code class="language-yaml">if:
+  - histone_mark_present:
+      region: locus(Enhancer)
+      mark: &quot;H3K27ac&quot;
+      enrichment: &quot;high&quot;
+</code></pre>
+<h4 id="methylation_exceeds">methylation_exceeds()</h4>
+<pre><code class="language-yaml">if:
+  - methylation_exceeds:
+      region: locus(CpG_Island)
+      threshold: 75.0
+</code></pre>
+<h2 id="integration-with-existing-gfl-features">Integration with Existing GFL Features</h2>
+<h3 id="combining-with-spatial-genomics">Combining with Spatial Genomics</h3>
+<pre><code class="language-yaml">loci:
+  - id: Gene_Promoter
+    chromosome: &quot;chr1&quot;
+    start: 1000000
+    end: 1001000
+
+  - id: Distal_Enhancer
+    chromosome: &quot;chr1&quot;
+    start: 2500000
+    end: 2501000
+
+# Epigenetic state affects 3D interactions
+rules:
+  - id: R_Methylation_Disrupts_Contacts
+    description: &quot;Promoter methylation can disrupt enhancer-promoter contacts&quot;
+    if:
+      - epigenetic_state_is:
+          region: locus(Gene_Promoter)
+          mark_type: &quot;DNA_methylation&quot;
+          level: &quot;hypermethylated&quot;
+      - is_in_contact:
+          element_a: locus(Gene_Promoter)
+          element_b: locus(Distal_Enhancer)
+          using: &quot;hic_map.cool&quot;
+    then:
+      - contact_strength: &quot;reduced&quot;
+      - expression_outcome: &quot;silenced&quot;
+</code></pre>
+<h3 id="integration-with-multi-omic-reasoning">Integration with Multi-Omic Reasoning</h3>
+<pre><code class="language-yaml"># Connect epigenetic state to protein output
+proteins:
+  - id: VEGFA_Protein
+    gene_source: gene(VEGFA)
+    expected_abundance: &quot;normal&quot;
+
+rules:
+  - id: R_Epigenetic_To_Proteomic
+    description: &quot;Promoter methylation reduces protein abundance&quot;
+    if:
+      - epigenetic_state_is:
+          region: locus(VEGFA_Promoter)
+          level: &quot;hypermethylated&quot;
+    then:
+      - protein_abundance:
+          protein: protein(VEGFA_Protein)
+          level: &quot;low_or_absent&quot;
+      - pathway_activity:
+          pathway: &quot;angiogenesis&quot;
+          state: &quot;suppressed&quot;
+</code></pre>
+<h2 id="use-cases">Use Cases</h2>
+<h3 id="1-precision-oncology">1. Precision Oncology</h3>
+<ul>
+<li>Silencing oncogenes (MYC, VEGFA) without mutagenesis</li>
+<li>Reactivating tumor suppressors silenced by methylation</li>
+<li>Reversible if therapy needs adjustment</li>
+</ul>
+<h3 id="2-neurodegenerative-diseases">2. Neurodegenerative Diseases</h3>
+<ul>
+<li>Activating neuroprotective genes (BDNF, NGF)</li>
+<li>Silencing neurotoxic pathways</li>
+<li>Long-lasting effects without genome editing</li>
+</ul>
+<h3 id="3-metabolic-engineering">3. Metabolic Engineering</h3>
+<ul>
+<li>Epigenetic reprogramming of metabolic genes</li>
+<li>Stable phenotype changes without transgenes</li>
+<li>Cell-type specific silencing</li>
+</ul>
+<h3 id="4-developmental-biology-research">4. Developmental Biology Research</h3>
+<ul>
+<li>Modeling natural epigenetic regulation</li>
+<li>Studying methylation maintenance mechanisms</li>
+<li>Understanding cell fate decisions</li>
+</ul>
+<h2 id="key-advantages-modeled">Key Advantages Modeled</h2>
+<ol>
+<li><strong>Safety</strong>: No DNA breaks, no mutations</li>
+<li><strong>Reversibility</strong>: CRISPRon can reverse CRISPRoff effects</li>
+<li><strong>Heritability</strong>: Methylation maintained through cell divisions</li>
+<li><strong>Specificity</strong>: Targeted to specific genomic regions</li>
+<li><strong>Durability</strong>: Lasts weeks-months after transient treatment</li>
+</ol>
+<h2 id="technical-considerations">Technical Considerations</h2>
+<h3 id="methylation-patterns">Methylation Patterns</h3>
+<ul>
+<li><strong>CpG Islands</strong>: Dense CpG regions, often in promoters</li>
+<li><strong>CpG Shores</strong>: Regions flanking CpG islands</li>
+<li><strong>Gene Body</strong>: Methylation in coding regions</li>
+</ul>
+<h3 id="histone-modifications">Histone Modifications</h3>
+<ul>
+<li><strong>Activating</strong>: H3K4me3 (promoters), H3K27ac (enhancers)</li>
+<li><strong>Repressive</strong>: H3K9me3, H3K27me3 (silencing)</li>
+<li><strong>Bivalent</strong>: Both activating and repressive marks</li>
+</ul>
+<h3 id="tool-mechanisms">Tool Mechanisms</h3>
+<ul>
+<li><strong>CRISPRoff</strong>: Recruits DNMT3A/DNMT3L for de novo methylation</li>
+<li><strong>CRISPRon</strong>: Recruits TET1 for active demethylation</li>
+<li><strong>Targeting</strong>: dCas9 guides to specific genomic locations</li>
+</ul>
+<h2 id="references">References</h2>
+<ul>
+<li>Nunez et al. (2021) "Genome-wide programmable transcriptional memory by CRISPR-based epigenome editing." Cell</li>
+<li>Klann et al. (2017) "CRISPR-Cas9 epigenome editing enables high-throughput screening for functional regulatory elements." Nature Biotechnology</li>
+<li>Liu et al. (2016) "Editing DNA Methylation in the Mammalian Genome." Cell</li>
+</ul>
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="../conformance_suite/v1.4.0/large_scale_editing/">Large-Scale Editing Operations</a></li>
+<li><a href="./loci_blocks.md">Loci Block Specification</a></li>
+<li><a href="../spatial_genomic_capabilities/">Spatial Genomics</a></li>
+<li><a href="./multi_omic_integration.md">Multi-Omic Integration</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../design_block/" class="btn btn-neutral float-left" title="Generative Design with the design Block"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../guided_discovery/" class="btn btn-neutral float-right" title="Guided Discovery Block">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../design_block/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../guided_discovery/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

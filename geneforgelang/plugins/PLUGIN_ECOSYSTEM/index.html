@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Plugin Ecosystem Documentation - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Plugin Ecosystem Documentation";
+        var mkdocs_page_input_path = "geneforgelang/plugins/PLUGIN_ECOSYSTEM.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Plugins</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Plugin Ecosystem Documentation</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#architecture">Architecture</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#core-components">Core Components</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#plugin-types">Plugin Types</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#getting-started">Getting Started</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#installing-plugins">Installing Plugins</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#registering-plugins">Registering Plugins</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#using-plugins-in-gfl">Using Plugins in GFL</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#developing-plugins">Developing Plugins</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#generator-plugin-example">Generator Plugin Example</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#optimizer-plugin-example">Optimizer Plugin Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#advanced-features">Advanced Features</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#dependency-management">Dependency Management</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#plugin-lifecycle-hooks">Plugin Lifecycle Hooks</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#configuration-validation">Configuration Validation</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plugin-discovery">Plugin Discovery</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-entry-points-recommended">1. Entry Points (Recommended)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-manual-registration">2. Manual Registration</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-directory-scanning">3. Directory Scanning</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#testing-plugins">Testing Plugins</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#unit-testing">Unit Testing</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#integration-testing">Integration Testing</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-error-handling">1. Error Handling</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-resource-management">2. Resource Management</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-caching-and-performance">3. Caching and Performance</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-logging-and-monitoring">4. Logging and Monitoring</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#deployment">Deployment</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#packaging-plugins">Packaging Plugins</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#distribution">Distribution</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#common-issues">Common Issues</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#debugging">Debugging</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#examples-repository">Examples Repository</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#community">Community</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#contributing-plugins">Contributing Plugins</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#plugin-registry">Plugin Registry</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#support">Support</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Plugins</li>
+      <li class="breadcrumb-item active">Plugin Ecosystem Documentation</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="plugin-ecosystem-documentation">Plugin Ecosystem Documentation</h1>
+<h2 id="overview">Overview</h2>
+<p>GeneForgeLang's plugin ecosystem provides a sophisticated framework for integrating external AI/ML tools and experimental systems with GFL workflows. The plugin system standardizes how the GFL execution engine interacts with specialized tools for biological entity generation and experimental optimization.</p>
+<h2 id="architecture">Architecture</h2>
+<h3 id="core-components">Core Components</h3>
+<ol>
+<li><strong>Plugin Interfaces</strong>: Abstract base classes defining contracts for plugin types</li>
+<li><strong>Plugin Registry</strong>: Discovery, lifecycle, and dependency management system</li>
+<li><strong>Execution Engine</strong>: Orchestrates plugin invocation during workflow execution</li>
+<li><strong>Example Implementations</strong>: Reference plugins demonstrating best practices</li>
+</ol>
+<h3 id="plugin-types">Plugin Types</h3>
+<h4 id="generatorplugin">GeneratorPlugin</h4>
+<ul>
+<li><strong>Purpose</strong>: Create new biological entities (proteins, DNA, RNA, molecules)</li>
+<li><strong>Use Case</strong>: Powers GFL <code>design</code> blocks</li>
+<li><strong>Interface</strong>: <code>gfl.plugins.GeneratorPlugin</code></li>
+<li><strong>Methods</strong>: <code>generate()</code>, <code>validate_objective()</code>, <code>validate_constraints()</code></li>
+</ul>
+<h4 id="optimizerplugin">OptimizerPlugin</h4>
+<ul>
+<li><strong>Purpose</strong>: Intelligent parameter space exploration and optimization</li>
+<li><strong>Use Case</strong>: Powers GFL <code>optimize</code> blocks</li>
+<li><strong>Interface</strong>: <code>gfl.plugins.OptimizerPlugin</code></li>
+<li><strong>Methods</strong>: <code>setup()</code>, <code>suggest_next()</code>, <code>should_stop()</code></li>
+</ul>
+<h4 id="priorsplugin">PriorsPlugin</h4>
+<ul>
+<li><strong>Purpose</strong>: Bayesian prior integration for enhanced experimental design</li>
+<li><strong>Use Case</strong>: Powers GFL <code>with_priors</code> clauses</li>
+<li><strong>Interface</strong>: <code>gfl.plugins.PriorsPlugin</code></li>
+<li><strong>Methods</strong>: <code>specify_priors()</code>, <code>update_posteriors()</code></li>
+</ul>
+<h2 id="getting-started">Getting Started</h2>
+<h3 id="installing-plugins">Installing Plugins</h3>
+<p>Plugins can be installed via pip if they're packaged properly:</p>
+<pre><code class="language-bash">pip install geneforge-protein-vae-plugin
+pip install geneforge-bayesian-optimizer
+</code></pre>
+<h3 id="registering-plugins">Registering Plugins</h3>
+<h4 id="entry-point-registration-recommended">Entry Point Registration (Recommended)</h4>
+<p>Add to your plugin package's <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project.entry-points.&quot;gfl.plugins&quot;]
+protein_vae = &quot;my_package.plugins:ProteinVAEGenerator&quot;
+bayesian_opt = &quot;my_package.plugins:BayesianOptimizer&quot;
+</code></pre>
+<h4 id="manual-registration">Manual Registration</h4>
+<pre><code class="language-python">from gfl.plugins import register_generator_plugin, register_optimizer_plugin
+from my_package.plugins import MyGenerator, MyOptimizer
+
+register_generator_plugin(MyGenerator, &quot;my_generator&quot;, version=&quot;1.0.0&quot;)
+register_optimizer_plugin(MyOptimizer, &quot;my_optimizer&quot;, version=&quot;1.0.0&quot;)
+</code></pre>
+<h3 id="using-plugins-in-gfl">Using Plugins in GFL</h3>
+<p>Once registered, plugins can be referenced directly in GFL workflows:</p>
+<pre><code class="language-yaml">design:
+  entity: ProteinSequence
+  model: MyGeneratorPlugin  # Plugin name
+  objective:
+    maximize: stability
+  count: 10
+  output: designed_proteins
+
+optimize:
+  search_space:
+    temperature: range(25, 42)
+    concentration: range(10, 100)
+  strategy:
+    name: MyOptimizerStrategy  # Strategy provided by plugin
+  objective:
+    maximize: efficiency
+  budget:
+    max_experiments: 50
+  run:
+    experiment:
+      # Your experimental setup here
+</code></pre>
+<h2 id="developing-plugins">Developing Plugins</h2>
+<h3 id="generator-plugin-example">Generator Plugin Example</h3>
+<pre><code class="language-python">from gfl.plugins import GeneratorPlugin, EntityType, DesignCandidate
+from typing import List, Dict, Any
+
+class MyProteinGenerator(GeneratorPlugin):
+    @property
+    def name(self) -&gt; str:
+        return &quot;MyProteinGenerator&quot;
+
+    @property
+    def version(self) -&gt; str:
+        return &quot;1.0.0&quot;
+
+    @property
+    def supported_entities(self) -&gt; List[EntityType]:
+        return [EntityType.PROTEIN_SEQUENCE]
+
+    def generate(
+        self,
+        entity: str,
+        objective: Dict[str, Any],
+        constraints: List[str],
+        count: int,
+        **kwargs
+    ) -&gt; List[DesignCandidate]:
+        # Your generation logic here
+        candidates = []
+        for i in range(count):
+            sequence = self._generate_protein_sequence(objective, constraints)
+            properties = self._predict_properties(sequence)
+            confidence = self._calculate_confidence(sequence, properties)
+
+            candidates.append(DesignCandidate(
+                sequence=sequence,
+                properties=properties,
+                confidence=confidence,
+                metadata={&quot;method&quot;: &quot;my_algorithm&quot;, &quot;iteration&quot;: i}
+            ))
+
+        return candidates
+
+    def process(self, data: Dict[str, Any]) -&gt; Dict[str, Any]:
+        return {&quot;plugin_type&quot;: &quot;generator&quot;, &quot;status&quot;: &quot;processed&quot;}
+</code></pre>
+<h3 id="optimizer-plugin-example">Optimizer Plugin Example</h3>
+<pre><code class="language-python">from gfl.plugins import OptimizerPlugin, OptimizationStrategy, OptimizationStep, ExperimentResult
+from typing import List, Dict, Any
+
+class MyBayesianOptimizer(OptimizerPlugin):
+    @property
+    def name(self) -&gt; str:
+        return &quot;MyBayesianOptimizer&quot;
+
+    @property
+    def version(self) -&gt; str:
+        return &quot;1.0.0&quot;
+
+    @property
+    def supported_strategies(self) -&gt; List[OptimizationStrategy]:
+        return [OptimizationStrategy.BAYESIAN_OPTIMIZATION]
+
+    def setup(
+        self,
+        search_space: Dict[str, str],
+        strategy: Dict[str, Any],
+        objective: Dict[str, Any],
+        budget: Dict[str, Any]
+    ) -&gt; None:
+        # Initialize your optimization algorithm
+        self.search_space = search_space
+        self.strategy_config = strategy
+        self.objective_config = objective
+        self.budget_config = budget
+        # Set up Gaussian Process, acquisition function, etc.
+
+    def suggest_next(self, experiment_history: List[ExperimentResult]) -&gt; OptimizationStep:
+        # Your optimization algorithm logic
+        if len(experiment_history) &lt; 3:
+            # Random sampling for initial points
+            parameters = self._sample_random_parameters()
+        else:
+            # Use GP + acquisition function for intelligent selection
+            parameters = self._optimize_acquisition_function(experiment_history)
+
+        return OptimizationStep(
+            parameters=parameters,
+            iteration=len(experiment_history) + 1,
+            expected_improvement=self._calculate_expected_improvement(parameters),
+            uncertainty=self._estimate_uncertainty(parameters)
+        )
+
+    def process(self, data: Dict[str, Any]) -&gt; Dict[str, Any]:
+        return {&quot;plugin_type&quot;: &quot;optimizer&quot;, &quot;status&quot;: &quot;processed&quot;}
+</code></pre>
+<h2 id="advanced-features">Advanced Features</h2>
+<h3 id="dependency-management">Dependency Management</h3>
+<p>Plugins can declare dependencies on external packages:</p>
+<pre><code class="language-python">from gfl.plugins import PluginDependency
+
+class MyMLPlugin(GeneratorPlugin):
+    @property
+    def dependencies(self) -&gt; List[PluginDependency]:
+        return [
+            PluginDependency(&quot;torch&quot;, &quot;&gt;=1.9.0&quot;, optional=False),
+            PluginDependency(&quot;transformers&quot;, &quot;&gt;=4.0.0&quot;, optional=False),
+            PluginDependency(&quot;rdkit&quot;, &quot;&gt;=2020.09.0&quot;, optional=True)
+        ]
+</code></pre>
+<h3 id="plugin-lifecycle-hooks">Plugin Lifecycle Hooks</h3>
+<pre><code class="language-python">class MyPlugin(GeneratorPlugin):
+    def on_load(self) -&gt; None:
+        &quot;&quot;&quot;Called when plugin is loaded.&quot;&quot;&quot;
+        print(&quot;Initializing ML model...&quot;)
+        self.model = self._load_pretrained_model()
+
+    def on_unload(self) -&gt; None:
+        &quot;&quot;&quot;Called when plugin is unloaded.&quot;&quot;&quot;
+        print(&quot;Cleaning up resources...&quot;)
+        if hasattr(self, 'model'):
+            del self.model
+
+    def on_activate(self) -&gt; None:
+        &quot;&quot;&quot;Called when plugin becomes active.&quot;&quot;&quot;
+        print(&quot;Plugin activated&quot;)
+
+    def on_deactivate(self) -&gt; None:
+        &quot;&quot;&quot;Called when plugin is deactivated.&quot;&quot;&quot;
+        print(&quot;Plugin deactivated&quot;)
+</code></pre>
+<h3 id="configuration-validation">Configuration Validation</h3>
+<pre><code class="language-python">class MyPlugin(GeneratorPlugin):
+    def validate_config(self, config: Dict[str, Any]) -&gt; List[str]:
+        &quot;&quot;&quot;Validate plugin configuration.&quot;&quot;&quot;
+        errors = []
+
+        if &quot;model_path&quot; not in config:
+            errors.append(&quot;Missing required 'model_path' configuration&quot;)
+
+        if &quot;temperature&quot; in config:
+            temp = config[&quot;temperature&quot;]
+            if not isinstance(temp, (int, float)) or temp &lt;= 0:
+                errors.append(&quot;Temperature must be a positive number&quot;)
+
+        return errors
+</code></pre>
+<h2 id="plugin-discovery">Plugin Discovery</h2>
+<p>The plugin system supports multiple discovery mechanisms:</p>
+<h3 id="1-entry-points-recommended">1. Entry Points (Recommended)</h3>
+<p>Plugins are automatically discovered via entry points when packages are installed.</p>
+<h3 id="2-manual-registration">2. Manual Registration</h3>
+<p>Direct registration for development or special cases.</p>
+<h3 id="3-directory-scanning">3. Directory Scanning</h3>
+<p>Scan specific directories for plugin files (advanced usage).</p>
+<h2 id="testing-plugins">Testing Plugins</h2>
+<h3 id="unit-testing">Unit Testing</h3>
+<pre><code class="language-python">import pytest
+from gfl.plugins.interfaces import DesignCandidate, EntityType
+from my_package.plugins import MyProteinGenerator
+
+class TestMyProteinGenerator:
+    def test_generation(self):
+        generator = MyProteinGenerator()
+
+        candidates = generator.generate(
+            entity=&quot;ProteinSequence&quot;,
+            objective={&quot;maximize&quot;: &quot;stability&quot;},
+            constraints=[&quot;length(50, 100)&quot;],
+            count=5
+        )
+
+        assert len(candidates) == 5
+        assert all(isinstance(c, DesignCandidate) for c in candidates)
+        assert all(50 &lt;= len(c.sequence) &lt;= 100 for c in candidates)
+
+    def test_entity_support(self):
+        generator = MyProteinGenerator()
+        assert EntityType.PROTEIN_SEQUENCE in generator.supported_entities
+</code></pre>
+<h3 id="integration-testing">Integration Testing</h3>
+<pre><code class="language-python">def test_gfl_integration():
+    from gfl.api import parse, validate, execute
+
+    # Register plugin
+    register_generator_plugin(MyProteinGenerator, &quot;my_generator&quot;)
+
+    # Test GFL execution
+    gfl_script = '''
+    design:
+      entity: ProteinSequence
+      model: my_generator
+      objective:
+        maximize: stability
+      count: 3
+      output: proteins
+    '''
+
+    ast = parse(gfl_script)
+    errors = validate(ast)
+    assert not errors
+
+    result = execute(ast)
+    assert len(result['design']['candidates']) == 3
+</code></pre>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-error-handling">1. Error Handling</h3>
+<pre><code class="language-python">def generate(self, entity: str, objective: Dict[str, Any], constraints: List[str], count: int, **kwargs) -&gt; List[DesignCandidate]:
+    try:
+        # Validate inputs
+        if entity not in [e.value for e in self.supported_entities]:
+            raise ValueError(f&quot;Unsupported entity type: {entity}&quot;)
+
+        if count &lt;= 0:
+            raise ValueError(&quot;Count must be positive&quot;)
+
+        # Generation logic
+        return self._perform_generation(entity, objective, constraints, count)
+
+    except Exception as e:
+        # Log error and re-raise with context
+        logger.error(f&quot;Generation failed in {self.name}: {e}&quot;)
+        raise RuntimeError(f&quot;Plugin {self.name} generation failed: {e}&quot;)
+</code></pre>
+<h3 id="2-resource-management">2. Resource Management</h3>
+<pre><code class="language-python">class MyPlugin(GeneratorPlugin):
+    def __init__(self):
+        super().__init__()
+        self._model = None
+        self._device = None
+
+    def _ensure_model_loaded(self):
+        &quot;&quot;&quot;Lazy loading of expensive resources.&quot;&quot;&quot;
+        if self._model is None:
+            self._model = self._load_model()
+            self._device = self._get_best_device()
+
+    def generate(self, ...):
+        self._ensure_model_loaded()
+        # Use self._model for generation
+</code></pre>
+<h3 id="3-caching-and-performance">3. Caching and Performance</h3>
+<pre><code class="language-python">from functools import lru_cache
+
+class MyPlugin(GeneratorPlugin):
+    @lru_cache(maxsize=1000)
+    def _predict_properties(self, sequence: str) -&gt; Dict[str, float]:
+        &quot;&quot;&quot;Cache expensive property predictions.&quot;&quot;&quot;
+        return self._compute_properties(sequence)
+</code></pre>
+<h3 id="4-logging-and-monitoring">4. Logging and Monitoring</h3>
+<pre><code class="language-python">import logging
+
+logger = logging.getLogger(__name__)
+
+class MyPlugin(GeneratorPlugin):
+    def generate(self, ...):
+        logger.info(f&quot;Starting generation: {count} {entity} candidates&quot;)
+        start_time = time.time()
+
+        try:
+            candidates = self._perform_generation(...)
+            duration = time.time() - start_time
+
+            logger.info(f&quot;Generated {len(candidates)} candidates in {duration:.2f}s&quot;)
+            return candidates
+
+        except Exception as e:
+            logger.error(f&quot;Generation failed after {time.time() - start_time:.2f}s: {e}&quot;)
+            raise
+</code></pre>
+<h2 id="deployment">Deployment</h2>
+<h3 id="packaging-plugins">Packaging Plugins</h3>
+<p>Create a proper Python package structure:</p>
+<pre><code>my-geneforge-plugin/
+├── pyproject.toml
+├── README.md
+├── my_gfl_plugin/
+│   ├── __init__.py
+│   ├── generators.py
+│   ├── optimizers.py
+│   └── models/
+└── tests/
+    ├── test_generators.py
+    └── test_optimizers.py
+</code></pre>
+<p>Example <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;setuptools&gt;=45&quot;, &quot;wheel&quot;]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[project]
+name = &quot;my-geneforge-plugin&quot;
+version = &quot;1.0.0&quot;
+description = &quot;Custom GFL plugins for my research&quot;
+dependencies = [
+    &quot;geneforgeLang&gt;=0.1.0&quot;,
+    &quot;torch&gt;=1.9.0&quot;,
+    &quot;transformers&gt;=4.0.0&quot;
+]
+
+[project.entry-points.&quot;gfl.plugins&quot;]
+my_protein_generator = &quot;my_gfl_plugin.generators:MyProteinGenerator&quot;
+my_molecule_generator = &quot;my_gfl_plugin.generators:MyMoleculeGenerator&quot;
+my_bayesian_optimizer = &quot;my_gfl_plugin.optimizers:MyBayesianOptimizer&quot;
+</code></pre>
+<h3 id="distribution">Distribution</h3>
+<p>Publish to PyPI for easy installation:</p>
+<pre><code class="language-bash">pip install build twine
+python -m build
+twine upload dist/*
+</code></pre>
+<p>Users can then install with:</p>
+<pre><code class="language-bash">pip install my-geneforge-plugin
+</code></pre>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<h4 id="1-plugin-not-found">1. Plugin Not Found</h4>
+<ul>
+<li>Check entry point configuration in <code>pyproject.toml</code></li>
+<li>Verify plugin is installed: <code>pip list | grep geneforge</code></li>
+<li>Check plugin discovery logs: Enable debug logging</li>
+</ul>
+<h4 id="2-import-errors">2. Import Errors</h4>
+<ul>
+<li>Verify all dependencies are installed</li>
+<li>Check Python version compatibility</li>
+<li>Ensure plugin package is in Python path</li>
+</ul>
+<h4 id="3-validation-failures">3. Validation Failures</h4>
+<ul>
+<li>Implement all required abstract methods</li>
+<li>Check method signatures match interface</li>
+<li>Validate return types and data structures</li>
+</ul>
+<h4 id="4-performance-issues">4. Performance Issues</h4>
+<ul>
+<li>Use lazy loading for expensive resources</li>
+<li>Implement caching for repeated computations</li>
+<li>Profile your plugin code for bottlenecks</li>
+</ul>
+<h3 id="debugging">Debugging</h3>
+<p>Enable verbose logging:</p>
+<pre><code class="language-python">import logging
+logging.basicConfig(level=logging.DEBUG)
+
+# Or specifically for plugins
+logging.getLogger('gfl.plugins').setLevel(logging.DEBUG)
+</code></pre>
+<p>Check plugin status:</p>
+<pre><code class="language-python">from gfl.api import list_available_plugins, get_api_info
+
+# List all registered plugins
+plugins = list_available_plugins()
+print(&quot;Generators:&quot;, plugins['generators'])
+print(&quot;Optimizers:&quot;, plugins['optimizers'])
+
+# Check API capabilities
+info = get_api_info()
+print(&quot;Plugin system enabled:&quot;, info['features']['plugin_system'])
+</code></pre>
+<h2 id="examples-repository">Examples Repository</h2>
+<p>For complete working examples, see:
+- <code>gfl/plugins/example_implementations.py</code> - Reference implementations
+- <code>tests/test_plugin_interfaces.py</code> - Comprehensive test suite
+- <code>docs/examples/</code> - Real-world plugin examples</p>
+<h2 id="community">Community</h2>
+<h3 id="contributing-plugins">Contributing Plugins</h3>
+<p>We welcome community contributions! To submit your plugin:</p>
+<ol>
+<li>Follow the plugin development guidelines</li>
+<li>Include comprehensive tests</li>
+<li>Add documentation and examples</li>
+<li>Submit a PR or publish to PyPI with proper metadata</li>
+</ol>
+<h3 id="plugin-registry">Plugin Registry</h3>
+<p>Maintain a community registry at: https://github.com/GeneForgeLang/plugins</p>
+<h3 id="support">Support</h3>
+<ul>
+<li>GitHub Issues: Report bugs and request features</li>
+<li>Discussions: Ask questions and share plugins</li>
+<li>Documentation: Submit improvements and examples</li>
+</ul>
+<hr />
+<p><em>The GeneForgeLang plugin ecosystem enables the seamless integration of cutting-edge AI/ML tools with genomic workflows, democratizing access to advanced computational biology capabilities.</em></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../features/with_priors_clause/" class="btn btn-neutral float-left" title="Incorporating Prior Knowledge with the with_priors Clause"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../plugins_overview/" class="btn btn-neutral float-right" title="Plugin Ecosystem Overview">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../features/with_priors_clause/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../plugins_overview/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

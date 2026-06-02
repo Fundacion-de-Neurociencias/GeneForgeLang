@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "ADR-001 \u2014 Arquitectura y Contrato de Frontera: GeneForgeLang \u2194 GeneForge";
+        var mkdocs_page_input_path = "dev/decisions/ADR-001-arquitectura-gfl-geneforge.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >Decisions</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#contexto">Contexto</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#decisiones">Decisiones</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#adr-0011-separacion-formal-de-responsabilidades-entre-gfl-y-geneforge">ADR-001.1 — Separación formal de responsabilidades entre GFL y GeneForge</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#adr-0012-mecanismo-de-registro-de-plugins-bioinformaticos">ADR-001.2 — Mecanismo de registro de plugins bioinformáticos</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#adr-0013-migracion-bidireccional-de-logica-entre-repositorios">ADR-001.3 — Migración bidireccional de lógica entre repositorios</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#adr-0014-dualidad-gfl-vs-srcgeneforgelang-diseno-intencional">ADR-001.4 — Dualidad gfl/ vs src/geneforgelang/ — Diseño intencional</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#adr-0015-politica-de-releases-tags-y-ancla-de-submodulo">ADR-001.5 — Política de releases, tags y ancla de submódulo</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#adr-0016-docsreasoningmd-artefacto-historico">ADR-001.6 — docs/reasoning.md: artefacto histórico</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#adr-0017-desarrollo-web-diferido-hasta-consolidacion-del-core">ADR-001.7 — Desarrollo web: diferido hasta consolidación del core</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#consecuencias-generales">Consecuencias Generales</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#referencias">Referencias</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../geneforgelang/api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../geneforgelang/cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Dev</li>
+          <li class="breadcrumb-item">Decisions</li>
+      <li class="breadcrumb-item active">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="adr-001-arquitectura-y-contrato-de-frontera-geneforgelang-geneforge">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</h1>
+<p><strong>Estado:</strong> Aceptado<br />
+<strong>Fecha:</strong> 2026-03-11<br />
+<strong>Autores:</strong> Equipo NeuroIA (Agente GeneForge + Agente GeneForgeLang)<br />
+<strong>Repositorios afectados:</strong> GeneForgeLang (GFL), GeneForge  </p>
+<hr />
+<h2 id="contexto">Contexto</h2>
+<p>Durante la sesión de revisión arquitectónica del 11 de marzo de 2026, el equipo de bioinformáticos identificó varias ambigüedades en la separación de responsabilidades entre los repositorios <strong>GeneForgeLang (GFL)</strong> y <strong>GeneForge</strong>. Este ADR formaliza las decisiones tomadas para resolver dichas ambigüedades y establece el contrato de frontera entre ambos proyectos.</p>
+<blockquote>
+<p><strong>Nota:</strong> Este documento es el espejo del ADR-001 en el repositorio GeneForge. Ambos deben mantenerse sincronizados. La copia canónica puede consultarse en cualquiera de los dos repos; en caso de discrepancia, prevalece la versión con fecha de actualización más reciente.</p>
+</blockquote>
+<hr />
+<h2 id="decisiones">Decisiones</h2>
+<hr />
+<h3 id="adr-0011-separacion-formal-de-responsabilidades-entre-gfl-y-geneforge">ADR-001.1 — Separación formal de responsabilidades entre GFL y GeneForge</h3>
+<p><strong>Decisión:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Repositorio propietario</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sintaxis, gramática, parser, validación semántica, sistema de tipos</td>
+<td><strong>GeneForgeLang (GFL)</strong></td>
+</tr>
+<tr>
+<td>Motor de inferencia probabilística básico</td>
+<td><strong>GeneForgeLang (GFL)</strong></td>
+</tr>
+<tr>
+<td>Primitivas biológicas de bajo nivel (<code>bio_primitives/</code>)</td>
+<td><strong>GeneForgeLang (GFL)</strong></td>
+</tr>
+<tr>
+<td>Contratos de interfaz de plugin (<code>entry_points</code>)</td>
+<td><strong>GeneForgeLang (GFL)</strong></td>
+</tr>
+<tr>
+<td>Language Server Protocol (<code>gfl_lsp</code>) y API FastAPI</td>
+<td><strong>GeneForgeLang (GFL)</strong></td>
+</tr>
+<tr>
+<td>Orquestación de workflows avanzados</td>
+<td><strong>GeneForge</strong></td>
+</tr>
+<tr>
+<td>IA avanzada: Foundation Models, Active Learning, Inverse Design</td>
+<td><strong>GeneForge</strong></td>
+</tr>
+<tr>
+<td>Procesamiento de imágenes y análisis celular</td>
+<td><strong>GeneForge</strong></td>
+</tr>
+<tr>
+<td>Consumo de primitivas GFL como cliente</td>
+<td><strong>GeneForge</strong></td>
+</tr>
+<tr>
+<td>Interfaz de usuario y modelo de negocio</td>
+<td><strong>GeneForge (WebApp)</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Consecuencias:</strong>
+- Ningún repositorio debe implementar lógica que pertenezca al otro según la tabla anterior.
+- Cualquier excepción debe ser documentada con un nuevo ADR.</p>
+<hr />
+<h3 id="adr-0012-mecanismo-de-registro-de-plugins-bioinformaticos">ADR-001.2 — Mecanismo de registro de plugins bioinformáticos</h3>
+<p><strong>Contexto:</strong> Existe una dualidad entre plugins internos de GeneForge y plugins externos bioinformáticos en GFL. El mecanismo de resolución ya está implementado en GFL.</p>
+<p><strong>Decisión:</strong> El mecanismo de registro oficial para <strong>todos los plugins bioinformáticos</strong> es el sistema de <code>entry_points</code> de Python, definido en el <code>pyproject.toml</code> de GFL mediante el grupo <code>gfl.plugins</code>. El <code>PluginRegistry</code> de GFL los descubre en tiempo de ejecución vía <code>importlib.metadata.entry_points</code>.</p>
+<p>Para registrar un plugin externo, su <code>pyproject.toml</code> debe incluir:</p>
+<pre><code class="language-toml">[project.entry-points.&quot;gfl.plugins&quot;]
+nombre-plugin = &quot;paquete.modulo:ClasePlugin&quot;
+</code></pre>
+<p><strong>Consecuencias:</strong>
+- Los plugins de IA avanzada (Active Learning, Inverse Design) permanecen en GeneForge.
+- Los plugins bioinformáticos (BLAST, samtools, GATK, DeepVariant, etc.) se registran en GFL mediante <code>entry_points</code>.
+- Documentar este mecanismo explícitamente en <code>CONTRIBUTING.md</code> de GFL.</p>
+<hr />
+<h3 id="adr-0013-migracion-bidireccional-de-logica-entre-repositorios">ADR-001.3 — Migración bidireccional de lógica entre repositorios</h3>
+<p><strong>Lógica que debe migrar de GeneForge → GFL:</strong>
+- Traducción DNA→RNA→Proteína (tabla de codones) en <code>InferenceEngine</code>
+- Recuperación de secuencias vía NCBI Entrez (<code>handle_find_gene_sequence</code>)
+- Primitivas de biología molecular (complementación, transcripción)</p>
+<p>Destino en GFL: módulo <code>gfl/bio_primitives/</code>.</p>
+<p><strong>Lógica que debe migrar de GFL → GeneForge:</strong>
+- <code>gfl/execution_engine.py</code> — orquestación de workflows completos
+- <code>gfl/staging/</code> — gestión de ficheros en tiempo de ejecución
+- Bio-Skills clínicas (<code>PharmGx</code>, <code>NutriGx</code>, <code>Geriatric Risk</code>)</p>
+<p><strong>Criterio de graduación (módulo experimental <code>gfl/</code> → estable <code>src/geneforgelang/</code>):</strong></p>
+<p>Un módulo puede promoverse cuando cumpla:
+1. Cobertura de tests ≥ 80%
+2. API pública documentada con docstrings
+3. Sin breaking changes no documentadas en los últimos 2 sprints
+4. Revisión aprobada por al menos un miembro distinto al autor</p>
+<p>Este criterio debe añadirse a <code>CONTRIBUTING.md</code>.</p>
+<p><strong>Consecuencias:</strong>
+- La migración debe coordinarse entre repositorios para no romper la API pública.
+- Crear tickets de trabajo separados para cada bloque de migración.
+- No mezclar migraciones con features nuevas en el mismo PR.</p>
+<hr />
+<h3 id="adr-0014-dualidad-gfl-vs-srcgeneforgelang-diseno-intencional">ADR-001.4 — Dualidad <code>gfl/</code> vs <code>src/geneforgelang/</code> — Diseño intencional</h3>
+<p><strong>Contexto:</strong> El equipo observó que <code>main.py</code> importa desde <code>gfl/</code> y no desde <code>src/geneforgelang/</code>, y que los tests apuntan a <code>gfl/</code>.</p>
+<p><strong>Decisión:</strong> Esta dualidad es <strong>deliberada y correcta</strong>, documentada en <code>REPOSITORY_COHERENCE_ANALYSIS.md</code>:
+- <code>gfl/</code>: núcleo activo experimental. Iteración rápida, features en validación.
+- <code>src/geneforgelang/</code>: API pública estable, fachada para consumidores downstream.</p>
+<p>Los tests apuntan a <code>gfl/</code> porque es el núcleo real. Esto no es un error.</p>
+<p><strong>Consecuencias:</strong>
+- Documentar el criterio de graduación en <code>CONTRIBUTING.md</code> (ver ADR-001.3).
+- No forzar imports de <code>src/</code> en código que consuma <code>gfl/</code> directamente hasta que la feature se haya graduado.</p>
+<hr />
+<h3 id="adr-0015-politica-de-releases-tags-y-ancla-de-submodulo">ADR-001.5 — Política de releases, tags y ancla de submódulo</h3>
+<p><strong>Decisión:</strong>
+- GeneForgeLang debe publicar la tag <code>v1.0.0</code> como primer punto de anclaje estable.
+- GeneForge actualizará <code>.gitmodules</code> para anclar <code>gfl_core</code> a esa tag.
+- Los submódulos deben anclarse <strong>siempre a tags de release</strong>, nunca a SHAs de commits ordinarios.</p>
+<p><strong>Proceso de release de GFL:</strong>
+1. Crear tag: <code>git tag v1.0.0 &amp;&amp; git push origin v1.0.0</code>
+2. Publicar en PyPI: <code>python -m build &amp;&amp; twine upload dist/*</code>
+3. Activar GitHub Pages: Settings → Pages → Branch: <code>gh-pages</code>
+4. Notificar a GeneForge para actualizar el puntero del submódulo <code>gfl_core</code></p>
+<p><strong>Consecuencias:</strong>
+- El README debe actualizar la instrucción de instalación: <code>pip install -e .</code> es el método correcto para desarrollo local hasta que PyPI esté disponible.
+- El workflow <code>docs.yml</code> está correctamente configurado; la activación de GitHub Pages es una acción de configuración de repositorio, no de código.</p>
+<hr />
+<h3 id="adr-0016-docsreasoningmd-artefacto-historico">ADR-001.6 — <code>docs/reasoning.md</code>: artefacto histórico</h3>
+<p><strong>Decisión:</strong> El archivo <code>docs/reasoning.md</code> es un artefacto histórico generado instrumentalmente durante el desarrollo. No es un módulo RAG activo. El sistema no se autoprograma sobre archivos <code>.md</code>.</p>
+<p><strong>Consecuencias:</strong>
+- Limpiar o archivar <code>docs/reasoning.md</code>.
+- Si hay interés en RAG introspectivo en el futuro, implementarlo como un plugin explícito en <code>gfl-plugin-rag-engine</code>, que es el lugar arquitectónicamente correcto.</p>
+<hr />
+<h3 id="adr-0017-desarrollo-web-diferido-hasta-consolidacion-del-core">ADR-001.7 — Desarrollo web: diferido hasta consolidación del core</h3>
+<p><strong>Decisión:</strong> El desarrollo de interfaz web queda <strong>formalmente diferido</strong> hasta que se cumplan:
+1. Tag <code>v1.0.0</code> publicada, tests de conformidad pasando
+2. CLI de GFL funcional y documentada
+3. API FastAPI documentada con OpenAPI y cobertura ≥ 70%
+4. Pipeline de GeneForge reproducible desde cero</p>
+<p><strong>Consecuencias:</strong>
+- La arquitectura actual ya separa <code>geneforgelang</code> (core) de <code>GeneForge-WebApp</code> (frontend). Esta decisión no tiene coste de refactorización.</p>
+<hr />
+<h2 id="consecuencias-generales">Consecuencias Generales</h2>
+<ul>
+<li>Este ADR debe ser referenciado en el <code>CONTRIBUTING.md</code> de ambos repositorios.</li>
+<li>Cualquier decisión que contradiga este ADR debe documentarse en un nuevo ADR que lo superceda explícitamente.</li>
+<li>Revisión programada: 2026-09-11 o cuando se complete la migración bidireccional de lógica.</li>
+</ul>
+<hr />
+<h2 id="referencias">Referencias</h2>
+<ul>
+<li><code>COLLABORATION_PROPOSAL_GFL_GF.md</code> (sep. 2024)</li>
+<li><code>REPOSITORY_COHERENCE_ANALYSIS.md</code> (oct. 2025)</li>
+<li><code>STANDARDIZATION_PLAN.md</code> (oct. 2025)</li>
+<li><code>MIGRATION_NOTES.md</code></li>
+<li>ADR-001 en repositorio GeneForge (<code>docs/decisions/</code>)</li>
+<li>Protocolo de Buenas Prácticas NeuroIA v1.0 (mar. 2026)</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../.." class="btn btn-neutral float-left" title="GeneForgeLang Documentation Index"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../HISTORY/" class="btn btn-neutral float-right" title="GeneForgeLang Development History">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../.." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../HISTORY/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

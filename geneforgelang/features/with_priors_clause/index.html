@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Incorporating Prior Knowledge with the with_priors Clause - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Incorporating Prior Knowledge with the with_priors Clause";
+        var mkdocs_page_input_path = "geneforgelang/features/with_priors_clause.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Features</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Incorporating Prior Knowledge with the with_priors Clause</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#fundamental-concepts">Fundamental Concepts</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#prior-knowledge-in-biology">Prior Knowledge in Biology</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#integration-with-main-blocks">Integration with Main Blocks</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#clause-structure">Clause Structure</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#general-syntax">General Syntax</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#main-components">Main Components</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#usage-examples">Usage Examples</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-protein-design-with-structural-prior-information">1. Protein Design with Structural Prior Information</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-crispr-optimization-with-historical-data">2. CRISPR Optimization with Historical Data</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#advanced-features">Advanced Features</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#hierarchical-priors">Hierarchical Priors</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#time-varying-priors">Time-Varying Priors</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#integration-with-other-blocks">Integration with Other Blocks</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#performance-considerations">Performance Considerations</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Features</li>
+      <li class="breadcrumb-item active">Incorporating Prior Knowledge with the with_priors Clause</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="incorporating-prior-knowledge-with-the-with_priors-clause">Incorporating Prior Knowledge with the <code>with_priors</code> Clause</h1>
+<h2 id="introduction">Introduction</h2>
+<p>The <code>with_priors</code> clause represents an advanced extension of GeneForgeLang that allows incorporating <strong>prior knowledge</strong> and <strong>statistical information</strong> into generative design and experimental optimization processes. This functionality enables the use of historical data, domain knowledge, and probabilistic constraints to significantly improve the quality and efficiency of artificial intelligence algorithms.</p>
+<p>Inspired by Bayesian methodologies and learning with prior information, the <code>with_priors</code> clause allows:</p>
+<ul>
+<li><strong>Incorporating</strong> results from previous experiments as prior information</li>
+<li><strong>Defining</strong> probability distributions over parameter spaces</li>
+<li><strong>Specifying</strong> constraints based on domain knowledge</li>
+<li><strong>Accelerating</strong> convergence of optimization algorithms</li>
+<li><strong>Improving</strong> the quality of generated designs through informed biases</li>
+</ul>
+<p>This capability is especially valuable in genomics, where decades of research have generated a vast body of knowledge that can guide new experiments and designs more efficiently.</p>
+<h2 id="fundamental-concepts">Fundamental Concepts</h2>
+<h3 id="prior-knowledge-in-biology">Prior Knowledge in Biology</h3>
+<p>In the context of GeneForgeLang, "priors" can take multiple forms:</p>
+<ul>
+<li><strong>Parametric Distributions</strong>: Knowledge about typical ranges of experimental parameters</li>
+<li><strong>Structural Constraints</strong>: Known limitations in the biological design space</li>
+<li><strong>Historical Results</strong>: Data from previous experiments that inform success probabilities</li>
+<li><strong>Biological Symmetries</strong>: Known invariances in biological systems</li>
+<li><strong>Functional Relationships</strong>: Known dependencies between experimental variables</li>
+</ul>
+<h3 id="integration-with-main-blocks">Integration with Main Blocks</h3>
+<p>The <code>with_priors</code> clause can be associated with:</p>
+<ul>
+<li><strong><code>design</code> blocks</strong>: To guide the generation of biological entities</li>
+<li><strong><code>optimize</code> blocks</strong>: To accelerate search in parameter spaces</li>
+<li><strong><code>analyze</code> blocks</strong>: To incorporate knowledge in statistical analyses</li>
+</ul>
+<h2 id="clause-structure">Clause Structure</h2>
+<h3 id="general-syntax">General Syntax</h3>
+<pre><code class="language-yaml">main_block:
+  # ... block configuration ...
+
+with_priors:
+  distributions:
+    parameter1: distribution_type(parameters)
+    parameter2: distribution_type(parameters)
+
+  constraints:
+    - constraint_expression1
+    - constraint_expression2
+
+  historical_data:
+    source: path_or_reference
+    weight: relative_weight
+
+  symmetries:
+    - symmetry_type(parameters)
+
+  domain_knowledge:
+    rules:
+      - rule1
+      - rule2
+</code></pre>
+<h3 id="main-components">Main Components</h3>
+<h4 id="1-distributions-prior-distributions">1. <code>distributions</code> - Prior Distributions</h4>
+<p>Specifies probability distributions for parameters in the search or design space:</p>
+<pre><code class="language-yaml">with_priors:
+  distributions:
+    temperature: normal(37.0, 2.0)          # Mean 37°C, std 2°C
+    concentration: lognormal(50, 1.5)       # LogNormal for concentrations
+    ph_value: beta(7.4, 0.5)               # Beta distribution for pH
+    success_rate: uniform(0.6, 0.9)        # Uniform for success rates
+</code></pre>
+<p><strong>Supported Distributions:</strong>
+- <code>normal(mean, std)</code>: Normal distribution
+- <code>lognormal(mean, std)</code>: Log-normal for positive values
+- <code>beta(alpha, beta)</code>: Beta for values in [0,1]
+- <code>gamma(shape, scale)</code>: Gamma for positive values
+- <code>uniform(min, max)</code>: Uniform in interval
+- <code>exponential(lambda)</code>: Exponential for waiting times</p>
+<h4 id="2-constraints-probabilistic-constraints">2. <code>constraints</code> - Probabilistic Constraints</h4>
+<p>Defines constraints based on domain knowledge:</p>
+<pre><code class="language-yaml">with_priors:
+  constraints:
+    - P(binding_affinity &gt; 0.8 | structure_type='alpha_helix') &gt; 0.7
+    - correlation(gc_content, stability) &gt; 0.3
+    - mutual_info(promoter_strength, expression_level) &gt; 2.0
+</code></pre>
+<h4 id="3-historical_data-historical-data">3. <code>historical_data</code> - Historical Data</h4>
+<p>Incorporates results from previous experiments:</p>
+<pre><code class="language-yaml">with_priors:
+  historical_data:
+    source: &quot;experiments_database.csv&quot;
+    columns:
+      input: [&quot;temp&quot;, &quot;conc&quot;, &quot;ph&quot;]
+      output: &quot;efficiency&quot;
+    weight: 0.8                    # Relative weight vs new data
+    relevance_filter:
+      target_gene: &quot;TP53&quot;          # Only relevant experiments
+      date_range: &quot;2020-2024&quot;
+</code></pre>
+<h4 id="4-symmetries-biological-symmetries">4. <code>symmetries</code> - Biological Symmetries</h4>
+<p>Specifies known invariances of the system:</p>
+<pre><code class="language-yaml">with_priors:
+  symmetries:
+    - rotational_symmetry(protein_complex, 4)      # 4x rotational symmetry
+    - mirror_symmetry(dna_palindrome)              # Palindrome in DNA
+    - translational_invariance(sequence_motif)     # Positional invariance
+</code></pre>
+<h4 id="5-domain_knowledge-domain-rules">5. <code>domain_knowledge</code> - Domain Rules</h4>
+<p>Incorporates heuristics and known rules:</p>
+<pre><code class="language-yaml">with_priors:
+  domain_knowledge:
+    rules:
+      - &quot;IF gc_content &gt; 0.7 THEN stability += 0.2&quot;
+      - &quot;IF has_motif('TATA') THEN promoter_activity *= 1.5&quot;
+      - &quot;AVOID stop_codons IN coding_sequences&quot;
+    confidence_weights:
+      literature_backed: 0.9       # Rules with literature support
+      expert_opinion: 0.7          # Expert opinions
+      heuristic: 0.5              # General heuristics
+</code></pre>
+<h2 id="usage-examples">Usage Examples</h2>
+<h3 id="1-protein-design-with-structural-prior-information">1. Protein Design with Structural Prior Information</h3>
+<pre><code class="language-yaml">design:
+  entity: ProteinSequence
+  model: ProteinGeneratorVAE
+  objective:
+    maximize: binding_affinity
+    target: ACE2_receptor
+  count: 50
+  output: informed_designs
+
+with_priors:
+  distributions:
+    # Length distribution based on known proteins
+    sequence_length: normal(150, 25)
+    # Hydrophobicity distribution typical
+    hydrophobicity: beta(0.4, 0.3)
+
+  historical_data:
+    source: &quot;pdb_ace2_binders.json&quot;
+    relevance_score: &gt; 0.8
+    weight: 0.7
+
+  domain_knowledge:
+    rules:
+      - &quot;IF has_motif('RGD') THEN binding_score += 0.3&quot;
+      - &quot;IF secondary_structure='beta_sheet' THEN stability += 0.2&quot;
+      - &quot;AVOID aggregation_prone_regions&quot;
+
+  symmetries:
+    - binding_site_symmetry(ACE2_interface, bilateral)
+</code></pre>
+<h3 id="2-crispr-optimization-with-historical-data">2. CRISPR Optimization with Historical Data</h3>
+<pre><code class="language-yaml">optimize:
+  search_space:
+    guide_concentration: range(10, 100)
+    temperature: range(25, 42)
+    incubation_time: choice([2, 4, 6, 8])
+
+  strategy:
+    name: BayesianOptimization
+
+  objective:
+    maximize: editing_efficiency
+
+  budget:
+    max_experiments: 40
+
+  run:
+    experiment:
+      tool: CRISPR_editor
+      params:
+        guide_conc: ${guide_concentration}
+        temp: ${temperature}
+        incubation: ${incubation_time}
+      output: editing_results
+
+with_priors:
+  distributions:
+    # Based on previous successful experiments
+    guide_concentration: normal(50, 15)
+    temperature: normal(37, 3)
+
+  historical_data:
+    source: &quot;crispr_optimization_history.csv&quot;
+    columns:
+      input: [&quot;guide_conc&quot;, &quot;temp&quot;, &quot;incubation&quot;]
+      output: &quot;efficiency&quot;
+    weight: 0.6
+
+  domain_knowledge:
+    rules:
+      - &quot;IF temp &gt; 40 THEN efficiency *= 0.8&quot;  # High temp reduces efficiency
+      - &quot;IF guide_conc &lt; 20 THEN off_target_risk += 0.3&quot;
+</code></pre>
+<h2 id="advanced-features">Advanced Features</h2>
+<h3 id="hierarchical-priors">Hierarchical Priors</h3>
+<p>For complex scenarios with hierarchical knowledge:</p>
+<pre><code class="language-yaml">with_priors:
+  hierarchical:
+    organism_level:
+      temperature: normal(37, 2)
+      ph: normal(7.4, 0.2)
+    tissue_level:
+      if: &quot;${tissue_type} == 'liver'&quot;
+      then:
+        temperature: normal(37.5, 1.5)
+        ph: normal(7.2, 0.1)
+</code></pre>
+<h3 id="time-varying-priors">Time-Varying Priors</h3>
+<p>For scenarios where prior knowledge changes over time:</p>
+<pre><code class="language-yaml">with_priors:
+  time_varying:
+    initial_phase:
+      distribution: uniform(25, 42)
+      duration: 10 experiments
+    adaptive_phase:
+      distribution: normal(37, 3)
+      update_frequency: 5 experiments
+</code></pre>
+<h2 id="integration-with-other-blocks">Integration with Other Blocks</h2>
+<p>The <code>with_priors</code> clause seamlessly integrates with other GFL workflow components:</p>
+<ul>
+<li><strong><code>design</code></strong>: Inform generative design with prior knowledge</li>
+<li><strong><code>optimize</code></strong>: Guide optimization algorithms with informed priors</li>
+<li><strong><code>analyze</code></strong>: Enhance analysis with domain knowledge</li>
+<li><strong><code>simulate</code></strong>: Improve simulation accuracy with prior information</li>
+</ul>
+<p>This integration enables sophisticated workflows that combine prior knowledge with generative design, experimental optimization, and analysis.</p>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<p>When using the <code>with_priors</code> clause, consider:</p>
+<ol>
+<li><strong>Computational Overhead</strong>: Prior incorporation may add computational complexity</li>
+<li><strong>Data Quality</strong>: Ensure historical data is relevant and accurate</li>
+<li><strong>Prior Weighting</strong>: Balance prior knowledge with new experimental evidence</li>
+<li><strong>Validation</strong>: Always validate that priors improve rather than bias results</li>
+<li><strong>Storage Requirements</strong>: Historical data and prior distributions may require significant storage</li>
+</ol>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Start Simple</strong>: Begin with basic priors and gradually increase complexity</li>
+<li><strong>Validate Priors</strong>: Ensure prior knowledge is accurate and relevant</li>
+<li><strong>Weight Appropriately</strong>: Balance prior knowledge with new evidence</li>
+<li><strong>Monitor Impact</strong>: Track whether priors improve workflow performance</li>
+<li><strong>Update Regularly</strong>: Refresh priors as new knowledge becomes available</li>
+</ol>
+<p>The <code>with_priors</code> clause represents a powerful capability for incorporating domain expertise into AI-driven biological workflows, enabling researchers to leverage accumulated knowledge for more effective scientific discovery.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../symbolic_reasoning/" class="btn btn-neutral float-left" title="Symbolic Reasoning in GeneForgeLang"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../plugins/PLUGIN_ECOSYSTEM/" class="btn btn-neutral float-right" title="Plugin Ecosystem Documentation">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../symbolic_reasoning/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../plugins/PLUGIN_ECOSYSTEM/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

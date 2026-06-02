@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>GeneForgeLang API Reference - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "GeneForgeLang API Reference";
+        var mkdocs_page_input_path = "geneforgelang/api.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">GeneForgeLang API Reference</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#api-version-200">API Version: 2.0.0</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#core-functions">Core Functions</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#parse">parse()</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#signatures">Signatures</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#raises">Raises</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#validate">validate()</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#signatures_1">Signatures</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_1">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_1">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#examples_1">Examples</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#infer">infer()</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#signatures_2">Signatures</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_2">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_2">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#examples_2">Examples</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#convenience-functions">Convenience Functions</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#parse_file">parse_file()</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_3">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#examples_3">Examples</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#validate_file">validate_file()</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_4">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#examples_4">Examples</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#get_api_info">get_api_info()</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_3">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#examples_5">Examples</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#type-system">Type System</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#core-types">Core Types</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#gflast">GFLAST</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#experiment">Experiment</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#analysis">Analysis</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#validation-types">Validation Types</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#validationresult">ValidationResult</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#validationerror">ValidationError</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#inference-types">Inference Types</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#inferenceresult">InferenceResult</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#migration-guide">Migration Guide</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#from-01x-to-02x">From 0.1.x to 0.2.x</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#old-code-01x">Old Code (0.1.x)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#new-code-02x-recommended">New Code (0.2.x - Recommended)</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#common-exceptions">Common Exceptions</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#performance-considerations">Performance Considerations</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#memory-usage">Memory Usage</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#optimization-tips">Optimization Tips</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#version-compatibility">Version Compatibility</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#support">Support</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+      <li class="breadcrumb-item active">GeneForgeLang API Reference</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="geneforgelang-api-reference">GeneForgeLang API Reference</h1>
+<p>This document provides comprehensive documentation for the GeneForgeLang (GFL) stable API. The API follows semantic versioning and provides both typed and untyped interfaces.</p>
+<h2 id="api-version-200">API Version: 2.0.0</h2>
+<p><strong>Compatibility</strong>: Backward compatible with 0.1.x APIs
+<strong>Package Version</strong>: 0.2.0+</p>
+<h2 id="overview">Overview</h2>
+<p>The GFL API provides three main functions for working with genomic workflow specifications:</p>
+<ul>
+<li><strong><code>parse()</code></strong>: Convert GFL source code to AST</li>
+<li><strong><code>validate()</code></strong>: Check AST for semantic correctness</li>
+<li><strong><code>infer()</code></strong>: Run probabilistic reasoning on AST</li>
+</ul>
+<p>All functions support both typed and untyped modes for maximum flexibility.</p>
+<h2 id="core-functions">Core Functions</h2>
+<h3 id="parse">parse()</h3>
+<p>Parse GFL source code into an Abstract Syntax Tree (AST).</p>
+<h4 id="signatures">Signatures</h4>
+<pre><code class="language-python"># Typed mode (recommended)
+def parse(text: str, *, typed: Literal[True]) -&gt; GFLAST: ...
+
+# Untyped mode (backward compatible)
+def parse(text: str, *, typed: Literal[False] = False) -&gt; Dict[str, Any]: ...
+</code></pre>
+<h4 id="parameters">Parameters</h4>
+<ul>
+<li><strong><code>text</code></strong> (str): GFL source code in YAML-style syntax</li>
+<li><strong><code>typed</code></strong> (bool, optional): If True, return typed <code>GFLAST</code> object; if False, return <code>Dict[str, Any]</code>. Default: False</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<ul>
+<li><strong>Typed mode</strong>: <code>GFLAST</code> object with full type safety and IDE support</li>
+<li><strong>Untyped mode</strong>: <code>Dict[str, Any]</code> for backward compatibility</li>
+</ul>
+<h4 id="raises">Raises</h4>
+<ul>
+<li><strong><code>ValueError</code></strong>: If the input cannot be parsed</li>
+</ul>
+<h4 id="examples">Examples</h4>
+<pre><code class="language-python">from gfl.api import parse
+
+# Untyped mode (backward compatible)
+ast_dict = parse(&quot;&quot;&quot;
+experiment:
+  tool: CRISPR_cas9
+  type: gene_editing
+  params:
+    target_gene: TP53
+&quot;&quot;&quot;)
+
+# Typed mode (recommended for new code)
+ast_typed = parse(&quot;&quot;&quot;
+experiment:
+  tool: CRISPR_cas9
+  type: gene_editing
+  params:
+    target_gene: TP53
+&quot;&quot;&quot;, typed=True)
+
+# IDE autocomplete works with typed mode!
+print(ast_typed.experiment.tool)  # &quot;CRISPR_cas9&quot;
+print(ast_typed.experiment.params.target_gene)  # &quot;TP53&quot;
+</code></pre>
+<h3 id="validate">validate()</h3>
+<p>Validate an AST for semantic correctness.</p>
+<h4 id="signatures_1">Signatures</h4>
+<pre><code class="language-python"># Detailed mode (recommended)
+def validate(ast: Union[GFLAST, Dict[str, Any]], *, detailed: Literal[True]) -&gt; ValidationResult: ...
+
+# Simple mode (backward compatible)
+def validate(ast: Union[GFLAST, Dict[str, Any]], *, detailed: Literal[False] = False) -&gt; List[str]: ...
+</code></pre>
+<h4 id="parameters_1">Parameters</h4>
+<ul>
+<li><strong><code>ast</code></strong>: AST to validate (either <code>GFLAST</code> or <code>Dict[str, Any]</code>)</li>
+<li><strong><code>detailed</code></strong> (bool, optional): If True, return detailed <code>ValidationResult</code>; if False, return <code>List[str]</code>. Default: False</li>
+</ul>
+<h4 id="returns_1">Returns</h4>
+<ul>
+<li><strong>Detailed mode</strong>: <code>ValidationResult</code> with categorized errors, warnings, and info</li>
+<li><strong>Simple mode</strong>: <code>List[str]</code> with error messages (empty list if valid)</li>
+</ul>
+<h4 id="examples_1">Examples</h4>
+<pre><code class="language-python">from gfl.api import parse, validate
+
+ast = parse(&quot;experiment:\n  tool: CRISPR_cas9\n  type: gene_editing&quot;)
+
+# Backward compatible mode
+errors = validate(ast)
+if errors:
+    print(f&quot;Found {len(errors)} errors&quot;)
+    for error in errors:
+        print(f&quot;  - {error}&quot;)
+
+# Detailed mode (recommended)
+result = validate(ast, detailed=True)
+if not result.is_valid:
+    print(&quot;Validation failed:&quot;)
+    for error in result.errors:
+        print(f&quot;  ERROR: {error}&quot;)
+    for warning in result.warnings:
+        print(f&quot;  WARNING: {warning}&quot;)
+</code></pre>
+<h3 id="infer">infer()</h3>
+<p>Run probabilistic post-processing with a provided model.</p>
+<h4 id="signatures_2">Signatures</h4>
+<pre><code class="language-python"># Detailed mode (recommended)
+def infer(model, ast: Union[GFLAST, Dict[str, Any]], *, detailed: Literal[True]) -&gt; InferenceResult: ...
+
+# Simple mode (backward compatible)
+def infer(model, ast: Union[GFLAST, Dict[str, Any]], *, detailed: Literal[False] = False) -&gt; Dict[str, Any]: ...
+</code></pre>
+<h4 id="parameters_2">Parameters</h4>
+<ul>
+<li><strong><code>model</code></strong>: Model with <code>predict(features: Dict[str, Any]) -&gt; Dict[str, Any]</code> method</li>
+<li><strong><code>ast</code></strong>: AST to run inference on</li>
+<li><strong><code>detailed</code></strong> (bool, optional): If True, return detailed <code>InferenceResult</code>; if False, return <code>Dict[str, Any]</code>. Default: False</li>
+</ul>
+<h4 id="returns_2">Returns</h4>
+<ul>
+<li><strong>Detailed mode</strong>: <code>InferenceResult</code> with predictions, confidence, and metadata</li>
+<li><strong>Simple mode</strong>: <code>Dict[str, Any]</code> for backward compatibility</li>
+</ul>
+<h4 id="examples_2">Examples</h4>
+<pre><code class="language-python">from gfl.api import parse, infer
+from gfl.models.dummy import DummyModel
+
+ast = parse(&quot;experiment:\n  tool: CRISPR_cas9\n  type: gene_editing&quot;)
+model = DummyModel()
+
+# Backward compatible mode
+results = infer(model, ast)
+print(results[&quot;predictions&quot;])
+
+# Detailed mode (recommended)
+result = infer(model, ast, detailed=True)
+print(f&quot;Confidence: {result.confidence}&quot;)
+print(f&quot;Predictions: {result.predictions}&quot;)
+</code></pre>
+<h2 id="convenience-functions">Convenience Functions</h2>
+<h3 id="parse_file">parse_file()</h3>
+<p>Parse GFL file and return AST.</p>
+<pre><code class="language-python">def parse_file(file_path: str, *, typed: bool = False) -&gt; Union[GFLAST, Dict[str, Any]]:
+</code></pre>
+<h4 id="parameters_3">Parameters</h4>
+<ul>
+<li><strong><code>file_path</code></strong> (str): Path to GFL file</li>
+<li><strong><code>typed</code></strong> (bool, optional): If True, return <code>GFLAST</code>; if False, return <code>Dict[str, Any]</code>. Default: False</li>
+</ul>
+<h4 id="examples_3">Examples</h4>
+<pre><code class="language-python">from gfl.api import parse_file
+
+# Parse file in typed mode
+ast = parse_file(&quot;experiment.gfl&quot;, typed=True)
+</code></pre>
+<h3 id="validate_file">validate_file()</h3>
+<p>Parse and validate GFL file.</p>
+<pre><code class="language-python">def validate_file(file_path: str, *, detailed: bool = False) -&gt; Union[List[str], ValidationResult]:
+</code></pre>
+<h4 id="parameters_4">Parameters</h4>
+<ul>
+<li><strong><code>file_path</code></strong> (str): Path to GFL file</li>
+<li><strong><code>detailed</code></strong> (bool, optional): If True, return <code>ValidationResult</code>; if False, return <code>List[str]</code>. Default: False</li>
+</ul>
+<h4 id="examples_4">Examples</h4>
+<pre><code class="language-python">from gfl.api import validate_file
+
+# Validate file with detailed results
+result = validate_file(&quot;experiment.gfl&quot;, detailed=True)
+if result.is_valid:
+    print(&quot;✓ File is valid&quot;)
+</code></pre>
+<h3 id="get_api_info">get_api_info()</h3>
+<p>Get API version and compatibility information.</p>
+<pre><code class="language-python">def get_api_info() -&gt; Dict[str, str]:
+</code></pre>
+<h4 id="returns_3">Returns</h4>
+<p>Dictionary with API metadata:
+- <code>version</code>: Package version
+- <code>api_version</code>: API version (semantic versioning)
+- <code>compatibility</code>: Compatibility information
+- <code>typed_support</code>: Typed API support level
+- <code>schema_version</code>: JSON schema version</p>
+<h4 id="examples_5">Examples</h4>
+<pre><code class="language-python">from gfl.api import get_api_info
+
+info = get_api_info()
+print(f&quot;GFL API Version: {info['api_version']}&quot;)
+</code></pre>
+<h2 id="type-system">Type System</h2>
+<h3 id="core-types">Core Types</h3>
+<h4 id="gflast">GFLAST</h4>
+<p>The main typed AST representation.</p>
+<pre><code class="language-python">@dataclass
+class GFLAST:
+    experiment: Optional[Experiment] = None
+    analyze: Optional[Analysis] = None
+    simulate: Optional[bool] = None
+    branch: Optional[Branch] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+</code></pre>
+<h4 id="experiment">Experiment</h4>
+<p>Represents an experimental design.</p>
+<pre><code class="language-python">@dataclass
+class Experiment:
+    tool: str
+    type: ExperimentType
+    params: ExperimentParams = field(default_factory=ExperimentParams)
+    strategy: Optional[str] = None
+</code></pre>
+<h4 id="analysis">Analysis</h4>
+<p>Represents an analysis configuration.</p>
+<pre><code class="language-python">@dataclass
+class Analysis:
+    strategy: AnalysisStrategy
+    data: Optional[str] = None
+    thresholds: AnalysisThresholds = field(default_factory=AnalysisThresholds)
+    filters: List[str] = field(default_factory=list)
+    operations: List[AnalysisOperation] = field(default_factory=list)
+</code></pre>
+<h3 id="validation-types">Validation Types</h3>
+<h4 id="validationresult">ValidationResult</h4>
+<p>Detailed validation results.</p>
+<pre><code class="language-python">@dataclass
+class ValidationResult:
+    errors: List[ValidationError] = field(default_factory=list)
+    warnings: List[ValidationError] = field(default_factory=list)
+    info: List[ValidationError] = field(default_factory=list)
+
+    @property
+    def is_valid(self) -&gt; bool:
+        return len(self.errors) == 0
+</code></pre>
+<h4 id="validationerror">ValidationError</h4>
+<p>Individual validation message.</p>
+<pre><code class="language-python">@dataclass
+class ValidationError:
+    message: str
+    location: Optional[str] = None
+    severity: Literal[&quot;error&quot;, &quot;warning&quot;, &quot;info&quot;] = &quot;error&quot;
+    code: Optional[str] = None
+</code></pre>
+<h3 id="inference-types">Inference Types</h3>
+<h4 id="inferenceresult">InferenceResult</h4>
+<p>Detailed inference results.</p>
+<pre><code class="language-python">@dataclass
+class InferenceResult:
+    predictions: Dict[str, Any]
+    confidence: float
+    metadata: Dict[str, Any] = field(default_factory=dict)
+</code></pre>
+<h2 id="migration-guide">Migration Guide</h2>
+<h3 id="from-01x-to-02x">From 0.1.x to 0.2.x</h3>
+<p>The 0.2.x API is fully backward compatible with 0.1.x, but adds new typed interfaces.</p>
+<h4 id="old-code-01x">Old Code (0.1.x)</h4>
+<pre><code class="language-python">from gfl.api import parse, validate, infer
+
+ast = parse(gfl_text)
+errors = validate(ast)
+results = infer(model, ast)
+</code></pre>
+<h4 id="new-code-02x-recommended">New Code (0.2.x - Recommended)</h4>
+<pre><code class="language-python">from gfl.api import parse, validate, infer
+
+# Use typed API for better IDE support
+ast = parse(gfl_text, typed=True)
+result = validate(ast, detailed=True)
+inference = infer(model, ast, detailed=True)
+
+# Access with full type safety
+if result.is_valid:
+    print(f&quot;Confidence: {inference.confidence}&quot;)
+</code></pre>
+<h2 id="error-handling">Error Handling</h2>
+<h3 id="common-exceptions">Common Exceptions</h3>
+<ul>
+<li><strong><code>ValueError</code></strong>: Invalid input or configuration</li>
+<li><strong><code>FileNotFoundError</code></strong>: File not found (file functions)</li>
+<li><strong><code>ImportError</code></strong>: Missing optional dependencies</li>
+</ul>
+<h3 id="best-practices">Best Practices</h3>
+<pre><code class="language-python">from gfl.api import parse, validate
+from gfl.types import ValidationError
+
+try:
+    ast = parse(gfl_text, typed=True)
+    result = validate(ast, detailed=True)
+
+    if not result.is_valid:
+        for error in result.errors:
+            print(f&quot;Validation error: {error}&quot;)
+        return False
+
+except ValueError as e:
+    print(f&quot;Parse error: {e}&quot;)
+    return False
+</code></pre>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<h3 id="memory-usage">Memory Usage</h3>
+<ul>
+<li>Typed mode uses slightly more memory due to dataclass overhead</li>
+<li>For large files, consider processing in chunks</li>
+<li>Use lazy plugin loading to reduce startup time</li>
+</ul>
+<h3 id="optimization-tips">Optimization Tips</h3>
+<pre><code class="language-python"># Cache parsed ASTs for repeated validation
+ast = parse(text, typed=True)
+result1 = validate(ast, detailed=True)
+result2 = some_other_validation(ast)
+
+# Use untyped mode for simple scripts
+if simple_use_case:
+    ast = parse(text)  # Faster for one-off processing
+</code></pre>
+<h2 id="version-compatibility">Version Compatibility</h2>
+<table>
+<thead>
+<tr>
+<th>GFL Version</th>
+<th>API Version</th>
+<th>Python</th>
+<th>Features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.2.x</td>
+<td>2.0.0</td>
+<td>3.10+</td>
+<td>Full typed API, schema validation</td>
+</tr>
+<tr>
+<td>0.1.x</td>
+<td>1.0.0</td>
+<td>3.9+</td>
+<td>Basic API, dict-only</td>
+</tr>
+</tbody>
+</table>
+<h2 id="support">Support</h2>
+<ul>
+<li><strong>Issues</strong>: <a href="https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues">GitHub Issues</a></li>
+<li><strong>Documentation</strong>: <a href="../README.md">README.md</a></li>
+<li><strong>Examples</strong>: <a href="../examples/">examples/</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../dev/reports/TICKET_SUMMARY_GF-163.1/" class="btn btn-neutral float-left" title="GF-163.1 - Implement Container-Based Plugin Execution"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../cli/" class="btn btn-neutral float-right" title="GeneForgeLang Enhanced CLI Documentation">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../dev/reports/TICKET_SUMMARY_GF-163.1/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../cli/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Guided Discovery Block - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Guided Discovery Block";
+        var mkdocs_page_input_path = "geneforgelang/features/guided_discovery.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Features</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Guided Discovery Block</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#syntax">Syntax</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#configuration-parameters">Configuration Parameters</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#design_params">design_params</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#active_learning_params">active_learning_params</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#budget">budget</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#output">output</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#example-usage">Example Usage</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#protein-sequence-optimization">Protein Sequence Optimization</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#grna-design-for-crispr">gRNA Design for CRISPR</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#workflow-process">Workflow Process</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#integration-with-other-features">Integration with Other Features</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#io-contracts">IO Contracts</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#schema-registry">Schema Registry</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#error-handling">Error Handling</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Features</li>
+      <li class="breadcrumb-item active">Guided Discovery Block</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="guided-discovery-block">Guided Discovery Block</h1>
+<p>The <code>guided_discovery</code> block in GeneForgeLang v1.0.0 represents the pinnacle of AI-driven genomic workflow automation. This powerful block combines generative design and active learning optimization in a closed-loop discovery system.</p>
+<h2 id="overview">Overview</h2>
+<p>The <code>guided_discovery</code> block orchestrates iterative cycles of candidate generation and experimental validation, using AI to guide the discovery process toward optimal solutions. It's particularly effective for complex optimization problems in genomics and drug discovery.</p>
+<h2 id="syntax">Syntax</h2>
+<pre><code class="language-yaml">guided_discovery:
+  design_params:
+    # Design block configuration
+    entity: &lt;entity_type&gt;
+    model: &lt;generative_model&gt;
+    objective:
+      maximize|minimize: &lt;metric&gt;
+    count: &lt;integer&gt;
+    output: &lt;output_name&gt;
+    # ... additional design parameters
+
+  active_learning_params:
+    # Optimize block configuration
+    search_space:
+      &lt;parameter&gt;: &lt;range|choice&gt;
+    strategy:
+      name: ActiveLearning
+      # ... active learning parameters
+    objective:
+      maximize|minimize: &lt;metric&gt;
+    budget:
+      # ... budget constraints
+    run:
+      # ... experiment or analysis block
+
+  budget:
+    max_cycles: &lt;integer&gt;
+    # ... additional budget constraints
+
+  output: &lt;final_output_name&gt;
+</code></pre>
+<h2 id="configuration-parameters">Configuration Parameters</h2>
+<h3 id="design_params">design_params</h3>
+<p>The <code>design_params</code> section defines the generative design configuration, following the same structure as the standalone <a href="../design_block/">design block</a>:</p>
+<ul>
+<li><strong>entity</strong> (string, required): Type of biological entity to design</li>
+<li><strong>model</strong> (string, required): Generative model plugin to use</li>
+<li><strong>objective</strong> (dict, required): Optimization objective</li>
+<li><strong>count</strong> (integer, required): Number of candidates to generate per cycle</li>
+<li><strong>output</strong> (string, required): Output variable name for generated candidates</li>
+</ul>
+<h3 id="active_learning_params">active_learning_params</h3>
+<p>The <code>active_learning_params</code> section defines the active learning optimization configuration:</p>
+<ul>
+<li><strong>search_space</strong> (dict, required): Parameters to explore and their ranges</li>
+<li><strong>strategy</strong> (dict, required): Must be <code>ActiveLearning</code> with nested configuration</li>
+<li><strong>objective</strong> (dict, required): Optimization objective</li>
+<li><strong>budget</strong> (dict, required): Stopping criteria</li>
+<li><strong>run</strong> (dict, required): Nested experiment or analyze block to execute</li>
+</ul>
+<h3 id="budget">budget</h3>
+<p>Defines the overall budget for the guided discovery process:</p>
+<ul>
+<li><strong>max_cycles</strong> (integer, optional): Maximum number of design-evaluate cycles</li>
+<li><strong>convergence_threshold</strong> (float, optional): Threshold for early stopping</li>
+<li><strong>target_objective_value</strong> (float, optional): Target objective value for early stopping</li>
+</ul>
+<h3 id="output">output</h3>
+<p>The final output name for the discovered candidates.</p>
+<h2 id="example-usage">Example Usage</h2>
+<h3 id="protein-sequence-optimization">Protein Sequence Optimization</h3>
+<pre><code class="language-yaml">guided_discovery:
+  design_params:
+    entity: ProteinSequence
+    model: ProteinVAEGenerator
+    objective:
+      maximize: binding_affinity
+    count: 20
+    output: candidate_proteins
+    candidates_per_cycle: 5
+    constraints:
+      - length(50, 200)
+      - stability_score &gt; 0.7
+
+  active_learning_params:
+    search_space:
+      temperature: range(25, 42)
+      ph: range(6.5, 8.0)
+    strategy:
+      name: ActiveLearning
+      surrogate_model: GaussianProcess
+      active_learning:
+        acquisition_function: ExpectedImprovement
+        initial_experiments: 5
+        max_uncertainty: 0.1
+        convergence_threshold: 0.01
+    objective:
+      maximize: expression_level
+    budget:
+      max_experiments: 50
+    run:
+      experiment:
+        tool: protein_expression
+        type: validation
+        params:
+          proteins: candidate_proteins
+          temp: ${temperature}
+          ph: ${ph}
+    experiments_per_cycle: 3
+
+  budget:
+    max_cycles: 10
+    convergence_threshold: 0.05
+
+  output: optimized_proteins
+</code></pre>
+<h3 id="grna-design-for-crispr">gRNA Design for CRISPR</h3>
+<pre><code class="language-yaml">guided_discovery:
+  design_params:
+    entity: DNASequence
+    model: GuideRNADesigner
+    objective:
+      maximize: editing_efficiency
+    count: 30
+    output: candidate_guides
+    candidates_per_cycle: 10
+    constraints:
+      - off_target_score &lt; 0.1
+      - gc_content(40, 60)
+
+  active_learning_params:
+    search_space:
+      mg_concentration: range(5, 20)
+      incubation_time: choice([30, 60, 120])
+    strategy:
+      name: ActiveLearning
+      surrogate_model: RandomForestRegressor
+      active_learning:
+        acquisition_function: UpperConfidenceBound
+        initial_experiments: 8
+        max_uncertainty: 0.05
+        convergence_threshold: 0.02
+    objective:
+      maximize: cleavage_rate
+    budget:
+      max_experiments: 40
+    run:
+      experiment:
+        tool: CRISPR_cas9
+        type: gene_editing
+        params:
+          guides: candidate_guides
+          mg_conc: ${mg_concentration}
+          incubation: ${incubation_time}
+    experiments_per_cycle: 4
+
+  budget:
+    max_cycles: 8
+    target_objective_value: 0.95
+
+  output: optimal_guides
+</code></pre>
+<h2 id="workflow-process">Workflow Process</h2>
+<p>The <code>guided_discovery</code> block executes the following iterative process:</p>
+<ol>
+<li><strong>Candidate Generation</strong>: AI model generates candidate solutions</li>
+<li><strong>Experimental Evaluation</strong>: Active learning evaluates candidates</li>
+<li><strong>Model Update</strong>: Surrogate model is updated with new data</li>
+<li><strong>Next Generation</strong>: AI model generates improved candidates</li>
+<li><strong>Convergence Check</strong>: Process continues until budget or convergence criteria are met</li>
+</ol>
+<h2 id="integration-with-other-features">Integration with Other Features</h2>
+<h3 id="io-contracts">IO Contracts</h3>
+<pre><code class="language-yaml">guided_discovery:
+  design_params:
+    entity: ProteinSequence
+    model: ProteinVAEGenerator
+    objective:
+      maximize: stability
+    count: 15
+    output: candidate_proteins
+    contract:  # Design contract
+      outputs:
+        candidates:
+          type: FASTA
+          attributes:
+            sequence_type: protein
+  # ... rest of configuration
+</code></pre>
+<h3 id="schema-registry">Schema Registry</h3>
+<pre><code class="language-yaml">import_schemas:
+  - ./schemas/protein_schemas.yml
+
+guided_discovery:
+  design_params:
+    entity: ProteinSequence
+    model: ProteinVAEGenerator
+    objective:
+      maximize: binding_affinity
+    count: 25
+    output: candidate_proteins
+    contract:
+      outputs:
+        candidates:
+          type: ProteinSequence  # Custom type from schema
+          attributes:
+            length_min: 50
+            length_max: 200
+  # ... rest of configuration
+</code></pre>
+<h2 id="error-handling">Error Handling</h2>
+<p>Common errors with <code>guided_discovery</code> blocks include:</p>
+<ol>
+<li><strong>Missing Required Parameters</strong>: All required sections must be present</li>
+<li><strong>Invalid Active Learning Configuration</strong>: Active learning requires specific nested keys</li>
+<li><strong>Budget Conflicts</strong>: Budget constraints must be consistent</li>
+<li><strong>Parameter Injection Issues</strong>: Template variables must match search space</li>
+</ol>
+<p>Example error message:</p>
+<pre><code>Missing required key 'candidates_per_cycle' in design_params
+</code></pre>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Start Simple</strong>: Begin with basic configurations and gradually add complexity</li>
+<li><strong>Monitor Convergence</strong>: Track objective values to ensure the process is progressing</li>
+<li><strong>Balance Exploration/Exploitation</strong>: Adjust active learning parameters for optimal search</li>
+<li><strong>Resource Planning</strong>: Consider computational costs of both generation and evaluation</li>
+<li><strong>Validation</strong>: Always validate final candidates with independent experiments</li>
+</ol>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li><a href="../design_block/">Design Block Documentation</a> - Learn about generative design</li>
+<li><a href="../optimize_block/">Optimize Block Documentation</a> - Understand active learning optimization</li>
+<li><a href="../schema_registry/">Schema Registry Documentation</a> - Define custom data types</li>
+<li><a href="../examples/">Workflow Examples</a> - See complete guided discovery workflows</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../epigenetic_editing/" class="btn btn-neutral float-left" title="Epigenetic Editing in GFL"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../io_contracts/" class="btn btn-neutral float-right" title="IO Contracts System">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../epigenetic_editing/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../io_contracts/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

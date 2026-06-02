@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Data Staging Feature - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Data Staging Feature";
+        var mkdocs_page_input_path = "geneforgelang/features/data_staging.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Features</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Data Staging Feature</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#architecture">Architecture</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#basic-workflow">Basic Workflow</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#api-integration">API Integration</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#response-format">Response Format</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#implementation-details">Implementation Details</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#datastagingmanager-class">DataStagingManager Class</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#key-features">Key Features</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#security-considerations">Security Considerations</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#installation">Installation</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#testing">Testing</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#error-handling">Error Handling</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#monitoring">Monitoring</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#future-enhancements">Future Enhancements</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Features</li>
+      <li class="breadcrumb-item active">Data Staging Feature</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="data-staging-feature">Data Staging Feature</h1>
+<h2 id="overview">Overview</h2>
+<p>The Data Staging feature enables GeneForgeLang workflows to work with remote data files by automatically downloading them to local temporary directories before plugin execution. This ensures that plugins receive local file paths while maintaining security through signed URLs.</p>
+<h2 id="architecture">Architecture</h2>
+<p>The data staging system consists of:</p>
+<ul>
+<li><strong>DataStagingManager</strong>: Core class that handles file downloads and parameter resolution</li>
+<li><strong>GFL Service Integration</strong>: Modified execution endpoint that uses data staging</li>
+<li><strong>Automatic Cleanup</strong>: Temporary files are cleaned up after workflow completion</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="basic-workflow">Basic Workflow</h3>
+<ol>
+<li><strong>Workflow Request</strong>: GeneForge sends a GFL AST with file references and a data manifest</li>
+<li><strong>Data Staging</strong>: DataStagingManager downloads referenced files to local temporary directory</li>
+<li><strong>Parameter Resolution</strong>: File parameters are updated with local paths</li>
+<li><strong>Plugin Execution</strong>: Plugins receive local file paths instead of remote URLs</li>
+<li><strong>Cleanup</strong>: Temporary files are automatically removed after execution</li>
+</ol>
+<h3 id="api-integration">API Integration</h3>
+<p>The GFL service <code>/api/v2/execute</code> endpoint now accepts a <code>data_manifest</code> parameter:</p>
+<pre><code class="language-json">{
+  &quot;ast&quot;: {
+    &quot;experiment&quot;: {
+      &quot;tool&quot;: &quot;samtools&quot;,
+      &quot;params&quot;: {
+        &quot;input_file&quot;: &quot;sample.sam&quot;,
+        &quot;reference_file&quot;: &quot;hg38.fasta&quot;
+      }
+    }
+  },
+  &quot;data_manifest&quot;: {
+    &quot;sample.sam&quot;: &quot;https://storage.googleapis.com/bucket/sample.sam?signature=abc123&quot;,
+    &quot;hg38.fasta&quot;: &quot;https://storage.googleapis.com/bucket/hg38.fasta?signature=def456&quot;
+  }
+}
+</code></pre>
+<h3 id="response-format">Response Format</h3>
+<p>The execution response includes staging information:</p>
+<pre><code class="language-json">{
+  &quot;success&quot;: true,
+  &quot;result&quot;: {
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;staged_files&quot;: [&quot;sample.sam&quot;, &quot;hg38.fasta&quot;],
+    &quot;plugin_params&quot;: {
+      &quot;input_file&quot;: &quot;/tmp/gfl_run_123/sample.sam&quot;,
+      &quot;reference_file&quot;: &quot;/tmp/gfl_run_123/hg38.fasta&quot;
+    }
+  }
+}
+</code></pre>
+<h2 id="implementation-details">Implementation Details</h2>
+<h3 id="datastagingmanager-class">DataStagingManager Class</h3>
+<pre><code class="language-python">from gfl.staging import DataStagingManager
+
+# Initialize manager
+manager = DataStagingManager()
+
+# Stage files
+staged_params = manager.stage_files(plugin_params, data_manifest)
+
+# Cleanup (automatic in GFL service)
+manager.cleanup()
+</code></pre>
+<h3 id="key-features">Key Features</h3>
+<ul>
+<li><strong>Unique Temporary Directories</strong>: Each workflow execution gets its own temporary directory</li>
+<li><strong>Graceful Error Handling</strong>: Download failures don't stop workflow execution</li>
+<li><strong>Parameter Preservation</strong>: Non-file parameters remain unchanged</li>
+<li><strong>Automatic Cleanup</strong>: Temporary files are removed after execution</li>
+<li><strong>Logging</strong>: Comprehensive logging for debugging and monitoring</li>
+</ul>
+<h3 id="security-considerations">Security Considerations</h3>
+<ul>
+<li><strong>Signed URLs</strong>: All remote file access uses signed URLs for security</li>
+<li><strong>Temporary Storage</strong>: Files are stored in temporary directories that are cleaned up</li>
+<li><strong>No Persistent Storage</strong>: No files are permanently stored on the GFL service</li>
+<li><strong>Error Isolation</strong>: Download failures are logged but don't affect other files</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<h3 id="dependencies">Dependencies</h3>
+<p>The data staging feature requires:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;requests&gt;=2.25.0&quot;,
+]
+
+[project.optional-dependencies]
+staging = [
+    &quot;google-cloud-storage&gt;=2.0.0&quot;,
+]
+</code></pre>
+<h3 id="installation">Installation</h3>
+<pre><code class="language-bash"># Basic installation (includes requests)
+pip install geneforgelang
+
+# With Google Cloud Storage support
+pip install geneforgelang[staging]
+</code></pre>
+<h2 id="testing">Testing</h2>
+<p>The data staging feature includes comprehensive tests:</p>
+<ul>
+<li><strong>Unit Tests</strong>: Test individual DataStagingManager methods</li>
+<li><strong>Integration Tests</strong>: Test complete workflow with GFL service</li>
+<li><strong>Error Handling Tests</strong>: Test various failure scenarios</li>
+<li><strong>Mock Tests</strong>: Test without actual file downloads</li>
+</ul>
+<p>Run tests with:</p>
+<pre><code class="language-bash">pytest tests/test_data_staging.py
+pytest tests/test_data_staging_integration.py
+</code></pre>
+<h2 id="error-handling">Error Handling</h2>
+<p>The data staging system handles various error scenarios:</p>
+<ul>
+<li><strong>Download Failures</strong>: Individual file download failures are logged but don't stop execution</li>
+<li><strong>Network Issues</strong>: Temporary network issues are handled gracefully</li>
+<li><strong>Cleanup Failures</strong>: Cleanup failures are logged but don't affect workflow results</li>
+<li><strong>Invalid URLs</strong>: Invalid or expired signed URLs are handled gracefully</li>
+</ul>
+<h2 id="monitoring">Monitoring</h2>
+<p>The system provides comprehensive logging:</p>
+<ul>
+<li><strong>Info Level</strong>: Normal staging operations and cleanup</li>
+<li><strong>Debug Level</strong>: Detailed parameter processing information</li>
+<li><strong>Error Level</strong>: Download failures and cleanup issues</li>
+<li><strong>Warning Level</strong>: Non-critical issues and fallbacks</li>
+</ul>
+<h2 id="future-enhancements">Future Enhancements</h2>
+<p>Potential future improvements:</p>
+<ul>
+<li><strong>Caching</strong>: Cache frequently used files to avoid re-downloading</li>
+<li><strong>Parallel Downloads</strong>: Download multiple files in parallel for better performance</li>
+<li><strong>Progress Tracking</strong>: Real-time progress updates for large file downloads</li>
+<li><strong>Retry Logic</strong>: Automatic retry for failed downloads</li>
+<li><strong>Compression</strong>: Support for compressed file formats</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../container_execution/" class="btn btn-neutral float-left" title="Container-Based Plugin Execution"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../design_block/" class="btn btn-neutral float-right" title="Generative Design with the design Block">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../container_execution/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../design_block/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

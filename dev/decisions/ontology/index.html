@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>GeneForgeLang Ontology - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "GeneForgeLang Ontology";
+        var mkdocs_page_input_path = "dev/decisions/ontology.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >Decisions</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">GeneForgeLang Ontology</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#1-ontological-premises">1. Ontological Premises</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-core-concepts">2. Core Concepts</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#21-entities">2.1 Entities</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#22-relations">2.2 Relations</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-logical-operators-and-gfl-syntax-mapping">3. Logical Operators and GFL Syntax Mapping</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-reasoning-framework">4. Reasoning Framework</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#41-deductive-reasoning">4.1 Deductive Reasoning</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#42-inductive-reasoning">4.2 Inductive Reasoning</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#43-abductive-reasoning">4.3 Abductive Reasoning</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5-layers-and-domains">5. Layers and Domains</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#6-species-aware-reasoning">6. Species-Aware Reasoning</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#7-commentary-and-meta-logic">7. Commentary and Meta-Logic</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#8-roadmap">8. Roadmap</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../geneforgelang/api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../geneforgelang/cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Dev</li>
+          <li class="breadcrumb-item">Decisions</li>
+      <li class="breadcrumb-item active">GeneForgeLang Ontology</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="geneforgelang-ontology">GeneForgeLang Ontology</h1>
+<p><strong>Version:</strong> 0.1
+<strong>Maintainer:</strong> Fundación de Neurociencias
+<strong>License:</strong> MIT
+<strong>Purpose:</strong> Provide a unified ontological foundation for symbolic reasoning in molecular design, reconciling biological logic and philosophical logic through GeneForgeLang (GFL).</p>
+<hr />
+<h2 id="1-ontological-premises">1. Ontological Premises</h2>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Philosophical Logic</td>
+<td>Reasoning based on causality, implication, modality, and consequence</td>
+</tr>
+<tr>
+<td>Biological Logic</td>
+<td>Reasoning constrained by molecular pathways, structural feasibility, species</td>
+</tr>
+</tbody>
+</table>
+<p>This ontology enables <strong>deductive</strong>, <strong>inductive</strong>, and <strong>abductive</strong> reasoning over biological syntax encoded in GFL.</p>
+<hr />
+<h2 id="2-core-concepts">2. Core Concepts</h2>
+<h3 id="21-entities">2.1 Entities</h3>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>GFL Representation</th>
+<th>Ontological Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gene</td>
+<td><code>~d:[TSS]...</code></td>
+<td>Instructional template</td>
+</tr>
+<tr>
+<td>Transcript</td>
+<td><code>:r:Cap5'-Ex1-Intr1-Ex2-UTR3'</code></td>
+<td>Intermediate expression unit</td>
+</tr>
+<tr>
+<td>Protein</td>
+<td><code>^p:Dom(...)</code></td>
+<td>Functional effector</td>
+</tr>
+<tr>
+<td>Enhancer</td>
+<td><code>Ctrl{Enh}</code></td>
+<td>Regulatory controller</td>
+</tr>
+<tr>
+<td>Pathway</td>
+<td><code>→</code> sequences of events</td>
+<td>Causal chains</td>
+</tr>
+<tr>
+<td>Edit</td>
+<td><code>[MUT:...]</code>, <code>[INS:...]</code></td>
+<td>Change agent</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-relations">2.2 Relations</h3>
+<table>
+<thead>
+<tr>
+<th>Relation</th>
+<th>Syntax</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Causes</td>
+<td><code>A → B</code></td>
+<td>A triggers or enables B</td>
+</tr>
+<tr>
+<td>Requires</td>
+<td><code>A ∧ B</code></td>
+<td>B is necessary for A</td>
+</tr>
+<tr>
+<td>Equivalent</td>
+<td><code>A ≡ B</code></td>
+<td>Semantic equivalence (e.g., isoforms)</td>
+</tr>
+<tr>
+<td>Conditional</td>
+<td><code>if A then B</code></td>
+<td>Logic gate for downstream events</td>
+</tr>
+<tr>
+<td>Annotates</td>
+<td><code>A [note: "..."]</code></td>
+<td>Optional human annotation</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-logical-operators-and-gfl-syntax-mapping">3. Logical Operators and GFL Syntax Mapping</h2>
+<table>
+<thead>
+<tr>
+<th>Logic Concept</th>
+<th>GFL Representation</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AND (∧)</td>
+<td><code>Dom(X)-Mot(Y)</code></td>
+<td>Kinase domain AND nuclear localization motif</td>
+</tr>
+<tr>
+<td>OR (∨)</td>
+<td><code>Mot(X)/Mot(Y)</code></td>
+<td>Either motif X OR motif Y</td>
+</tr>
+<tr>
+<td>NOT (¬)</td>
+<td><code>!Mot(X)</code> (planned)</td>
+<td>Absence of motif X</td>
+</tr>
+<tr>
+<td>IMPLIES (→)</td>
+<td><code>X = Y</code></td>
+<td>X implies Y (e.g., <code>Mot(PEST) = Deg</code>)</td>
+</tr>
+<tr>
+<td>CONDITIONAL</td>
+<td><code>if PTM(X) → Y</code></td>
+<td>If PTM, then downstream localization</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-reasoning-framework">4. Reasoning Framework</h2>
+<h3 id="41-deductive-reasoning">4.1 Deductive Reasoning</h3>
+<p>From a general GFL rule to a specific output:</p>
+<pre><code class="language-text">Rule: Mot(PEST) = Deg
+Input: ^p:Dom(Kin)-Mot(PEST)
+→ Inferred: Degradation likely
+</code></pre>
+<h3 id="42-inductive-reasoning">4.2 Inductive Reasoning</h3>
+<p>From observed patterns to a generalized rule:</p>
+<pre><code class="language-text">Observed: MUT@42 → Functional loss
+→ Inferred: All variants at position 42 likely deleterious
+</code></pre>
+<h3 id="43-abductive-reasoning">4.3 Abductive Reasoning</h3>
+<p>From observed effects to probable cause:</p>
+<pre><code class="language-text">Phenotype: Loss of enzyme activity
+→ Candidate phrase: ^p:Dom(Hyd)-[MUT:G&gt;A@123]
+</code></pre>
+<hr />
+<h2 id="5-layers-and-domains">5. Layers and Domains</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Ontological Implication</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DNA</td>
+<td>Blueprint; supports edit operations</td>
+</tr>
+<tr>
+<td>RNA</td>
+<td>Structural intermediates; supports splicing logic</td>
+</tr>
+<tr>
+<td>Protein</td>
+<td>Functional targets; supports PTMs and complex logic</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-species-aware-reasoning">6. Species-Aware Reasoning</h2>
+<p>Species, organ specificity, and delivery mechanisms can be integrated as structured metadata:</p>
+<pre><code class="language-yaml">target:
+  gene: &quot;CPS1&quot;
+  mutation: &quot;[MUT:G&gt;A@1001]&quot;
+  species: &quot;Homo sapiens&quot;
+  delivery: &quot;mRNA-nanoparticles&quot;
+  edit_type: &quot;Adenine base editor (ABE)&quot;
+</code></pre>
+<hr />
+<h2 id="7-commentary-and-meta-logic">7. Commentary and Meta-Logic</h2>
+<ul>
+<li>Comments allowed via <code>#</code> (ignored by parser)</li>
+<li>Meta-level statements prefixed with <code>//</code> for human-readable explanation</li>
+<li>Reserved terms allowed in ontology-aware extensions: <code>causes</code>, <code>restores</code>, <code>requires</code>, <code>localizes</code></li>
+</ul>
+<hr />
+<h2 id="8-roadmap">8. Roadmap</h2>
+<ul>
+<li>✅ Integration with GFL Transformer for symbolic → causal simulation</li>
+<li>✅ Export support to OWL and RDF for use in semantic web agents</li>
+<li>✅ Syntax-to-logic validator for consistency enforcement</li>
+<li>🔜 Ontology-driven therapeutic reasoning engine</li>
+<li>🔜 Multi-organism cross-mapping for translational models</li>
+</ul>
+<hr />
+<p><strong>End of Ontology Specification</strong></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../HISTORY/" class="btn btn-neutral float-left" title="GeneForgeLang Development History"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../organization/" class="btn btn-neutral float-right" title="GeneForgeLang Repository Organization">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../HISTORY/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../organization/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

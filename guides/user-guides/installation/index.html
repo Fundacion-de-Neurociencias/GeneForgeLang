@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Installation Guide - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Installation Guide";
+        var mkdocs_page_input_path = "guides/user-guides/installation.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../geneforgelang/api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../geneforgelang/cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >User guides</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Installation Guide</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#system-requirements">System Requirements</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#minimum-requirements">Minimum Requirements</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#recommended-requirements">Recommended Requirements</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#installation-methods">Installation Methods</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-quick-installation-recommended">1. Quick Installation (Recommended)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-full-installation-with-all-features">2. Full Installation with All Features</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-minimal-installation">3. Minimal Installation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-feature-specific-installation">4. Feature-Specific Installation</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#dependency-groups">Dependency Groups</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#verification">Verification</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#starting-the-platform">Starting the Platform</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#web-interface-api-server">Web Interface + API Server</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#api-server-only">API Server Only</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#web-interface-only">Web Interface Only</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#common-issues">Common Issues</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#getting-help">Getting Help</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#development-installation">Development Installation</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Guides</li>
+          <li class="breadcrumb-item">User guides</li>
+      <li class="breadcrumb-item active">Installation Guide</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="installation-guide">Installation Guide</h1>
+<p>This guide will help you install and set up GeneForgeLang on your system.</p>
+<h2 id="system-requirements">System Requirements</h2>
+<h3 id="minimum-requirements">Minimum Requirements</h3>
+<ul>
+<li><strong>Python</strong>: 3.9 or higher</li>
+<li><strong>Memory</strong>: 4GB RAM</li>
+<li><strong>Storage</strong>: 2GB free space</li>
+<li><strong>OS</strong>: Windows 10/11, macOS 10.15+, or Linux (Ubuntu 18.04+)</li>
+</ul>
+<h3 id="recommended-requirements">Recommended Requirements</h3>
+<ul>
+<li><strong>Python</strong>: 3.14 or higher</li>
+<li><strong>Memory</strong>: 8GB RAM</li>
+<li><strong>Storage</strong>: 10GB free space (for ML models)</li>
+<li><strong>GPU</strong>: CUDA-compatible (optional, for advanced ML features)</li>
+</ul>
+<h2 id="installation-methods">Installation Methods</h2>
+<h3 id="1-quick-installation-recommended">1. Quick Installation (Recommended)</h3>
+<pre><code class="language-bash"># Install from source (development version)
+git clone https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git
+cd GeneForgeLang
+pip install -e .
+</code></pre>
+<h3 id="2-full-installation-with-all-features">2. Full Installation with All Features</h3>
+<pre><code class="language-bash"># Clone repository
+git clone https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git
+cd GeneForgeLang
+
+# Install with all optional dependencies
+pip install -e .[all]
+</code></pre>
+<h3 id="3-minimal-installation">3. Minimal Installation</h3>
+<pre><code class="language-bash"># Basic functionality only
+pip install -e .
+</code></pre>
+<h3 id="4-feature-specific-installation">4. Feature-Specific Installation</h3>
+<pre><code class="language-bash"># Web interface and API server
+pip install -e .[web]
+
+# Machine learning features
+pip install -e .[ml]
+
+# Grammar-based parser
+pip install -e .[dependencies]
+
+# Development tools
+pip install -e .[dev]
+</code></pre>
+<h2 id="dependency-groups">Dependency Groups</h2>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Description</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>basic</code></td>
+<td>Core GFL functionality</td>
+<td>Basic parsing and validation</td>
+</tr>
+<tr>
+<td><code>web</code></td>
+<td>API server components</td>
+<td>REST API, rate limiting</td>
+</tr>
+<tr>
+<td><code>ml</code></td>
+<td>Machine learning</td>
+<td>PyTorch, Transformers</td>
+</tr>
+<tr>
+<td><code>dependencies</code></td>
+<td>Advanced parsing</td>
+<td>PLY-based grammar parser</td>
+</tr>
+<tr>
+<td><code>dev</code></td>
+<td>Development tools</td>
+<td>Testing, linting, formatting</td>
+</tr>
+<tr>
+<td><code>all</code></td>
+<td>Everything included</td>
+<td>Complete installation</td>
+</tr>
+</tbody>
+</table>
+<h2 id="verification">Verification</h2>
+<p>After installation, verify everything works:</p>
+<pre><code class="language-bash"># Test basic functionality
+python -c &quot;from geneforgelang.core.api import parse, validate; print('✓ GFL API working')&quot;
+
+
+# Run platform test suite
+python ../GeneForgeLang/tests/test_platform.py
+</code></pre>
+<p>.\GeneForgeLang\tests\test_platform.py
+Expected output:</p>
+<pre><code>GeneForgeLang Platform Test Suite
+==================================================
+Testing basic GFL API...
+✓ API Version: 0.1.0
+✓ Available models: ['heuristic', 'enhanced_heuristic']
+✓ Parsing successful: CRISPR_cas9
+✓ Validation: Valid
+...
+Test Results: 3/4 passed
+🎉 All tests passed! Platform is working correctly.
+</code></pre>
+<h2 id="starting-the-platform">Starting the Platform</h2>
+<h3 id="web-interface-api-server">Web Interface + API Server</h3>
+<pre><code class="language-bash"># Start complete platform
+gfl-server --all
+
+# Access interfaces:
+# Web: http://127.0.0.1:7860
+# API: http://127.0.0.1:8000/docs
+</code></pre>
+<h3 id="api-server-only">API Server Only</h3>
+<pre><code class="language-bash">gfl-server --api-only
+</code></pre>
+<h3 id="web-interface-only">Web Interface Only</h3>
+<pre><code class="language-bash">gfl-server --web-only
+</code></pre>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<h4 id="import-errors">Import Errors</h4>
+<pre><code class="language-bash"># Error: No module named 'gfl'
+# Solution: Install in editable mode
+pip install -e .
+</code></pre>
+<h4 id="missing-dependencies">Missing Dependencies</h4>
+<pre><code class="language-bash"># Error: ModuleNotFoundError: No module named 'fastapi'
+# Solution: Install server dependencies
+pip install -e .[web]
+</code></pre>
+<h4 id="permission-issues-windows">Permission Issues (Windows)</h4>
+<pre><code class="language-bash"># Run as administrator or use:
+pip install -e . --user
+</code></pre>
+<h4 id="virtual-environment-recommended">Virtual Environment (Recommended)</h4>
+<pre><code class="language-bash"># Create virtual environment
+python -m venv gfl-env
+
+# Activate (Windows)
+gfl-env\Scripts\activate
+
+# Activate (macOS/Linux)
+source gfl-env/bin/activate
+
+# Install
+pip install -e .[all]
+</code></pre>
+<h3 id="getting-help">Getting Help</h3>
+<p>If you encounter issues:</p>
+<ol>
+<li><strong>Check Dependencies</strong>: Run <code>gfl-server --check-deps</code></li>
+<li><strong>Review Logs</strong>: Check console output for error messages</li>
+<li><strong>Update Dependencies</strong>: <code>pip install --upgrade -e .[full]</code></li>
+<li><strong>Report Issues</strong>: <a href="https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues">GitHub Issues</a></li>
+</ol>
+<h2 id="next-steps">Next Steps</h2>
+<p>Once installed successfully:</p>
+<ol>
+<li><strong><a href="tutorial.md">Getting Started Tutorial</a></strong> - Create your first GFL workflow</li>
+<li><strong><a href="cli.md">CLI Guide</a></strong> - Learn command-line tools</li>
+<li><strong><a href="web-interface/getting-started.md">Web Interface Guide</a></strong> - Use the web platform</li>
+<li><strong><a href="API_REFERENCE.md">API Documentation</a></strong> - Integrate with your applications</li>
+</ol>
+<h2 id="development-installation">Development Installation</h2>
+<p>For contributors and developers</p>
+<pre><code class="language-bash"># Clone with development tools
+git clone https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git
+cd GeneForgeLang
+
+# Install development dependencies
+pip install -e .[dev]
+
+# Set up pre-commit hooks
+pre-commit install
+
+# Run tests
+pytest tests/
+</code></pre>
+<p>See <a href="../CONTRIBUTING.md">Contributing Guide</a> for detailed development setup.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../advanced_schemas/" class="btn btn-neutral float-left" title="Tutorial: Using Custom Schemas in IO Contracts"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../quickstart_user/" class="btn btn-neutral float-right" title="Quickstart user">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../advanced_schemas/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../quickstart_user/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

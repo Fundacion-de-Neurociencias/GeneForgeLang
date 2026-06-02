@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>GeneForgeLang Repository Organization - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "GeneForgeLang Repository Organization";
+        var mkdocs_page_input_path = "dev/decisions/organization.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >Decisions</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">GeneForgeLang Repository Organization</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#core-library-components-commit-obligatory">Core Library Components (✅ Commit Obligatory)</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#source-code-gfl">Source Code (gfl/)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#official-documentation-docs">Official Documentation (docs/)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#library-tests-tests">Library Tests (tests/)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#maintenance-scripts-scripts">Maintenance Scripts (scripts/)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#example-projects-commit-recommended">Example Projects (✅ Commit Recommended)</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#gfl-genesis-project-examplesgfl-genesis">GFL Genesis Project (examples/gfl-genesis/)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#simple-examples-examples">Simple Examples (examples/)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#internal-development-files-ignore">Internal Development Files (❌ Ignore)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#directory-structure">Directory Structure</a>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../geneforgelang/api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../geneforgelang/cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Dev</li>
+          <li class="breadcrumb-item">Decisions</li>
+      <li class="breadcrumb-item active">GeneForgeLang Repository Organization</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="geneforgelang-repository-organization">GeneForgeLang Repository Organization</h1>
+<p>This document describes the organization of the GeneForgeLang repository following the recommended structure.</p>
+<h2 id="core-library-components-commit-obligatory">Core Library Components (✅ Commit Obligatory)</h2>
+<h3 id="source-code-gfl">Source Code (gfl/)</h3>
+<p>The core GFL library source code is located in the <a href="gfl/">gfl/</a> directory, including essential modules:
+- <a href="gfl/error_handling.py">error_handling.py</a> - Error handling and validation result classes
+- <a href="gfl/parser.py">parser.py</a> - YAML parser for GFL documents
+- <a href="gfl/schema_loader.py">schema_loader.py</a> - Schema registry and loading functionality
+- <a href="gfl/semantic_validator.py">semantic_validator.py</a> - Semantic validation of GFL ASTs
+- <a href="gfl/types.py">types.py</a> - Type definitions and utilities</p>
+<h3 id="official-documentation-docs">Official Documentation (docs/)</h3>
+<p>Documentation is organized in the <a href="docs/">docs/</a> directory:
+- <a href="docs/features/">features/</a> - Feature-specific documentation
+- <a href="docs/tutorials/">tutorials/</a> - Step-by-step tutorials
+- Key documents: <a href="docs/API_REFERENCE.md">API_REFERENCE.md</a>, <a href="docs/PLUGIN_ECOSYSTEM.md">PLUGIN_ECOSYSTEM.md</a>, etc.</p>
+<h3 id="library-tests-tests">Library Tests (tests/)</h3>
+<p>Comprehensive test suite in the <a href="tests/">tests/</a> directory:
+- Unit tests in <a href="tests/unit/">tests/unit/</a>
+- Integration tests in <a href="tests/integration/">tests/integration/</a>
+- Test files: <a href="test_advanced_validation.py">test_advanced_validation.py</a>, <a href="test_io_contracts.py">test_io_contracts.py</a>, <a href="test_schema_registry.py">test_schema_registry.py</a>
+- Test data: <a href="test_advanced_syntax.gfl">test_advanced_syntax.gfl</a>, <a href="test_custom_types.yml">test_custom_types.yml</a>, <a href="test_io_contracts.gfl">test_io_contracts.gfl</a>, <a href="test_schema_registry.gfl">test_schema_registry.gfl</a></p>
+<h3 id="maintenance-scripts-scripts">Maintenance Scripts (scripts/)</h3>
+<p>Maintenance tools in the <a href="scripts/">scripts/</a> directory:
+- <a href="scripts/pre_release_check.py">pre_release_check.py</a> - Pre-release validation
+- <a href="scripts/release.ps1">release.ps1</a> and <a href="scripts/release.sh">release.sh</a> - Release automation scripts</p>
+<h2 id="example-projects-commit-recommended">Example Projects (✅ Commit Recommended)</h2>
+<h3 id="gfl-genesis-project-examplesgfl-genesis">GFL Genesis Project (examples/gfl-genesis/)</h3>
+<p>A comprehensive example project demonstrating advanced GFL capabilities:
+- Main workflow: <a href="examples/gfl-genesis/genesis.gfl">genesis.gfl</a>
+- Custom plugins in <a href="examples/gfl-genesis/plugins/">plugins/</a> directory
+- Schema definitions in <a href="examples/gfl-genesis/schemas/">schemas/</a> directory
+- Project documentation in <a href="examples/gfl-genesis/docs/">docs/</a> directory
+- Planning documents in <a href="examples/gfl-genesis/docs/planning/">docs/planning/</a> directory</p>
+<h3 id="simple-examples-examples">Simple Examples (examples/)</h3>
+<p>Basic examples in the <a href="examples/">examples/</a> directory:
+- Simple workflows: <a href="examples/example1.gfl">example1.gfl</a>, <a href="examples/example2.gfl">example2.gfl</a>
+- Specialized examples: <a href="example_crispr_optimization.gfl">example_crispr_optimization.gfl</a>, <a href="example_protein_design.gfl">example_protein_design.gfl</a></p>
+<h2 id="internal-development-files-ignore">Internal Development Files (❌ Ignore)</h2>
+<p>The following internal development artifacts are excluded from version control via <a href=".gitignore">.gitignore</a>:
+- Implementation summary files: <code>*_SUMMARY.md</code>
+- Temporary files and build artifacts
+- Cache directories and compiled Python files</p>
+<h2 id="directory-structure">Directory Structure</h2>
+<pre><code>.
+├── gfl/                        # Core library source code
+├── docs/                       # Official documentation
+│   ├── features/               # Feature documentation
+│   └── tutorials/              # Step-by-step tutorials
+├── tests/                      # Library test suite
+├── scripts/                    # Maintenance scripts
+├── examples/                   # Example projects and workflows
+│   ├── gfl-genesis/            # Comprehensive example project
+│   │   ├── genesis.gfl         # Main workflow definition
+│   │   ├── plugins/            # Custom plugins
+│   │   ├── schemas/            # Schema definitions
+│   │   ├── docs/               # Project documentation
+│   │   │   └── planning/       # Planning documents
+│   │   └── ...                 # Other project files
+│   └── ...                     # Simple examples
+├── .gitignore                  # Git ignore rules
+└── ...                         # Other repository files
+</code></pre>
+<p>This organization maintains a clean separation between the core GFL library and example projects, making it easy for users to understand the structure and find what they need.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../ontology/" class="btn btn-neutral float-left" title="GeneForgeLang Ontology"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../reports/GF-166_QA_FINAL_REPORT/" class="btn btn-neutral float-right" title="GF-166 QA Final Report - GeneForge Platform">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../ontology/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../reports/GF-166_QA_FINAL_REPORT/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

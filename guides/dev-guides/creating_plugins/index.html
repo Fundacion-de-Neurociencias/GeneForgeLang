@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Creating Plugins for GeneForgeLang - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Creating Plugins for GeneForgeLang";
+        var mkdocs_page_input_path = "guides/dev-guides/creating_plugins.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../geneforgelang/api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../geneforgelang/cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" >Dev guides</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Creating Plugins for GeneForgeLang</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#using-the-cookiecutter-template">Using the Cookiecutter Template</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plugin-structure">Plugin Structure</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plugin-types">Plugin Types</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#generator-plugins">Generator Plugins</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#optimizer-plugins">Optimizer Plugins</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#general-plugins">General Plugins</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#entry-points">Entry Points</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#testing-your-plugin">Testing Your Plugin</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#publishing-your-plugin">Publishing Your Plugin</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#example-plugin">Example Plugin</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#getting-help">Getting Help</a>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Guides</li>
+          <li class="breadcrumb-item">Dev guides</li>
+      <li class="breadcrumb-item active">Creating Plugins for GeneForgeLang</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="creating-plugins-for-geneforgelang">Creating Plugins for GeneForgeLang</h1>
+<p>This guide explains how to create custom plugins for GeneForgeLang using the cookiecutter template.</p>
+<h2 id="overview">Overview</h2>
+<p>GeneForgeLang plugins extend the platform's functionality by integrating external tools and services. Plugins can be generators, optimizers, or general-purpose tools that process data within GFL workflows.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Python 3.9 or higher</li>
+<li>GeneForgeLang installed</li>
+<li>Basic understanding of Python programming</li>
+<li>Familiarity with the GFL plugin architecture</li>
+</ul>
+<h2 id="using-the-cookiecutter-template">Using the Cookiecutter Template</h2>
+<p>The easiest way to create a new plugin is to use the official cookiecutter template:</p>
+<pre><code class="language-bash"># Install cookiecutter if you haven't already
+pip install cookiecutter
+
+# Create a new plugin using the template
+cookiecutter https://github.com/Fundacion-de-Neurociencias/cookiecutter-gfl-plugin.git
+</code></pre>
+<p>The template will prompt you for information about your plugin:</p>
+<ul>
+<li>Plugin name</li>
+<li>Plugin description</li>
+<li>Plugin type (generator, optimizer, or general)</li>
+<li>Author information</li>
+<li>Python version requirements</li>
+</ul>
+<h2 id="plugin-structure">Plugin Structure</h2>
+<p>A typical GFL plugin has the following structure:</p>
+<pre><code>my-gfl-plugin/
+├── pyproject.toml           # Project configuration
+├── README.md               # Plugin documentation
+├── my_plugin/              # Plugin source code
+│   ├── __init__.py         # Package initialization
+│   ├── plugin.py           # Main plugin implementation
+│   └── utils.py            # Utility functions
+├── tests/                  # Test files
+│   ├── __init__.py
+│   ├── test_plugin.py      # Plugin tests
+│   └── fixtures/           # Test data
+└── examples/               # Example workflows
+    └── example.gfl         # Example GFL workflow
+</code></pre>
+<h2 id="plugin-types">Plugin Types</h2>
+<h3 id="generator-plugins">Generator Plugins</h3>
+<p>Generator plugins create new biological entities such as proteins, DNA sequences, or molecules.</p>
+<pre><code class="language-python">from gfl.plugins import GeneratorPlugin, DesignCandidate
+from typing import List, Dict, Any
+
+class MyGenerator(GeneratorPlugin):
+    @property
+    def name(self) -&gt; str:
+        return &quot;my-generator&quot;
+
+    @property
+    def version(self) -&gt; str:
+        return &quot;1.0.0&quot;
+
+    def generate(
+        self,
+        entity: str,
+        objective: Dict[str, Any],
+        constraints: List[str],
+        count: int,
+        **kwargs
+    ) -&gt; List[DesignCandidate]:
+        # Implementation here
+        pass
+</code></pre>
+<h3 id="optimizer-plugins">Optimizer Plugins</h3>
+<p>Optimizer plugins perform intelligent parameter space exploration and optimization.</p>
+<pre><code class="language-python">from gfl.plugins import OptimizerPlugin, OptimizationStep
+from typing import List, Dict, Any
+
+class MyOptimizer(OptimizerPlugin):
+    @property
+    def name(self) -&gt; str:
+        return &quot;my-optimizer&quot;
+
+    @property
+    def version(self) -&gt; str:
+        return &quot;1.0.0&quot;
+
+    def setup(
+        self,
+        search_space: Dict[str, str],
+        strategy: Dict[str, Any],
+        objective: Dict[str, Any],
+        budget: Dict[str, Any]
+    ) -&gt; None:
+        # Implementation here
+        pass
+
+    def suggest_next(self, experiment_history: List[Any]) -&gt; OptimizationStep:
+        # Implementation here
+        pass
+</code></pre>
+<h3 id="general-plugins">General Plugins</h3>
+<p>General plugins can perform any operation within a GFL workflow.</p>
+<pre><code class="language-python">from gfl.plugins import Plugin
+from typing import Dict, Any
+
+class MyPlugin(Plugin):
+    @property
+    def name(self) -&gt; str:
+        return &quot;my-plugin&quot;
+
+    @property
+    def version(self) -&gt; str:
+        return &quot;1.0.0&quot;
+
+    def run(self, input_data: Any, params: Dict[str, Any]) -&gt; Any:
+        # Implementation here
+        pass
+</code></pre>
+<h2 id="entry-points">Entry Points</h2>
+<p>To make your plugin discoverable by GFL, you need to register it as an entry point in your <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project.entry-points.&quot;gfl.plugins&quot;]
+my-plugin = &quot;my_plugin.plugin:MyPlugin&quot;
+</code></pre>
+<h2 id="configuration">Configuration</h2>
+<p>Plugins can accept configuration parameters:</p>
+<pre><code class="language-python">class MyPlugin(Plugin):
+    def __init__(self, config: Dict[str, Any] = None):
+        super().__init__(config)
+        self.config = config or {}
+        self.some_parameter = self.config.get(&quot;some_parameter&quot;, &quot;default_value&quot;)
+</code></pre>
+<h2 id="testing-your-plugin">Testing Your Plugin</h2>
+<p>Write comprehensive tests for your plugin:</p>
+<pre><code class="language-python">import pytest
+from my_plugin.plugin import MyPlugin
+
+def test_plugin_initialization():
+    plugin = MyPlugin()
+    assert plugin.name == &quot;my-plugin&quot;
+    assert plugin.version == &quot;1.0.0&quot;
+
+def test_plugin_functionality():
+    plugin = MyPlugin()
+    result = plugin.run(&quot;input_data&quot;, {&quot;param&quot;: &quot;value&quot;})
+    # Add assertions based on expected behavior
+</code></pre>
+<h2 id="publishing-your-plugin">Publishing Your Plugin</h2>
+<ol>
+<li>
+<p>Create a source distribution:
+   <code>bash
+   python -m build</code></p>
+</li>
+<li>
+<p>Upload to PyPI:
+   <code>bash
+   twine upload dist/*</code></p>
+</li>
+<li>
+<p>Users can then install your plugin:
+   <code>bash
+   pip install my-gfl-plugin</code></p>
+</li>
+</ol>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Error Handling</strong>: Implement proper error handling and validation</li>
+<li><strong>Documentation</strong>: Provide clear documentation and examples</li>
+<li><strong>Testing</strong>: Write comprehensive tests with good coverage</li>
+<li><strong>Performance</strong>: Optimize for performance, especially for computationally intensive operations</li>
+<li><strong>Dependencies</strong>: Minimize external dependencies and specify version constraints</li>
+<li><strong>Logging</strong>: Use appropriate logging levels for debugging and monitoring</li>
+</ol>
+<h2 id="example-plugin">Example Plugin</h2>
+<p>Here's a complete example of a simple plugin:</p>
+<pre><code class="language-python">from gfl.plugins import Plugin
+from typing import Dict, Any
+
+class SequenceAnalyzer(Plugin):
+    @property
+    def name(self) -&gt; str:
+        return &quot;sequence-analyzer&quot;
+
+    @property
+    def version(self) -&gt; str:
+        return &quot;1.0.0&quot;
+
+    def run(self, input_data: str, params: Dict[str, Any]) -&gt; Dict[str, Any]:
+        sequence = input_data
+        analysis = {
+            &quot;length&quot;: len(sequence),
+            &quot;gc_content&quot;: self._calculate_gc_content(sequence),
+            &quot;is_valid_dna&quot;: self._validate_dna(sequence)
+        }
+        return {&quot;analysis&quot;: analysis}
+
+    def _calculate_gc_content(self, sequence: str) -&gt; float:
+        gc_count = sequence.upper().count('G') + sequence.upper().count('C')
+        return (gc_count / len(sequence)) * 100 if sequence else 0
+
+    def _validate_dna(self, sequence: str) -&gt; bool:
+        valid_bases = set('ACGTN')
+        return all(base in valid_bases for base in sequence.upper())
+</code></pre>
+<h2 id="getting-help">Getting Help</h2>
+<p>If you need help creating plugins:</p>
+<ol>
+<li>Check the <a href="../ecosystem/plugins_overview.md">Plugin Ecosystem Documentation</a></li>
+<li>Review existing plugins in the repository</li>
+<li>Join the community discussions</li>
+<li>Open an issue on GitHub for specific questions</li>
+</ol>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../DEPLOYMENT_GUIDE/" class="btn btn-neutral float-left" title="Documentation Deployment Guide"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../user-guides/advanced_schemas/" class="btn btn-neutral float-right" title="Tutorial: Using Custom Schemas in IO Contracts">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../DEPLOYMENT_GUIDE/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../user-guides/advanced_schemas/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

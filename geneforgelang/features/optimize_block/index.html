@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Experiment Orchestration with the optimize Block - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Experiment Orchestration with the optimize Block";
+        var mkdocs_page_input_path = "geneforgelang/features/optimize_block.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Features</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Experiment Orchestration with the optimize Block</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#block-structure">Block Structure</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#search_space-search-space">search_space - Search Space</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#strategy-optimization-strategy">strategy - Optimization Strategy</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#objective-optimization-objective">objective - Optimization Objective</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#budget-budget-and-stopping-criteria">budget - Budget and Stopping Criteria</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#run-execution-block">run - Execution Block</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#complete-example">Complete Example</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#advanced-features">Advanced Features</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#multi-fidelity-optimization">Multi-Fidelity Optimization</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#multi-objective-optimization">Multi-Objective Optimization</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#integration-with-other-blocks">Integration with Other Blocks</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#performance-considerations">Performance Considerations</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Features</li>
+      <li class="breadcrumb-item active">Experiment Orchestration with the optimize Block</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="experiment-orchestration-with-the-optimize-block">Experiment Orchestration with the <code>optimize</code> Block</h1>
+<h2 id="introduction">Introduction</h2>
+<p>The <code>optimize</code> block represents one of the most significant advances in GeneForgeLang, transforming the language from a simple specification tool to a complete <strong>scientific discovery orchestration</strong> platform. This block automates the exploration of parameter spaces to find optimal experimental conditions, inspired by 'AI-driven experimentation' techniques that are revolutionizing genomic research.</p>
+<p>Instead of running experiments sequentially with fixed parameters, the <code>optimize</code> block allows defining <strong>intelligent experimental loops</strong> that:</p>
+<ul>
+<li><strong>Learn</strong> from each executed experiment</li>
+<li><strong>Adapt</strong> parameter selection based on previous results</li>
+<li><strong>Converge</strong> toward optimal experimental conditions efficiently</li>
+<li><strong>Minimize</strong> the number of experiments needed to find solutions</li>
+</ul>
+<p>This approach is especially valuable in genomics, where experiments can be costly, slow, and where the parameter space is typically very large and complex.</p>
+<h2 id="block-structure">Block Structure</h2>
+<p>The <code>optimize</code> block consists of five main components that fully define an experimental optimization loop:</p>
+<h3 id="search_space-search-space"><code>search_space</code> - Search Space</h3>
+<p>Defines the parameters to be explored and their possible value ranges. Each parameter can be:</p>
+<ul>
+<li><strong>Continuous</strong>: Using the syntax <code>range(min, max)</code> for numerical values</li>
+<li><strong>Discrete</strong>: Using the syntax <code>choice([value1, value2, ...])</code> for specific options</li>
+</ul>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-yaml">search_space:
+  parameter_name: range(min_value, max_value)
+  another_parameter: choice([option1, option2, option3])
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-yaml">search_space:
+  temperature: range(25, 42)              # Temperature in °C
+  guide_concentration: range(10, 100)      # Concentration in nM
+  incubation_time: choice([6, 12, 24, 48])  # Hours of incubation
+  buffer_type: choice([PBS, HEPES, Tris])     # Buffer types
+</code></pre>
+<h3 id="strategy-optimization-strategy"><code>strategy</code> - Optimization Strategy</h3>
+<p>Specifies the artificial intelligence algorithm that will be used to guide the exploration of the parameter space. The <code>name</code> field is mandatory and identifies the optimization plugin to use.</p>
+<p><strong>Supported Algorithms:</strong></p>
+<ul>
+<li><strong><code>ActiveLearning</code></strong>: Selects experiments that maximize information gained</li>
+<li><strong><code>BayesianOptimization</code></strong>: Uses Gaussian processes to model the parameter space</li>
+<li><strong><code>GeneticAlgorithm</code></strong>: Evolves populations of experimental configurations</li>
+<li><strong><code>SimulatedAnnealing</code></strong>: Stochastic exploration with gradual cooling</li>
+<li><strong><code>RandomSearch</code></strong>: Random selection (baseline)</li>
+<li><strong><code>GridSearch</code></strong>: Systematic exhaustive exploration</li>
+</ul>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-yaml">strategy:
+  name: AlgorithmName
+  specific_parameter: value
+  another_parameter: value
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-yaml"># Active learning with uncertainty metric
+strategy:
+  name: ActiveLearning
+  uncertainty_metric: entropy
+  initial_samples: 5
+
+# Bayesian optimization with specific acquisition function
+strategy:
+  name: BayesianOptimization
+  acquisition_function: expected_improvement
+  kernel: rbf
+</code></pre>
+<h3 id="objective-optimization-objective"><code>objective</code> - Optimization Objective</h3>
+<p>Defines which metric to optimize. It must contain exactly one of the following keys:</p>
+<ul>
+<li><strong><code>maximize</code></strong>: To maximize a metric (e.g.: efficiency, performance)</li>
+<li><strong><code>minimize</code></strong>: To minimize a metric (e.g.: cost, time, toxicity)</li>
+</ul>
+<p>Optionally, it can include a <code>target</code> field that specifies the objective context.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-yaml">objective:
+  maximize: metric_name
+  # Or alternatively:
+  minimize: metric_name
+  target: optional_context
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-yaml"># Maximize editing efficiency
+objective:
+  maximize: editing_efficiency
+
+# Minimize off-target effects
+objective:
+  minimize: off_target_effects
+  target: complete_genome
+
+# Maximize gene expression
+objective:
+  maximize: expression_level
+  target: GFP_protein
+</code></pre>
+<h3 id="budget-budget-and-stopping-criteria"><code>budget</code> - Budget and Stopping Criteria</h3>
+<p>Establishes constraints and stopping criteria for the optimization loop. It must contain at least one constraint.</p>
+<p><strong>Available Constraints:</strong></p>
+<ul>
+<li><strong><code>max_experiments</code></strong>: Maximum number of experiments (integer)</li>
+<li><strong><code>max_time</code></strong>: Maximum time (format: "24h", "7d", "30m")</li>
+<li><strong><code>max_cost</code></strong>: Maximum budget (number)</li>
+<li><strong><code>convergence_threshold</code></strong>: Convergence threshold (0.0 - 1.0)</li>
+</ul>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-yaml">budget:
+  max_experiments: number
+  max_time: &quot;time_with_unit&quot;
+  max_cost: amount
+  convergence_threshold: threshold
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-yaml"># Multiple limits
+budget:
+  max_experiments: 100
+  max_time: 72h
+  max_cost: 15000
+  convergence_threshold: 0.01
+
+# Only experiment limit
+budget:
+  max_experiments: 50
+</code></pre>
+<h3 id="run-execution-block"><code>run</code> - Execution Block</h3>
+<p>Defines the experiment or analysis that will be executed in each iteration of the optimization loop. It must contain exactly one of:</p>
+<ul>
+<li><strong><code>experiment</code></strong>: A standard GFL experiment block</li>
+<li><strong><code>analyze</code></strong>: A standard GFL analysis block</li>
+</ul>
+<p>Parameters defined in <code>search_space</code> can be injected using the syntax <code>${parameter_name}</code>.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-yaml">run:
+  experiment:
+    tool: tool
+    type: type
+    params:
+      parameter1: ${search_space_parameter}
+      parameter2: fixed_value
+
+# Or alternatively:
+run:
+  analyze:
+    strategy: strategy
+    data: data
+    thresholds:
+      threshold: ${search_space_parameter}
+</code></pre>
+<h2 id="complete-example">Complete Example</h2>
+<p>The following is a complete example of parameter optimization for a PCR reaction:</p>
+<pre><code class="language-yaml">metadata:
+  experiment_id: PCR_OPTIM_001
+  researcher: Dr. María González
+  project: pcr_optimization
+  description: Optimization of PCR conditions to maximize specificity
+
+optimize:
+  # Define parameters to explore
+  search_space:
+    annealing_temperature: range(55, 72)      # Annealing temperature (°C)
+    primer_concentration: range(0.1, 1.0)    # Primer concentration (μM)
+    extension_time: choice([30, 45, 60])     # Extension time (seconds)
+    mgcl2_concentration: range(1.5, 4.0)      # MgCl2 concentration (mM)
+
+  # Optimization strategy with active learning
+  strategy:
+    name: ActiveLearning
+    uncertainty_metric: entropy
+    initial_samples: 8
+    batch_size: 4
+
+  # Objective: maximize PCR specificity
+  objective:
+    maximize: specificity_score
+
+  # Budget constraints
+  budget:
+    max_experiments: 32
+    max_time: 48h
+    convergence_threshold: 0.005
+
+  # Run PCR experiment in each iteration
+  run:
+    experiment:
+      tool: PCR_amplifier
+      type: thermal_cycling
+      params:
+        annealing_temp: ${annealing_temperature}
+        primer_conc: ${primer_concentration}
+        extension_time: ${extension_time}
+        mgcl2_conc: ${mgcl2_concentration}
+      output: pcr_results
+
+  # Store optimized parameters
+  output: optimized_pcr_conditions
+</code></pre>
+<h2 id="advanced-features">Advanced Features</h2>
+<h3 id="multi-fidelity-optimization">Multi-Fidelity Optimization</h3>
+<p>For complex optimization tasks with different fidelity levels:</p>
+<pre><code class="language-yaml">optimize:
+  search_space:
+    temperature: range(25, 42)
+    concentration: range(10, 100)
+
+  strategy:
+    name: BayesianOptimization
+    fidelity_levels: [low, medium, high]
+    fidelity_switching: adaptive
+
+  objective:
+    maximize: efficiency_score
+
+  budget:
+    max_experiments: 50
+    max_time: 24h
+
+  run:
+    experiment:
+      tool: CRISPR_editor
+      fidelity: ${current_fidelity}
+      params:
+        temp: ${temperature}
+        conc: ${concentration}
+</code></pre>
+<h3 id="multi-objective-optimization">Multi-Objective Optimization</h3>
+<p>For scenarios with competing objectives:</p>
+<pre><code class="language-yaml">optimize:
+  search_space:
+    temperature: range(25, 42)
+    concentration: range(10, 100)
+
+  strategy:
+    name: MultiObjectiveBayesian
+    pareto_front: true
+
+  objective:
+    maximize:
+      - efficiency
+      - specificity
+    minimize:
+      - cost
+      - time
+
+  budget:
+    max_experiments: 100
+
+  run:
+    experiment:
+      tool: GeneEditor
+      params:
+        temp: ${temperature}
+        conc: ${concentration}
+</code></pre>
+<h2 id="integration-with-other-blocks">Integration with Other Blocks</h2>
+<p>The <code>optimize</code> block seamlessly integrates with other GFL workflow components:</p>
+<ul>
+<li><strong><code>design</code></strong>: Optimize parameters for generative design processes</li>
+<li><strong><code>analyze</code></strong>: Optimize analysis parameters based on results</li>
+<li><strong><code>refine</code></strong>: Improve candidate quality through iterative optimization</li>
+<li><strong><code>simulate</code></strong>: Optimize simulation parameters for accuracy</li>
+</ul>
+<p>This integration enables sophisticated workflows that combine experimental optimization with generative design and analysis.</p>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<p>When using the <code>optimize</code> block, consider:</p>
+<ol>
+<li><strong>Computational Resources</strong>: Optimization algorithms may require significant computing power</li>
+<li><strong>Strategy Selection</strong>: Choose algorithms appropriate for your specific optimization task</li>
+<li><strong>Budget Constraints</strong>: Define realistic constraints for time and resources</li>
+<li><strong>Convergence Monitoring</strong>: Track optimization progress to ensure effectiveness</li>
+<li><strong>Result Validation</strong>: Always validate optimized parameters experimentally</li>
+</ol>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Start Simple</strong>: Begin with basic optimization tasks and gradually increase complexity</li>
+<li><strong>Define Clear Objectives</strong>: Precise objectives lead to better optimization outcomes</li>
+<li><strong>Set Realistic Budgets</strong>: Include constraints that reflect experimental reality</li>
+<li><strong>Validate Results</strong>: Always experimentally validate optimized parameters</li>
+<li><strong>Iterate</strong>: Use optimization results to refine and improve subsequent iterations</li>
+</ol>
+<p>The <code>optimize</code> block represents a powerful capability for automated experimental design, enabling researchers to harness the power of AI for scientific discovery and innovation.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../locityper_haplotyping/" class="btn btn-neutral float-left" title="Locityper Genomic Haplotyping in GFL"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../refine_data/" class="btn btn-neutral float-right" title="Refine Data Block">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../locityper_haplotyping/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../refine_data/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

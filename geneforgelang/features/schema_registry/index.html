@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Schema Registry &amp; Type System - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Schema Registry \u0026amp; Type System";
+        var mkdocs_page_input_path = "geneforgelang/features/schema_registry.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Features</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Schema Registry &amp; Type System</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#schema-definition-files">Schema Definition Files</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#importing-schemas">Importing Schemas</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#using-custom-types-in-contracts">Using Custom Types in Contracts</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#schema-validation">Schema Validation</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#example-schema-file">Example Schema File</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#error-handling">Error Handling</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Features</li>
+      <li class="breadcrumb-item active">Schema Registry &amp; Type System</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="schema-registry-type-system">Schema Registry &amp; Type System</h1>
+<p>GeneForgeLang v1.0.0 introduces a powerful Schema Registry system that allows users to define custom data types in external schema files. This extensible type system enhances the language's flexibility and domain-specific capabilities.</p>
+<h2 id="overview">Overview</h2>
+<p>The Schema Registry enables users to:
+- Define custom data types in YAML schema files
+- Import schema definitions using the <code>import_schemas</code> directive
+- Use custom types in IO contracts for enhanced validation
+- Create domain-specific types for specialized workflows</p>
+<h2 id="schema-definition-files">Schema Definition Files</h2>
+<p>Schema definitions are written in YAML files with a specific structure:</p>
+<pre><code class="language-yaml"># custom_types.yml
+schemas:
+  - name: GeneExpressionMatrix
+    base_type: CSV
+    description: &quot;Gene expression data matrix with genes as rows and samples as columns&quot;
+    attributes:
+      normalized:
+        required: true
+        value: true
+      log_transformed:
+        required: false
+      sample_count:
+        required: true
+        type: integer
+
+  - name: ProteinStructure
+    base_type: CUSTOM
+    description: &quot;3D protein structure in PDB format with metadata&quot;
+    attributes:
+      resolution:
+        required: true
+        type: float
+      atom_count:
+        required: false
+        type: integer
+</code></pre>
+<h2 id="importing-schemas">Importing Schemas</h2>
+<p>Use the <code>import_schemas</code> directive at the top level of your GFL file to import schema definitions:</p>
+<pre><code class="language-yaml">import_schemas:
+  - ./schemas/custom_types.yml
+  - ./schemas/domain_specific.yml
+
+experiment:
+  tool: RNAseq
+  type: sequencing
+  contract:
+    outputs:
+      expression_data:
+        type: GeneExpressionMatrix
+        attributes:
+          normalized: true
+          sample_count: 12
+</code></pre>
+<h2 id="using-custom-types-in-contracts">Using Custom Types in Contracts</h2>
+<p>Once imported, custom types can be used in IO contracts just like built-in types:</p>
+<pre><code class="language-yaml">analyze:
+  strategy: differential
+  contract:
+    inputs:
+      expression_data:
+        type: GeneExpressionMatrix
+        attributes:
+          normalized: true
+    outputs:
+      significant_genes:
+        type: CSV
+        attributes:
+          format: gene_list
+</code></pre>
+<h2 id="schema-validation">Schema Validation</h2>
+<p>The Schema Registry provides robust validation for custom types:</p>
+<ol>
+<li><strong>Required Attributes</strong>: Ensures all required attributes are present</li>
+<li><strong>Value Constraints</strong>: Validates attribute values against expected values</li>
+<li><strong>Type Checking</strong>: Verifies attribute types match schema definitions</li>
+<li><strong>Base Type Compatibility</strong>: Checks compatibility with base types</li>
+</ol>
+<h2 id="example-schema-file">Example Schema File</h2>
+<p>Here's a complete example of a schema definition file:</p>
+<pre><code class="language-yaml"># genomics_schemas.yml
+version: 1.0
+schemas:
+  - name: VariantCallFormat
+    base_type: VCF
+    description: &quot;Variant call format file with genomic variants&quot;
+    attributes:
+      compressed:
+        required: false
+        value: true
+      annotated:
+        required: true
+        value: true
+      sample_count:
+        required: true
+        type: integer
+
+  - name: PhylogeneticTree
+    base_type: CUSTOM
+    description: &quot;Phylogenetic tree representation in Newick format&quot;
+    attributes:
+      rooted:
+        required: false
+        type: boolean
+      bootstrap_values:
+        required: false
+        value: true
+      leaf_count:
+        required: true
+        type: integer
+
+  - name: GenomeAssembly
+    base_type: FASTA
+    description: &quot;Genome assembly in FASTA format&quot;
+    attributes:
+      contig_count:
+        required: true
+        type: integer
+      assembly_level:
+        required: true
+        value: [complete, chromosome, scaffold, contig]
+      gc_content:
+        required: false
+        type: float
+</code></pre>
+<h2 id="error-handling">Error Handling</h2>
+<p>When schema validation fails, GeneForgeLang provides clear error messages:</p>
+<pre><code>Required attribute 'sample_count' missing in contract outputs 'expression_data' for schema type 'GeneExpressionMatrix'
+</code></pre>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Organize Schemas</strong>: Group related types in logical schema files</li>
+<li><strong>Version Control</strong>: Include version information in schema files</li>
+<li><strong>Documentation</strong>: Provide clear descriptions for each schema and attribute</li>
+<li><strong>Validation</strong>: Define required attributes to ensure data quality</li>
+<li><strong>Reusability</strong>: Design schemas to be reusable across multiple workflows</li>
+</ol>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li><a href="../io_contracts/">IO Contracts Documentation</a> - Learn how to use custom types in contracts</li>
+<li><a href="../design_block/">Design Block Documentation</a> - See how custom types work with AI workflows</li>
+<li><a href="../error_handling.md">Error Handling Guide</a> - Understand schema validation errors</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../refine_data/" class="btn btn-neutral float-left" title="Refine Data Block"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../spatial_genomic_capabilities/" class="btn btn-neutral float-right" title="GFL Spatial Genomic Capabilities">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../refine_data/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../spatial_genomic_capabilities/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

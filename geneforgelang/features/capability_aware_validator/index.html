@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>GFL Capability-Aware Validator - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "GFL Capability-Aware Validator";
+        var mkdocs_page_input_path = "geneforgelang/features/capability_aware_validator.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Features</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">GFL Capability-Aware Validator</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#key-features">Key Features</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-engine-capability-checking">1. Engine Capability Checking</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-feature-dependency-validation">2. Feature Dependency Validation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-multiple-engine-types">3. Multiple Engine Types</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-spatial-genomic-feature-support">4. Spatial Genomic Feature Support</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#basic-usage">Basic Usage</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#using-engine-types">Using Engine Types</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#advanced-usage">Advanced Usage</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#engine-capability-definitions">Engine Capability Definitions</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#basic-engine">Basic Engine</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#standard-engine">Standard Engine</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#advanced-engine">Advanced Engine</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#experimental-engine">Experimental Engine</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#feature-definitions">Feature Definitions</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#core-features">Core Features</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#advanced-features">Advanced Features</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#spatial-genomic-features-v130">Spatial Genomic Features (v1.3.0)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#reasoning-features">Reasoning Features</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#validation-results">Validation Results</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#warnings-vs-errors">Warnings vs Errors</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#capability-warnings">Capability Warnings</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#result-structure">Result Structure</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#example-1-basic-engine-validation">Example 1: Basic Engine Validation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example-2-advanced-engine-validation">Example 2: Advanced Engine Validation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example-3-custom-capabilities">Example 3: Custom Capabilities</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#integration-with-lsp">Integration with LSP</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-always-specify-engine-type">1. Always Specify Engine Type</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-handle-warnings-appropriately">2. Handle Warnings Appropriately</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-use-appropriate-engine-types">3. Use Appropriate Engine Types</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#future-enhancements">Future Enhancements</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#planned-features">Planned Features</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#research-applications">Research Applications</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#conclusion">Conclusion</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Features</li>
+      <li class="breadcrumb-item active">GFL Capability-Aware Validator</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="gfl-capability-aware-validator">GFL Capability-Aware Validator</h1>
+<h2 id="overview">Overview</h2>
+<p>The GFL Capability-Aware Validator is an enhanced semantic validator that checks not only if GFL code is syntactically and semantically correct, but also whether it's compatible with the target execution engine's capabilities. This prevents users from attempting to run scripts with features that aren't supported by their engine version.</p>
+<h2 id="key-features">Key Features</h2>
+<h3 id="1-engine-capability-checking">1. Engine Capability Checking</h3>
+<ul>
+<li>Validates GFL code against specific engine capabilities</li>
+<li>Generates warnings (not errors) for unsupported features</li>
+<li>Maintains backward compatibility with legacy GFL features</li>
+</ul>
+<h3 id="2-feature-dependency-validation">2. Feature Dependency Validation</h3>
+<ul>
+<li>Checks if all required dependencies for a feature are supported</li>
+<li>Prevents execution of features with missing prerequisites</li>
+<li>Provides clear dependency information</li>
+</ul>
+<h3 id="3-multiple-engine-types">3. Multiple Engine Types</h3>
+<ul>
+<li><strong>Basic</strong>: Core GFL features (experiment, analyze, design, optimize, branch, metadata)</li>
+<li><strong>Standard</strong>: Most features up to v1.2.0 (includes rules, simulate, hypothesis, timeline)</li>
+<li><strong>Advanced</strong>: All features including spatial genomic capabilities (v1.3.0)</li>
+<li><strong>Experimental</strong>: Cutting-edge features and integrations</li>
+</ul>
+<h3 id="4-spatial-genomic-feature-support">4. Spatial Genomic Feature Support</h3>
+<ul>
+<li>Validates loci blocks for genomic coordinates</li>
+<li>Checks spatial predicates (is_within, distance_between, is_in_contact)</li>
+<li>Validates enhanced simulate blocks for what-if reasoning</li>
+<li>Supports Hi-C integration capabilities</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="basic-usage">Basic Usage</h3>
+<pre><code class="language-python">from gfl.parser import parse_gfl
+from gfl.semantic_validator import validate
+from gfl.capability_system import get_engine_capabilities
+
+# Parse GFL content
+ast = parse_gfl(gfl_content)
+
+# Validate with specific engine capabilities
+basic_capabilities = get_engine_capabilities(&quot;basic&quot;)
+result = validate(ast, engine_capabilities=basic_capabilities)
+
+# Check for warnings
+if result.warnings:
+    for warning in result.warnings:
+        print(f&quot;WARNING: {warning.message}&quot;)
+        if hasattr(warning, 'feature'):
+            print(f&quot;Feature: {warning.feature.value}&quot;)
+</code></pre>
+<h3 id="using-engine-types">Using Engine Types</h3>
+<pre><code class="language-python">from gfl.semantic_validator import validate_with_engine_type
+
+# Validate for specific engine type
+result = validate_with_engine_type(ast, &quot;standard&quot;)
+
+# Check results
+print(f&quot;Errors: {len(result.errors)}&quot;)
+print(f&quot;Warnings: {len(result.warnings)}&quot;)
+</code></pre>
+<h3 id="advanced-usage">Advanced Usage</h3>
+<pre><code class="language-python">from gfl.semantic_validator import EnhancedSemanticValidator
+from gfl.capability_system import GFLFeature
+
+# Create custom capability set
+custom_capabilities = {
+    GFLFeature.EXPERIMENT_BLOCK,
+    GFLFeature.ANALYZE_BLOCK,
+    GFLFeature.LOCI_BLOCK,
+    GFLFeature.SPATIAL_PREDICATES
+}
+
+# Validate with custom capabilities
+validator = EnhancedSemanticValidator(
+    file_path=&quot;my_script.gfl&quot;,
+    engine_capabilities=custom_capabilities
+)
+result = validator.validate_ast(ast)
+</code></pre>
+<h2 id="engine-capability-definitions">Engine Capability Definitions</h2>
+<h3 id="basic-engine">Basic Engine</h3>
+<ul>
+<li>Core workflow features</li>
+<li>Suitable for simple analysis and experiments</li>
+<li>No advanced reasoning or spatial capabilities</li>
+</ul>
+<h3 id="standard-engine">Standard Engine</h3>
+<ul>
+<li>All basic features</li>
+<li>Rules and hypothesis blocks</li>
+<li>Basic simulation capabilities</li>
+<li>Schema imports and data refinement</li>
+</ul>
+<h3 id="advanced-engine">Advanced Engine</h3>
+<ul>
+<li>All standard features</li>
+<li>Spatial genomic capabilities (loci, spatial predicates)</li>
+<li>Enhanced simulation with what-if reasoning</li>
+<li>Hi-C integration support</li>
+</ul>
+<h3 id="experimental-engine">Experimental Engine</h3>
+<ul>
+<li>All advanced features</li>
+<li>Cutting-edge integrations</li>
+<li>Cloud and external data source support</li>
+<li>Future experimental features</li>
+</ul>
+<h2 id="feature-definitions">Feature Definitions</h2>
+<h3 id="core-features">Core Features</h3>
+<ul>
+<li><code>EXPERIMENT_BLOCK</code>: Basic experiment execution</li>
+<li><code>ANALYZE_BLOCK</code>: Data analysis and processing</li>
+<li><code>DESIGN_BLOCK</code>: Design and optimization</li>
+<li><code>OPTIMIZE_BLOCK</code>: Optimization algorithms</li>
+<li><code>BRANCH_BLOCK</code>: Conditional execution</li>
+<li><code>METADATA_BLOCK</code>: Metadata management</li>
+</ul>
+<h3 id="advanced-features">Advanced Features</h3>
+<ul>
+<li><code>SIMULATE_BLOCK</code>: Basic simulation</li>
+<li><code>RULES_BLOCK</code>: Rule-based logic</li>
+<li><code>HYPOTHESIS_BLOCK</code>: Hypothesis management</li>
+<li><code>TIMELINE_BLOCK</code>: Temporal reasoning</li>
+</ul>
+<h3 id="spatial-genomic-features-v130">Spatial Genomic Features (v1.3.0)</h3>
+<ul>
+<li><code>LOCI_BLOCK</code>: Genomic coordinate definitions</li>
+<li><code>SPATIAL_PREDICATES</code>: Spatial genomic predicates</li>
+<li><code>SPATIAL_SIMULATE</code>: What-if spatial reasoning</li>
+<li><code>HIC_INTEGRATION</code>: 3D chromatin contact data</li>
+</ul>
+<h3 id="reasoning-features">Reasoning Features</h3>
+<ul>
+<li><code>REASONING_ENGINE_V1</code>: Advanced inference</li>
+<li><code>WHAT_IF_SIMULATION</code>: Hypothetical scenario testing</li>
+<li><code>SPATIAL_REASONING</code>: Spatial genomic reasoning</li>
+</ul>
+<h2 id="validation-results">Validation Results</h2>
+<h3 id="warnings-vs-errors">Warnings vs Errors</h3>
+<ul>
+<li><strong>Errors</strong>: Syntax, semantic, or structural issues that prevent execution</li>
+<li><strong>Warnings</strong>: Capability issues that prevent execution on the target engine</li>
+<li><strong>Info</strong>: Informational messages and suggestions</li>
+</ul>
+<h3 id="capability-warnings">Capability Warnings</h3>
+<pre><code class="language-python"># Example warning
+warning = GFLValidationWarning(
+    message=&quot;Feature 'loci_block' is not supported by the target engine&quot;,
+    feature=GFLFeature.LOCI_BLOCK,
+    suggestion=&quot;Consider upgrading your GFL engine to support loci_block&quot;
+)
+</code></pre>
+<h3 id="result-structure">Result Structure</h3>
+<pre><code class="language-python">class EnhancedValidationResult:
+    errors: List[str]           # Critical issues
+    warnings: List[GFLValidationWarning]  # Capability warnings
+    info: List[str]             # Informational messages
+</code></pre>
+<h2 id="examples">Examples</h2>
+<h3 id="example-1-basic-engine-validation">Example 1: Basic Engine Validation</h3>
+<pre><code class="language-python"># GFL with spatial features
+gfl_content = &quot;&quot;&quot;
+loci:
+  - id: &quot;GeneLocus&quot;
+    chromosome: &quot;chr1&quot;
+    start: 1000000
+    end: 1001000
+
+rules:
+  - id: &quot;SpatialRule&quot;
+    if:
+      - type: &quot;is_within&quot;
+        element: &quot;Promoter&quot;
+        locus: &quot;GeneLocus&quot;
+    then:
+      - type: &quot;set_activity&quot;
+        element: &quot;Gene&quot;
+        level: &quot;high&quot;
+&quot;&quot;&quot;
+
+# Validate with basic engine
+result = validate_with_engine_type(parse_gfl(gfl_content), &quot;basic&quot;)
+
+# Expected warnings:
+# - LOCI_BLOCK not supported
+# - SPATIAL_PREDICATES not supported
+# - Dependencies missing
+</code></pre>
+<h3 id="example-2-advanced-engine-validation">Example 2: Advanced Engine Validation</h3>
+<pre><code class="language-python"># Same GFL content
+result = validate_with_engine_type(parse_gfl(gfl_content), &quot;advanced&quot;)
+
+# Expected: No capability warnings
+# All spatial genomic features supported
+</code></pre>
+<h3 id="example-3-custom-capabilities">Example 3: Custom Capabilities</h3>
+<pre><code class="language-python"># Define minimal capabilities
+minimal_capabilities = {GFLFeature.EXPERIMENT_BLOCK}
+
+result = validate(ast, engine_capabilities=minimal_capabilities)
+
+# Most features will generate warnings
+</code></pre>
+<h2 id="integration-with-lsp">Integration with LSP</h2>
+<p>The capability-aware validator integrates with the GFL Language Server Protocol (LSP) to provide real-time capability checking:</p>
+<ul>
+<li><strong>Real-time warnings</strong>: Show capability issues as users type</li>
+<li><strong>Engine selection</strong>: Allow users to select target engine type</li>
+<li><strong>Feature suggestions</strong>: Suggest alternatives for unsupported features</li>
+<li><strong>Dependency guidance</strong>: Help users understand feature dependencies</li>
+</ul>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-always-specify-engine-type">1. Always Specify Engine Type</h3>
+<pre><code class="language-python"># Good
+result = validate_with_engine_type(ast, &quot;standard&quot;)
+
+# Avoid
+result = validate(ast)  # No capability checking
+</code></pre>
+<h3 id="2-handle-warnings-appropriately">2. Handle Warnings Appropriately</h3>
+<pre><code class="language-python"># Check for capability warnings
+capability_warnings = [w for w in result.warnings if hasattr(w, 'feature')]
+if capability_warnings:
+    print(&quot;Script uses unsupported features:&quot;)
+    for warning in capability_warnings:
+        print(f&quot;- {warning.feature.value}: {warning.message}&quot;)
+</code></pre>
+<h3 id="3-use-appropriate-engine-types">3. Use Appropriate Engine Types</h3>
+<ul>
+<li><strong>Development</strong>: Use "experimental" for latest features</li>
+<li><strong>Production</strong>: Use "standard" or "advanced" for stability</li>
+<li><strong>Legacy systems</strong>: Use "basic" for maximum compatibility</li>
+</ul>
+<h2 id="future-enhancements">Future Enhancements</h2>
+<h3 id="planned-features">Planned Features</h3>
+<ol>
+<li><strong>Dynamic Capability Detection</strong>: Auto-detect engine capabilities</li>
+<li><strong>Feature Migration Tools</strong>: Help migrate scripts between engine versions</li>
+<li><strong>Performance Impact Analysis</strong>: Estimate execution performance</li>
+<li><strong>Cloud Integration</strong>: Validate cloud-specific features</li>
+</ol>
+<h3 id="research-applications">Research Applications</h3>
+<ol>
+<li><strong>Multi-Engine Workflows</strong>: Support for heterogeneous execution environments</li>
+<li><strong>Feature Versioning</strong>: Track feature evolution across GFL versions</li>
+<li><strong>Compatibility Matrices</strong>: Comprehensive compatibility information</li>
+<li><strong>Migration Assistance</strong>: Automated migration between engine versions</li>
+</ol>
+<h2 id="conclusion">Conclusion</h2>
+<p>The GFL Capability-Aware Validator provides a robust foundation for ensuring GFL script compatibility across different execution engines. By generating warnings rather than errors for unsupported features, it maintains script validity while providing clear guidance on engine requirements.</p>
+<p>This system enables the GFL ecosystem to evolve incrementally, with new features being introduced without breaking existing functionality, while providing clear migration paths for users who want to take advantage of new capabilities.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../Enhancer_Module_Spec/" class="btn btn-neutral float-left" title="🧬 GeneForge Enhancer Module"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../container_execution/" class="btn btn-neutral float-right" title="Container-Based Plugin Execution">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../Enhancer_Module_Spec/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../container_execution/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

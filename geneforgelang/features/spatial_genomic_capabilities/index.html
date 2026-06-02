@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>GFL Spatial Genomic Capabilities - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "GFL Spatial Genomic Capabilities";
+        var mkdocs_page_input_path = "geneforgelang/features/spatial_genomic_capabilities.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Features</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">GFL Spatial Genomic Capabilities</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#new-features">New Features</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-loci-block-genomic-coordinates">1. Loci Block - Genomic Coordinates</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-spatial-predicates-in-rules">2. Spatial Predicates in Rules</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-enhanced-simulate-block">3. Enhanced Simulate Block</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#use-cases">Use Cases</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-gene-regulation-analysis">1. Gene Regulation Analysis</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-crispr-design-optimization">2. CRISPR Design Optimization</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-synthetic-biology">3. Synthetic Biology</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-disease-research">4. Disease Research</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#implementation-details">Implementation Details</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#parser-extensions">Parser Extensions</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#interpreter-enhancements">Interpreter Enhancements</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#performance-considerations">Performance Considerations</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#future-enhancements">Future Enhancements</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#planned-features">Planned Features</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#research-applications">Research Applications</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#getting-started">Getting Started</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Features</li>
+      <li class="breadcrumb-item active">GFL Spatial Genomic Capabilities</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="gfl-spatial-genomic-capabilities">GFL Spatial Genomic Capabilities</h1>
+<h2 id="overview">Overview</h2>
+<p>GeneForge Language (GFL) has been enhanced with spatial genomic awareness, enabling researchers to express and reason about genomic geography, 3D topology, and spatial relationships between genomic elements. This evolution transforms GFL from a workflow orchestration language into a true bio-design and genomic reasoning language.</p>
+<h2 id="new-features">New Features</h2>
+<h3 id="1-loci-block-genomic-coordinates">1. Loci Block - Genomic Coordinates</h3>
+<p>The <code>loci</code> block allows you to define named genomic regions with their coordinates and constituent elements.</p>
+<h4 id="syntax">Syntax</h4>
+<pre><code class="language-gfl">loci {
+    id: &quot;LocusName&quot;,
+    chromosome: &quot;chr3&quot;,
+    start: 181708858,
+    end: 181711758,
+    elements: [
+        {
+            id: &quot;ElementName&quot;,
+            type: &quot;promoter|enhancer|gene|other&quot;
+        }
+    ]
+}
+</code></pre>
+<h4 id="example">Example</h4>
+<pre><code class="language-gfl">loci {
+    id: &quot;Sox2_GeneLocus&quot;,
+    chromosome: &quot;chr3&quot;,
+    start: 181708858,
+    end: 181711758,
+    elements: [
+        {
+            id: &quot;Sox2_Promoter&quot;,
+            type: &quot;promoter&quot;
+        },
+        {
+            id: &quot;Sox2_GeneBody&quot;,
+            type: &quot;gene&quot;
+        }
+    ]
+}
+</code></pre>
+<h3 id="2-spatial-predicates-in-rules">2. Spatial Predicates in Rules</h3>
+<p>The <code>rules</code> block now supports spatial predicates that can reason about genomic geography and 3D topology.</p>
+<h4 id="available-predicates">Available Predicates</h4>
+<ul>
+<li><code>is_within(element, locus)</code>: Checks if an element is within a genomic locus</li>
+<li><code>distance_between(element_a, element_b)</code>: Calculates distance between two elements</li>
+<li><code>is_in_contact(element_a, element_b, using: hic_map)</code>: Checks 3D contact using Hi-C data</li>
+</ul>
+<h4 id="syntax_1">Syntax</h4>
+<pre><code class="language-gfl">rules {
+    id: &quot;RuleName&quot;,
+    description: &quot;Rule description&quot;,
+    if: spatial_condition,
+    then: action_list
+}
+</code></pre>
+<h4 id="example_1">Example</h4>
+<pre><code class="language-gfl">rules {
+    id: &quot;GatekeeperRule&quot;,
+    description: &quot;Promoter is efficiently regulated by enhancer only if both are in native loci and in 3D contact&quot;,
+    if: is_within(Sox2_Promoter, Sox2_GeneLocus) AND
+        is_within(Sox2_Enhancer, Sox2_EnhancerLocus) AND
+        is_in_contact(Sox2_Promoter, Sox2_Enhancer, using: &quot;embryonic_stem_cell_hic.cool&quot;),
+    then: set_activity(Sox2_GeneBody, level: &quot;high&quot;)
+}
+</code></pre>
+<h3 id="3-enhanced-simulate-block">3. Enhanced Simulate Block</h3>
+<p>The <code>simulate</code> block enables what-if reasoning and in silico experiments based on spatial genomic rules.</p>
+<h4 id="syntax_2">Syntax</h4>
+<pre><code class="language-gfl">simulate {
+    name: &quot;SimulationName&quot;,
+    description: &quot;What happens if...&quot;,
+    action: hypothetical_action,
+    query: [
+        get_activity(element)
+    ]
+}
+</code></pre>
+<h4 id="example_2">Example</h4>
+<pre><code class="language-gfl">simulate {
+    name: &quot;Sox2_Promoter_Relocation_Experiment&quot;,
+    description: &quot;What happens to Sox2 activity if we move its promoter elsewhere?&quot;,
+    action: move(Sox2_Promoter, to: &quot;chr3:190000000&quot;),
+    query: [
+        get_activity(Sox2_GeneBody)
+    ]
+}
+</code></pre>
+<h2 id="use-cases">Use Cases</h2>
+<h3 id="1-gene-regulation-analysis">1. Gene Regulation Analysis</h3>
+<ul>
+<li>Model promoter-enhancer interactions</li>
+<li>Analyze the effects of genomic rearrangements</li>
+<li>Study the impact of 3D chromatin structure on gene expression</li>
+</ul>
+<h3 id="2-crispr-design-optimization">2. CRISPR Design Optimization</h3>
+<ul>
+<li>Predict the effects of gene editing on regulatory networks</li>
+<li>Optimize guide RNA placement based on spatial constraints</li>
+<li>Simulate the consequences of large deletions or insertions</li>
+</ul>
+<h3 id="3-synthetic-biology">3. Synthetic Biology</h3>
+<ul>
+<li>Design synthetic regulatory circuits with spatial awareness</li>
+<li>Optimize gene placement for maximum expression</li>
+<li>Model the effects of chromosomal context on synthetic constructs</li>
+</ul>
+<h3 id="4-disease-research">4. Disease Research</h3>
+<ul>
+<li>Model the effects of chromosomal translocations</li>
+<li>Analyze the impact of copy number variations</li>
+<li>Study the spatial organization of disease-associated loci</li>
+</ul>
+<h2 id="implementation-details">Implementation Details</h2>
+<h3 id="parser-extensions">Parser Extensions</h3>
+<ul>
+<li>New tokens for spatial genomic keywords</li>
+<li>Extended grammar rules for loci, rules, and simulate blocks</li>
+<li>Support for complex spatial conditions and actions</li>
+</ul>
+<h3 id="interpreter-enhancements">Interpreter Enhancements</h3>
+<ul>
+<li>Spatial condition evaluation</li>
+<li>Rule-based activity determination</li>
+<li>Simulation context management</li>
+<li>Hi-C data integration (placeholder for future implementation)</li>
+</ul>
+<h3 id="performance-considerations">Performance Considerations</h3>
+<ul>
+<li>Caching of spatial calculations</li>
+<li>Efficient rule matching algorithms</li>
+<li>Optimized simulation execution</li>
+</ul>
+<h2 id="future-enhancements">Future Enhancements</h2>
+<h3 id="planned-features">Planned Features</h3>
+<ol>
+<li><strong>Hi-C Data Integration</strong>: Direct support for loading and querying Hi-C contact maps</li>
+<li><strong>Advanced Spatial Metrics</strong>: Support for TAD boundaries, loop domains, and compartment analysis</li>
+<li><strong>Machine Learning Integration</strong>: ML-based prediction of spatial interactions</li>
+<li><strong>Visualization</strong>: Built-in visualization of genomic spatial relationships</li>
+<li><strong>Database Integration</strong>: Direct connection to genomic databases (UCSC, Ensembl)</li>
+</ol>
+<h3 id="research-applications">Research Applications</h3>
+<ol>
+<li><strong>Chromatin Architecture</strong>: Study the relationship between 3D structure and function</li>
+<li><strong>Evolutionary Genomics</strong>: Analyze how spatial organization evolves</li>
+<li><strong>Cancer Genomics</strong>: Model the effects of chromosomal instability</li>
+<li><strong>Developmental Biology</strong>: Study spatial organization during development</li>
+</ol>
+<h2 id="examples">Examples</h2>
+<p>See the following example files:
+- <code>spatial_genomic_minimal_example.gfl</code>: Basic usage
+- <code>spatial_genomic_sox2_example.gfl</code>: Sox2 gene regulation example
+- <code>spatial_genomic_complex_example.gfl</code>: Multi-gene regulatory network</p>
+<h2 id="getting-started">Getting Started</h2>
+<ol>
+<li>Define your genomic loci using the <code>loci</code> block</li>
+<li>Create spatial rules using the <code>rules</code> block with spatial predicates</li>
+<li>Run simulations using the <code>simulate</code> block to test hypotheses</li>
+<li>Analyze results to gain insights into spatial genomic relationships</li>
+</ol>
+<p>This enhanced GFL language enables researchers to capture and reason about the complex spatial organization of the genome, opening new possibilities for understanding gene regulation and designing synthetic biological systems.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../schema_registry/" class="btn btn-neutral float-left" title="Schema Registry &amp; Type System"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../symbolic_reasoning/" class="btn btn-neutral float-right" title="Symbolic Reasoning in GeneForgeLang">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../schema_registry/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../symbolic_reasoning/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Generative Design with the design Block - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Generative Design with the design Block";
+        var mkdocs_page_input_path = "geneforgelang/features/design_block.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Features</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Generative Design with the design Block</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#block-structure">Block Structure</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#entity-biological-entity-type">entity - Biological Entity Type</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#model-generative-model">model - Generative Model</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#objective-design-objective">objective - Design Objective</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#constraints-design-constraints">constraints - Design Constraints</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#count-number-of-candidates">count - Number of Candidates</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#output-output-variable">output - Output Variable</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#complete-example">Complete Example</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#advanced-features">Advanced Features</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#conditional-design">Conditional Design</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#multi-objective-optimization">Multi-Objective Optimization</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#integration-with-other-blocks">Integration with Other Blocks</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#performance-considerations">Performance Considerations</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Features</li>
+      <li class="breadcrumb-item active">Generative Design with the design Block</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="generative-design-with-the-design-block">Generative Design with the <code>design</code> Block</h1>
+<h2 id="introduction">Introduction</h2>
+<p>The <code>design</code> block represents a revolutionary advancement in GeneForgeLang, introducing <strong>automated generative design</strong> capabilities for biological entities. This block allows researchers to specify de novo design tasks that go beyond simple analysis of existing data, enabling the <strong>intelligent creation</strong> of new sequences, structures, and biological compounds.</p>
+<p>Inspired by recent advances in generative artificial intelligence, the <code>design</code> block integrates specialized deep learning models in biology to:</p>
+<ul>
+<li><strong>Generate</strong> new protein, DNA, RNA sequences with desired properties</li>
+<li><strong>Optimize</strong> bioactive compounds for specific therapeutic targets</li>
+<li><strong>Create</strong> diverse libraries of candidates for experimental screening</li>
+<li><strong>Incorporate</strong> realistic biological and physical constraints into the design process</li>
+</ul>
+<p>This approach is especially transformative in areas such as drug discovery, protein engineering, and synthetic biology, where the ability to design novel biological entities is fundamental to scientific innovation.</p>
+<h2 id="block-structure">Block Structure</h2>
+<p>The <code>design</code> block consists of six main components that fully define a generative design task:</p>
+<h3 id="entity-biological-entity-type"><code>entity</code> - Biological Entity Type</h3>
+<p>Specifies what type of biological entity will be designed. This field determines the design space and applicable constraints.</p>
+<p><strong>Supported Entities:</strong></p>
+<ul>
+<li><strong><code>ProteinSequence</code></strong>: Amino acid sequences for proteins</li>
+<li><strong><code>DNASequence</code></strong>: DNA nucleotide sequences</li>
+<li><strong><code>RNASequence</code></strong>: RNA nucleotide sequences</li>
+<li><strong><code>SmallMolecule</code></strong>: Small chemical compounds (&lt; 1000 Da)</li>
+<li><strong><code>Peptide</code></strong>: Short peptides (&lt; 50 amino acids)</li>
+<li><strong><code>Antibody</code></strong>: Antibodies and antibody fragments</li>
+</ul>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-yaml">entity: EntityType
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-yaml">entity: ProteinSequence    # Protein design
+entity: SmallMolecule     # Drug design
+entity: DNASequence       # Primer, promoter design, etc.
+</code></pre>
+<h3 id="model-generative-model"><code>model</code> - Generative Model</h3>
+<p>Specifies the artificial intelligence model that will be used to generate the new biological entities. Each model is specialized in a specific entity type and methodology.</p>
+<p><strong>Available Models:</strong></p>
+<ul>
+<li><strong><code>ProteinGeneratorVAE</code></strong>: Variational autoencoder for proteins</li>
+<li><strong><code>DNADesignerGAN</code></strong>: Generative adversarial network for DNA</li>
+<li><strong><code>MoleculeTransformer</code></strong>: Transformer for small molecules</li>
+<li><strong><code>SequenceOptimizer</code></strong>: Evolutionary optimizer for sequences</li>
+<li><strong><code>StructurePredictor</code></strong>: Structural predictor with generative capability</li>
+</ul>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-yaml">model: ModelName
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-yaml">model: ProteinGeneratorVAE    # For proteins with VAE
+model: MoleculeTransformer    # For molecules with Transformer
+</code></pre>
+<h3 id="objective-design-objective"><code>objective</code> - Design Objective</h3>
+<p>Defines the properties that should be optimized during the design process. It must contain exactly one of the following main directives, and optionally a specific target.</p>
+<p><strong>Main Directives:</strong>
+- <strong><code>maximize</code></strong>: Maximize a property (e.g.: affinity, stability)
+- <strong><code>minimize</code></strong>: Minimize a property (e.g.: toxicity, aggregation)</p>
+<p><strong>Optional Field:</strong>
+- <strong><code>target</code></strong>: Specifies the specific context or target</p>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-yaml">objective:
+  maximize: property
+  # Or alternatively:
+  minimize: property
+  target: specific_context
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-yaml"># Maximize binding affinity
+objective:
+  maximize: binding_affinity
+  target: ACE2_receptor
+
+# Minimize toxicity
+objective:
+  minimize: toxicity
+
+# Maximize thermal stability
+objective:
+  maximize: thermal_stability
+  target: 60C
+</code></pre>
+<h3 id="constraints-design-constraints"><code>constraints</code> - Design Constraints</h3>
+<p>Optional list of constraints that generated entities must satisfy. These constraints help guide the generative process toward biologically viable and experimentally feasible solutions.</p>
+<p><strong>Common Constraint Types:</strong></p>
+<ul>
+<li><strong>Length</strong>: <code>length(min, max)</code> - Allowed length range</li>
+<li><strong>Content</strong>: <code>gc_content(min, max)</code> - GC content for DNA/RNA</li>
+<li><strong>Motifs</strong>: <code>has_motif('sequence')</code> - Presence of specific sequences</li>
+<li><strong>Properties</strong>: <code>synthesizability &gt; 0.7</code> - Synthesis feasibility</li>
+<li><strong>Structure</strong>: <code>no_aggregation_prone_regions</code> - Avoid problematic regions</li>
+</ul>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-yaml">constraints:
+  - constraint1
+  - constraint2
+  - constraint3
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-yaml">constraints:
+  - length(120, 150)                    # Length between 120-150 residues
+  - synthesizability &gt; 0.8              # High synthesizability
+  - has_motif('RGD')                   # Contains RGD motif
+  - gc_content(0.4, 0.6)               # Balanced GC content
+  - molecular_weight &lt; 500             # Molecular weight for drug-likeness
+  - no_stop_codons                     # No premature stop codons
+</code></pre>
+<h3 id="count-number-of-candidates"><code>count</code> - Number of Candidates</h3>
+<p>Specifies how many different entities should be generated. This number must be a positive integer, typically between 1 and 1000 depending on the application and computational resources.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-yaml">count: integer_number
+</code></pre>
+<p><strong>Considerations:</strong>
+- <strong>Diversity vs Quality</strong>: More candidates increase diversity but may reduce average quality
+- <strong>Computational Resources</strong>: Large numbers require more computing time
+- <strong>Downstream Analysis</strong>: Consider experimental analysis capacity downstream</p>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-yaml">count: 10      # For quick initial validation
+count: 100     # For medium-sized screening
+count: 1000    # For large screening libraries
+</code></pre>
+<h3 id="output-output-variable"><code>output</code> - Output Variable</h3>
+<p>Specifies the name of the variable where generated candidates will be stored for use in subsequent workflow blocks. Must be a valid Python identifier.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code class="language-yaml">output: variable_name
+</code></pre>
+<p><strong>Naming Rules:</strong>
+- Must begin with a letter or underscore
+- Can only contain letters, numbers, and underscores
+- Cannot be a reserved GFL word</p>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-yaml">output: designed_proteins      # Designed proteins
+output: candidate_molecules    # Candidate molecules
+output: optimized_sequences    # Optimized sequences
+output: generated_antibodies   # Generated antibodies
+</code></pre>
+<h2 id="complete-example">Complete Example</h2>
+<p>The following is a complete example of therapeutic antibody design for COVID-19:</p>
+<pre><code class="language-yaml">metadata:
+  experiment_id: COVID_ANTIBODY_DESIGN_001
+  researcher: Dr. Elena Rodriguez
+  project: covid_therapeutics
+  description: Design of neutralizing antibodies against SARS-CoV-2
+  date: &quot;2024-01-15&quot;
+
+design:
+  # Entity type: antibodies
+  entity: Antibody
+
+  # Specialized generative model for antibodies
+  model: AntibodyDesignerVAE
+
+  # Objective: maximize binding affinity to viral receptor
+  objective:
+    maximize: binding_affinity
+    target: SARS-CoV-2_spike_protein
+
+  # Design constraints for experimental feasibility
+  constraints:
+    - length(110, 120)              # Appropriate antibody length
+    - synthesizability &gt; 0.85        # High synthesis probability
+    - no_aggregation_prone_regions   # Avoid aggregation-prone sequences
+    - gc_content(0.45, 0.55)        # Balanced GC content for expression
+
+  # Generate 50 candidate antibodies
+  count: 50
+
+  # Store results in this variable
+  output: covid_antibody_candidates
+
+# Subsequent analysis of generated candidates
+analyze:
+  tool: AntibodyAnalyzer
+  input: covid_antibody_candidates
+  metrics:
+    - binding_affinity
+    - stability_score
+    - immunogenicity_risk
+  output: analyzed_antibodies
+
+# Refine top candidates based on analysis
+refine:
+  input: analyzed_antibodies
+  criteria:
+    binding_affinity: &quot;&gt; 0.8&quot;
+    stability_score: &quot;&gt; 0.7&quot;
+    immunogenicity_risk: &quot;&lt; 0.3&quot;
+  count: 10
+  output: final_antibody_designs
+</code></pre>
+<h2 id="advanced-features">Advanced Features</h2>
+<h3 id="conditional-design">Conditional Design</h3>
+<p>The <code>design</code> block supports conditional logic for context-dependent design:</p>
+<pre><code class="language-yaml">design:
+  entity: ProteinSequence
+  model: ProteinGeneratorVAE
+  objective:
+    maximize: thermal_stability
+    target: &quot;${experimental_temperature}C&quot;
+  constraints:
+    - length(100, 200)
+    - if: &quot;${host_organism} == 'E.coli'&quot;
+      then:
+        - codon_optimization: E_coli
+        - avoid_rare_codons
+  count: 100
+  output: temperature_optimized_proteins
+</code></pre>
+<h3 id="multi-objective-optimization">Multi-Objective Optimization</h3>
+<p>For complex design tasks with multiple competing objectives:</p>
+<pre><code class="language-yaml">design:
+  entity: SmallMolecule
+  model: MoleculeTransformer
+  objective:
+    maximize:
+      - binding_affinity
+      - solubility
+    minimize:
+      - toxicity
+      - molecular_weight
+  constraints:
+    - molecular_weight &lt; 500
+    - logP &lt; 5
+    - hba_count &lt; 10
+    - hbd_count &lt; 5
+  count: 200
+  output: drug_candidates
+</code></pre>
+<h2 id="integration-with-other-blocks">Integration with Other Blocks</h2>
+<p>The <code>design</code> block seamlessly integrates with other GFL workflow components:</p>
+<ul>
+<li><strong><code>optimize</code></strong>: Iteratively improve designs through experimental optimization</li>
+<li><strong><code>analyze</code></strong>: Evaluate and characterize generated candidates</li>
+<li><strong><code>refine</code></strong>: Filter and improve candidate quality</li>
+<li><strong><code>simulate</code></strong>: Predict behavior in biological contexts</li>
+</ul>
+<p>This integration enables sophisticated workflows that combine generative design with experimental validation and iterative improvement.</p>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<p>When using the <code>design</code> block, consider:</p>
+<ol>
+<li><strong>Computational Resources</strong>: Large-scale design tasks may require significant computing power</li>
+<li><strong>Model Selection</strong>: Choose models appropriate for your specific design task</li>
+<li><strong>Constraint Specification</strong>: Well-defined constraints improve design quality</li>
+<li><strong>Validation Strategy</strong>: Plan for experimental validation of generated candidates</li>
+<li><strong>Storage Requirements</strong>: Generated candidates may require substantial storage</li>
+</ol>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Start Simple</strong>: Begin with basic design tasks and gradually increase complexity</li>
+<li><strong>Define Clear Objectives</strong>: Precise objectives lead to better design outcomes</li>
+<li><strong>Use Realistic Constraints</strong>: Include constraints that reflect experimental reality</li>
+<li><strong>Validate Results</strong>: Always experimentally validate generated candidates</li>
+<li><strong>Iterate</strong>: Use analysis results to refine and improve subsequent design iterations</li>
+</ol>
+<p>The <code>design</code> block represents a powerful capability for automated biological design, enabling researchers to harness the power of AI for scientific discovery and innovation.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../data_staging/" class="btn btn-neutral float-left" title="Data Staging Feature"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../epigenetic_editing/" class="btn btn-neutral float-right" title="Epigenetic Editing in GFL">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../data_staging/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../epigenetic_editing/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

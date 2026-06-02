@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>GeneForgeLang Enhanced CLI Documentation - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "GeneForgeLang Enhanced CLI Documentation";
+        var mkdocs_page_input_path = "geneforgelang/cli.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">GeneForgeLang Enhanced CLI Documentation</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installation-and-setup">Installation and Setup</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main-commands">Main Commands</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#parse-command">Parse Command</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#validate-command">Validate Command</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#inference-command">Inference Command</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#format-command">Format Command</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plugin-management">Plugin Management</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#configuration-management">Configuration Management</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#batch-processing">Batch Processing</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#system-information">System Information</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#performance-monitoring">Performance Monitoring</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#global-options">Global Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#output-formats">Output Formats</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#supported-formats">Supported Formats</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#rich-output-features">Rich Output Features</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configuration-options">Configuration Options</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#complete-workflow-example">Complete Workflow Example</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#batch-processing-example">Batch Processing Example</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plugin-development-workflow">Plugin Development Workflow</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#error-handling-and-debugging">Error Handling and Debugging</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#verbose-output">Verbose Output</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#error-codes">Error Codes</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#enhanced-error-messages">Enhanced Error Messages</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#integration-with-development-tools">Integration with Development Tools</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#ide-integration">IDE Integration</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#cicd-integration">CI/CD Integration</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#git-hooks">Git Hooks</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+      <li class="breadcrumb-item active">GeneForgeLang Enhanced CLI Documentation</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="geneforgelang-enhanced-cli-documentation">GeneForgeLang Enhanced CLI Documentation</h1>
+<p>The GeneForgeLang Enhanced CLI provides a comprehensive command-line interface for working with GFL files and workflows.</p>
+<h2 id="installation-and-setup">Installation and Setup</h2>
+<p>The enhanced CLI is automatically available when you install GeneForgeLang:</p>
+<pre><code class="language-bash">pip install geneforgelang[apps]  # For full feature set
+</code></pre>
+<p>Optional dependencies for enhanced features:
+- <code>rich</code>: For colorized output and progress bars
+- <code>ply</code>: For grammar-based parsing</p>
+<h2 id="main-commands">Main Commands</h2>
+<h3 id="parse-command">Parse Command</h3>
+<p>Parse GFL files into AST format with various output options.</p>
+<pre><code class="language-bash"># Basic parsing
+gfl parse experiment.gfl
+
+# Parse with validation
+gfl parse experiment.gfl --validate
+
+# Use grammar parser
+gfl parse experiment.gfl --grammar
+
+# Parse multiple files recursively
+gfl parse ./workflows/ --recursive --pattern &quot;*.gfl&quot;
+
+# Output formats
+gfl parse experiment.gfl --format json --output result.json
+gfl parse experiment.gfl --format tree  # Visual tree output
+</code></pre>
+<h3 id="validate-command">Validate Command</h3>
+<p>Comprehensive validation with rich error reporting.</p>
+<pre><code class="language-bash"># Basic validation
+gfl validate experiment.gfl
+
+# Enhanced validation with detailed errors
+gfl validate experiment.gfl --enhanced
+
+# Schema validation
+gfl validate experiment.gfl --schema
+
+# Multiple output formats
+gfl validate *.gfl --format json --output validation_report.json
+gfl validate *.gfl --format junit --output test-results.xml
+gfl validate *.gfl --format sarif --output security-report.sarif
+
+# Auto-fix issues (when possible)
+gfl validate experiment.gfl --fix
+
+# Stop on first error
+gfl validate *.gfl --stop-on-first
+</code></pre>
+<h3 id="inference-command">Inference Command</h3>
+<p>Run machine learning inference on GFL workflows.</p>
+<pre><code class="language-bash"># Basic inference
+gfl infer experiment.gfl --model dummy
+
+# With confidence filtering
+gfl infer experiment.gfl --model advanced --confidence-threshold 0.8
+
+# With explanations
+gfl infer experiment.gfl --explain --format json
+</code></pre>
+<h3 id="format-command">Format Command</h3>
+<p>Code formatting and style consistency.</p>
+<pre><code class="language-bash"># Check formatting
+gfl format experiment.gfl --check
+
+# Format in place
+gfl format *.gfl --in-place
+
+# Show differences
+gfl format experiment.gfl --diff
+
+# Custom indentation
+gfl format experiment.gfl --indent 4
+</code></pre>
+<h3 id="plugin-management">Plugin Management</h3>
+<p>Manage and interact with GFL plugins.</p>
+<pre><code class="language-bash"># List all plugins
+gfl plugins list
+
+# Show only active plugins
+gfl plugins list --active-only
+
+# Get plugin information
+gfl plugins info alpha_genome
+
+# Activate/deactivate plugins
+gfl plugins activate variant_sim
+gfl plugins deactivate alpha_genome
+
+# Validate plugin dependencies
+gfl plugins validate
+</code></pre>
+<h3 id="configuration-management">Configuration Management</h3>
+<p>Manage CLI configuration and preferences.</p>
+<pre><code class="language-bash"># Show current configuration
+gfl config show
+
+# Show specific setting
+gfl config show editor
+
+# Set configuration values
+gfl config set editor vim
+gfl config set use_grammar_parser true
+gfl config set color false
+
+# Reset to defaults
+gfl config reset --confirm
+</code></pre>
+<h3 id="batch-processing">Batch Processing</h3>
+<p>Process multiple files efficiently with parallel support.</p>
+<pre><code class="language-bash"># Sequential batch processing
+gfl batch parse --input-dir ./workflows --output-dir ./results
+
+# Parallel processing
+gfl batch validate --input-dir ./workflows --parallel --workers 8
+
+# Recursive processing
+gfl batch parse --input-dir ./project --recursive --pattern &quot;**/*.gfl&quot;
+
+# Different actions
+gfl batch validate --input-dir ./workflows --enhanced
+gfl batch infer --input-dir ./workflows --model advanced
+</code></pre>
+<h3 id="system-information">System Information</h3>
+<p>Get information about the GFL installation and environment.</p>
+<pre><code class="language-bash"># Basic system info
+gfl info
+
+# Check dependencies
+gfl info --check-deps
+
+# JSON output
+gfl info --format json
+</code></pre>
+<h3 id="performance-monitoring">Performance Monitoring</h3>
+<p>Monitor and optimize GFL performance.</p>
+<pre><code class="language-bash"># Show performance statistics
+gfl perf stats
+
+# Clear performance caches
+gfl perf clear
+
+# Run benchmarks
+gfl perf benchmark --files *.gfl --iterations 10
+</code></pre>
+<h2 id="global-options">Global Options</h2>
+<p>Available for all commands:</p>
+<pre><code class="language-bash"># Increase verbosity
+gfl --verbose parse experiment.gfl
+gfl -vv validate experiment.gfl  # Very verbose
+
+# Quiet mode
+gfl --quiet batch parse --input-dir ./workflows
+
+# Disable colored output
+gfl --no-color parse experiment.gfl
+
+# Custom configuration file
+gfl --config ./custom-config.json parse experiment.gfl
+
+# Version information
+gfl --version
+</code></pre>
+<h2 id="output-formats">Output Formats</h2>
+<h3 id="supported-formats">Supported Formats</h3>
+<ul>
+<li><strong>json</strong>: Machine-readable JSON output</li>
+<li><strong>yaml</strong>: Human-readable YAML format</li>
+<li><strong>text</strong>: Plain text with colors (default)</li>
+<li><strong>tree</strong>: Visual tree representation (for ASTs)</li>
+<li><strong>junit</strong>: JUnit XML format (for validation)</li>
+<li><strong>sarif</strong>: SARIF format for security tools</li>
+</ul>
+<h3 id="rich-output-features">Rich Output Features</h3>
+<p>When the <code>rich</code> library is available:
+- Colorized output with syntax highlighting
+- Progress bars for long operations
+- Formatted tables for structured data
+- Interactive elements and better error display</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<p>The CLI supports persistent configuration via <code>~/.gfl_config.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;output_format&quot;: &quot;rich&quot;,
+  &quot;use_grammar_parser&quot;: false,
+  &quot;auto_validate&quot;: true,
+  &quot;show_performance&quot;: false,
+  &quot;log_level&quot;: &quot;WARNING&quot;,
+  &quot;editor&quot;: &quot;code&quot;,
+  &quot;plugin_paths&quot;: [],
+  &quot;color&quot;: true
+}
+</code></pre>
+<h2 id="examples">Examples</h2>
+<h3 id="complete-workflow-example">Complete Workflow Example</h3>
+<pre><code class="language-bash"># 1. Parse and validate a workflow
+gfl parse workflow.gfl --validate --grammar --format json --output ast.json
+
+# 2. Run comprehensive validation
+gfl validate workflow.gfl --enhanced --schema --format sarif --output report.sarif
+
+# 3. Process with inference
+gfl infer workflow.gfl --model advanced --explain --output inference.json
+
+# 4. Format the file
+gfl format workflow.gfl --in-place
+
+# 5. Check performance
+gfl perf benchmark --files workflow.gfl --iterations 5
+</code></pre>
+<h3 id="batch-processing-example">Batch Processing Example</h3>
+<pre><code class="language-bash"># Process an entire project
+gfl batch validate \\
+  --input-dir ./genomics-workflows \\
+  --recursive \\
+  --pattern &quot;**/*.gfl&quot; \\
+  --parallel \\
+  --workers 8 \\
+  --output-dir ./validation-results
+
+# Check results
+ls ./validation-results/
+</code></pre>
+<h3 id="plugin-development-workflow">Plugin Development Workflow</h3>
+<pre><code class="language-bash"># Check available plugins
+gfl plugins list
+
+# Validate dependencies
+gfl plugins validate
+
+# Activate needed plugins
+gfl plugins activate alpha_genome
+gfl plugins activate variant_sim
+
+# Process with plugins active
+gfl infer experiment.gfl --model dummy
+</code></pre>
+<h2 id="error-handling-and-debugging">Error Handling and Debugging</h2>
+<h3 id="verbose-output">Verbose Output</h3>
+<pre><code class="language-bash"># Debug level logging
+gfl -vv parse problematic.gfl
+
+# Show stack traces
+gfl --verbose validate invalid.gfl
+</code></pre>
+<h3 id="error-codes">Error Codes</h3>
+<p>The CLI returns standard exit codes:
+- <code>0</code>: Success
+- <code>1</code>: General error (validation failed, parsing error, etc.)
+- <code>130</code>: Interrupted by user (Ctrl+C)</p>
+<h3 id="enhanced-error-messages">Enhanced Error Messages</h3>
+<p>When using enhanced validation:
+- Precise source locations (line:column)
+- Error codes and categories
+- Suggested fixes with explanations
+- Context-aware error messages</p>
+<h2 id="integration-with-development-tools">Integration with Development Tools</h2>
+<h3 id="ide-integration">IDE Integration</h3>
+<p>The CLI can be integrated with various IDEs and editors:</p>
+<pre><code class="language-bash"># Configure preferred editor
+gfl config set editor &quot;code&quot;  # VS Code
+gfl config set editor &quot;vim&quot;   # Vim
+gfl config set editor &quot;emacs&quot; # Emacs
+</code></pre>
+<h3 id="cicd-integration">CI/CD Integration</h3>
+<p>Use in continuous integration pipelines:</p>
+<pre><code class="language-bash"># Validation in CI
+gfl validate ./src/**/*.gfl --format junit --output test-results.xml
+
+# Security scanning
+gfl validate ./src/**/*.gfl --format sarif --output security-report.sarif
+</code></pre>
+<h3 id="git-hooks">Git Hooks</h3>
+<p>Add to git pre-commit hooks:</p>
+<pre><code class="language-bash">#!/bin/bash
+# .git/hooks/pre-commit
+gfl validate $(git diff --cached --name-only --diff-filter=ACM | grep '\\.gfl$') --stop-on-first
+</code></pre>
+<p>This enhanced CLI provides a professional-grade interface for all GeneForgeLang operations, supporting both individual file processing and large-scale batch operations with comprehensive error handling and reporting capabilities.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../api/" class="btn btn-neutral float-left" title="GeneForgeLang API Reference"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../features/Enhancer_Module_Spec/" class="btn btn-neutral float-right" title="🧬 GeneForge Enhancer Module">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../api/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../features/Enhancer_Module_Spec/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

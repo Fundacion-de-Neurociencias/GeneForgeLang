@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Locityper Genomic Haplotyping in GFL - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Locityper Genomic Haplotyping in GFL";
+        var mkdocs_page_input_path = "geneforgelang/features/locityper_haplotyping.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Features</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Locityper Genomic Haplotyping in GFL</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#key-concepts">Key Concepts</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#genomic-haplotyping">Genomic Haplotyping</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#locityper">Locityper</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#gfl-syntax-for-haplotyping">GFL Syntax for Haplotyping</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-defining-loci-with-haplotype-panels">1. Defining Loci with Haplotype Panels</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-invoking-locityper-for-genotyping">2. Invoking Locityper for Genotyping</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-the-locusgenotyperesult-schema">3. The LocusGenotypeResult Schema</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-reasoning-about-genotypes-in-rules">4. Reasoning About Genotypes in Rules</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#complete-example-workflows">Complete Example Workflows</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#example-1-hla-a-genotyping-for-drug-safety">Example 1: HLA-A Genotyping for Drug Safety</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example-2-kir-gene-presenceabsence-analysis">Example 2: KIR Gene Presence/Absence Analysis</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#new-predicates">New Predicates</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#genotype_contains">genotype_contains()</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#genotype_indicates_absence">genotype_indicates_absence()</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#integration-with-gfl-workflow">Integration with GFL Workflow</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#complete-haplotyping-pipeline">Complete Haplotyping Pipeline</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#use-cases">Use Cases</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-pharmacogenomics">1. Pharmacogenomics</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-immunogenetics">2. Immunogenetics</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-disease-risk-assessment">3. Disease Risk Assessment</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-population-genomics">4. Population Genomics</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#technical-notes">Technical Notes</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#haplotype-panel-format">Haplotype Panel Format</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#quality-metrics">Quality Metrics</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#performance-considerations">Performance Considerations</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#references">References</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#see-also">See Also</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Features</li>
+      <li class="breadcrumb-item active">Locityper Genomic Haplotyping in GFL</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="locityper-genomic-haplotyping-in-gfl">Locityper Genomic Haplotyping in GFL</h1>
+<h2 id="overview">Overview</h2>
+<p>GeneForgeLang v1.5.0 introduces support for <strong>genomic haplotyping</strong> using Locityper, enabling precise genotyping of complex, highly polymorphic genomic loci such as HLA genes and KIR (Killer Immunoglobulin-like Receptor) genes.</p>
+<p>This capability allows researchers to:
+- Define haplotype reference panels for complex loci
+- Execute Locityper-based genotyping from WGS data
+- Reason about genotyping results in GFL rules
+- Make clinical decisions based on haplotype information</p>
+<h2 id="key-concepts">Key Concepts</h2>
+<h3 id="genomic-haplotyping">Genomic Haplotyping</h3>
+<p><strong>Haplotyping</strong> is the process of determining which specific alleles (haplotypes) an individual carries at complex, highly variable genomic loci. Unlike simple SNP genotyping, haplotyping considers:
+- Long-range phasing information
+- Structural variations
+- Complex indels and rearrangements
+- Entire gene sequences</p>
+<h3 id="locityper">Locityper</h3>
+<p>Locityper is a specialized tool for genotyping complex loci using whole-genome sequencing data. It works by:
+1. Aligning sequencing reads to a panel of known haplotype sequences
+2. Determining which pair of haplotypes best explains the observed data
+3. Reporting quality metrics for the assignment</p>
+<h2 id="gfl-syntax-for-haplotyping">GFL Syntax for Haplotyping</h2>
+<h3 id="1-defining-loci-with-haplotype-panels">1. Defining Loci with Haplotype Panels</h3>
+<p>The <code>loci</code> block now supports an optional <code>haplotype_panel</code> field that references a collection of known haplotype sequences:</p>
+<pre><code class="language-yaml">loci:
+  - id: HLA_A_Locus
+    chromosome: &quot;chr6&quot;
+    start: 29941160
+    end: 29945884
+    description: &quot;HLA-A gene locus, highly polymorphic MHC class I&quot;
+    haplotype_panel: &quot;db/hla_a_alleles.fasta&quot;
+</code></pre>
+<p><strong>Fields:</strong>
+- <code>id</code> (required): Unique identifier for the locus
+- <code>chromosome</code> (required): Chromosome location
+- <code>start</code>, <code>end</code> (required): Genomic coordinates
+- <code>description</code> (optional): Human-readable description
+- <code>haplotype_panel</code> (optional): Path to FASTA/VCF file containing known haplotype sequences</p>
+<h3 id="2-invoking-locityper-for-genotyping">2. Invoking Locityper for Genotyping</h3>
+<p>Use the <code>analyze</code> block with <code>tool: "locityper"</code> to perform haplotype genotyping:</p>
+<pre><code class="language-yaml">analyze:
+  tool: &quot;locityper&quot;
+  target: locus(HLA_A_Locus)
+  input: &quot;patient_wgs.bam&quot;
+  output: &quot;hla_a_genotype_result&quot;
+  contract:
+    inputs:
+      patient_wgs.bam:
+        type: &quot;BAM&quot;
+        description: &quot;Whole genome sequencing alignment&quot;
+    outputs:
+      hla_a_genotype_result:
+        type: &quot;LocusGenotypeResult&quot;
+        description: &quot;Genotyping result for HLA-A locus&quot;
+</code></pre>
+<p><strong>Key Parameters:</strong>
+- <code>tool</code>: Must be "locityper"
+- <code>target</code>: Reference to a locus using <code>locus(LocusID)</code> syntax
+- <code>input</code>: Path to WGS BAM file
+- <code>output</code>: Variable name to store results
+- <code>contract</code>: Defines input/output types for validation</p>
+<h3 id="3-the-locusgenotyperesult-schema">3. The LocusGenotypeResult Schema</h3>
+<p>Locityper results follow the <code>LocusGenotypeResult</code> schema:</p>
+<pre><code class="language-yaml">import_schemas:
+  - ./schema/locityper_types.yml
+
+analyze:
+  tool: &quot;locityper&quot;
+  # ... genotyping configuration ...
+  output: &quot;genotype_result&quot;
+</code></pre>
+<p><strong>LocusGenotypeResult Structure:</strong>
+- <code>haplotype1_id</code> (string): First allele identifier (e.g., "HLA-A<em>01:01")
+- <code>haplotype2_id</code> (string): Second allele identifier (e.g., "HLA-A</em>02:01")
+- <code>quality_value</code> (number): Phred-like QV for the prediction
+- <code>confidence_score</code> (number, optional): Confidence in [0, 1]
+- <code>locus_id</code> (string, optional): Which locus was genotyped
+- <code>coverage_depth</code> (integer, optional): Average read depth</p>
+<h3 id="4-reasoning-about-genotypes-in-rules">4. Reasoning About Genotypes in Rules</h3>
+<p>GFL's <code>rules</code> block can reason about genotyping results using new predicates:</p>
+<h4 id="genotype_contains-predicate">genotype_contains Predicate</h4>
+<p>Tests if a genotype includes a specific haplotype allele:</p>
+<pre><code class="language-yaml">rules:
+  - id: R_HLA_Drug_Risk
+    description: &quot;HLA-A*31:01 allele increases carbamazepine hypersensitivity risk&quot;
+    if:
+      - genotype_contains:
+          result: hla_a_genotype_result
+          haplotype_id: &quot;HLA-A*31:01&quot;
+    then:
+      - set_risk_profile:
+          drug: &quot;Carbamazepine&quot;
+          risk_level: &quot;high&quot;
+          evidence: &quot;pharmacogenomic&quot;
+</code></pre>
+<h4 id="genotype_indicates_absence-predicate">genotype_indicates_absence Predicate</h4>
+<p>Tests if a gene is absent from the genotype:</p>
+<pre><code class="language-yaml">rules:
+  - id: R_KIR_Immune_Profile
+    description: &quot;KIR2DS4 absence affects NK cell response&quot;
+    if:
+      - genotype_indicates_absence:
+          result: kir_genotype_result
+          gene_id: &quot;KIR2DS4&quot;
+    then:
+      - set_immune_phenotype:
+          feature: &quot;NK_cell_response&quot;
+          value: &quot;altered&quot;
+</code></pre>
+<h2 id="complete-example-workflows">Complete Example Workflows</h2>
+<h3 id="example-1-hla-a-genotyping-for-drug-safety">Example 1: HLA-A Genotyping for Drug Safety</h3>
+<pre><code class="language-yaml"># HLA-A Pharmacogenomic Risk Assessment
+# ======================================
+
+# Import Locityper type definitions
+import_schemas:
+  - ./schema/locityper_types.yml
+
+# Define the HLA-A locus with haplotype panel
+loci:
+  - id: HLA_A_Locus
+    chromosome: &quot;chr6&quot;
+    start: 29941160
+    end: 29945884
+    description: &quot;HLA-A gene, MHC class I molecule&quot;
+    haplotype_panel: &quot;db/ipd_hla/hla_a_alleles_v3.48.0.fasta&quot;
+
+# Perform genotyping analysis
+analyze:
+  tool: &quot;locityper&quot;
+  target: locus(HLA_A_Locus)
+  input: &quot;patient_001_wgs.bam&quot;
+  output: &quot;hla_a_genotype&quot;
+  params:
+    min_coverage: 30
+    quality_threshold: 20
+  contract:
+    inputs:
+      patient_001_wgs.bam:
+        type: &quot;BAM&quot;
+        attributes:
+          sorted: true
+          indexed: true
+    outputs:
+      hla_a_genotype:
+        type: &quot;LocusGenotypeResult&quot;
+
+# Clinical decision rules based on genotype
+rules:
+  - id: R_Carbamazepine_Risk
+    description: &quot;HLA-A*31:01 carriers have high risk of carbamazepine hypersensitivity&quot;
+    if:
+      - genotype_contains:
+          result: hla_a_genotype
+          haplotype_id: &quot;HLA-A*31:01&quot;
+    then:
+      - set_risk_profile:
+          drug: &quot;Carbamazepine&quot;
+          risk_level: &quot;high&quot;
+          recommendation: &quot;Avoid or use alternative&quot;
+          evidence: &quot;CPIC Level A&quot;
+
+  - id: R_Abacavir_Risk
+    description: &quot;HLA-B*57:01 is associated with abacavir hypersensitivity&quot;
+    if:
+      - genotype_contains:
+          result: hla_b_genotype
+          haplotype_id: &quot;HLA-B*57:01&quot;
+    then:
+      - set_risk_profile:
+          drug: &quot;Abacavir&quot;
+          risk_level: &quot;contraindicated&quot;
+          recommendation: &quot;Do not prescribe&quot;
+          evidence: &quot;CPIC Level A&quot;
+
+# Generate clinical report
+output:
+  - haplotype_1: &quot;${hla_a_genotype.haplotype1_id}&quot;
+  - haplotype_2: &quot;${hla_a_genotype.haplotype2_id}&quot;
+  - genotype_quality: &quot;${hla_a_genotype.quality_value}&quot;
+  - drug_risk_profile: &quot;${risk_profile}&quot;
+</code></pre>
+<h3 id="example-2-kir-gene-presenceabsence-analysis">Example 2: KIR Gene Presence/Absence Analysis</h3>
+<pre><code class="language-yaml"># KIR Gene Copy Number and Immune Profiling
+# ==========================================
+
+import_schemas:
+  - ./schema/locityper_types.yml
+
+# Define multiple KIR loci
+loci:
+  - id: KIR2DL1_Locus
+    chromosome: &quot;chr19&quot;
+    start: 54784687
+    end: 54799625
+    haplotype_panel: &quot;db/kir/kir2dl1_alleles.fasta&quot;
+
+  - id: KIR2DS4_Locus
+    chromosome: &quot;chr19&quot;
+    start: 54836984
+    end: 54849995
+    haplotype_panel: &quot;db/kir/kir2ds4_alleles.fasta&quot;
+
+  - id: KIR3DL1_Locus
+    chromosome: &quot;chr19&quot;
+    start: 54741748
+    end: 54757261
+    haplotype_panel: &quot;db/kir/kir3dl1_alleles.fasta&quot;
+
+# Batch genotyping of KIR loci
+analyze:
+  tool: &quot;locityper&quot;
+  targets:
+    - locus(KIR2DL1_Locus)
+    - locus(KIR2DS4_Locus)
+    - locus(KIR3DL1_Locus)
+  input: &quot;patient_wgs.bam&quot;
+  output: &quot;kir_genotyping_results&quot;
+  params:
+    mode: &quot;batch&quot;
+    detect_deletions: true
+  contract:
+    outputs:
+      kir_genotyping_results:
+        type: &quot;MultiLocusGenotypeResult&quot;
+
+# Immune phenotype inference rules
+rules:
+  - id: R_KIR2DS4_Absence
+    description: &quot;KIR2DS4 deletion affects NK cell diversity&quot;
+    if:
+      - genotype_indicates_absence:
+          result: kir_genotyping_results
+          gene_id: &quot;KIR2DS4&quot;
+    then:
+      - set_immune_phenotype:
+          feature: &quot;NK_cell_diversity&quot;
+          value: &quot;reduced&quot;
+          confidence: 0.85
+
+  - id: R_KIR3DL1_High_Expression
+    description: &quot;Certain KIR3DL1 alleles have high expression&quot;
+    if:
+      - genotype_contains:
+          result: kir_genotyping_results
+          haplotype_id: &quot;KIR3DL1*00101&quot;
+    then:
+      - set_immune_phenotype:
+          feature: &quot;KIR3DL1_expression&quot;
+          value: &quot;high&quot;
+          impact: &quot;enhanced_NK_inhibition&quot;
+
+# Combined immune profile
+output:
+  - kir_profile: &quot;${kir_genotyping_results}&quot;
+  - immune_phenotype: &quot;${immune_phenotype}&quot;
+</code></pre>
+<h2 id="new-predicates">New Predicates</h2>
+<h3 id="genotype_contains">genotype_contains()</h3>
+<p><strong>Signature:</strong></p>
+<pre><code>genotype_contains(result: LocusGenotypeResult, haplotype_id: string) -&gt; boolean
+</code></pre>
+<p><strong>Description:</strong> Returns true if either haplotype1_id or haplotype2_id matches the specified haplotype_id.</p>
+<p><strong>Use Cases:</strong>
+- Pharmacogenomic risk assessment
+- Disease susceptibility screening
+- Transplant compatibility checking</p>
+<h3 id="genotype_indicates_absence">genotype_indicates_absence()</h3>
+<p><strong>Signature:</strong></p>
+<pre><code>genotype_indicates_absence(result: LocusGenotypeResult, gene_id: string) -&gt; boolean
+</code></pre>
+<p><strong>Description:</strong> Returns true if the gene appears to be deleted or absent (both haplotypes null or marked as deletion).</p>
+<p><strong>Use Cases:</strong>
+- Copy number variation detection
+- Gene deletion screening
+- Immune repertoire analysis</p>
+<h2 id="integration-with-gfl-workflow">Integration with GFL Workflow</h2>
+<h3 id="complete-haplotyping-pipeline">Complete Haplotyping Pipeline</h3>
+<pre><code class="language-yaml"># Step 1: Define genomic loci with haplotype panels
+loci:
+  - id: Target_Locus
+    chromosome: &quot;chr6&quot;
+    start: 29000000
+    end: 30000000
+    haplotype_panel: &quot;reference_haplotypes.fasta&quot;
+
+# Step 2: Genotype from WGS data
+analyze:
+  tool: &quot;locityper&quot;
+  target: locus(Target_Locus)
+  input: &quot;wgs_alignment.bam&quot;
+  output: &quot;genotype&quot;
+
+# Step 3: Reason about results
+rules:
+  - if: [genotype_contains(result: genotype, haplotype_id: &quot;Risk_Allele&quot;)]
+    then: [flag_for_review(reason: &quot;high_risk_allele&quot;)]
+
+# Step 4: Generate report
+output:
+  - final_genotype: &quot;${genotype}&quot;
+  - clinical_flags: &quot;${flags}&quot;
+</code></pre>
+<h2 id="use-cases">Use Cases</h2>
+<h3 id="1-pharmacogenomics">1. Pharmacogenomics</h3>
+<ul>
+<li>HLA genotyping for drug hypersensitivity prediction</li>
+<li>CYP2D6/CYP2C19 haplotyping for drug metabolism</li>
+<li>TPMT genotyping for thiopurine dosing</li>
+</ul>
+<h3 id="2-immunogenetics">2. Immunogenetics</h3>
+<ul>
+<li>KIR gene presence/absence for NK cell function</li>
+<li>HLA typing for transplant matching</li>
+<li>T-cell receptor diversity analysis</li>
+</ul>
+<h3 id="3-disease-risk-assessment">3. Disease Risk Assessment</h3>
+<ul>
+<li>MHC haplotypes and autoimmune disease risk</li>
+<li>Complement gene variants and infection susceptibility</li>
+<li>Immune gene profiles for vaccine response</li>
+</ul>
+<h3 id="4-population-genomics">4. Population Genomics</h3>
+<ul>
+<li>Haplotype frequency analysis</li>
+<li>Linkage disequilibrium studies</li>
+<li>Evolutionary genetics of complex loci</li>
+</ul>
+<h2 id="technical-notes">Technical Notes</h2>
+<h3 id="haplotype-panel-format">Haplotype Panel Format</h3>
+<p>Haplotype panels should be in FASTA format with allele IDs in headers:</p>
+<pre><code>&gt;HLA-A*01:01:01:01
+ATGCGGGTCACGGCGCCCCG...
+&gt;HLA-A*02:01:01:01  
+ATGCGGGTCATGGCGCCCCG...
+</code></pre>
+<h3 id="quality-metrics">Quality Metrics</h3>
+<p>The <code>quality_value</code> in LocusGenotypeResult is a Phred-like score where:
+- QV ≥ 30: High confidence (error rate &lt; 0.1%)
+- QV 20-30: Medium confidence
+- QV &lt; 20: Low confidence, manual review recommended</p>
+<h3 id="performance-considerations">Performance Considerations</h3>
+<ul>
+<li>Haplotyping complex loci (e.g., HLA) requires ≥30x WGS coverage</li>
+<li>Processing time: ~1-5 minutes per locus depending on panel size</li>
+<li>Memory: Proportional to panel size (typically 2-4 GB for HLA)</li>
+</ul>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Use Latest Panels</strong>: Keep haplotype panels updated with latest allele databases</li>
+<li><strong>Validate Coverage</strong>: Ensure adequate sequencing depth at target loci</li>
+<li><strong>Quality Thresholds</strong>: Set appropriate QV thresholds for your application</li>
+<li><strong>Batch Processing</strong>: Genotype multiple loci in single analysis for efficiency</li>
+<li><strong>Clinical Validation</strong>: Confirm critical genotypes with orthogonal methods</li>
+</ol>
+<h2 id="references">References</h2>
+<ul>
+<li>IPD-IMGT/HLA Database: https://www.ebi.ac.uk/ipd/imgt/hla/</li>
+<li>KIR Database: https://www.ebi.ac.uk/ipd/kir/</li>
+<li>Locityper Documentation: (tool-specific documentation)</li>
+</ul>
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="./loci_blocks.md">Loci Block Specification</a></li>
+<li><a href="./analyze_block.md">Analyze Block Specification</a></li>
+<li><a href="./rules_system.md">Rules and Reasoning</a></li>
+<li><a href="../schema_registry/">Schema Registry</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../io_contracts/" class="btn btn-neutral float-left" title="IO Contracts System"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../optimize_block/" class="btn btn-neutral float-right" title="Experiment Orchestration with the optimize Block">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../io_contracts/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../optimize_block/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

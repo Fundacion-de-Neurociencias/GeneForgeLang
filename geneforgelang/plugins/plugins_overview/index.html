@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Plugin Ecosystem Overview - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Plugin Ecosystem Overview";
+        var mkdocs_page_input_path = "geneforgelang/plugins/plugins_overview.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Plugins</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Plugin Ecosystem Overview</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#architecture">Architecture</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#core-components">Core Components</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#plugin-types">Plugin Types</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plugin-categories">Plugin Categories</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#core-plugins">Core Plugins</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#genesis-plugins">Genesis Plugins</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#getting-started">Getting Started</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#installing-plugins">Installing Plugins</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#registering-plugins">Registering Plugins</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#using-plugins-in-gfl">Using Plugins in GFL</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#genesis-plugin-suite">Genesis Plugin Suite</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-gfl-plugin-ontarget-scorer">1. gfl-plugin-ontarget-scorer</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-gfl-plugin-offtarget-scorer">2. gfl-plugin-offtarget-scorer</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-gfl-plugin-crispr-evaluator">3. gfl-plugin-crispr-evaluator</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-gfl-plugin-crispr-visualizer">4. gfl-plugin-crispr-visualizer</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#workflow-integration">Workflow Integration</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Plugins</li>
+      <li class="breadcrumb-item active">Plugin Ecosystem Overview</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="plugin-ecosystem-overview">Plugin Ecosystem Overview</h1>
+<p>GeneForgeLang's plugin ecosystem provides a sophisticated framework for integrating external AI/ML tools and experimental systems with GFL workflows. The plugin system standardizes how the GFL execution engine interacts with specialized tools for biological entity generation and experimental optimization.</p>
+<h2 id="architecture">Architecture</h2>
+<h3 id="core-components">Core Components</h3>
+<ol>
+<li><strong>Plugin Interfaces</strong>: Abstract base classes defining contracts for plugin types</li>
+<li><strong>Plugin Registry</strong>: Discovery, lifecycle, and dependency management system</li>
+<li><strong>Execution Engine</strong>: Orchestrates plugin invocation during workflow execution</li>
+<li><strong>Example Implementations</strong>: Reference plugins demonstrating best practices</li>
+</ol>
+<h3 id="plugin-types">Plugin Types</h3>
+<h4 id="generatorplugin">GeneratorPlugin</h4>
+<ul>
+<li><strong>Purpose</strong>: Create new biological entities (proteins, DNA, RNA, molecules)</li>
+<li><strong>Use Case</strong>: Powers GFL <code>design</code> blocks</li>
+<li><strong>Interface</strong>: <code>gfl.plugins.GeneratorPlugin</code></li>
+<li><strong>Methods</strong>: <code>generate()</code>, <code>validate_objective()</code>, <code>validate_constraints()</code></li>
+</ul>
+<h4 id="optimizerplugin">OptimizerPlugin</h4>
+<ul>
+<li><strong>Purpose</strong>: Intelligent parameter space exploration and optimization</li>
+<li><strong>Use Case</strong>: Powers GFL <code>optimize</code> blocks</li>
+<li><strong>Interface</strong>: <code>gfl.plugins.OptimizerPlugin</code></li>
+<li><strong>Methods</strong>: <code>setup()</code>, <code>suggest_next()</code>, <code>should_stop()</code></li>
+</ul>
+<h4 id="priorsplugin">PriorsPlugin</h4>
+<ul>
+<li><strong>Purpose</strong>: Bayesian prior integration for enhanced experimental design</li>
+<li><strong>Use Case</strong>: Powers GFL <code>with_priors</code> clauses</li>
+<li><strong>Interface</strong>: <code>gfl.plugins.PriorsPlugin</code></li>
+<li><strong>Methods</strong>: <code>specify_priors()</code>, <code>update_posteriors()</code></li>
+</ul>
+<h2 id="plugin-categories">Plugin Categories</h2>
+<p>The GFL plugin ecosystem is organized into two main categories:</p>
+<h3 id="core-plugins">Core Plugins</h3>
+<p>These are essential plugins that provide fundamental bioinformatics capabilities:
+- <strong>BLAST</strong>: Sequence alignment searches
+- <strong>GATK</strong>: Genomic analysis toolkit
+- <strong>SAMtools</strong>: Sequence alignment manipulation
+- <strong>Biopython Tools</strong>: Bioinformatics utilities</p>
+<h3 id="genesis-plugins">Genesis Plugins</h3>
+<p>These specialized plugins focus on CRISPR gene editing workflows:
+- <strong>On-Target Scorer</strong>: Predicts CRISPR cutting efficiency
+- <strong>Off-Target Scorer</strong>: Identifies potential off-target sites
+- <strong>CRISPR Evaluator</strong>: Combines and ranks gRNA candidates
+- <strong>CRISPR Visualizer</strong>: Generates visualizations of results</p>
+<h2 id="getting-started">Getting Started</h2>
+<h3 id="installing-plugins">Installing Plugins</h3>
+<p>Plugins can be installed via pip if they're packaged properly:</p>
+<pre><code class="language-bash"># Install individual plugins
+pip install gfl-plugin-blast
+pip install gfl-plugin-gatk
+pip install gfl-plugin-samtools
+pip install gfl-plugin-biopython-tools
+
+# Install Genesis plugins
+pip install gfl-plugin-ontarget-scorer
+pip install gfl-plugin-offtarget-scorer
+pip install gfl-plugin-crispr-evaluator
+pip install gfl-plugin-crispr-visualizer
+</code></pre>
+<h3 id="registering-plugins">Registering Plugins</h3>
+<h4 id="entry-point-registration-recommended">Entry Point Registration (Recommended)</h4>
+<p>Add to your plugin package's <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project.entry-points.&quot;gfl.plugins&quot;]
+protein_vae = &quot;my_package.plugins:ProteinVAEGenerator&quot;
+bayesian_opt = &quot;my_package.plugins:BayesianOptimizer&quot;
+</code></pre>
+<h4 id="manual-registration">Manual Registration</h4>
+<pre><code class="language-python">from gfl.plugins import register_generator_plugin, register_optimizer_plugin
+from my_package.plugins import MyGenerator, MyOptimizer
+
+register_generator_plugin(MyGenerator, &quot;my_generator&quot;, version=&quot;1.0.0&quot;)
+register_optimizer_plugin(MyOptimizer, &quot;my_optimizer&quot;, version=&quot;1.0.0&quot;)
+</code></pre>
+<h3 id="using-plugins-in-gfl">Using Plugins in GFL</h3>
+<p>Once registered, plugins can be referenced directly in GFL workflows:</p>
+<pre><code class="language-yaml">design:
+  entity: ProteinSequence
+  model: MyGeneratorPlugin  # Plugin name
+  objective:
+    maximize: stability
+  count: 10
+  output: designed_proteins
+
+optimize:
+  search_space:
+    temperature: range(25, 42)
+    concentration: range(10, 100)
+  strategy:
+    name: MyOptimizerStrategy  # Strategy provided by plugin
+  objective:
+    maximize: efficiency
+  budget:
+    max_experiments: 50
+  run:
+    experiment:
+      # Your experimental setup here
+</code></pre>
+<h2 id="genesis-plugin-suite">Genesis Plugin Suite</h2>
+<p>The Genesis plugin suite provides a complete CRISPR evaluation pipeline:</p>
+<h3 id="1-gfl-plugin-ontarget-scorer">1. gfl-plugin-ontarget-scorer</h3>
+<p><strong>Purpose</strong>: Predicts the efficiency of CRISPR-Cas9 cutting at the intended target site.</p>
+<p><strong>Key Features</strong>:
+- Takes a gRNA sequence and surrounding genomic sequence as input
+- Uses pre-trained machine learning models (DeepCRISPR/DeepHF) to calculate efficiency
+- Returns a score between 0 and 1 (higher is better)</p>
+<h3 id="2-gfl-plugin-offtarget-scorer">2. gfl-plugin-offtarget-scorer</h3>
+<p><strong>Purpose</strong>: Identifies potential off-target cutting sites and calculates a global risk score.</p>
+<p><strong>Key Features</strong>:
+- Takes a gRNA sequence as input
+- Uses BLAST-like search against reference genome (e.g., GRCh38)
+- Calculates risk scores using the CFD algorithm
+- Returns aggregated global risk score (lower is better)</p>
+<h3 id="3-gfl-plugin-crispr-evaluator">3. gfl-plugin-crispr-evaluator</h3>
+<p><strong>Purpose</strong>: Orchestrator that combines on-target and off-target scores into a final ranking.</p>
+<p><strong>Key Features</strong>:
+- Takes a list of gRNA candidates as input
+- Internally invokes the other two plugins for each candidate
+- Combines scores using weighted formula: <code>combined_score = on_target_score - (w * off_target_risk)</code>
+- Returns ranked table of gRNAs with all three scores</p>
+<h3 id="4-gfl-plugin-crispr-visualizer">4. gfl-plugin-crispr-visualizer</h3>
+<p><strong>Purpose</strong>: Generates visualizations of CRISPR evaluation results.</p>
+<p><strong>Key Features</strong>:
+- Takes evaluation results from the evaluator plugin
+- Produces charts and graphs in various formats (HTML, PNG, SVG)
+- Supports different chart types (bar, scatter)
+- Helps researchers quickly identify the best gRNA candidates</p>
+<h2 id="workflow-integration">Workflow Integration</h2>
+<p>These plugins work together to provide a complete CRISPR evaluation pipeline:</p>
+<ol>
+<li><strong>Input</strong>: List of gRNA candidates</li>
+<li><strong>Evaluation</strong>: On-target and off-target plugins calculate individual scores</li>
+<li><strong>Combination</strong>: CRISPR evaluator combines scores into final ranking</li>
+<li><strong>Visualization</strong>: CRISPR visualizer generates visual representations of results</li>
+</ol>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li>Explore detailed documentation for <a href="core_plugins/">Core Plugins</a></li>
+<li>Learn about <a href="genesis_plugins/">Genesis Plugins</a></li>
+<li>Read the <a href="../development/creating_plugins.md">Plugin Development Guide</a> to create your own plugins</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../PLUGIN_ECOSYSTEM/" class="btn btn-neutral float-left" title="Plugin Ecosystem Documentation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../core_plugins/biopython/" class="btn btn-neutral float-right" title="Biopython Tools Plugin">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../PLUGIN_ECOSYSTEM/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../core_plugins/biopython/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

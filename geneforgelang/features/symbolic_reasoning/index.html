@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Symbolic Reasoning in GeneForgeLang - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Symbolic Reasoning in GeneForgeLang";
+        var mkdocs_page_input_path = "geneforgelang/features/symbolic_reasoning.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Features</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Symbolic Reasoning in GeneForgeLang</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#rules-and-hypotheses">Rules and Hypotheses</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#rules-block">Rules Block</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#hypothesis-block">Hypothesis Block</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#timeline-blocks">Timeline Blocks</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#biological-entities">Biological Entities</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#pathways">Pathways</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#complexes">Complexes</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#entity-references">Entity References</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hypothesis-references">Hypothesis References</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#validation">Validation</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#error-handling">Error Handling</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#example-workflow">Example Workflow</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Features</li>
+      <li class="breadcrumb-item active">Symbolic Reasoning in GeneForgeLang</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="symbolic-reasoning-in-geneforgelang">Symbolic Reasoning in GeneForgeLang</h1>
+<p>GeneForgeLang now supports advanced symbolic reasoning capabilities that enable users to express biological knowledge, hypotheses, and temporal relationships in a structured way. This feature enhances GFL's expressiveness and allows for more sophisticated workflow designs.</p>
+<h2 id="overview">Overview</h2>
+<p>Symbolic reasoning in GFL includes:</p>
+<ol>
+<li><strong>Rules and Hypotheses</strong> - Express biological knowledge and scientific hypotheses</li>
+<li><strong>Timeline Blocks</strong> - Define temporal orchestration of experiments</li>
+<li><strong>Biological Entities</strong> - Define pathways and protein complexes</li>
+<li><strong>Cross-Reference Validation</strong> - Ensure consistency between different parts of a workflow</li>
+</ol>
+<h2 id="rules-and-hypotheses">Rules and Hypotheses</h2>
+<h3 id="rules-block">Rules Block</h3>
+<p>Rules allow you to express conditional relationships in biological systems:</p>
+<pre><code class="language-yaml">rules:
+  - id: rule1
+    if:
+      gene: TP53
+      mutation: R175H
+    then:
+      effect: increased_risk
+      cancer_type: breast
+  - id: rule2
+    if:
+      gene: BRCA1
+      expression: low
+    then:
+      effect: increased_risk
+      cancer_type: ovarian
+</code></pre>
+<p>Each rule must contain:
+- <code>id</code>: A unique identifier for the rule
+- <code>if</code>: A dictionary describing the conditions
+- <code>then</code>: A dictionary describing the consequences</p>
+<h3 id="hypothesis-block">Hypothesis Block</h3>
+<p>Hypotheses allow you to formally express scientific hypotheses that your workflow aims to test:</p>
+<pre><code class="language-yaml">hypothesis:
+  id: hypothesis1
+  description: TP53 mutations increase cancer risk
+  if:
+    - gene: TP53
+      mutation: R175H
+    - expression: low
+  then:
+    - effect: increased_risk
+      cancer_type: breast
+    - biomarker: Ki67
+      expression: high
+</code></pre>
+<p>A hypothesis must contain:
+- <code>id</code>: A unique identifier for the hypothesis
+- <code>description</code>: A human-readable description
+- <code>if</code>: A list of conditions
+- <code>then</code>: A list of expected outcomes</p>
+<h2 id="timeline-blocks">Timeline Blocks</h2>
+<p>Timeline blocks allow you to define the temporal orchestration of your experiments:</p>
+<pre><code class="language-yaml">timeline:
+  events:
+    - at: &quot;2024-01-01&quot;
+      actions:
+        - type: sequencing
+          sample: patient1
+      expectations:
+        - outcome: high_quality_data
+    - at: &quot;2024-01-15&quot;
+      actions:
+        - type: analysis
+          data: sequencing_results
+</code></pre>
+<p>Each timeline must contain:
+- <code>events</code>: A list of temporal events
+- Each event must have:
+  - <code>at</code>: A time specification (string)
+  - <code>actions</code>: A list of actions to perform
+  - <code>expectations</code>: (Optional) A list of expected outcomes</p>
+<h2 id="biological-entities">Biological Entities</h2>
+<h3 id="pathways">Pathways</h3>
+<p>Define metabolic and signaling pathways:</p>
+<pre><code class="language-yaml">pathways:
+  UreaCycle:
+    description: Urea cycle metabolic pathway
+    genes: [ASS1, ASL, ARG1]
+    enzymes: [ASS, ASL, ARG]
+    reactions:
+      - substrate: ornithine
+        product: citrulline
+  Glycolysis:
+    description: Glycolysis pathway
+    genes: [HK1, PGK1, PKM]
+    enzymes: [Hexokinase, Phosphoglycerate kinase, Pyruvate kinase]
+</code></pre>
+<h3 id="complexes">Complexes</h3>
+<p>Define protein complexes:</p>
+<pre><code class="language-yaml">complexes:
+  RNA_POLYMERASE_II:
+    description: RNA polymerase II complex
+    subunits: [POLR2A, POLR2B, POLR2C, POLR2D, POLR2E]
+    function: transcription
+  RIBOSOME_80S:
+    description: 80S ribosome complex
+    subunits: [RPSA, RPSB, RPLA, RPLB]
+    function: translation
+</code></pre>
+<h2 id="entity-references">Entity References</h2>
+<p>You can reference defined entities in experiment parameters using the syntax <code>entity_type(entity_name)</code>:</p>
+<pre><code class="language-yaml">experiment:
+  tool: CRISPR_cas9
+  type: gene_editing
+  params:
+    target_pathway: pathway(UreaCycle)
+    target_complex: complex(RNA_POLYMERASE_II)
+    concentration: 50.0
+</code></pre>
+<p>Supported entity types:
+- <code>pathway</code>: Reference a defined pathway
+- <code>complex</code>: Reference a defined protein complex</p>
+<h2 id="hypothesis-references">Hypothesis References</h2>
+<p>Both experiment and analysis blocks can reference hypotheses to indicate which hypothesis they are designed to test:</p>
+<pre><code class="language-yaml"># Reference a hypothesis in an experiment block
+experiment:
+  tool: CRISPR_cas9
+  type: gene_editing
+  params:
+    target_gene: TP53
+  validates_hypothesis: hypothesis1
+
+# Reference a hypothesis in an analysis block
+analyze:
+  strategy: variant
+  data: sequencing_results.csv
+  validates_hypothesis: hypothesis1
+</code></pre>
+<h2 id="validation">Validation</h2>
+<p>GeneForgeLang's semantic validator ensures:</p>
+<ol>
+<li><strong>Rules validation</strong>: Each rule has required fields (id, if, then)</li>
+<li><strong>Hypothesis validation</strong>: Each hypothesis has required fields (id, description, if, then)</li>
+<li><strong>Timeline validation</strong>: Each timeline event has required fields (at, actions)</li>
+<li><strong>Entity reference validation</strong>: Referenced entities must be defined</li>
+<li><strong>Hypothesis reference validation</strong>: Referenced hypotheses must be defined</li>
+</ol>
+<h2 id="error-handling">Error Handling</h2>
+<p>When validation fails, GFL provides specific error codes:</p>
+<ul>
+<li><code>SEMANTIC_UNDEFINED_HYPOTHESIS</code> (SEMANTIC009): Referenced hypothesis is not defined</li>
+<li><code>SEMANTIC_UNDEFINED_ENTITY_REFERENCE</code> (SEMANTIC010): Referenced entity is not defined</li>
+</ul>
+<h2 id="example-workflow">Example Workflow</h2>
+<p>Here's a complete example that uses all symbolic reasoning features:</p>
+<pre><code class="language-yaml"># Define biological entities
+pathways:
+  UreaCycle:
+    description: Urea cycle metabolic pathway
+    genes: [ASS1, ASL, ARG1]
+
+complexes:
+  RNA_POLYMERASE_II:
+    description: RNA polymerase II complex
+    subunits: [POLR2A, POLR2B]
+
+# Define a scientific hypothesis
+hypothesis:
+  id: urea_cycle_hypothesis
+  description: Disruption of urea cycle genes affects RNA polymerase II expression
+  if:
+    - gene: ASS1
+      mutation: null
+  then:
+    - complex: RNA_POLYMERASE_II
+      expression: decreased
+
+# Define rules about the biological system
+rules:
+  - id: urea_cycle_rule
+    if:
+      pathway: UreaCycle
+      disrupted: true
+    then:
+      disease: hyperammonemia
+
+# Timeline for experimental orchestration
+timeline:
+  events:
+    - at: &quot;2024-01-01&quot;
+      actions:
+        - type: crispr_editing
+          target_gene: ASS1
+      expectations:
+        - outcome: successful_knockout
+    - at: &quot;2024-01-15&quot;
+      actions:
+        - type: expression_analysis
+          target_complex: complex(RNA_POLYMERASE_II)
+      expectations:
+        - outcome: decreased_expression
+
+# Experiment that tests the hypothesis
+experiment:
+  tool: CRISPR_cas9
+  type: gene_editing
+  params:
+    target_gene: ASS1
+    target_pathway: pathway(UreaCycle)
+  validates_hypothesis: urea_cycle_hypothesis
+
+# Analysis that tests the hypothesis
+analyze:
+  strategy: expression
+  data: expression_results.csv
+  validates_hypothesis: urea_cycle_hypothesis
+</code></pre>
+<p>This symbolic reasoning framework enables more expressive and scientifically rigorous workflow definitions in GeneForgeLang.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../spatial_genomic_capabilities/" class="btn btn-neutral float-left" title="GFL Spatial Genomic Capabilities"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../with_priors_clause/" class="btn btn-neutral float-right" title="Incorporating Prior Knowledge with the with_priors Clause">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../spatial_genomic_capabilities/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../with_priors_clause/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

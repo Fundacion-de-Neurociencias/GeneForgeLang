@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../../img/favicon.ico" />
+    <title>Biopython Tools Plugin - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Biopython Tools Plugin";
+        var mkdocs_page_input_path = "geneforgelang/plugins/core_plugins/biopython.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Plugins</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../../PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" >Core plugins</a>
+    <ul class="current">
+                <li class="toctree-l3 current"><a class="reference internal current" href="#">Biopython Tools Plugin</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#features">Features</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#installation">Installation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#usage">Usage</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#supported-operations">Supported Operations</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#output-format">Output Format</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#requirements">Requirements</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#api-reference">API Reference</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#development">Development</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#troubleshooting">Troubleshooting</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#license">License</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Plugins</li>
+          <li class="breadcrumb-item">Core plugins</li>
+      <li class="breadcrumb-item active">Biopython Tools Plugin</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="biopython-tools-plugin">Biopython Tools Plugin</h1>
+<p>Biopython Tools plugin for GeneForgeLang that provides bioinformatics utilities and sequence analysis capabilities directly from GFL workflows.</p>
+<h2 id="overview">Overview</h2>
+<p>This plugin provides integration with Biopython, offering a collection of bioinformatics tools and utilities for sequence analysis, file parsing, and biological data manipulation directly from GeneForgeLang workflows. It supports common bioinformatics operations including sequence manipulation, file format conversion, and basic sequence analysis.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li><strong>Sequence Manipulation</strong>: Reverse complement, translation, and other sequence operations</li>
+<li><strong>File Parsing</strong>: Read and write various biological file formats (FASTA, GenBank, etc.)</li>
+<li><strong>Sequence Analysis</strong>: Basic sequence analysis including GC content, molecular weight, etc.</li>
+<li><strong>Configurable Parameters</strong>: Set parameters for each operation</li>
+<li><strong>Structured Output</strong>: Returns parsed results in a clean JSON format</li>
+<li><strong>GFL Integration</strong>: Seamlessly integrates with GeneForgeLang's plugin system</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<pre><code class="language-bash">pip install gfl-plugin-biopython-tools
+</code></pre>
+<h2 id="usage">Usage</h2>
+<p>Once installed, the plugin is automatically discovered by the GeneForgeLang service through entry points.</p>
+<h3 id="example-gfl-workflow">Example GFL Workflow</h3>
+<pre><code class="language-gfl">run:
+  - plugin: &quot;biopython-tools&quot;
+    operation: &quot;reverse_complement&quot;
+    sequence: &quot;ATGCGATCGATCGATCGATCGATCGATCGATCGATCGATCG&quot;
+    as_var: &quot;reverse_comp_result&quot;
+
+output:
+  - reverse_complement: &quot;${reverse_comp_result.result}&quot;
+</code></pre>
+<h3 id="parameters">Parameters</h3>
+<ul>
+<li><code>operation</code>: The Biopython operation to perform (reverse_complement, translate, gc_content, etc.)</li>
+<li><code>sequence</code>: Input sequence (for sequence operations)</li>
+<li><code>input_file</code>: Input file path (for file operations)</li>
+<li><code>output_file</code>: Output file path (for file operations)</li>
+<li>Additional operation-specific parameters</li>
+</ul>
+<h2 id="supported-operations">Supported Operations</h2>
+<h3 id="reverse_complement">reverse_complement</h3>
+<p>Generates the reverse complement of a DNA sequence.</p>
+<p><strong>Parameters:</strong>
+- <code>sequence</code>: Input DNA sequence</p>
+<p><strong>Returns:</strong>
+- Reverse complement sequence</p>
+<h3 id="translate">translate</h3>
+<p>Translates a DNA or RNA sequence to protein sequence.</p>
+<p><strong>Parameters:</strong>
+- <code>sequence</code>: Input DNA or RNA sequence
+- <code>table</code>: Translation table (default: 1, Standard Genetic Code)
+- <code>to_stop</code>: Translate to stop codon (default: False)</p>
+<h3 id="gc_content">gc_content</h3>
+<p>Calculates the GC content of a DNA sequence.</p>
+<p><strong>Parameters:</strong>
+- <code>sequence</code>: Input DNA sequence</p>
+<p><strong>Returns:</strong>
+- GC content as a percentage</p>
+<h3 id="molecular_weight">molecular_weight</h3>
+<p>Calculates the molecular weight of a sequence.</p>
+<p><strong>Parameters:</strong>
+- <code>sequence</code>: Input sequence
+- <code>seq_type</code>: Sequence type (DNA, RNA, protein)</p>
+<h3 id="parse_fasta">parse_fasta</h3>
+<p>Parses a FASTA file and returns sequence records.</p>
+<p><strong>Parameters:</strong>
+- <code>input_file</code>: Path to input FASTA file</p>
+<p><strong>Returns:</strong>
+- List of sequence records</p>
+<h3 id="write_fasta">write_fasta</h3>
+<p>Writes sequences to a FASTA file.</p>
+<p><strong>Parameters:</strong>
+- <code>sequences</code>: List of sequences to write
+- <code>output_file</code>: Path to output FASTA file
+- <code>descriptions</code>: Optional descriptions for sequences</p>
+<h3 id="parse_genbank">parse_genbank</h3>
+<p>Parses a GenBank file and returns sequence records.</p>
+<p><strong>Parameters:</strong>
+- <code>input_file</code>: Path to input GenBank file</p>
+<p><strong>Returns:</strong>
+- List of sequence records</p>
+<h2 id="output-format">Output Format</h2>
+<p>The plugin returns structured results containing:</p>
+<ul>
+<li><code>operation</code>: The Biopython operation that was performed</li>
+<li><code>result</code>: The result of the operation (for sequence operations)</li>
+<li><code>output_files</code>: Dictionary of output files created (for file operations)</li>
+<li><code>records</code>: Parsed sequence records (for file parsing operations)</li>
+<li><code>status</code>: Execution status (success/failure)</li>
+</ul>
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li>GeneForgeLang &gt;= 1.0.0</li>
+<li>Biopython &gt;= 1.80</li>
+</ul>
+<h2 id="api-reference">API Reference</h2>
+<h3 id="class-biopythontoolsplugin">Class: BiopythonToolsPlugin</h3>
+<h4 id="methods">Methods</h4>
+<h5 id="__init__self-config-optionaldictstr-any-none"><code>__init__(self, config: Optional[Dict[str, Any]] = None)</code></h5>
+<p>Initialize the Biopython Tools plugin.</p>
+<p><strong>Parameters:</strong>
+- <code>config</code>: Optional configuration dictionary</p>
+<h5 id="runself-input_data-any-params-optionaldictstr-any-none-dictstr-any"><code>run(self, input_data: Any, params: Optional[Dict[str, Any]] = None) -&gt; Dict[str, Any]</code></h5>
+<p>Execute a Biopython operation.</p>
+<p><strong>Parameters:</strong>
+- <code>input_data</code>: Input data containing sequences or file paths
+- <code>params</code>: Optional parameters for the Biopython operation</p>
+<p><strong>Returns:</strong>
+- Dictionary containing Biopython results</p>
+<h5 id="validate_inputself-input_data-any-bool"><code>validate_input(self, input_data: Any) -&gt; bool</code></h5>
+<p>Validate input data for the plugin.</p>
+<p><strong>Parameters:</strong>
+- <code>input_data</code>: Input data to validate</p>
+<p><strong>Returns:</strong>
+- True if input is valid, False otherwise</p>
+<h2 id="configuration">Configuration</h2>
+<p>The plugin accepts optional configuration parameters:</p>
+<pre><code class="language-python">config = {
+    &quot;default_sequence_type&quot;: &quot;DNA&quot;,  # Default sequence type
+    &quot;temp_dir&quot;: &quot;/tmp/biopython&quot;  # Temporary directory for file operations
+}
+
+plugin = BiopythonToolsPlugin(config=config)
+</code></pre>
+<h2 id="development">Development</h2>
+<h3 id="setting-up-for-development">Setting Up for Development</h3>
+<pre><code class="language-bash">git clone https://github.com/Fundacion-de-Neurociencias/gfl-plugin-biopython-tools.git
+cd gfl-plugin-biopython-tools
+pip install -e &quot;.[dev]&quot;
+</code></pre>
+<h3 id="running-tests">Running Tests</h3>
+<pre><code class="language-bash">pytest
+</code></pre>
+<h3 id="code-formatting">Code Formatting</h3>
+<pre><code class="language-bash">black gfl_plugin_biopython_tools/
+ruff check gfl_plugin_biopython_tools/
+</code></pre>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<ol>
+<li><strong>Sequence Format Errors</strong>: Ensure input sequences are in the correct format</li>
+<li><strong>File Parsing Issues</strong>: Verify input file formats and permissions</li>
+<li><strong>Translation Table Issues</strong>: Check that the correct translation table is specified</li>
+<li><strong>Memory Errors</strong>: For large files, consider processing in chunks</li>
+</ol>
+<h3 id="debugging">Debugging</h3>
+<p>Enable verbose logging:</p>
+<pre><code class="language-python">import logging
+logging.basicConfig(level=logging.DEBUG)
+</code></pre>
+<h2 id="examples">Examples</h2>
+<h3 id="basic-sequence-operations">Basic Sequence Operations</h3>
+<pre><code class="language-gfl">input:
+  dna_sequence: &quot;ATGCGATCGATCGATCGATCGATCGATCGATCGATCGATCG&quot;
+
+run:
+  - plugin: &quot;biopython-tools&quot;
+    operation: &quot;reverse_complement&quot;
+    sequence: &quot;${dna_sequence}&quot;
+    as_var: &quot;reverse_comp&quot;
+
+  - plugin: &quot;biopython-tools&quot;
+    operation: &quot;gc_content&quot;
+    sequence: &quot;${dna_sequence}&quot;
+    as_var: &quot;gc_content_result&quot;
+
+  - plugin: &quot;biopython-tools&quot;
+    operation: &quot;translate&quot;
+    sequence: &quot;${dna_sequence}&quot;
+    as_var: &quot;translation_result&quot;
+
+output:
+  - reverse_complement: &quot;${reverse_comp.result}&quot;
+  - gc_content: &quot;${gc_content_result.result}&quot;
+  - protein_sequence: &quot;${translation_result.result}&quot;
+</code></pre>
+<h3 id="file-processing-workflow">File Processing Workflow</h3>
+<pre><code class="language-gfl">input:
+  input_fasta: &quot;/data/sequences/proteins.fasta&quot;
+  output_dir: &quot;/data/processed&quot;
+
+run:
+  - plugin: &quot;biopython-tools&quot;
+    operation: &quot;parse_fasta&quot;
+    input_file: &quot;${input_fasta}&quot;
+    as_var: &quot;fasta_records&quot;
+
+process:
+  - name: &quot;analyze_sequences&quot;
+    for_each: &quot;record in fasta_records.records&quot;
+    run:
+      - plugin: &quot;biopython-tools&quot;
+        operation: &quot;molecular_weight&quot;
+        sequence: &quot;${record.seq}&quot;
+        seq_type: &quot;protein&quot;
+        as_var: &quot;mw_result_${record.id}&quot;
+
+      - plugin: &quot;biopython-tools&quot;
+        operation: &quot;gc_content&quot;
+        sequence: &quot;${record.seq}&quot;
+        as_var: &quot;gc_result_${record.id}&quot;
+
+output:
+  - processed_sequences: &quot;${fasta_records.records}&quot;
+  - analysis_results: &quot;Molecular weights and GC content calculated for all sequences&quot;
+</code></pre>
+<h3 id="multi-operation-analysis-pipeline">Multi-Operation Analysis Pipeline</h3>
+<pre><code class="language-gfl">input:
+  sequences: [
+    &quot;ATGCGATCGATCGATCGATCGATCGATCGATCGATCGATCG&quot;,
+    &quot;GCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAG&quot;,
+    &quot;CGATCGATCGATCGATCGATCGATCGATCGATCGATCGATC&quot;
+  ]
+  output_dir: &quot;/data/analysis&quot;
+
+process:
+  - name: &quot;analyze_sequence&quot;
+    for_each: &quot;seq in sequences&quot;
+    run:
+      - plugin: &quot;biopython-tools&quot;
+        operation: &quot;reverse_complement&quot;
+        sequence: &quot;${seq}&quot;
+        as_var: &quot;rc_result&quot;
+
+      - plugin: &quot;biopython-tools&quot;
+        operation: &quot;gc_content&quot;
+        sequence: &quot;${seq}&quot;
+        as_var: &quot;gc_result&quot;
+
+      - plugin: &quot;biopython-tools&quot;
+        operation: &quot;molecular_weight&quot;
+        sequence: &quot;${seq}&quot;
+        seq_type: &quot;DNA&quot;
+        as_var: &quot;mw_result&quot;
+
+    output:
+      - sequence_${loop.index}: {
+          &quot;original&quot;: &quot;${seq}&quot;,
+          &quot;reverse_complement&quot;: &quot;${rc_result.result}&quot;,
+          &quot;gc_content&quot;: &quot;${gc_result.result}&quot;,
+          &quot;molecular_weight&quot;: &quot;${mw_result.result}&quot;
+        }
+
+output:
+  - sequence_analysis: &quot;All sequences analyzed&quot;
+</code></pre>
+<h2 id="license">License</h2>
+<p>This project is licensed under the MIT License.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../plugins_overview/" class="btn btn-neutral float-left" title="Plugin Ecosystem Overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../blast/" class="btn btn-neutral float-right" title="BLAST Plugin">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../plugins_overview/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../blast/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

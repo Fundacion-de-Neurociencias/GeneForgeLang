@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>GF-163.1 - Implement Container-Based Plugin Execution - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "GF-163.1 - Implement Container-Based Plugin Execution";
+        var mkdocs_page_input_path = "dev/reports/TICKET_SUMMARY_GF-163.1.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Reports</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">GF-163.1 - Implement Container-Based Plugin Execution</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#changes-made">Changes Made</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-plugin-registry-updates">1. Plugin Registry Updates</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-container-executor-implementation">2. Container Executor Implementation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-execution-engine-updates">3. Execution Engine Updates</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-dependency-management">4. Dependency Management</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#5-plugin-example-updates">5. Plugin Example Updates</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#6-documentation">6. Documentation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#7-testing">7. Testing</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#how-it-works">How It Works</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#backward-compatibility">Backward Compatibility</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../geneforgelang/api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../geneforgelang/cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Plugins</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/plugins/PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../geneforgelang/plugins/plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Core plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/core_plugins/samtools/">SAMtools Plugin</a>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../../geneforgelang/plugins/genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Dev</li>
+          <li class="breadcrumb-item">Reports</li>
+      <li class="breadcrumb-item active">GF-163.1 - Implement Container-Based Plugin Execution</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="gf-1631-implement-container-based-plugin-execution">GF-163.1 - Implement Container-Based Plugin Execution</h1>
+<h2 id="summary">Summary</h2>
+<p>Successfully implemented container-based plugin execution for GFL to ensure reproducibility and eliminate dependency on locally installed tools. This feature allows plugins to specify Docker container images that contain all necessary dependencies for execution.</p>
+<h2 id="changes-made">Changes Made</h2>
+<h3 id="1-plugin-registry-updates">1. Plugin Registry Updates</h3>
+<ul>
+<li>Modified <a href="file:///C:/Users/usuario/GeneForgeLang/gfl/plugins/plugin_registry.py">gfl/plugins/plugin_registry.py</a> to discover container images through <code>gfl.plugin_containers</code> entry points</li>
+<li>Added <code>_container_images</code> dictionary to store plugin-to-container mappings</li>
+<li>Implemented <code>get_container_image()</code> method to retrieve container images for plugins</li>
+<li>Updated <code>_discover_plugins()</code> to use <code>entry_points().select()</code> for proper entry point discovery</li>
+</ul>
+<h3 id="2-container-executor-implementation">2. Container Executor Implementation</h3>
+<ul>
+<li>Created <a href="file:///C:/Users/usuario/GeneForgeLang/gfl/container_executor.py">gfl/container_executor.py</a> with <code>ContainerExecutor</code> class</li>
+<li>Implemented Docker integration using <code>docker-py</code> library</li>
+<li>Added automatic volume mounting for file I/O operations</li>
+<li>Implemented error handling for container execution failures</li>
+<li>Added fallback mechanism when Docker is not available</li>
+</ul>
+<h3 id="3-execution-engine-updates">3. Execution Engine Updates</h3>
+<ul>
+<li>Modified <a href="file:///C:/Users/usuario/GeneForgeLang/gfl/execution_engine.py">gfl/execution_engine.py</a> to check for container images before execution</li>
+<li>Implemented automatic switching between container and local execution</li>
+<li>Added <code>ContainerExecutor</code> integration with proper error handling</li>
+</ul>
+<h3 id="4-dependency-management">4. Dependency Management</h3>
+<ul>
+<li>Added <code>docker&gt;=7.0.0</code> as optional dependency in <a href="file:///C:/Users/usuario/GeneForgeLang/pyproject.toml">pyproject.toml</a> under <code>containers</code> extra</li>
+<li>Updated <code>all</code> extra to include <code>containers</code> dependency</li>
+</ul>
+<h3 id="5-plugin-example-updates">5. Plugin Example Updates</h3>
+<ul>
+<li>Updated <a href="file:///C:/Users/usuario/GeneForgeLang/gfl-plugin-samtools/pyproject.toml">gfl-plugin-samtools/pyproject.toml</a> to include container entry point example</li>
+<li>Added <code>[project.entry-points."gfl.plugin_containers"]</code> section with <code>biocontainers/samtools:v1.15.1_cv4</code></li>
+</ul>
+<h3 id="6-documentation">6. Documentation</h3>
+<ul>
+<li>Created <a href="file:///C:/Users/usuario/GeneForgeLang/docs/container_execution.md">docs/container_execution.md</a> with comprehensive documentation</li>
+<li>Added container execution example in <a href="file:///C:/Users/usuario/GeneForgeLang/examples/container_execution_example.gfl">examples/container_execution_example.gfl</a></li>
+<li>Updated <a href="file:///C:/Users/usuario/GeneForgeLang/README.md">README.md</a> to mention container execution feature</li>
+<li>Updated <a href="file:///C:/Users/usuario/GeneForgeLang/CHANGELOG.md">CHANGELOG.md</a> to document the new feature</li>
+</ul>
+<h3 id="7-testing">7. Testing</h3>
+<ul>
+<li>Created <a href="file:///C:/Users/usuario/GeneForgeLang/tests/test_container_execution.py">tests/test_container_execution.py</a> with unit tests for container execution functionality</li>
+</ul>
+<h2 id="how-it-works">How It Works</h2>
+<ol>
+<li>Plugins can optionally specify container images through the <code>gfl.plugin_containers</code> entry point group in their <code>pyproject.toml</code></li>
+<li>The plugin registry automatically discovers these container images during initialization</li>
+<li>When executing a plugin method, the execution engine first checks if a container image is associated with the plugin</li>
+<li>If a container image is found and Docker is available, the method is executed within the container with automatic volume mounting</li>
+<li>If no container image is found or Docker is not available, the method falls back to local execution</li>
+</ol>
+<h2 id="backward-compatibility">Backward Compatibility</h2>
+<p>This implementation maintains full backward compatibility:
+- Plugins without container images continue to work exactly as before
+- Systems without Docker continue to work exactly as before
+- All existing workflows continue to function unchanged
+- No breaking changes to existing APIs</p>
+<h2 id="usage">Usage</h2>
+<p>To use container execution:</p>
+<ol>
+<li>
+<p>Install with container support:
+   <code>bash
+   pip install geneforgelang[containers]</code></p>
+</li>
+<li>
+<p>Plugins can specify container images in their <code>pyproject.toml</code>:
+   ```toml
+   [project.entry-points."gfl.plugins"]
+   samtools = "gfl_plugin_samtools.plugin:SamtoolsPlugin"</p>
+</li>
+</ol>
+<p>[project.entry-points."gfl.plugin_containers"]
+   samtools = "biocontainers/samtools:v1.15.1_cv4"
+   ```</p>
+<ol>
+<li>Workflows will automatically execute in containers when available:
+   <code>gfl
+   design:
+     model: samtools
+     entity: AlignmentFile
+     count: 5</code></li>
+</ol>
+<p>This implementation fulfills all requirements from Epic GF-163 and Task GF-163.1, providing a robust, reproducible execution environment for GFL workflows.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../IMPLEMENTATION_COMPLETE/" class="btn btn-neutral float-left" title="🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../../geneforgelang/api/" class="btn btn-neutral float-right" title="GeneForgeLang API Reference">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../IMPLEMENTATION_COMPLETE/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../../geneforgelang/api/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../../img/favicon.ico" />
+    <title>SAMtools Plugin - GeneForgeLang Documentation</title>
+    <link rel="stylesheet" href="../../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "SAMtools Plugin";
+        var mkdocs_page_input_path = "geneforgelang/plugins/core_plugins/samtools.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../../.." class="icon icon-home"> GeneForgeLang Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../..">GeneForgeLang Documentation Index</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Dev</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Decisions</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/decisions/ADR-001-arquitectura-gfl-geneforge/">ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/decisions/HISTORY/">GeneForgeLang Development History</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/decisions/ontology/">GeneForgeLang Ontology</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/decisions/organization/">GeneForgeLang Repository Organization</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Reports</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/reports/GF-166_QA_FINAL_REPORT/">GF-166 QA Final Report - GeneForge Platform</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/reports/IMPLEMENTATION_COMPLETE/">🎉 GFL Spatial Genomic Capabilities + Capability-Aware Validator - IMPLEMENTATION COMPLETE</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../dev/reports/TICKET_SUMMARY_GF-163.1/">GF-163.1 - Implement Container-Based Plugin Execution</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Geneforgelang</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../../api/">GeneForgeLang API Reference</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../cli/">GeneForgeLang Enhanced CLI Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Features</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/Enhancer_Module_Spec/">🧬 GeneForge Enhancer Module</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/capability_aware_validator/">GFL Capability-Aware Validator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/container_execution/">Container-Based Plugin Execution</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/data_staging/">Data Staging Feature</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/design_block/">Generative Design with the design Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/epigenetic_editing/">Epigenetic Editing in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/guided_discovery/">Guided Discovery Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/io_contracts/">IO Contracts System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/locityper_haplotyping/">Locityper Genomic Haplotyping in GFL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/optimize_block/">Experiment Orchestration with the optimize Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/refine_data/">Refine Data Block</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/schema_registry/">Schema Registry &amp; Type System</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/spatial_genomic_capabilities/">GFL Spatial Genomic Capabilities</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/symbolic_reasoning/">Symbolic Reasoning in GeneForgeLang</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../features/with_priors_clause/">Incorporating Prior Knowledge with the with_priors Clause</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Plugins</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../../PLUGIN_ECOSYSTEM/">Plugin Ecosystem Documentation</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plugins_overview/">Plugin Ecosystem Overview</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" >Core plugins</a>
+    <ul class="current">
+                <li class="toctree-l3"><a class="reference internal" href="../biopython/">Biopython Tools Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../blast/">BLAST Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../gatk/">GATK Plugin</a>
+                </li>
+                <li class="toctree-l3 current"><a class="reference internal current" href="#">SAMtools Plugin</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#features">Features</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#installation">Installation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#usage">Usage</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#supported-operations">Supported Operations</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#output-format">Output Format</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#requirements">Requirements</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#api-reference">API Reference</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#development">Development</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#troubleshooting">Troubleshooting</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#license">License</a>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" >Genesis plugins</a>
+    <ul>
+                <li class="toctree-l3"><a class="reference internal" href="../../genesis_plugins/evaluator/">CRISPR Evaluator Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../genesis_plugins/offtarget_scorer/">Off-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../genesis_plugins/ontarget_scorer/">On-Target Scorer Plugin</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../../genesis_plugins/visualizer/">CRISPR Visualizer Plugin</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >Dev guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/dev-guides/DEPLOYMENT_GUIDE/">Documentation Deployment Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/dev-guides/creating_plugins/">Creating Plugins for GeneForgeLang</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >User guides</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/user-guides/advanced_schemas/">Tutorial: Using Custom Schemas in IO Contracts</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/user-guides/installation/">Installation Guide</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../../guides/user-guides/quickstart_user/">Quickstart user</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../..">GeneForgeLang Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Geneforgelang</li>
+          <li class="breadcrumb-item">Plugins</li>
+          <li class="breadcrumb-item">Core plugins</li>
+      <li class="breadcrumb-item active">SAMtools Plugin</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="samtools-plugin">SAMtools Plugin</h1>
+<p>SAMtools plugin for GeneForgeLang that enables sequence alignment manipulation and analysis directly from GFL workflows.</p>
+<h2 id="overview">Overview</h2>
+<p>This plugin provides integration with SAMtools, allowing users to manipulate and analyze sequence alignment files (SAM/BAM/CRAM) directly from GeneForgeLang workflows. It supports key SAMtools operations including sorting, indexing, filtering, and statistics generation.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li><strong>File Manipulation</strong>: Sort, index, and convert alignment files</li>
+<li><strong>Filtering</strong>: Filter alignments based on various criteria</li>
+<li><strong>Statistics</strong>: Generate alignment statistics and metrics</li>
+<li><strong>Configurable Parameters</strong>: Set parameters for each SAMtools operation</li>
+<li><strong>Structured Output</strong>: Returns parsed results in a clean JSON format</li>
+<li><strong>GFL Integration</strong>: Seamlessly integrates with GeneForgeLang's plugin system</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<pre><code class="language-bash">pip install gfl-plugin-samtools
+</code></pre>
+<p><strong>Note</strong>: This plugin requires SAMtools to be installed separately. Install SAMtools using your system's package manager or download from <a href="http://www.htslib.org/">the official website</a>.</p>
+<h2 id="usage">Usage</h2>
+<p>Once installed, the plugin is automatically discovered by the GeneForgeLang service through entry points.</p>
+<h3 id="example-gfl-workflow">Example GFL Workflow</h3>
+<pre><code class="language-gfl">run:
+  - plugin: &quot;samtools&quot;
+    operation: &quot;sort&quot;
+    input_bam: &quot;/path/to/unsorted.bam&quot;
+    output_bam: &quot;/path/to/sorted.bam&quot;
+    as_var: &quot;sorting_results&quot;
+
+  - plugin: &quot;samtools&quot;
+    operation: &quot;index&quot;
+    input_bam: &quot;/path/to/sorted.bam&quot;
+    as_var: &quot;indexing_results&quot;
+
+output:
+  - sorted_bam: &quot;${sorting_results.output_bam}&quot;
+  - bam_index: &quot;${indexing_results.output_bai}&quot;
+</code></pre>
+<h3 id="parameters">Parameters</h3>
+<ul>
+<li><code>operation</code>: The SAMtools operation to perform (sort, index, view, stats, etc.)</li>
+<li><code>input_bam</code>: Path to the input BAM file</li>
+<li><code>output_bam</code>: Path to the output BAM file (for operations that create new files)</li>
+<li>Additional operation-specific parameters</li>
+</ul>
+<h2 id="supported-operations">Supported Operations</h2>
+<h3 id="sort">sort</h3>
+<p>Sorts SAM/BAM/CRAM files by chromosome and genomic coordinate.</p>
+<p><strong>Parameters:</strong>
+- <code>input_bam</code>: Input alignment file
+- <code>output_bam</code>: Output sorted file
+- <code>sort_order</code>: Sort order (coordinate, queryname, etc.)
+- <code>memory_limit</code>: Memory limit for sorting</p>
+<h3 id="index">index</h3>
+<p>Creates an index for a sorted BAM/CRAM file.</p>
+<p><strong>Parameters:</strong>
+- <code>input_bam</code>: Input sorted alignment file
+- <code>output_bai</code>: Output index file (optional, auto-generated if not specified)</p>
+<h3 id="view">view</h3>
+<p>Converts between SAM/BAM/CRAM formats and filters alignments.</p>
+<p><strong>Parameters:</strong>
+- <code>input_file</code>: Input alignment file
+- <code>output_file</code>: Output file
+- <code>regions</code>: Genomic regions to include (optional)
+- <code>filters</code>: Filtering criteria (mapping quality, flags, etc.)</p>
+<h3 id="stats">stats</h3>
+<p>Generates comprehensive statistics for alignment files.</p>
+<p><strong>Parameters:</strong>
+- <code>input_bam</code>: Input alignment file
+- <code>output_stats</code>: Output statistics file
+- <code>regions</code>: Genomic regions to analyze (optional)</p>
+<h3 id="flagstat">flagstat</h3>
+<p>Counts the number of alignments for each FLAG type.</p>
+<p><strong>Parameters:</strong>
+- <code>input_bam</code>: Input alignment file
+- <code>output_flagstat</code>: Output flagstat file</p>
+<h2 id="output-format">Output Format</h2>
+<p>The plugin returns structured results containing:</p>
+<ul>
+<li><code>operation</code>: The SAMtools operation that was performed</li>
+<li><code>output_files</code>: Dictionary of output files created</li>
+<li><code>metrics</code>: Performance metrics and statistics</li>
+<li><code>status</code>: Execution status (success/failure)</li>
+</ul>
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li>GeneForgeLang &gt;= 1.0.0</li>
+<li>SAMtools &gt;= 1.9 (separate installation required)</li>
+<li>pysam &gt;= 0.15.0</li>
+</ul>
+<h2 id="api-reference">API Reference</h2>
+<h3 id="class-samtoolsplugin">Class: SamtoolsPlugin</h3>
+<h4 id="methods">Methods</h4>
+<h5 id="__init__self-config-optionaldictstr-any-none"><code>__init__(self, config: Optional[Dict[str, Any]] = None)</code></h5>
+<p>Initialize the SAMtools plugin.</p>
+<p><strong>Parameters:</strong>
+- <code>config</code>: Optional configuration dictionary</p>
+<h5 id="runself-input_data-any-params-optionaldictstr-any-none-dictstr-any"><code>run(self, input_data: Any, params: Optional[Dict[str, Any]] = None) -&gt; Dict[str, Any]</code></h5>
+<p>Execute a SAMtools operation.</p>
+<p><strong>Parameters:</strong>
+- <code>input_data</code>: Input data containing file paths and parameters
+- <code>params</code>: Optional parameters for the SAMtools operation</p>
+<p><strong>Returns:</strong>
+- Dictionary containing SAMtools results</p>
+<h5 id="validate_inputself-input_data-any-bool"><code>validate_input(self, input_data: Any) -&gt; bool</code></h5>
+<p>Validate input data for the plugin.</p>
+<p><strong>Parameters:</strong>
+- <code>input_data</code>: Input data to validate</p>
+<p><strong>Returns:</strong>
+- True if input is valid, False otherwise</p>
+<h2 id="configuration">Configuration</h2>
+<p>The plugin accepts optional configuration parameters:</p>
+<pre><code class="language-python">config = {
+    &quot;samtools_path&quot;: &quot;/path/to/samtools/binaries&quot;,  # Path to SAMtools executables
+    &quot;default_memory&quot;: &quot;2g&quot;,  # Default memory allocation
+    &quot;temp_dir&quot;: &quot;/tmp/samtools&quot;  # Temporary directory for operations
+}
+
+plugin = SamtoolsPlugin(config=config)
+</code></pre>
+<h2 id="development">Development</h2>
+<h3 id="setting-up-for-development">Setting Up for Development</h3>
+<pre><code class="language-bash">git clone https://github.com/Fundacion-de-Neurociencias/gfl-plugin-samtools.git
+cd gfl-plugin-samtools
+pip install -e &quot;.[dev]&quot;
+</code></pre>
+<h3 id="running-tests">Running Tests</h3>
+<pre><code class="language-bash">pytest
+</code></pre>
+<h3 id="code-formatting">Code Formatting</h3>
+<pre><code class="language-bash">black gfl_plugin_samtools/
+ruff check gfl_plugin_samtools/
+</code></pre>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<ol>
+<li><strong>SAMtools Not Found</strong>: Ensure SAMtools is installed and in your PATH</li>
+<li><strong>File Format Errors</strong>: Verify input file formats (SAM/BAM/CRAM)</li>
+<li><strong>Memory Errors</strong>: For large files, increase memory allocation</li>
+<li><strong>Indexing Issues</strong>: Ensure input files are properly sorted before indexing</li>
+</ol>
+<h3 id="debugging">Debugging</h3>
+<p>Enable verbose logging:</p>
+<pre><code class="language-python">import logging
+logging.basicConfig(level=logging.DEBUG)
+</code></pre>
+<h2 id="examples">Examples</h2>
+<h3 id="basic-sorting-and-indexing-workflow">Basic Sorting and Indexing Workflow</h3>
+<pre><code class="language-gfl">input:
+  unsorted_bam: &quot;/data/alignments/sample1_unsorted.bam&quot;
+  output_dir: &quot;/data/alignments&quot;
+
+run:
+  - plugin: &quot;samtools&quot;
+    operation: &quot;sort&quot;
+    input_bam: &quot;${unsorted_bam}&quot;
+    output_bam: &quot;${output_dir}/sample1_sorted.bam&quot;
+    sort_order: &quot;coordinate&quot;
+    as_var: &quot;sorting_results&quot;
+
+  - plugin: &quot;samtools&quot;
+    operation: &quot;index&quot;
+    input_bam: &quot;${sorting_results.output_bam}&quot;
+    as_var: &quot;indexing_results&quot;
+
+output:
+  - sorted_bam: &quot;${sorting_results.output_bam}&quot;
+  - bam_index: &quot;${indexing_results.output_bai}&quot;
+</code></pre>
+<h3 id="alignment-statistics-and-filtering">Alignment Statistics and Filtering</h3>
+<pre><code class="language-gfl">input:
+  input_bam: &quot;/data/alignments/sample1.bam&quot;
+  output_dir: &quot;/data/stats&quot;
+
+run:
+  - plugin: &quot;samtools&quot;
+    operation: &quot;stats&quot;
+    input_bam: &quot;${input_bam}&quot;
+    output_stats: &quot;${output_dir}/sample1_stats.txt&quot;
+    as_var: &quot;stats_results&quot;
+
+  - plugin: &quot;samtools&quot;
+    operation: &quot;view&quot;
+    input_file: &quot;${input_bam}&quot;
+    output_file: &quot;${output_dir}/high_quality.bam&quot;
+    filters: [
+      &quot;-q 30&quot;,  # Minimum mapping quality
+      &quot;-F 2304&quot;  # Exclude duplicates and secondary alignments
+    ]
+    as_var: &quot;filtering_results&quot;
+
+  - plugin: &quot;samtools&quot;
+    operation: &quot;flagstat&quot;
+    input_bam: &quot;${filtering_results.output_file}&quot;
+    output_flagstat: &quot;${output_dir}/high_quality_flagstat.txt&quot;
+    as_var: &quot;flagstat_results&quot;
+
+output:
+  - alignment_stats: &quot;${stats_results.output_stats}&quot;
+  - filtered_bam: &quot;${filtering_results.output_file}&quot;
+  - flag_statistics: &quot;${flagstat_results.output_flagstat}&quot;
+</code></pre>
+<h3 id="multi-sample-processing-pipeline">Multi-Sample Processing Pipeline</h3>
+<pre><code class="language-gfl">input:
+  samples: [
+    {&quot;name&quot;: &quot;sample1&quot;, &quot;bam&quot;: &quot;/data/alignments/sample1.bam&quot;},
+    {&quot;name&quot;: &quot;sample2&quot;, &quot;bam&quot;: &quot;/data/alignments/sample2.bam&quot;},
+    {&quot;name&quot;: &quot;sample3&quot;, &quot;bam&quot;: &quot;/data/alignments/sample3.bam&quot;}
+  ]
+  output_dir: &quot;/data/processed&quot;
+
+process:
+  - name: &quot;process_sample&quot;
+    for_each: &quot;sample in samples&quot;
+    run:
+      - plugin: &quot;samtools&quot;
+        operation: &quot;sort&quot;
+        input_bam: &quot;${sample.bam}&quot;
+        output_bam: &quot;${output_dir}/${sample.name}_sorted.bam&quot;
+        as_var: &quot;sort_result_${sample.name}&quot;
+
+      - plugin: &quot;samtools&quot;
+        operation: &quot;index&quot;
+        input_bam: &quot;${sort_result_${sample.name}.output_bam}&quot;
+        as_var: &quot;index_result_${sample.name}&quot;
+
+    output:
+      - sorted_bam_${sample.name}: &quot;${sort_result_${sample.name}.output_bam}&quot;
+      - index_file_${sample.name}: &quot;${index_result_${sample.name}.output_bai}&quot;
+
+output:
+  - processed_samples: &quot;All samples processed successfully&quot;
+</code></pre>
+<h2 id="license">License</h2>
+<p>This project is licensed under the MIT License.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../gatk/" class="btn btn-neutral float-left" title="GATK Plugin"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../genesis_plugins/evaluator/" class="btn btn-neutral float-right" title="CRISPR Evaluator Plugin">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../gatk/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../genesis_plugins/evaluator/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
