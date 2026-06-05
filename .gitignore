@@ -156,7 +156,6 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
-GeneForgeLang/
 *.gfl.bak
 *.yaml.bak
 *.json.bak
