@@ -5,12 +5,13 @@ import pytest
 from geneforgelang.utils.grammar_parser import AdvancedGFLParser
 
 parser = AdvancedGFLParser()
-files = sorted(glob.glob("bench/corpus/*.gfl"))
+files = sorted(glob.glob("tests\\bench\\corpus\\*.gfl"))
+print(files)
 
 
-@pytest.mark.parametrize("f", files)
-def test_parse_corpus(f):
-    with open(f, encoding="utf-8").read() as file:
-        text = file.read()
+@pytest.mark.parametrize("file", files)
+def test_parse_corpus(file):
+    with open(file, encoding="utf-8") as f:
+        text = f.read()
     # Si falla el parser, pytest marcará error
     parser.parse(text)

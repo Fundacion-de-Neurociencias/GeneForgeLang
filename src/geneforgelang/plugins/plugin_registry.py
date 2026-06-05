@@ -7,7 +7,7 @@ import importlib.metadata
 import json
 import logging
 import time
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Callable, Protocol
@@ -135,13 +135,13 @@ class GFLPlugin(Protocol):
         """Plugin version."""
         ...
 
-    
+
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process GFL data and return results."""
         ...
 
 
-class BaseGFLPlugin(ABC):
+class BaseGFLPlugin:
     """Base class for GFL plugins with enhanced features."""
 
     def __init__(self):
@@ -149,12 +149,12 @@ class BaseGFLPlugin(ABC):
         self._error: str | None = None
 
     @property
-    
+
     def name(self) -> str:
         """Plugin name."""
 
     @property
-    
+
     def version(self) -> str:
         """Plugin version."""
 
@@ -189,15 +189,15 @@ class BaseGFLPlugin(ABC):
     def on_unload(self) -> None:
         """Called when plugin is unloaded. Override to add custom logic."""
 
-    
+
     def on_activate(self) -> None:
         """Called when plugin becomes active. Override to add custom logic."""
 
-    
+
     def on_deactivate(self) -> None:
         """Called when plugin is deactivated. Override to add custom logic."""
 
-    
+
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process GFL data and return results."""
 
@@ -235,12 +235,12 @@ class GeneForgeSkill(BaseGFLPlugin):
     """
 
     @property
-    
+
     def author(self) -> str:
         """Skill author or organization."""
 
     @property
-    
+
     def description(self) -> str:
         """Short scientific description of the skill."""
 
@@ -280,7 +280,7 @@ class GeneForgeSkill(BaseGFLPlugin):
                 ),
             }
 
-    
+
     def _analyze(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Internal scientific analysis implementation.

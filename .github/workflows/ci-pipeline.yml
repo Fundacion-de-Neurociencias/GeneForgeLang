@@ -1,0 +1,163 @@
+name: CI Pipeline
+
+# Desencadenadores del pipeline
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# Variables globales de configuración
+env:
+  PYTHON_VERSION: '3.10'
+  PIP_CACHE_DIR: ~/.cache/pip
+
+jobs:
+  # ============================================================================
+  # JOB 1: SETUP - Preparación del entorno (Job base que precede a los demás)
+  # ============================================================================
+  setup:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Paso 1: Checkout del código del repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Obtener historial completo para análisis más precisos
+
+      # Paso 2: Configurar la versión específica de Python
+      - name: Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      # Paso 3: Implementar caché para dependencias de pip (acelera futuras ejecuciones)
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.PIP_CACHE_DIR }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Paso 4: Instalar dependencias de forma determinista
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Usar pip install en lugar de pip install con archivo si es necesario
+          # Asegurar determinismo sin actualizar versiones inesperadamente
+          pip install -e .
+          pip install pytest ruff
+
+      # Paso 5: Verificar que Python y herramientas están correctamente instaladas
+      - name: Verify installation
+        run: |
+          python --version
+          pip --version
+          ruff --version
+          pytest --version
+
+
+  # ============================================================================
+  # JOB 2: LINT - Análisis de calidad del código (se ejecuta en paralelo con TEST)
+  # ============================================================================
+  lint:
+    name: Code Quality (Ruff)
+    needs: setup  # Depende del job 'setup'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.PIP_CACHE_DIR }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install ruff
+        run: pip install ruff
+
+      # Paso clave: Ejecutar análisis de sintaxis y calidad del código
+      - name: Run ruff check
+        run: ruff check .
+        continue-on-error: false  # Fallar inmediatamente si hay problemas de lint
+
+
+  # ============================================================================
+  # JOB 3: TEST - Suite de pruebas unitarias (se ejecuta en paralelo con LINT)
+  # ============================================================================
+  test:
+    name: Unit Tests (Pytest)
+    needs: setup  # Depende del job 'setup'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.PIP_CACHE_DIR }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          pip install -e .
+          pip install pytest
+
+      # Paso clave: Ejecutar suite de pruebas con reporte detallado
+      - name: Run pytest
+        run: pytest tests/ -v --tb=short --color=yes
+        continue-on-error: false  # Fallar inmediatamente si hay tests que fallan
+
+      # Opcional: Generar reporte JUnit para integración con herramientas externas
+      - name: Generate test report
+        if: always()  # Ejecutar incluso si pytest falla
+        run: pytest tests/ --junit-xml=test-results.xml || true
+
+      # Opcional: Subir resultados de tests (útil para análisis futuros)
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: test-results.xml
+
+
+  # ============================================================================
+  # JOB 4: STATUS - Validar que el pipeline completó exitosamente
+  # ============================================================================
+  status:
+    name: Pipeline Status
+    needs: [ lint, test ]  # Depende de lint y test (ambos deben completar)
+    runs-on: ubuntu-latest
+    if: always()  # Ejecutar incluso si trabajos anteriores fallan
+    
+    steps:
+      - name: Check pipeline status
+        run: |
+          if [ "${{ needs.lint.result }}" != "success" ] || [ "${{ needs.test.result }}" != "success" ]; then
+            echo "❌ Pipeline failed: Lint or Test jobs did not complete successfully"
+            exit 1
+          else
+            echo "✅ Pipeline succeeded: All jobs completed successfully"
+          fi

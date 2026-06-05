@@ -34,6 +34,7 @@ dependencies = [
     "pydantic>=2.0.0",
     "typing-extensions>=4.0.0",
     "requests>=2.25.0",
+    "ply>=3.0",
 ]
 
 [project.optional-dependencies]
