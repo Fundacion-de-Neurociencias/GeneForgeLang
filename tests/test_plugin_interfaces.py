@@ -30,7 +30,6 @@ from geneforgelang.utils.example_implementations import (
     ProteinVAEGenerator,
 )
 
-
 class TestDesignCandidate:
     """Test DesignCandidate data structure."""
 

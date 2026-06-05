@@ -90,7 +90,7 @@ jobs:
 
       # Paso clave: Ejecutar análisis de sintaxis y calidad del código
       - name: Run ruff check
-        run: ruff check .
+        run: ruff check . --fix
         continue-on-error: false  # Fallar inmediatamente si hay problemas de lint
 
 
@@ -137,7 +137,7 @@ jobs:
       # Opcional: Subir resultados de tests (útil para análisis futuros)
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: test-results.xml

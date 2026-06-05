@@ -13,7 +13,6 @@ from geneforgelang.utils.example_implementations import (
 
 registry = PluginRegistry()
 
-
 def test_basic_plugin_functionality():
     """Test basic plugin functionality."""
 
