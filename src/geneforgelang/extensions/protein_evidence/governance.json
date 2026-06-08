@@ -1,0 +1,17 @@
+{
+  "extension_name": "protein_evidence",
+  "scores": {
+    "irreducibility_depth": 4,
+    "ontological_neutrality": 5,
+    "provider_abstraction_purity": 4,
+    "primitive_necessity": 4,
+    "sunsetability_confidence": 5
+  },
+  "justification": {
+    "irreducibility_depth": "The extension is strictly syntax-only and carries external sequence mapping tags that cannot be modeled as core causal primitives.",
+    "ontological_neutrality": "Does not inject or alter any core diagnostic, lattice, or inference semantics; tags are strictly treated as metadata.",
+    "provider_abstraction_purity": "Translates external protein sequence configurations to clean neutral intermediate AST descriptors.",
+    "primitive_necessity": "Avoids expanding base compiler grammar and encapsulates all protein sequence matching attributes outside core keywords.",
+    "sunsetability_confidence": "Can be entirely excised or removed dynamically without leaving any lingering side-effects or compiling artifacts in base programs."
+  }
+}
