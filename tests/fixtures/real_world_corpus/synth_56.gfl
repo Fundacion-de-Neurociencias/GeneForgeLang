@@ -1,0 +1,14 @@
+observation:
+  id: "SYNTH_56"
+  type: simulated_record
+  disease_entity: CJD_SPORADIC
+  criteria:
+    - criterion_id: CRITERIA_SYNTH_56
+      weight_tier: MEDIUM
+  epistemic_state:
+    truth_support: UNSUPPORTED
+    temporal_stability: UNSTABLE
+    observational_resolution: LOW_RESOLUTION
+    ecological_scope: ISOLATED
+    contradiction_load: CONTESTED
+  parse_trace: "noise_56"

@@ -1,0 +1,16 @@
+observation:
+  id: "PMID_42252710"
+  type: clinical_report
+  description: "Electroencephalographic Normalization as a Biomarker of Clinical Recovery in Down Syndrome Regression Disorder."
+  disease_entity: LEWY_BODY_DEMENTIA
+  criteria:
+    - criterion_id: CRITERIA_CLINICAL_PHENOTYPE
+      criterion_description: "Evaluated in study: Electroencephalographic Normalization as a Biomarker of Clinical Recovery in Down Syndrome Regression Disorder."
+      weight_tier: HIGH
+  epistemic_state:
+    truth_support: SUPPORTED
+    temporal_stability: STABLE
+    observational_resolution: HIGH_RESOLUTION
+    ecological_scope: RESTRICTED
+    contradiction_load: NONE
+  source_citation: "PMID: 42252710"

@@ -1,0 +1,16 @@
+observation:
+  id: "PMID_42250440"
+  type: clinical_report
+  description: "The orexinergic crossroads: Bidirectional links between sleep-wake disturbances and the pathogenesis of Alzheimer's disease in the aging brain."
+  disease_entity: LEWY_BODY_DEMENTIA
+  criteria:
+    - criterion_id: CRITERIA_CLINICAL_PHENOTYPE
+      criterion_description: "Evaluated in study: The orexinergic crossroads: Bidirectional links between sleep-wake disturbances and the pathogenesis of Alzheimer's disease in the aging brain."
+      weight_tier: HIGH
+  epistemic_state:
+    truth_support: SUPPORTED
+    temporal_stability: STABLE
+    observational_resolution: HIGH_RESOLUTION
+    ecological_scope: RESTRICTED
+    contradiction_load: NONE
+  source_citation: "PMID: 42250440"

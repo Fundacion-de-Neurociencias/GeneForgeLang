@@ -1,0 +1,16 @@
+observation:
+  id: "PMID_42250492"
+  type: clinical_report
+  description: "Combined effect of anxiety disorder and insomnia on the risk of incident ADRD diagnosis."
+  disease_entity: LEWY_BODY_DEMENTIA
+  criteria:
+    - criterion_id: CRITERIA_CLINICAL_PHENOTYPE
+      criterion_description: "Evaluated in study: Combined effect of anxiety disorder and insomnia on the risk of incident ADRD diagnosis."
+      weight_tier: HIGH
+  epistemic_state:
+    truth_support: SUPPORTED
+    temporal_stability: STABLE
+    observational_resolution: HIGH_RESOLUTION
+    ecological_scope: RESTRICTED
+    contradiction_load: NONE
+  source_citation: "PMID: 42250492"
