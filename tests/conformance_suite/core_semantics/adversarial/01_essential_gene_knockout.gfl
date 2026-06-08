@@ -1,0 +1,23 @@
+# CONFORMANCE TEST: 01_essential_gene_knockout
+# CATEGORY: Adversarial
+# EXPECTED RESULT: SEMANTIC_ERROR (VIABILITY_VIOLATION)
+
+metadata:
+  experiment_id: "TEST_ADVERSARIAL_ESSENTIAL"
+  description: "Tests if GFL detects a knockout of a gene defined as ESSENTIAL."
+
+# Define the biological context
+context:
+  cell_line: "HEK293T"
+  invariants:
+    - id: "ESSENTIALITY_TP53"
+      gene: "TP53"
+      status: "ESSENTIAL"
+
+# Try to knockout the essential gene
+experiment:
+  tool: "CRISPR_cas9"
+  type: "gene_editing"
+  params:
+    target_gene: "TP53"
+    strategy: "knockout"

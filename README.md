@@ -44,9 +44,22 @@ GeneForgeLang (GFL) v2.0 is a **next-generation domain-specific language** for c
 - **🧠 Clinical Neuro-Skills**: Specialized skills for PharmGx, Geriatric Risk, and NutriGx
 - **🛡️ Data Sovereignty**: Genome-scale analysis without cloud dependencies or LLM hallucinations
 
-## Key Features
+## 🌐 Open-Source and Universal
+GeneForgeLang is an **open-source project** dedicated to the entire scientific community. While it serves as the foundation for the GeneForge platform, its design and evolution are governed by universal biological principles, not by any specific commercial or execution environment.
 
-- **Declarative Syntax**: Clean, readable YAML-based workflow definitions
+*   **Universal Semantic Authority**: GFL defines the biological world independently of how it is executed.
+*   **Open to Everyone**: Anyone can implement a GFL-compatible runtime or contribute to the language specifications.
+*   **Decoupled Architecture**: Formal separation between Language Specification, Semantic Validation, and Execution Runtimes.
+
+## 📜 Formal Specifications
+To ensure consistency across the ecosystem, GFL maintains a set of formal specifications:
+*   **[Architectural Directive](docs/architecture/ARCHITECTURAL_DIRECTIVE.md)**: The foundational decoupling mandate.
+*   **[RFC Process](docs/rfc/README.md)**: Formal procedure for language evolution.
+*   [Causal Semantics](docs/spec/causal_semantics.md): Rules for biological transformations.
+*   [Biological State Space](docs/spec/state_space.md): Structural definition of the biological world.
+*   [Instruction Set](docs/spec/instruction_set.md): Primitive biological operations.
+*   [Execution Contract](docs/spec/execution_contract.md): Boundary between language and runtimes.
+*   [Versioning Policy](docs/spec/versioning_policy.md): How the language evolves.
 - **Type Safety**: Strong typing system with comprehensive validation
 - **Plugin Architecture**: Extensible system for custom tools and algorithms
 - **Web Interface**: Modern web UI for workflow creation and management

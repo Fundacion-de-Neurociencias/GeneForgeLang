@@ -1,0 +1,15 @@
+# CONFORMANCE TEST: 01_multiple_locus_match
+# CATEGORY: Ambiguity
+# EXPECTED RESULT: SEMANTIC_ERROR (AMBIGUOUS_TARGET)
+
+metadata:
+  experiment_id: "TEST_AMBIGUITY_LOCUS"
+  description: "Tests detection of ambiguous targeting of duplicated regions."
+
+experiment:
+  tool: "CRISPR_cas9"
+  type: "gene_editing"
+  params:
+    # Targeting 'HERV-K' without specifying which copy in the genome
+    target_locus: "HERV-K"
+    strategy: "knockout"
