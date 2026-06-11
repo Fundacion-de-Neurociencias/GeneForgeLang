@@ -1,5 +1,4 @@
 import itertools
-from typing import Set, Tuple
 
 from geneforgelang.semantic.lattice import (
     ContradictionLoad,
