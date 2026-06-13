@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Callable, Protocol
 
-from src.geneforgelang.plugins.base import BaseGeneratorPlugin, BaseOptimizerPlugin
+from geneforgelang.plugins.base import BaseGeneratorPlugin, BaseOptimizerPlugin
 
 try:
     from importlib.metadata import entry_points as _entry_points
@@ -23,7 +23,9 @@ except ImportError:
     try:
         from importlib_metadata import (
             entry_points as _entry_points,
-        )  # Python < 3.8
+        )
+
+        # Python < 3.8
         from importlib_metadata import (
             version,
         )
@@ -112,9 +114,7 @@ class PluginDependency:
             current_parts = current.split(".")
             required_parts = required.split(".")
             if len(current_parts) >= 2 and len(required_parts) >= 2:
-                return (
-                    current_parts[0] == required_parts[0] and current_parts[1] == required_parts[1]
-                )
+                return current_parts[0] == required_parts[0] and current_parts[1] == required_parts[1]
         elif spec.startswith("=="):
             required = spec[2:].strip()
             return current == required
@@ -135,7 +135,6 @@ class GFLPlugin(Protocol):
         """Plugin version."""
         ...
 
-
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process GFL data and return results."""
         ...
@@ -149,12 +148,10 @@ class BaseGFLPlugin:
         self._error: str | None = None
 
     @property
-
     def name(self) -> str:
         """Plugin name."""
 
     @property
-
     def version(self) -> str:
         """Plugin version."""
 
@@ -189,14 +186,11 @@ class BaseGFLPlugin:
     def on_unload(self) -> None:
         """Called when plugin is unloaded. Override to add custom logic."""
 
-
     def on_activate(self) -> None:
         """Called when plugin becomes active. Override to add custom logic."""
 
-
     def on_deactivate(self) -> None:
         """Called when plugin is deactivated. Override to add custom logic."""
-
 
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process GFL data and return results."""
@@ -227,20 +221,21 @@ class BaseGFLPlugin:
         }
 
 
-class GeneForgeSkill(BaseGFLPlugin):
+class GFLBioSkill(BaseGFLPlugin):
     """
-    ClawBio-inspired Base Class for all scientific "Bio-Skills".
+    Base class for all GFL scientific Bio-Skills.
+
     Enforces restricted JSON input/output, local data processing,
-    and constructs a Reproducibility Package.
+    and constructs a reproducibility package for every execution.
+    Skills are runtime-agnostic: they can be consumed by any conformant
+    GFL downstream runtime (GeneForge, or any third-party implementation).
     """
 
     @property
-
     def author(self) -> str:
         """Skill author or organization."""
 
     @property
-
     def description(self) -> str:
         """Short scientific description of the skill."""
 
@@ -267,19 +262,14 @@ class GeneForgeSkill(BaseGFLPlugin):
             return {
                 "success": True,
                 "data": result_data,
-                "reproducibility_package": self._generate_reproducibility_package(
-                    input_hash, start_time
-                ),
+                "reproducibility_package": self._generate_reproducibility_package(input_hash, start_time),
             }
         except Exception as e:
             return {
                 "success": False,
                 "error": str(e),
-                "reproducibility_package": self._generate_reproducibility_package(
-                    input_hash, start_time, failed=True
-                ),
+                "reproducibility_package": self._generate_reproducibility_package(input_hash, start_time, failed=True),
             }
-
 
     def _analyze(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
@@ -317,6 +307,11 @@ class GeneForgeSkill(BaseGFLPlugin):
         }
 
 
+# Deprecated alias — kept for backward compatibility, will be removed in GFL v3.
+# New code should subclass GFLBioSkill directly.
+GeneForgeSkill = GFLBioSkill
+
+
 @dataclass
 class PluginInfo:
     """Enhanced information about a registered plugin."""
@@ -347,9 +342,7 @@ class PluginInfo:
         for dep in self.dependencies:
             if not dep.is_satisfied():
                 if dep.optional:
-                    logger.warning(
-                        f"Optional dependency {dep.name} not satisfied for plugin {self.name}"
-                    )
+                    logger.warning(f"Optional dependency {dep.name} not satisfied for plugin {self.name}")
                 else:
                     missing.append(f"{dep.name}{dep.version_spec or ''}")
         return missing
@@ -721,9 +714,7 @@ class PluginRegistry:
 
         return [self._plugins[name] for name in self._plugin_order if name in self._plugins]
 
-    def process_with_plugins(
-        self, data: dict[str, Any], plugin_names: list[str] | None = None
-    ) -> dict[str, Any]:
+    def process_with_plugins(self, data: dict[str, Any], plugin_names: list[str] | None = None) -> dict[str, Any]:
         """Process data through active plugins in dependency order."""
         if plugin_names is None:
             # Use all active plugins
@@ -892,31 +883,29 @@ class PluginRegistry:
         # Discover container images for plugins
         for entry_point in entry_points.select(group="gfl.plugin_containers"):
             try:
-                container_image = (
-                    entry_point.load() if callable(entry_point.load) else entry_point.value
-                )
+                container_image = entry_point.load() if callable(entry_point.load) else entry_point.value
                 self._container_images[entry_point.name] = container_image
             except Exception:
                 pass  # Skip container images that fail to load
 
     def _register_plugin(self, name: str, plugin_class: type[BaseGFLPlugin]):
         """Register a plugin by name."""
-        if issubclass(plugin_class, BaseGeneratorPlugin):
+        if "BaseGeneratorPlugin" in str(plugin_class.__bases__):
             self.register_generator(name, plugin_class)
-        elif issubclass(plugin_class, BaseOptimizerPlugin):
+        elif "BaseOptimizerPlugin" in str(plugin_class.__bases__):
             self.register_optimizer(name, plugin_class)
         else:
-            self._plugins[name] = plugin_class
+            self.register_class(name, plugin_class)
 
-    def register_generator(self, name: str, plugin_class: type[BaseGeneratorPlugin]):
+    def register_generator(self, name: str, plugin_class: type[Any]):
         """Register a generator plugin."""
         self._generators[name] = plugin_class
-        self._plugins[name] = plugin_class
+        self.register_class(name, plugin_class)
 
-    def register_optimizer(self, name: str, plugin_class: type[BaseOptimizerPlugin]):
+    def register_optimizer(self, name: str, plugin_class: type[Any]):
         """Register an optimizer plugin."""
         self._optimizers[name] = plugin_class
-        self._plugins[name] = plugin_class
+        self.register_class(name, plugin_class)
 
     def get_generator(self, name: str) -> BaseGeneratorPlugin:
         """Get a generator plugin instance."""
@@ -977,9 +966,7 @@ def deactivate_plugin(name: str) -> None:
     plugin_registry.deactivate_plugin(name)
 
 
-def process_with_plugins(
-    data: dict[str, Any], plugin_names: list[str] | None = None
-) -> dict[str, Any]:
+def process_with_plugins(data: dict[str, Any], plugin_names: list[str] | None = None) -> dict[str, Any]:
     """Process data through plugins."""
     return plugin_registry.process_with_plugins(data, plugin_names)
 

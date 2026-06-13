@@ -4,7 +4,6 @@ import tempfile
 from pathlib import Path
 
 import pytest
-
 from geneforgelang.cli.enhanced import EnhancedCLI, OutputFormatter
 from geneforgelang.cli.utils import collect_files, process_file_batch
 
@@ -63,11 +62,13 @@ class TestCLIUtilities:
     def test_process_file_batch(self):
         """Test batch file processing."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".gfl", delete=False) as f:
-            f.write("""
+            f.write(
+                """
 experiment:
   tool: CRISPR_cas9
   type: gene_editing
-            """)
+            """
+            )
             temp_path = Path(f.name)
 
         try:
@@ -156,13 +157,15 @@ class TestEnhancedCLI:
     def test_parse_command_with_temp_file(self):
         """Test parse command with a temporary file."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".gfl", delete=False) as f:
-            f.write("""
+            f.write(
+                """
 experiment:
   tool: CRISPR_cas9
   type: gene_editing
   params:
     target_gene: TP53
-            """)
+            """
+            )
             temp_path = Path(f.name)
 
         try:
@@ -186,13 +189,15 @@ experiment:
     def test_validate_command_with_temp_file(self):
         """Test validate command with a temporary file."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".gfl", delete=False) as f:
-            f.write("""
+            f.write(
+                """
 experiment:
   tool: CRISPR_cas9
   type: gene_editing
   params:
     target_gene: TP53
-            """)
+            """
+            )
             temp_path = Path(f.name)
 
         try:
@@ -246,14 +251,18 @@ experiment:
             temp_path = Path(temp_dir)
 
             # Create test files
-            (temp_path / "test1.gfl").write_text("""
+            (temp_path / "test1.gfl").write_text(
+                """
 experiment:
   tool: CRISPR_cas9
-            """)
-            (temp_path / "test2.gfl").write_text("""
+            """
+            )
+            (temp_path / "test2.gfl").write_text(
+                """
 analyze:
   strategy: differential
-            """)
+            """
+            )
 
             class MockBatchArgs:
                 action = "parse"
@@ -336,7 +345,8 @@ class TestCLIWorkflows:
         cli = EnhancedCLI()
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".gfl", delete=False) as f:
-            f.write("""
+            f.write(
+                """
 metadata:
   experiment_id: EXP001
 
@@ -349,7 +359,8 @@ experiment:
 analyze:
   strategy: differential
   data: experiment_output
-            """)
+            """
+            )
             temp_path = Path(f.name)
 
         try:
@@ -378,13 +389,15 @@ analyze:
 
             # Create multiple test files
             for i in range(3):
-                (temp_path / f"test{i}.gfl").write_text(f"""
+                (temp_path / f"test{i}.gfl").write_text(
+                    f"""
 experiment:
   tool: CRISPR_cas9
   type: gene_editing
   params:
     target_gene: TP5{i}
-                """)
+                """
+                )
 
             class MockBatchArgs:
                 action = "validate"

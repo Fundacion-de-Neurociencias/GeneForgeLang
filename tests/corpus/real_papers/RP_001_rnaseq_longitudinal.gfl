@@ -1,0 +1,29 @@
+metadata:
+  name: "Longitudinal_RNAseq_Response"
+  version: "1.0"
+  description: "Differential expression over a 4-point time series. Based on true clinical RNA-seq papers."
+  authors: ["Real Paper Extraction"]
+
+experiment:
+  type: RNAseq
+  design:
+    samples: 120
+    replicates: 3
+    conditions: ["baseline", "week_1", "week_4", "week_12"]
+    # GAP INTENCIONAL: GFL no tiene una forma nativa de expresar emparejamiento de muestras (paired samples)
+    # ni diseños longitudinales (time_series).
+    pairing: "patient_id"
+    time_series: true
+  parameters:
+    sequencing_depth: 50M
+    read_length: 150
+    paired_end: true
+
+analyze:
+  input: RNA_Seq_TimeCourse
+  tool: DESeq2
+  parameters:
+    # GAP INTENCIONAL: Fórmulas de diseño complejas (~ patient_id + time)
+    design_formula: "~ patient_id + condition"
+    lrt_test: true # Likelihood Ratio Test para series temporales
+    fdr_threshold: 0.05

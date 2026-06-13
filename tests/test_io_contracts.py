@@ -57,9 +57,7 @@ def test_simple_io_contracts():
             "tool": "sequence_aligner",
             "type": "sequencing",
             "contract": {
-                "inputs": {
-                    "raw_sequences": {"type": "FASTQ", "attributes": {"layout": "paired-end"}}
-                },
+                "inputs": {"raw_sequences": {"type": "FASTQ", "attributes": {"layout": "paired-end"}}},
                 "outputs": {"aligned_reads": {"type": "BAM", "attributes": {"sorted": True}}},
             },
         },

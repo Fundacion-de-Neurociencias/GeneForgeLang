@@ -1,0 +1,5 @@
+experiment:
+  tool: CRISPR_cas9
+  type: gene_editing
+  params:
+    target_gene: TP53

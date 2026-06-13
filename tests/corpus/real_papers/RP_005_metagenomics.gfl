@@ -1,0 +1,24 @@
+metadata:
+  name: "Microbiome_16S_IBD"
+  version: "1.0"
+  description: "16S rRNA sequencing of microbiome in IBD patients"
+  authors: ["Real Paper Extraction"]
+
+# GAP INTENCIONAL: Tipo Metagenomics no está bien soportado
+experiment:
+  type: Metagenomics
+  design:
+    samples: 200
+    conditions: ["IBD", "Healthy"]
+  parameters:
+    region: "V3-V4"
+    platform: "Illumina_MiSeq"
+
+analyze:
+  input: Microbiome_16S
+  tool: QIIME2
+  parameters:
+    # GAP INTENCIONAL: Parámetros específicos de diversidad
+    alpha_diversity: ["Shannon", "Chao1"]
+    beta_diversity: ["Bray-Curtis", "UniFrac"]
+    rarefaction_depth: 10000

@@ -3,7 +3,6 @@
 from typing import Any
 
 import pytest
-
 from geneforgelang.plugins.plugin_registry import (
     BaseGFLPlugin,
     PluginDependency,
@@ -99,9 +98,7 @@ class TestEnhancedRegistry:
         """Test plugin ordering based on dependencies."""
         # Create plugins with dependencies
         base_plugin = MockPlugin("base")
-        dependent_plugin = MockPlugin(
-            "dependent", dependencies=[PluginDependency("base", optional=False)]
-        )
+        dependent_plugin = MockPlugin("dependent", dependencies=[PluginDependency("base", optional=False)])
 
         plugin_registry.register("base", base_plugin)
         plugin_registry.register("dependent", dependent_plugin)

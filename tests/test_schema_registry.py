@@ -36,13 +36,9 @@ def test_schema_loader():
     assert "FASTQ_PairedEnd" in schemas, "FASTQ_PairedEnd schema not found"
 
     fastq_schema = schemas["FASTQ_PairedEnd"]
-    assert (
-        fastq_schema.base_type == "FASTQ"
-    ), f"Expected base type 'FASTQ', got '{fastq_schema.base_type}'"
+    assert fastq_schema.base_type == "FASTQ", f"Expected base type 'FASTQ', got '{fastq_schema.base_type}'"
 
-    assert (
-        "layout" in fastq_schema.attributes
-    ), "❌ 'layout' attribute not found in FASTQ_PairedEnd schema"
+    assert "layout" in fastq_schema.attributes, "❌ 'layout' attribute not found in FASTQ_PairedEnd schema"
 
 
 def test_schema_registry_validation():
@@ -72,9 +68,7 @@ def test_schema_registry_validation():
 
     # Check for schema-related errors
     schema_errors = [
-        error
-        for error in result.errors
-        if "schema" in error.message.lower() or "attribute" in error.message.lower()
+        error for error in result.errors if "schema" in error.message.lower() or "attribute" in error.message.lower()
     ]
     if schema_errors:
         print(f"Found {len(schema_errors)} schema-related errors:")

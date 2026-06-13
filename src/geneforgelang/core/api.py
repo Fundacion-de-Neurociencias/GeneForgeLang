@@ -148,9 +148,7 @@ def parse(text: str, use_grammar: bool = False, filename: str = "<input>") -> di
 
 
 @cached(cache_name="schema_validation", ttl=600.0, max_size=500)
-def validate(
-    ast: dict[str, Any], enhanced: bool = False
-) -> Union[list[str], EnhancedValidationResult]:
+def validate(ast: dict[str, Any], enhanced: bool = False) -> Union[list[str], EnhancedValidationResult]:
     """Return validation errors for the given AST.
 
     Performs semantic validation on the parsed AST to ensure it follows
@@ -271,9 +269,7 @@ def infer(
         return engine.predict_effect(ast, enhanced=False)
 
 
-def parse_enhanced(
-    text: str, use_grammar: bool = True, filename: str = "<input>"
-) -> EnhancedValidationResult:
+def parse_enhanced(text: str, use_grammar: bool = True, filename: str = "<input>") -> EnhancedValidationResult:
     """Parse GFL source with enhanced error reporting.
 
     This function provides detailed parsing results with rich error information,
@@ -331,9 +327,7 @@ def parse_enhanced(
 # Enhanced inference convenience functions
 
 
-def infer_enhanced(
-    ast: dict[str, Any], model_name: str = "heuristic", explain: bool = True
-) -> dict[str, Any]:
+def infer_enhanced(ast: dict[str, Any], model_name: str = "heuristic", explain: bool = True) -> dict[str, Any]:
     """Enhanced inference using advanced ML models.
 
     Convenience function for enhanced inference without requiring a model instance.
@@ -378,9 +372,7 @@ def infer_enhanced(
         raise ImportError("Enhanced inference engine not available")
 
 
-def compare_inference_models(
-    ast: dict[str, Any], model_names: list[str] | None = None
-) -> dict[str, Any]:
+def compare_inference_models(ast: dict[str, Any], model_names: list[str] | None = None) -> dict[str, Any]:
     """Compare predictions across multiple inference models.
 
     Args:
@@ -419,9 +411,7 @@ def compare_inference_models(
         raise ImportError("Enhanced inference engine not available")
 
 
-def execute(
-    ast: dict[str, Any], registry: PluginRegistry = None, validate_first: bool = True
-) -> dict[str, Any]:
+def execute(ast: dict[str, Any], registry: PluginRegistry = None, validate_first: bool = True) -> dict[str, Any]:
     """Execute a GFL workflow by dispatching to appropriate plugins.
 
     This function orchestrates the execution of design and optimize blocks
@@ -483,9 +473,7 @@ def execute(
         Best parameters: {'temperature': 37.2, 'concentration': 75.5}
     """
     if not HAS_EXECUTION_ENGINE:
-        raise ImportError(
-            "Execution engine not available. Plugin system may not be properly installed."
-        )
+        raise ImportError("Execution engine not available. Plugin system may not be properly installed.")
 
     with get_monitor().time_operation("api_execute"):
         if validate_first:

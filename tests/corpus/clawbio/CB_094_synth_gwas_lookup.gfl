@@ -1,0 +1,22 @@
+# GFL Stress Test Fixture
+metadata:
+  experiment_id: CB_STRESS_094
+  source_skill: clawbio/gwas-lookup
+  domain: population-genomics
+
+experiment:
+  tool: clawbio_metagenomics_profiler
+  type: analysis
+  contract:
+    inputs:
+      variants:
+        type: TEXT
+        attributes:
+          format: "rsid_list"
+    outputs:
+      gwas_report:
+        type: JSON
+  params:
+    rsids: ["rs123", "rs789"]
+    databases: ["Reactome", "KEGG", "ClinVar"]
+    p_value_threshold: 8.4e-05

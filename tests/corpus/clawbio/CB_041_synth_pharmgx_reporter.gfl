@@ -1,0 +1,21 @@
+# GFL Stress Test Fixture
+metadata:
+  experiment_id: CB_STRESS_041
+  source_skill: clawbio/pharmgx-reporter
+  domain: pharmacogenomics
+
+experiment:
+  tool: pharmacogenomics_pipeline
+  type: analysis
+  contract:
+    inputs:
+      raw_genome:
+        type: TEXT
+        attributes:
+          format: "myheritage"
+    outputs:
+      pharmacogenomic_report:
+        type: JSON
+  params:
+    genes: ["CYP2D6", "EGFR", "BRCA2", "DPYD", "TPMT"]
+    cpic_level_filter: ["A"]

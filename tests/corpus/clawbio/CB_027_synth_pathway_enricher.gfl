@@ -1,0 +1,14 @@
+# GFL Stress Test Fixture
+metadata:
+  experiment_id: CB_STRESS_027
+  source_skill: clawbio/pathway-enricher
+  domain: functional-genomics
+
+analyze:
+  strategy: population_genetics
+  data:
+    genes: "de_genes.txt"
+  params:
+    databases: ["GO_Biological_Process", "Reactome", "GWAS_Catalog"]
+    organism: "zebrafish"
+    fdr_threshold: 0.162

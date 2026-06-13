@@ -1,0 +1,17 @@
+# GFL Stress Test Fixture
+metadata:
+  experiment_id: CB_STRESS_078
+  source_skill: clawbio/rnaseq-de
+  domain: transcriptomics
+
+analyze:
+  strategy: functional
+  data:
+    counts: "mock_counts.csv"
+    metadata: "mock_metadata.csv"
+  thresholds:
+    significance: 0.015
+    fold_change: 2.14
+  params:
+    design_formula: "~time_point"
+    contrast: ["condition", "treated", "control"]

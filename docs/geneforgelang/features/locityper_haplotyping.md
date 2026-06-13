@@ -388,7 +388,7 @@ Haplotype panels should be in FASTA format with allele IDs in headers:
 ```
 >HLA-A*01:01:01:01
 ATGCGGGTCACGGCGCCCCG...
->HLA-A*02:01:01:01  
+>HLA-A*02:01:01:01
 ATGCGGGTCATGGCGCCCCG...
 ```
 
@@ -425,4 +425,3 @@ The `quality_value` in LocusGenotypeResult is a Phred-like score where:
 - [Analyze Block Specification](./analyze_block.md)
 - [Rules and Reasoning](./rules_system.md)
 - [Schema Registry](./schema_registry.md)
-

@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """
 GFL Genesis Project - Real Execution Script
-Executes the complete CRISPR gRNA discovery workflow using GeneForge v2.0
+Executes the complete CRISPR gRNA discovery workflow using the GFL runtime.
+
+This script is self-contained and does not depend on GeneForge or any other
+specific downstream runtime being installed locally. It simulates the
+discovery engine for demonstration purposes.
 """
 
 import json
@@ -14,14 +18,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-# Add GeneForge paths
-sys.path.append("C:\\Users\\usuario\\GeneForge Ecosystem\\GeneForge\\GeneForge")
-sys.path.append("C:\\Users\\usuario\\GeneForge Ecosystem\\GeneForgeLang")
 
-
-def simulate_geneforge_engine():
-    """Simulate the GeneForge engine execution with realistic results."""
-    print("🚀 Starting GeneForge v2.0 Engine...")
+def simulate_discovery_engine():
+    """Simulate a GFL-compatible discovery engine with realistic results."""
+    print("🚀 Starting GFL Discovery Engine...")
     print("📊 Initializing Multi-Omic Discovery Pipeline...")
 
     # Simulate guided discovery cycles
@@ -44,9 +44,7 @@ def simulate_geneforge_engine():
                 "genomic_position": f"chr17:{43094495 + np.random.randint(0, 10000)}",
                 "efficiency_confidence": np.random.uniform(0.7, 0.95),
             }
-            candidate["combined_score"] = (
-                candidate["on_target_score"] * 0.6 + (1 - candidate["off_target_score"]) * 0.4
-            )
+            candidate["combined_score"] = candidate["on_target_score"] * 0.6 + (1 - candidate["off_target_score"]) * 0.4
             cycle_candidates.append(candidate)
 
         # Sort by combined score
@@ -239,7 +237,7 @@ def main():
 
     try:
         # Execute the discovery workflow
-        results = simulate_geneforge_engine()
+        results = simulate_discovery_engine()
 
         # Save results and generate visualizations
         save_results(results)
@@ -262,7 +260,7 @@ def main():
         print(f"⚠️  Off-Target Score: {results['final_rankings'][0]['off_target_score']:.4f}")
 
         print(f"\n🕒 Completed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print("\n🚀 GeneForge v2.0 Multi-Omic Discovery: MISSION ACCOMPLISHED!")
+        print("\n🚀 GFL Multi-Omic Discovery: MISSION ACCOMPLISHED!")
 
     except Exception as e:
         print(f"❌ Error during execution: {e}")

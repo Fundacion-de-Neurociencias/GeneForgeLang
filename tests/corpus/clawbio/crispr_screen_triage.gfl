@@ -1,0 +1,66 @@
+# GFL Stress Test Fixture — clawbio/crispr-screen-triage
+# Derived from: https://github.com/ClawBio/ClawBio/tree/main/skills/crispr-screen-triage
+# SKILL.md spec: crispr-screen-triage v0.1.0
+#
+# Expected parser behaviour: PASS
+# Expected validator behaviour: PASS (with warnings on thresholds)
+# Gap probe: tests analyze block with tool field (currently undocumented in validator)
+
+metadata:
+  experiment_id: CB_STRESS_002
+  source_skill: clawbio/crispr-screen-triage
+  skill_version: "0.1.0"
+  domain: functional-genomics
+  tags: [crispr, screen, triage, pooled-knockout]
+  description: >
+    Deterministic CRISPR screen hit ranking from guide-level count tables.
+    Computes fold-change and depletion z-score per guide,
+    aggregates to gene level (median), and outputs a prioritised hit report.
+
+analyze:
+  strategy: variant
+  data: demo_screen_counts.csv
+  thresholds:
+    min_guides_per_gene: 3
+    depletion_zscore_cutoff: -2.0
+    log2fc_cutoff: -1.0
+    essentiality_min: 0.5
+    druggability_min: 0.3
+  filters:
+    - "guide_count >= 10"
+    - "essentiality IS NOT NULL"
+    - "druggability IS NOT NULL"
+  contract:
+    inputs:
+      guide_counts:
+        type: CSV
+        attributes:
+          required_columns:
+            - guide_id
+            - gene
+            - control_count
+            - treatment_count
+            - essentiality
+            - druggability
+    outputs:
+      hit_report:
+        type: TEXT
+        attributes:
+          format: markdown
+      triage_results:
+        type: JSON
+      gene_rankings:
+        type: CSV
+      guide_level_data:
+        type: CSV
+  operations:
+    - type: compute_log2fc
+      input: guide_counts
+      params:
+        numerator: treatment_count
+        denominator: control_count
+    - type: aggregate_by_gene
+      method: median
+      groupby: gene
+    - type: rank_hits
+      score_formula: "depletion_zscore + essentiality + druggability"

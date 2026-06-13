@@ -177,9 +177,7 @@ class TestTransformersModel(unittest.TestCase):
         config = ModelConfig(model_name="distilbert-base-uncased", model_type="auto", device="cpu")
 
         # Don't actually load the model in tests
-        with patch("gfl.enhanced_inference_engine.AutoTokenizer") and patch(
-            "gfl.enhanced_inference_engine.AutoModel"
-        ):
+        with patch("gfl.enhanced_inference_engine.AutoTokenizer") and patch("gfl.enhanced_inference_engine.AutoModel"):
             model = TransformersModel(config)
 
             self.assertEqual(model.config.model_name, "distilbert-base-uncased")

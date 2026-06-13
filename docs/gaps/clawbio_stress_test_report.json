@@ -1,0 +1,284 @@
+{
+  "run_timestamp": "2026-06-13T13:48:43.050881+00:00",
+  "gfl_available": true,
+  "total_fixtures": 10,
+  "parse_passed": 10,
+  "parse_failed": 0,
+  "validate_passed": 5,
+  "validate_warned": 4,
+  "validate_failed": 2,
+  "results": [
+    {
+      "fixture_id": "CB_001",
+      "skill_name": "PharmGx Reporter",
+      "domain": "pharmacogenomics",
+      "filename": "pharmgx_reporter.gfl",
+      "parse_success": true,
+      "parse_error": null,
+      "validate_success": true,
+      "validate_errors": [
+        "[WARNING] Unknown tool 'clawbio_pharmgx' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR_base_editor', 'ATACseq', 'RNAseq', 'ChIPseq', 'CRISPR_cas12', 'CRISPR_cas9', 'CRISPR_prime_editor']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_pharmgx' plugin is available"
+      ],
+      "validate_warnings": [
+        "[WARNING] Unknown tool 'clawbio_pharmgx' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR_base_editor', 'ATACseq', 'RNAseq', 'ChIPseq', 'CRISPR_cas12', 'CRISPR_cas9', 'CRISPR_prime_editor']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_pharmgx' plugin is available"
+      ],
+      "gap_probes": [],
+      "elapsed_ms": 3.271699999459088,
+      "raw_ast_keys": [
+        "metadata",
+        "experiment"
+      ]
+    },
+    {
+      "fixture_id": "CB_002",
+      "skill_name": "CRISPR Screen Triage",
+      "domain": "functional-genomics",
+      "filename": "crispr_screen_triage.gfl",
+      "parse_success": true,
+      "parse_error": null,
+      "validate_success": true,
+      "validate_errors": [],
+      "validate_warnings": [],
+      "gap_probes": [],
+      "elapsed_ms": 2.5440000172238797,
+      "raw_ast_keys": [
+        "metadata",
+        "analyze"
+      ]
+    },
+    {
+      "fixture_id": "CB_003",
+      "skill_name": "RNA-seq DE",
+      "domain": "transcriptomics",
+      "filename": "rnaseq_de.gfl",
+      "parse_success": true,
+      "parse_error": null,
+      "validate_success": true,
+      "validate_errors": [],
+      "validate_warnings": [],
+      "gap_probes": [],
+      "elapsed_ms": 3.1550000130664557,
+      "raw_ast_keys": [
+        "metadata",
+        "analyze"
+      ]
+    },
+    {
+      "fixture_id": "CB_004",
+      "skill_name": "GWAS Lookup",
+      "domain": "population-genomics",
+      "filename": "gwas_lookup.gfl",
+      "parse_success": true,
+      "parse_error": null,
+      "validate_success": true,
+      "validate_errors": [
+        "[WARNING] Unknown tool 'clawbio_gwas_lookup' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR_base_editor', 'ATACseq', 'RNAseq', 'ChIPseq', 'CRISPR_cas12', 'CRISPR_cas9', 'CRISPR_prime_editor']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_gwas_lookup' plugin is available"
+      ],
+      "validate_warnings": [
+        "[WARNING] Unknown tool 'clawbio_gwas_lookup' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR_base_editor', 'ATACseq', 'RNAseq', 'ChIPseq', 'CRISPR_cas12', 'CRISPR_cas9', 'CRISPR_prime_editor']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_gwas_lookup' plugin is available"
+      ],
+      "gap_probes": [],
+      "elapsed_ms": 2.6618000119924545,
+      "raw_ast_keys": [
+        "metadata",
+        "experiment"
+      ]
+    },
+    {
+      "fixture_id": "CB_005",
+      "skill_name": "scRNA Orchestrator",
+      "domain": "single-cell",
+      "filename": "scrnaseq_orchestrator.gfl",
+      "parse_success": true,
+      "parse_error": null,
+      "validate_success": false,
+      "validate_errors": [
+        "Validator exception: 'charmap' codec can't encode character '\\u2192' in position 14: character maps to <undefined>"
+      ],
+      "validate_warnings": [],
+      "gap_probes": [],
+      "elapsed_ms": 4.152500012423843,
+      "raw_ast_keys": [
+        "metadata",
+        "guided_discovery"
+      ]
+    },
+    {
+      "fixture_id": "CB_006",
+      "skill_name": "Equity Scorer",
+      "domain": "population-diversity",
+      "filename": "equity_scorer.gfl",
+      "parse_success": true,
+      "parse_error": null,
+      "validate_success": true,
+      "validate_errors": [],
+      "validate_warnings": [],
+      "gap_probes": [],
+      "elapsed_ms": 2.9131000046618283,
+      "raw_ast_keys": [
+        "metadata",
+        "analyze"
+      ]
+    },
+    {
+      "fixture_id": "CB_007",
+      "skill_name": "Pathway Enricher",
+      "domain": "functional-genomics",
+      "filename": "pathway_enricher.gfl",
+      "parse_success": true,
+      "parse_error": null,
+      "validate_success": true,
+      "validate_errors": [],
+      "validate_warnings": [],
+      "gap_probes": [],
+      "elapsed_ms": 2.9602000140585005,
+      "raw_ast_keys": [
+        "metadata",
+        "pathways",
+        "analyze"
+      ]
+    },
+    {
+      "fixture_id": "CB_008",
+      "skill_name": "DnaSP Population Genetics",
+      "domain": "population-genetics",
+      "filename": "dnasp.gfl",
+      "parse_success": true,
+      "parse_error": null,
+      "validate_success": true,
+      "validate_errors": [
+        "[WARNING] Unknown analysis strategy 'population_genetics' (SEMANTIC004)\n  Context: valid_strategies=['structural', 'comparative', 'differential', 'functional', 'pathway', 'variant', 'longitudinal', 'expression']\n  Suggested fixes:\n    - Use one of: comparative, differential, expression, functional, longitudinal, pathway, structural, variant"
+      ],
+      "validate_warnings": [
+        "[WARNING] Unknown analysis strategy 'population_genetics' (SEMANTIC004)\n  Context: valid_strategies=['structural', 'comparative', 'differential', 'functional', 'pathway', 'variant', 'longitudinal', 'expression']\n  Suggested fixes:\n    - Use one of: comparative, differential, expression, functional, longitudinal, pathway, structural, variant"
+      ],
+      "gap_probes": [
+        {
+          "type": "MISSING_STRATEGY_ENUM",
+          "missing_value": "population_genetics",
+          "current_values": [
+            "differential",
+            "pathway",
+            "variant",
+            "expression",
+            "structural"
+          ],
+          "recommendation": "Add 'population_genetics' to AnalysisStrategy enum in gftypes.py. This domain covers nucleotide diversity, selection tests, demographic inference, and molecular evolution metrics.\n",
+          "fixture_id": "CB_008",
+          "skill_name": "DnaSP Population Genetics"
+        }
+      ],
+      "elapsed_ms": 6.875099992612377,
+      "raw_ast_keys": [
+        "metadata",
+        "analyze"
+      ]
+    },
+    {
+      "fixture_id": "CB_009",
+      "skill_name": "Metagenomics Profiler",
+      "domain": "metagenomics",
+      "filename": "metagenomics_profiler.gfl",
+      "parse_success": true,
+      "parse_error": null,
+      "validate_success": true,
+      "validate_errors": [
+        "[WARNING] Unknown tool 'clawbio_metagenomics_profiler' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR_base_editor', 'ATACseq', 'RNAseq', 'ChIPseq', 'CRISPR_cas12', 'CRISPR_cas9', 'CRISPR_prime_editor']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_metagenomics_profiler' plugin is available",
+        "[WARNING] Unknown experiment type 'metagenomics' (SEMANTIC005)\n  Context: valid_types=['gene_editing', 'simulation', 'analysis', 'sequencing', 'validation']\n  Suggested fixes:\n    - Use one of: gene_editing, simulation, analysis, sequencing, validation"
+      ],
+      "validate_warnings": [
+        "[WARNING] Unknown tool 'clawbio_metagenomics_profiler' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR_base_editor', 'ATACseq', 'RNAseq', 'ChIPseq', 'CRISPR_cas12', 'CRISPR_cas9', 'CRISPR_prime_editor']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_metagenomics_profiler' plugin is available",
+        "[WARNING] Unknown experiment type 'metagenomics' (SEMANTIC005)\n  Context: valid_types=['gene_editing', 'simulation', 'analysis', 'sequencing', 'validation']\n  Suggested fixes:\n    - Use one of: gene_editing, simulation, analysis, sequencing, validation"
+      ],
+      "gap_probes": [
+        {
+          "type": "MISSING_EXPERIMENT_TYPE",
+          "missing_value": "metagenomics",
+          "current_values": [
+            "gene_editing",
+            "sequencing",
+            "analysis",
+            "simulation",
+            "validation"
+          ],
+          "recommendation": "Add 'metagenomics' to ExperimentType enum in gftypes.py. This is a distinct sequencing modality (shotgun WGS of microbial communities) that differs semantically from single-organism sequencing.\n",
+          "fixture_id": "CB_009",
+          "skill_name": "Metagenomics Profiler"
+        }
+      ],
+      "elapsed_ms": 3.4983000077772886,
+      "raw_ast_keys": [
+        "metadata",
+        "experiment"
+      ]
+    },
+    {
+      "fixture_id": "CB_010",
+      "skill_name": "Genome Compare",
+      "domain": "comparative-genomics",
+      "filename": "genome_compare.gfl",
+      "parse_success": true,
+      "parse_error": null,
+      "validate_success": true,
+      "validate_errors": [],
+      "validate_warnings": [],
+      "gap_probes": [],
+      "elapsed_ms": 3.648999991128221,
+      "raw_ast_keys": [
+        "metadata",
+        "analyze"
+      ]
+    }
+  ],
+  "identified_gaps": [
+    {
+      "type": "MISSING_STRATEGY_ENUM",
+      "missing_value": "population_genetics",
+      "current_values": [
+        "differential",
+        "pathway",
+        "variant",
+        "expression",
+        "structural"
+      ],
+      "recommendation": "Add 'population_genetics' to AnalysisStrategy enum in gftypes.py. This domain covers nucleotide diversity, selection tests, demographic inference, and molecular evolution metrics.\n",
+      "fixture_id": "CB_008",
+      "skill_name": "DnaSP Population Genetics"
+    },
+    {
+      "type": "MISSING_EXPERIMENT_TYPE",
+      "missing_value": "metagenomics",
+      "current_values": [
+        "gene_editing",
+        "sequencing",
+        "analysis",
+        "simulation",
+        "validation"
+      ],
+      "recommendation": "Add 'metagenomics' to ExperimentType enum in gftypes.py. This is a distinct sequencing modality (shotgun WGS of microbial communities) that differs semantically from single-organism sequencing.\n",
+      "fixture_id": "CB_009",
+      "skill_name": "Metagenomics Profiler"
+    },
+    {
+      "type": "VALIDATION_PATTERN",
+      "pattern": "Unknown tool",
+      "count": 6,
+      "examples": [
+        "CB_001: [WARNING] Unknown tool 'clawbio_pharmgx' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR",
+        "CB_001: [WARNING] Unknown tool 'clawbio_pharmgx' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR",
+        "CB_004: [WARNING] Unknown tool 'clawbio_gwas_lookup' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CR",
+        "CB_004: [WARNING] Unknown tool 'clawbio_gwas_lookup' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CR",
+        "CB_009: [WARNING] Unknown tool 'clawbio_metagenomics_profiler' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted"
+      ]
+    },
+    {
+      "type": "VALIDATION_PATTERN",
+      "pattern": "Unknown experiment type",
+      "count": 2,
+      "examples": [
+        "CB_009: [WARNING] Unknown experiment type 'metagenomics' (SEMANTIC005)\n  Context: valid_types=['gene_editing', 'simulation', 'an",
+        "CB_009: [WARNING] Unknown experiment type 'metagenomics' (SEMANTIC005)\n  Context: valid_types=['gene_editing', 'simulation', 'an"
+      ]
+    }
+  ]
+}

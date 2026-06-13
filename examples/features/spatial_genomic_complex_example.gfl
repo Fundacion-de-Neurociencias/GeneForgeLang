@@ -45,23 +45,23 @@ rules:
 
         "is_within(Oct4_Promoter, Oct4_GeneLocus) AND is_within(Oct4_Enhancer, Oct4_EnhancerLocus) AND is_in_contact(Oct4_Promoter, Oct4_Enhancer, using: 'embryonic_stem_cell_hic.cool')"
       }
-    then: 
+    then:
       {
         "set_activity(Oct4_GeneBody, level: 'high')"
       }
   - id: "Nanog_Self_Regulation"
     description: "Nanog se auto-regula cuando su promotor y enhancer están en contacto 3D"
-    if: 
+    if:
       {
         "is_within(Nanog_Promoter, Nanog_GeneLocus) AND is_within(Nanog_Enhancer, Nanog_EnhancerLocus) AND is_in_contact(Nanog_Promoter, Nanog_Enhancer, using: 'embryonic_stem_cell_hic.cool')"
       }
-    then: 
+    then:
       {
         "set_activity(Nanog_GeneBody, level: 'high')"
       }
   - id: "Cross_Chromosome_Interaction"
     description: "Oct4 y Nanog pueden interactuar a través de cromosomas si están en contacto 3D"
-    if: 
+    if:
       {
         "is_in_contact(Oct4_Promoter, Nanog_Promoter, using: 'embryonic_stem_cell_hic.cool')"
       }
@@ -72,21 +72,21 @@ rules:
       }
   - id: "Distance_Penalty_Oct4"
     description: "La actividad de Oct4 decae si su enhancer está muy lejos"
-    if: 
+    if:
       {
         "distance_between(Oct4_Promoter, Oct4_Enhancer) > 200000"
       }
-    then: 
+    then:
       {
         "set_activity(Oct4_GeneBody, level: 'low')"
       }
   - id: "Distance_Penalty_Nanog"
     description: "La actividad de Nanog decae si su enhancer está muy lejos"
-    if: 
+    if:
       {
         "distance_between(Nanog_Promoter, Nanog_Enhancer) > 200000"
       }
-    then: 
+    then:
       {
         "set_activity(Nanog_GeneBody, level: 'low')"
       }

@@ -1,0 +1,32 @@
+metadata:
+  name: "Pharmacogenomics_MultiOmics"
+  version: "1.0"
+  description: "Integration of drug response (IC50) with mutation and expression data"
+  authors: ["Real Paper Extraction"]
+
+# GAP INTENCIONAL: No hay tipo "DrugScreen" o "Pharmacology" en GFL estándar
+experiment:
+  type: Pharmacogenomics
+  design:
+    cell_lines: 1000
+    drugs: 265
+    response_metric: "IC50"
+  parameters:
+    concentration_range: "0.001_to_10_uM"
+
+experiment:
+  type: RNAseq
+  design:
+    samples: 1000
+  parameters:
+    sequencing_depth: 20M
+
+analyze:
+  # Multi-input: IC50 drug screen + RNA expression integrated via ElasticNet
+  inputs:
+    - DrugScreen_CCLE
+    - RNA_Profiling
+  tool: ElasticNet
+  parameters:
+    cross_validation: 10
+    alpha: 0.5
