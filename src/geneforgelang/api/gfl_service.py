@@ -20,16 +20,16 @@ from pydantic import BaseModel
 logger = logging.getLogger(__name__)
 
 # Add the project root to the Python path
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 # Import GFL core functionality
 from importlib.metadata import entry_points
 
-from gfl.parser import parse_gfl
+from geneforgelang.core.parser import parse_gfl
 
 # Import plugin registry for dynamic plugin discovery
-from gfl.plugins.plugin_registry import plugin_registry
-from gfl.staging import DataStagingManager
+from geneforgelang.plugins.plugin_registry import plugin_registry
+from geneforgelang.staging import DataStagingManager
 
 app = FastAPI(
     title="GeneForgeLang Service",
@@ -85,12 +85,14 @@ class ExecuteResponse(BaseModel):
 
 class SkillExecuteRequest(BaseModel):
     """Request to run a local Bio-Skill by name."""
+
     skill_name: str
     inputs: dict[str, Any] = {}
 
 
 class SkillExecuteResponse(BaseModel):
     """Response from a local Bio-Skill execution."""
+
     success: bool
     message: str = ""
     data: dict[str, Any] = None
@@ -98,13 +100,13 @@ class SkillExecuteResponse(BaseModel):
 
 
 @app.get("/health")
-async def health_check():
+async def health_check() -> dict[str, Any]:
     """Health check endpoint"""
     return {"status": "ok"}
 
 
 @app.post("/api/v2/parse", response_model=ParseResponse)
-async def parse_gfl_endpoint(request: ParseRequest):
+async def parse_gfl_endpoint(request: ParseRequest) -> ParseResponse:
     """Parse GFL code and return AST"""
     try:
         # Parse the GFL code using YAML parser
@@ -119,7 +121,7 @@ async def parse_gfl_endpoint(request: ParseRequest):
 
 
 @app.post("/api/v2/validate", response_model=ValidateResponse)
-async def validate_ast(request: ValidateRequest):
+async def validate_ast(request: ValidateRequest) -> ValidateResponse:
     """Validate AST"""
     try:
         # For simplicity, we're just returning a basic validation result
@@ -132,12 +134,12 @@ async def validate_ast(request: ValidateRequest):
 
 
 @app.post("/api/v2/infer", response_model=InferResponse)
-async def infer_ast(request: InferRequest):
+async def infer_ast(request: InferRequest) -> InferResponse:
     """Perform inference on AST"""
     try:
         # For simplicity, we're just returning a basic inference result
         # In a full implementation, this would perform detailed inference
-        inference_result = {"inferred_types": {}, "dependencies": [], "optimizations": []}
+        inference_result: dict[str, Any] = {"inferred_types": {}, "dependencies": [], "optimizations": []}
 
         return InferResponse(success=True, inference_result=inference_result)
     except Exception as e:
@@ -145,7 +147,7 @@ async def infer_ast(request: InferRequest):
 
 
 @app.post("/api/v2/execute", response_model=ExecuteResponse)
-async def execute_ast(request: ExecuteRequest):
+async def execute_ast(request: ExecuteRequest) -> ExecuteResponse:
     """Execute AST with data staging support"""
     data_staging_manager = None
     try:
@@ -164,9 +166,7 @@ async def execute_ast(request: ExecuteRequest):
         # Stage files if data staging manager is available
         if data_staging_manager and plugin_params:
             try:
-                plugin_params = data_staging_manager.stage_files(
-                    plugin_params, request.data_manifest
-                )
+                plugin_params = data_staging_manager.stage_files(plugin_params, request.data_manifest)
                 logger.info(f"Staged {len(data_staging_manager.staged_files)} files for execution")
             except Exception as e:
                 logger.error(f"Data staging failed: {e}")
@@ -179,9 +179,7 @@ async def execute_ast(request: ExecuteRequest):
             "status": "success",
             "output": "GFL execution completed",
             "metrics": {},
-            "staged_files": (
-                list(data_staging_manager.staged_files.keys()) if data_staging_manager else []
-            ),
+            "staged_files": (list(data_staging_manager.staged_files.keys()) if data_staging_manager else []),
             "plugin_params": plugin_params,
         }
 
@@ -203,23 +201,21 @@ async def execute_ast(request: ExecuteRequest):
 # ---------------------------------------------------------------------------
 _skills_registry: dict[str, Any] = {}
 
+
 def _register_bio_skills() -> None:
     """Auto-register all available GFL Bio-Skills."""
     try:
-        from gfl.plugins.skills.neuro_pharmgx import NeuroPharmGxSkill
-        from gfl.plugins.skills.neuro_geriatric_risk import NeuroGeriatricRiskSkill
-        from gfl.plugins.skills.neuro_nutrigx import NeuroNutriGxSkill
-        
-        skills = [
-            NeuroPharmGxSkill(), 
-            NeuroGeriatricRiskSkill(),
-            NeuroNutriGxSkill()
-        ]
+        from geneforgelang.plugins.skills.neuro_geriatric_risk import NeuroGeriatricRiskSkill
+        from geneforgelang.plugins.skills.neuro_nutrigx import NeuroNutriGxSkill
+        from geneforgelang.plugins.skills.neuro_pharmgx import NeuroPharmGxSkill
+
+        skills = [NeuroPharmGxSkill(), NeuroGeriatricRiskSkill(), NeuroNutriGxSkill()]
         for skill in skills:
             _skills_registry[skill.name] = skill
             logger.info(f"Registered Bio-Skill: {skill.name} v{skill.version}")
     except Exception as e:
         logger.warning(f"Could not register Bio-Skills: {e}")
+
 
 _register_bio_skills()
 
@@ -228,8 +224,9 @@ _register_bio_skills()
 # Bio-Skills endpoints
 # ---------------------------------------------------------------------------
 
+
 @app.post("/api/v2/skills/execute", response_model=SkillExecuteResponse)
-async def execute_skill(request: SkillExecuteRequest):
+async def execute_skill(request: SkillExecuteRequest) -> SkillExecuteResponse:
     """
     Execute a local GFL Bio-Skill by name.
     Data never leaves this machine. Ships a reproducibility package.
@@ -239,14 +236,14 @@ async def execute_skill(request: SkillExecuteRequest):
         available = list(_skills_registry.keys())
         return SkillExecuteResponse(
             success=False,
-            message=f"Skill '{skill_name}' no encontrada. Disponibles: {available}",
+            message=f"Skill '{skill_name}' not found. Available: {available}",
         )
     skill = _skills_registry[skill_name]
     try:
         result = skill.execute(request.inputs)
         return SkillExecuteResponse(
             success=result["success"],
-            message="" if result["success"] else result.get("error", "Error desconocido"),
+            message="" if result["success"] else result.get("error", "Unknown error"),
             data=result.get("data"),
             reproducibility_package=result.get("reproducibility_package"),
         )
@@ -254,12 +251,12 @@ async def execute_skill(request: SkillExecuteRequest):
         logger.error(f"Skill execution failed for '{skill_name}': {e}")
         return SkillExecuteResponse(
             success=False,
-            message=f"Error al ejecutar skill '{skill_name}': {str(e)}",
+            message=f"Error executing skill '{skill_name}': {str(e)}",
         )
 
 
 @app.get("/api/v2/skills")
-async def list_skills():
+async def list_skills() -> dict[str, Any]:
     """List all registered local Bio-Skills."""
     return {
         "success": True,
@@ -276,8 +273,9 @@ async def list_skills():
         ],
     }
 
+
 @app.get("/api/v2/plugins")
-async def list_plugins():
+async def list_plugins() -> dict[str, Any]:
     """List available plugins"""
     # Discover plugins dynamically using entry points
     discovered_plugins = []
@@ -296,7 +294,7 @@ async def list_plugins():
 
     # Get external plugins from entry points
     try:
-        eps = entry_points(group="gfl.plugins")
+        eps = entry_points(group="gfl.plugins")  # type: ignore[call-arg]
         for ep in eps:
             try:
                 plugin_class = ep.load()
@@ -310,9 +308,9 @@ async def list_plugins():
                     }
                 )
             except Exception as e:
-                print(f"Failed to load plugin {ep.name}: {e}")
+                logger.error(f"Failed to load plugin {ep.name}: {e}")
     except Exception as e:
-        print(f"Failed to discover entry point plugins: {e}")
+        logger.error(f"Failed to discover entry point plugins: {e}")
 
     # Add hardcoded plugins for compatibility
     hardcoded_plugins = [
@@ -324,18 +322,8 @@ async def list_plugins():
             "status": "active",
             "is_containerized": True,
             "container_image": "biocontainers/crispr-designer:v1.0.0_cv1",
-            "inputs": [
-                {
-                    "name": "input_sequence",
-                    "schema_type": "FASTA"
-                }
-            ],
-            "outputs": [
-                {
-                    "name": "guide_rnas",
-                    "schema_type": "CSV"
-                }
-            ]
+            "inputs": [{"name": "input_sequence", "schema_type": "FASTA"}],
+            "outputs": [{"name": "guide_rnas", "schema_type": "CSV"}],
         },
         {
             "name": "protein_design",
@@ -345,18 +333,8 @@ async def list_plugins():
             "status": "active",
             "is_containerized": True,
             "container_image": "biocontainers/protein-designer:v1.0.0_cv1",
-            "inputs": [
-                {
-                    "name": "target_structure",
-                    "schema_type": "PDB"
-                }
-            ],
-            "outputs": [
-                {
-                    "name": "designed_protein",
-                    "schema_type": "PDB"
-                }
-            ]
+            "inputs": [{"name": "target_structure", "schema_type": "PDB"}],
+            "outputs": [{"name": "designed_protein", "schema_type": "PDB"}],
         },
         {
             "name": "data_analysis",
@@ -365,18 +343,8 @@ async def list_plugins():
             "capabilities": ["statistical_analysis", "visualization"],
             "status": "active",
             "is_containerized": False,
-            "inputs": [
-                {
-                    "name": "input_data",
-                    "schema_type": "CSV"
-                }
-            ],
-            "outputs": [
-                {
-                    "name": "analysis_results",
-                    "schema_type": "JSON"
-                }
-            ]
+            "inputs": [{"name": "input_data", "schema_type": "CSV"}],
+            "outputs": [{"name": "analysis_results", "schema_type": "JSON"}],
         },
         {
             "name": "sequence_alignment",
@@ -386,22 +354,8 @@ async def list_plugins():
             "status": "active",
             "is_containerized": True,
             "container_image": "biocontainers/sequence-aligner:v1.0.0_cv1",
-            "inputs": [
-                {
-                    "name": "reference_genome",
-                    "schema_type": "FASTA"
-                },
-                {
-                    "name": "reads",
-                    "schema_type": "FASTQ"
-                }
-            ],
-            "outputs": [
-                {
-                    "name": "aligned_reads",
-                    "schema_type": "BAM"
-                }
-            ]
+            "inputs": [{"name": "reference_genome", "schema_type": "FASTA"}, {"name": "reads", "schema_type": "FASTQ"}],
+            "outputs": [{"name": "aligned_reads", "schema_type": "BAM"}],
         },
         {
             "name": "variant_calling",
@@ -411,19 +365,9 @@ async def list_plugins():
             "status": "active",
             "is_containerized": True,
             "container_image": "biocontainers/variant-caller:v1.0.0_cv1",
-            "inputs": [
-                {
-                    "name": "aligned_reads",
-                    "schema_type": "BAM"
-                }
-            ],
-            "outputs": [
-                {
-                    "name": "variants",
-                    "schema_type": "VCF"
-                }
-            ]
-        }
+            "inputs": [{"name": "aligned_reads", "schema_type": "BAM"}],
+            "outputs": [{"name": "variants", "schema_type": "VCF"}],
+        },
     ]
 
     # Combine all plugins
