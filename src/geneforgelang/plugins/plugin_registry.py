@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Callable, Protocol
 
-from src.geneforgelang.plugins.base import BaseGeneratorPlugin, BaseOptimizerPlugin
+from geneforgelang.plugins.base import BaseGeneratorPlugin, BaseOptimizerPlugin
 
 try:
     from importlib.metadata import entry_points as _entry_points

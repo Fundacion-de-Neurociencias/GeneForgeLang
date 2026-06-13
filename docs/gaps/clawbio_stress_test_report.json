@@ -1,5 +1,5 @@
 {
-  "run_timestamp": "2026-06-13T10:50:53.179212+00:00",
+  "run_timestamp": "2026-06-13T13:48:43.050881+00:00",
   "gfl_available": true,
   "total_fixtures": 10,
   "parse_passed": 10,
@@ -17,13 +17,13 @@
       "parse_error": null,
       "validate_success": true,
       "validate_errors": [
-        "[WARNING] Unknown tool 'clawbio_pharmgx' (SEMANTIC003)\n  Context: suggested_tools=['CRISPR_base_editor', 'CRISPR_cas9', 'WES', 'targeted_seq', 'CRISPR_prime_editor', 'ATACseq', 'RNAseq', 'CRISPR_cas12', 'WGS', 'ChIPseq']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_pharmgx' plugin is available"
+        "[WARNING] Unknown tool 'clawbio_pharmgx' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR_base_editor', 'ATACseq', 'RNAseq', 'ChIPseq', 'CRISPR_cas12', 'CRISPR_cas9', 'CRISPR_prime_editor']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_pharmgx' plugin is available"
       ],
       "validate_warnings": [
-        "[WARNING] Unknown tool 'clawbio_pharmgx' (SEMANTIC003)\n  Context: suggested_tools=['CRISPR_base_editor', 'CRISPR_cas9', 'WES', 'targeted_seq', 'CRISPR_prime_editor', 'ATACseq', 'RNAseq', 'CRISPR_cas12', 'WGS', 'ChIPseq']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_pharmgx' plugin is available"
+        "[WARNING] Unknown tool 'clawbio_pharmgx' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR_base_editor', 'ATACseq', 'RNAseq', 'ChIPseq', 'CRISPR_cas12', 'CRISPR_cas9', 'CRISPR_prime_editor']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_pharmgx' plugin is available"
       ],
       "gap_probes": [],
-      "elapsed_ms": 5.0063999951817095,
+      "elapsed_ms": 3.271699999459088,
       "raw_ast_keys": [
         "metadata",
         "experiment"
@@ -40,7 +40,7 @@
       "validate_errors": [],
       "validate_warnings": [],
       "gap_probes": [],
-      "elapsed_ms": 6.242899980861694,
+      "elapsed_ms": 2.5440000172238797,
       "raw_ast_keys": [
         "metadata",
         "analyze"
@@ -57,7 +57,7 @@
       "validate_errors": [],
       "validate_warnings": [],
       "gap_probes": [],
-      "elapsed_ms": 7.917400012956932,
+      "elapsed_ms": 3.1550000130664557,
       "raw_ast_keys": [
         "metadata",
         "analyze"
@@ -72,13 +72,13 @@
       "parse_error": null,
       "validate_success": true,
       "validate_errors": [
-        "[WARNING] Unknown tool 'clawbio_gwas_lookup' (SEMANTIC003)\n  Context: suggested_tools=['CRISPR_base_editor', 'CRISPR_cas9', 'WES', 'targeted_seq', 'CRISPR_prime_editor', 'ATACseq', 'RNAseq', 'CRISPR_cas12', 'WGS', 'ChIPseq']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_gwas_lookup' plugin is available"
+        "[WARNING] Unknown tool 'clawbio_gwas_lookup' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR_base_editor', 'ATACseq', 'RNAseq', 'ChIPseq', 'CRISPR_cas12', 'CRISPR_cas9', 'CRISPR_prime_editor']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_gwas_lookup' plugin is available"
       ],
       "validate_warnings": [
-        "[WARNING] Unknown tool 'clawbio_gwas_lookup' (SEMANTIC003)\n  Context: suggested_tools=['CRISPR_base_editor', 'CRISPR_cas9', 'WES', 'targeted_seq', 'CRISPR_prime_editor', 'ATACseq', 'RNAseq', 'CRISPR_cas12', 'WGS', 'ChIPseq']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_gwas_lookup' plugin is available"
+        "[WARNING] Unknown tool 'clawbio_gwas_lookup' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR_base_editor', 'ATACseq', 'RNAseq', 'ChIPseq', 'CRISPR_cas12', 'CRISPR_cas9', 'CRISPR_prime_editor']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_gwas_lookup' plugin is available"
       ],
       "gap_probes": [],
-      "elapsed_ms": 8.06729999021627,
+      "elapsed_ms": 2.6618000119924545,
       "raw_ast_keys": [
         "metadata",
         "experiment"
@@ -97,7 +97,7 @@
       ],
       "validate_warnings": [],
       "gap_probes": [],
-      "elapsed_ms": 10.03790000686422,
+      "elapsed_ms": 4.152500012423843,
       "raw_ast_keys": [
         "metadata",
         "guided_discovery"
@@ -114,7 +114,7 @@
       "validate_errors": [],
       "validate_warnings": [],
       "gap_probes": [],
-      "elapsed_ms": 7.965500000864267,
+      "elapsed_ms": 2.9131000046618283,
       "raw_ast_keys": [
         "metadata",
         "analyze"
@@ -131,7 +131,7 @@
       "validate_errors": [],
       "validate_warnings": [],
       "gap_probes": [],
-      "elapsed_ms": 7.660500006750226,
+      "elapsed_ms": 2.9602000140585005,
       "raw_ast_keys": [
         "metadata",
         "pathways",
@@ -147,10 +147,10 @@
       "parse_error": null,
       "validate_success": true,
       "validate_errors": [
-        "[WARNING] Unknown analysis strategy 'population_genetics' (SEMANTIC004)\n  Context: valid_strategies=['pathway', 'expression', 'functional', 'comparative', 'structural', 'longitudinal', 'variant', 'differential']\n  Suggested fixes:\n    - Use one of: comparative, differential, expression, functional, longitudinal, pathway, structural, variant"
+        "[WARNING] Unknown analysis strategy 'population_genetics' (SEMANTIC004)\n  Context: valid_strategies=['structural', 'comparative', 'differential', 'functional', 'pathway', 'variant', 'longitudinal', 'expression']\n  Suggested fixes:\n    - Use one of: comparative, differential, expression, functional, longitudinal, pathway, structural, variant"
       ],
       "validate_warnings": [
-        "[WARNING] Unknown analysis strategy 'population_genetics' (SEMANTIC004)\n  Context: valid_strategies=['pathway', 'expression', 'functional', 'comparative', 'structural', 'longitudinal', 'variant', 'differential']\n  Suggested fixes:\n    - Use one of: comparative, differential, expression, functional, longitudinal, pathway, structural, variant"
+        "[WARNING] Unknown analysis strategy 'population_genetics' (SEMANTIC004)\n  Context: valid_strategies=['structural', 'comparative', 'differential', 'functional', 'pathway', 'variant', 'longitudinal', 'expression']\n  Suggested fixes:\n    - Use one of: comparative, differential, expression, functional, longitudinal, pathway, structural, variant"
       ],
       "gap_probes": [
         {
@@ -168,7 +168,7 @@
           "skill_name": "DnaSP Population Genetics"
         }
       ],
-      "elapsed_ms": 11.043200007406995,
+      "elapsed_ms": 6.875099992612377,
       "raw_ast_keys": [
         "metadata",
         "analyze"
@@ -183,12 +183,12 @@
       "parse_error": null,
       "validate_success": true,
       "validate_errors": [
-        "[WARNING] Unknown tool 'clawbio_metagenomics_profiler' (SEMANTIC003)\n  Context: suggested_tools=['CRISPR_base_editor', 'CRISPR_cas9', 'WES', 'targeted_seq', 'CRISPR_prime_editor', 'ATACseq', 'RNAseq', 'CRISPR_cas12', 'WGS', 'ChIPseq']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_metagenomics_profiler' plugin is available",
-        "[WARNING] Unknown experiment type 'metagenomics' (SEMANTIC005)\n  Context: valid_types=['simulation', 'analysis', 'gene_editing', 'sequencing', 'validation']\n  Suggested fixes:\n    - Use one of: simulation, analysis, gene_editing, sequencing, validation"
+        "[WARNING] Unknown tool 'clawbio_metagenomics_profiler' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR_base_editor', 'ATACseq', 'RNAseq', 'ChIPseq', 'CRISPR_cas12', 'CRISPR_cas9', 'CRISPR_prime_editor']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_metagenomics_profiler' plugin is available",
+        "[WARNING] Unknown experiment type 'metagenomics' (SEMANTIC005)\n  Context: valid_types=['gene_editing', 'simulation', 'analysis', 'sequencing', 'validation']\n  Suggested fixes:\n    - Use one of: gene_editing, simulation, analysis, sequencing, validation"
       ],
       "validate_warnings": [
-        "[WARNING] Unknown tool 'clawbio_metagenomics_profiler' (SEMANTIC003)\n  Context: suggested_tools=['CRISPR_base_editor', 'CRISPR_cas9', 'WES', 'targeted_seq', 'CRISPR_prime_editor', 'ATACseq', 'RNAseq', 'CRISPR_cas12', 'WGS', 'ChIPseq']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_metagenomics_profiler' plugin is available",
-        "[WARNING] Unknown experiment type 'metagenomics' (SEMANTIC005)\n  Context: valid_types=['simulation', 'analysis', 'gene_editing', 'sequencing', 'validation']\n  Suggested fixes:\n    - Use one of: simulation, analysis, gene_editing, sequencing, validation"
+        "[WARNING] Unknown tool 'clawbio_metagenomics_profiler' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR_base_editor', 'ATACseq', 'RNAseq', 'ChIPseq', 'CRISPR_cas12', 'CRISPR_cas9', 'CRISPR_prime_editor']\n  Suggested fixes:\n    - Use a known tool or ensure 'clawbio_metagenomics_profiler' plugin is available",
+        "[WARNING] Unknown experiment type 'metagenomics' (SEMANTIC005)\n  Context: valid_types=['gene_editing', 'simulation', 'analysis', 'sequencing', 'validation']\n  Suggested fixes:\n    - Use one of: gene_editing, simulation, analysis, sequencing, validation"
       ],
       "gap_probes": [
         {
@@ -206,7 +206,7 @@
           "skill_name": "Metagenomics Profiler"
         }
       ],
-      "elapsed_ms": 8.5636000148952,
+      "elapsed_ms": 3.4983000077772886,
       "raw_ast_keys": [
         "metadata",
         "experiment"
@@ -223,7 +223,7 @@
       "validate_errors": [],
       "validate_warnings": [],
       "gap_probes": [],
-      "elapsed_ms": 8.846300013829023,
+      "elapsed_ms": 3.648999991128221,
       "raw_ast_keys": [
         "metadata",
         "analyze"
@@ -264,11 +264,11 @@
       "pattern": "Unknown tool",
       "count": 6,
       "examples": [
-        "CB_001: [WARNING] Unknown tool 'clawbio_pharmgx' (SEMANTIC003)\n  Context: suggested_tools=['CRISPR_base_editor', 'CRISPR_cas9', ",
-        "CB_001: [WARNING] Unknown tool 'clawbio_pharmgx' (SEMANTIC003)\n  Context: suggested_tools=['CRISPR_base_editor', 'CRISPR_cas9', ",
-        "CB_004: [WARNING] Unknown tool 'clawbio_gwas_lookup' (SEMANTIC003)\n  Context: suggested_tools=['CRISPR_base_editor', 'CRISPR_cas",
-        "CB_004: [WARNING] Unknown tool 'clawbio_gwas_lookup' (SEMANTIC003)\n  Context: suggested_tools=['CRISPR_base_editor', 'CRISPR_cas",
-        "CB_009: [WARNING] Unknown tool 'clawbio_metagenomics_profiler' (SEMANTIC003)\n  Context: suggested_tools=['CRISPR_base_editor', '"
+        "CB_001: [WARNING] Unknown tool 'clawbio_pharmgx' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR",
+        "CB_001: [WARNING] Unknown tool 'clawbio_pharmgx' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CRISPR",
+        "CB_004: [WARNING] Unknown tool 'clawbio_gwas_lookup' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CR",
+        "CB_004: [WARNING] Unknown tool 'clawbio_gwas_lookup' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted_seq', 'CR",
+        "CB_009: [WARNING] Unknown tool 'clawbio_metagenomics_profiler' (SEMANTIC003)\n  Context: suggested_tools=['WGS', 'WES', 'targeted"
       ]
     },
     {
@@ -276,8 +276,8 @@
       "pattern": "Unknown experiment type",
       "count": 2,
       "examples": [
-        "CB_009: [WARNING] Unknown experiment type 'metagenomics' (SEMANTIC005)\n  Context: valid_types=['simulation', 'analysis', 'gene_e",
-        "CB_009: [WARNING] Unknown experiment type 'metagenomics' (SEMANTIC005)\n  Context: valid_types=['simulation', 'analysis', 'gene_e"
+        "CB_009: [WARNING] Unknown experiment type 'metagenomics' (SEMANTIC005)\n  Context: valid_types=['gene_editing', 'simulation', 'an",
+        "CB_009: [WARNING] Unknown experiment type 'metagenomics' (SEMANTIC005)\n  Context: valid_types=['gene_editing', 'simulation', 'an"
       ]
     }
   ]
