@@ -698,8 +698,8 @@ class EnhancedSemanticValidator:
             ).add_fix("Format the experiment block as a YAML dictionary")
             return
 
-        # Required fields
-        required_fields = ["tool", "type"]
+        # Only 'type' is required; 'tool' is now optional (ADR-0006)
+        required_fields = ["type"]
         for field in required_fields:
             if field not in experiment:
                 error = self.result.add_error(
@@ -710,7 +710,7 @@ class EnhancedSemanticValidator:
                 error.add_context("block", "experiment")
                 error.add_context("required_fields", required_fields)
 
-        # Validate tool
+        # Validate tool (optional — ADR-0006: experiment can be platform-agnostic)
         if "tool" in experiment:
             self._validate_tool_field(experiment["tool"])
 
@@ -721,6 +721,14 @@ class EnhancedSemanticValidator:
         # Validate params if present
         if "params" in experiment:
             self._validate_experiment_params(experiment["params"])
+
+        # Validate design if present (open extension field — ADR-0006)
+        # Content is intentionally opaque to the core validator; plugins interpret it.
+        if "design" in experiment and not isinstance(experiment["design"], dict):
+            self.result.add_error(
+                "'design' field in experiment block must be a dictionary",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format the design field as a YAML dictionary")
 
         # Check tool-type compatibility
         if "tool" in experiment and "type" in experiment:
@@ -822,7 +830,8 @@ class EnhancedSemanticValidator:
             error.add_fix("Change type to a string like 'gene_editing'")
             return
 
-        valid_types = {
+        # Core GFL types (stable, ADR-0002)
+        core_types = {
             "gene_editing",
             "sequencing",
             "analysis",
@@ -830,6 +839,27 @@ class EnhancedSemanticValidator:
             "validation",
             "metagenomics",
         }
+        # Extended literature-canonical types (ADR-0006: open vocabulary)
+        extended_types = {
+            "RNAseq",
+            "scRNAseq",
+            "GWAS",
+            "WGS",
+            "WES",
+            "ChIPseq",
+            "ATACseq",
+            "CRISPR_cas9",
+            "CRISPR_cas12",
+            "Metagenomics",
+            "Proteomics",
+            "Metabolomics",
+            "Pharmacogenomics",
+            "ClinicalTrial",
+            "spatial_transcriptomics",
+            "HiC",
+            "multiomics",
+        }
+        valid_types = core_types | extended_types
 
         if exp_type not in valid_types:
             error = self.result.add_error(
@@ -837,8 +867,8 @@ class EnhancedSemanticValidator:
                 ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                 ErrorSeverity.WARNING,
             )
-            error.add_fix(f"Use one of: {', '.join(valid_types)}")
-            error.add_context("valid_types", list(valid_types))
+            error.add_fix(f"Use one of the recognised types or register a new one via plugin")
+            error.add_context("valid_types", sorted(valid_types))
 
     def _validate_experiment_params(self, params: Any) -> None:
         """Validate experiment parameters."""
@@ -922,15 +952,28 @@ class EnhancedSemanticValidator:
             ).add_fix("Format the analysis block as a YAML dictionary")
             return
 
-        # Required strategy field
+        # strategy is recommended but optional (ADR-0006).
+        # When absent and 'tool' is present, the tool itself implies the strategy.
         if "strategy" not in analysis:
-            error = self.result.add_error(
-                "Missing required field 'strategy' in analysis block",
-                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
-            )
-            error.add_fix("Add 'strategy: <analysis_type>' to the analysis block")
+            if "tool" not in analysis:
+                error = self.result.add_error(
+                    "Missing recommended field 'strategy' in analysis block",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    ErrorSeverity.WARNING,
+                )
+                error.add_fix(
+                    "Add 'strategy: <analysis_type>' or 'tool: <tool_name>' to the analysis block"
+                )
         else:
             self._validate_analysis_strategy(analysis["strategy"])
+
+        # Accept 'inputs' (list) as alternative to 'input' (single) — ADR-0006
+        # Multi-input analyses (e.g. pharmacogenomics: IC50 + RNA) are valid patterns.
+        if "inputs" in analysis and not isinstance(analysis["inputs"], list):
+            self.result.add_error(
+                "'inputs' field in analysis block must be a list",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format inputs as a YAML list of experiment identifiers")
 
         # Validate IO contract if present
         if "contract" in analysis:
