@@ -1,7 +1,7 @@
 # ClawBio × GFL Stress Test Report
 
-**Run**: `2026-06-13T13:48:43.050881+00:00`  
-**GFL available**: ✅  
+**Run**: `2026-06-13T13:48:43.050881+00:00`
+**GFL available**: ✅
 
 ## Summary
 

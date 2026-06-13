@@ -51,6 +51,7 @@ class ExperimentType(str, Enum):
     ANALYSIS = "analysis"
     SIMULATION = "simulation"
     VALIDATION = "validation"
+    METAGENOMICS = "metagenomics"
 
     def __str__(self) -> str:
         """Return the enum value as string."""
@@ -65,6 +66,11 @@ class AnalysisStrategy(str, Enum):
     VARIANT = "variant"
     EXPRESSION = "expression"
     STRUCTURAL = "structural"
+    FUNCTIONAL = "functional"
+    COMPARATIVE = "comparative"
+    LONGITUDINAL = "longitudinal"
+    POPULATION_GENETICS = "population_genetics"
+    METAGENOMICS_ANALYSIS = "metagenomics_analysis"
 
     def __str__(self) -> str:
         """Return the enum value as string."""

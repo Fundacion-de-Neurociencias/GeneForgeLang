@@ -789,7 +789,6 @@ class EnhancedSemanticValidator:
             )
             error.add_fix("Change tool to a string value like 'CRISPR_cas9'")
             return
-
         # Known tools (could be extended with a registry)
         known_tools = {
             "CRISPR_cas9",
@@ -797,21 +796,21 @@ class EnhancedSemanticValidator:
             "CRISPR_base_editor",
             "CRISPR_prime_editor",
             "RNAseq",
-            "ChIPseq",
+            "scRNAseq",
             "ATACseq",
+            "ChIPseq",
             "WGS",
             "WES",
             "targeted_seq",
         }
 
-        if tool not in known_tools:
-            error = self.result.add_error(
-                f"Unknown tool '{tool}'",
-                ErrorCodes.SEMANTIC_UNKNOWN_TOOL,
-                ErrorSeverity.WARNING,
-            )
-            error.add_fix(f"Use a known tool or ensure '{tool}' plugin is available")
-            error.add_context("suggested_tools", list(known_tools))
+        try:
+            from geneforgelang.plugins.plugin_registry import discover_plugins, plugin_registry
+
+            discover_plugins()
+            known_tools.update(plugin_registry.names())
+        except ImportError:
+            pass
 
     def _validate_experiment_type(self, exp_type: Any) -> None:
         """Validate the experiment type."""
@@ -829,6 +828,7 @@ class EnhancedSemanticValidator:
             "analysis",
             "simulation",
             "validation",
+            "metagenomics",
         }
 
         if exp_type not in valid_types:
@@ -889,64 +889,6 @@ class EnhancedSemanticValidator:
         # Pattern for entity references: entity_type(entity_name)
         pattern = r"^[a-zA-Z_][a-zA-Z0-9_]*\([a-zA-Z_][a-zA-Z0-9_]*\)$"
         return bool(re.match(pattern, value))
-
-    def _validate_entity_reference(self, entity_ref: str) -> None:
-        """Validate entity reference in parameter values."""
-
-        # Extract entity type and name
-        match = re.match(r"^([a-zA-Z_][a-zA-Z0-9_]*)\(([a-zA-Z_][a-zA-Z0-9_]*)\)$", entity_ref)
-        if not match:
-            self.result.add_error(
-                f"Invalid entity reference format: {entity_ref}",
-                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
-            ).add_fix("Use format 'entity_type(entity_name)' for entity references")
-            return
-
-        entity_type, entity_name = match.groups()
-
-        # Check if entity type is supported
-        supported_entity_types = {"pathway", "complex"}
-        if entity_type not in supported_entity_types:
-            self.result.add_error(
-                f"Unsupported entity type '{entity_type}' in reference: {entity_ref}",
-                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
-            ).add_fix(f"Use one of the supported entity types: {', '.join(supported_entity_types)}")
-            return
-
-        # Check if entity is defined
-        if hasattr(self, "entity_registry"):
-            # Debug: Print entity registry contents
-            print(f"Entity registry: {self.entity_registry}")
-            print(f"Looking for entity type: {entity_type}")
-            print(f"Looking for entity name: {entity_name}")
-
-            registry_key = entity_type + "s"  # "pathway" -> "pathways", "complex" -> "complexes"
-            # Fix for complex -> complexes
-            if entity_type == "complex":
-                registry_key = "complexes"
-            print(f"Registry key: {registry_key}")
-            if registry_key in self.entity_registry:
-                print(f"Found registry key: {registry_key}")
-                print(f"Available entities: {list(self.entity_registry[registry_key].keys())}")
-                if entity_name in self.entity_registry[registry_key]:
-                    print(f"Found entity: {entity_name}")
-                    return  # Valid reference
-                else:
-                    self.result.add_error(
-                        f"Referenced {entity_type} '{entity_name}' is not defined",
-                        ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-                    ).add_fix(f"Define a {entity_type} with name '{entity_name}' or reference an existing one")
-            else:
-                # Entity type registry doesn't exist
-                self.result.add_error(
-                    f"Referenced {entity_type} '{entity_name}' is not defined (no {entity_type} definitions found)",
-                    ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-                ).add_fix(f"Add a {entity_type} definition section or reference an existing one")
-        else:
-            self.result.add_error(
-                f"Referenced {entity_type} '{entity_name}' is not defined (no entity definitions found)",
-                ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-            ).add_fix("Add entity definitions or reference an existing one")
 
     def _validate_tool_type_compatibility(self, tool: str, exp_type: str) -> None:
         """Validate tool and type compatibility."""
@@ -1016,6 +958,8 @@ class EnhancedSemanticValidator:
             "functional",
             "comparative",
             "longitudinal",
+            "population_genetics",
+            "metagenomics_analysis",
         }
 
         if strategy not in valid_strategies:
@@ -1892,27 +1836,36 @@ class EnhancedSemanticValidator:
             ).add_fix("Format the guided_discovery block as a YAML dictionary")
             return
 
-        # Required keys in guided_discovery block
-        required_keys = ["design_params", "active_learning_params", "budget", "output"]
-
-        for key in required_keys:
-            if key not in guided_discovery:
-                error = self.result.add_error(
-                    f"Missing required key '{key}' in guided_discovery block",
-                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
-                )
-                error.add_fix(f"Add '{key}: <value>' to guided_discovery block")
-            else:
-                # Validate each section
-                value = guided_discovery[key]
-                if key == "design_params":
-                    self._validate_guided_discovery_design_params(value)
-                elif key == "active_learning_params":
-                    self._validate_guided_discovery_active_learning_params(value)
-                elif key == "budget":
-                    self._validate_guided_discovery_budget(value)
-                elif key == "output":
-                    self._validate_guided_discovery_output(value)
+        # Check which schema we are using: original (design_params) or clawbio (objective, steps)
+        if "design_params" in guided_discovery or "active_learning_params" in guided_discovery:
+            required_keys = ["design_params", "active_learning_params", "budget", "output"]
+            for key in required_keys:
+                if key not in guided_discovery:
+                    error = self.result.add_error(
+                        f"Missing required key '{key}' in guided_discovery block",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    )
+                    error.add_fix(f"Add '{key}: <value>' to guided_discovery block")
+                else:
+                    value = guided_discovery[key]
+                    if key == "design_params":
+                        self._validate_guided_discovery_design_params(value)
+                    elif key == "active_learning_params":
+                        self._validate_guided_discovery_active_learning_params(value)
+                    elif key == "budget":
+                        self._validate_guided_discovery_budget(value)
+                    elif key == "output":
+                        self._validate_guided_discovery_output(value)
+        else:
+            # clawbio schema
+            required_keys = ["objective", "strategy", "steps"]
+            for key in required_keys:
+                if key not in guided_discovery:
+                    error = self.result.add_error(
+                        f"Missing required key '{key}' in guided_discovery block",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    )
+                    error.add_fix(f"Add '{key}: <value>' to guided_discovery block")
 
     def _validate_guided_discovery_design_params(self, design_params: Any) -> None:
         """Validate design_params in guided_discovery block."""
@@ -1923,21 +1876,20 @@ class EnhancedSemanticValidator:
             ).add_fix("Format design_params as a dictionary with design block structure")
             return
 
-        # Reuse design block validation logic
-        # Save current block context and temporarily set to design
-        original_block = self.current_block
-        self.current_block = "design"
-
-        # Validate as a design block first
-        self._validate_design_block(design_params)
-
-        # Additional validation for guided discovery specific requirements
+        # Validation for guided discovery specific requirements
         if "candidates_per_cycle" not in design_params:
             error = self.result.add_error(
                 "design_params in guided_discovery requires 'candidates_per_cycle'",
                 ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
             )
-            error.add_fix("Add 'candidates_per_cycle: <positive_integer>' to design_params")
+            error.add_fix("Add 'candidates_per_cycle: <number>' to design_params")
+
+        if "space" not in design_params:
+            error = self.result.add_error(
+                "design_params in guided_discovery requires 'space'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            )
+            error.add_fix("Add 'space: <value>' to design_params")
         else:
             candidates_per_cycle = design_params["candidates_per_cycle"]
             if not isinstance(candidates_per_cycle, int) or candidates_per_cycle <= 0:
@@ -1947,44 +1899,21 @@ class EnhancedSemanticValidator:
                 )
                 error.add_fix("Use a positive integer for candidates_per_cycle")
 
-        # Restore original block context
-        self.current_block = original_block
-
     def _validate_guided_discovery_active_learning_params(self, active_learning_params: Any) -> None:
         """Validate active_learning_params in guided_discovery block."""
         if not isinstance(active_learning_params, dict):
             self.result.add_error(
                 "active_learning_params must be a dictionary",
                 ErrorCodes.TYPE_INVALID_TYPE,
-            ).add_fix("Format active_learning_params as a dictionary with optimize block structure")
+            ).add_fix("Format active_learning_params as a dictionary")
             return
 
-        # Reuse optimize block validation logic
-        # Save current block context and temporarily set to optimize
-        original_block = self.current_block
-        self.current_block = "optimize"
-
-        # Validate as an optimize block first
-        self._validate_optimize_block(active_learning_params)
-
-        # Additional validation for guided discovery specific requirements
-        if "experiments_per_cycle" not in active_learning_params:
+        if "strategy" not in active_learning_params:
             error = self.result.add_error(
-                "active_learning_params in guided_discovery requires 'experiments_per_cycle'",
+                "active_learning_params requires 'strategy'",
                 ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
             )
-            error.add_fix("Add 'experiments_per_cycle: <positive_integer>' to active_learning_params")
-        else:
-            experiments_per_cycle = active_learning_params["experiments_per_cycle"]
-            if not isinstance(experiments_per_cycle, int) or experiments_per_cycle <= 0:
-                error = self.result.add_error(
-                    f"experiments_per_cycle must be a positive integer, got {experiments_per_cycle}",
-                    ErrorCodes.TYPE_INVALID_TYPE,
-                )
-                error.add_fix("Use a positive integer for experiments_per_cycle")
-
-        # Restore original block context
-        self.current_block = original_block
+            error.add_fix("Add 'strategy: <value>' to active_learning_params")
 
     def _validate_guided_discovery_budget(self, budget: Any) -> None:
         """Validate budget in guided_discovery block."""
