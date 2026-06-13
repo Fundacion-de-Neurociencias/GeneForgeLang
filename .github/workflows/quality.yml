@@ -1,0 +1,74 @@
+name: Code Quality
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install tools
+        run: |
+          pip install black isort flake8
+
+      - name: Check formatting
+        run: |
+          black --check .
+          isort --check-only .
+
+      - name: Lint
+        run: |
+          flake8 .
+
+      # Guard: src/ must not introduce new hard references to the "GeneForge"
+      # runtime (without "Lang"). The only allowed occurrences are the explicit
+      # deprecated-alias comments and the docstring that cites GeneForge as an
+      # *example* downstream runtime.  Any new occurrence fails the build.
+      - name: Check GFL independence from GeneForge runtime
+        run: |
+          # Allowlist: lines that are intentionally allowed to mention GeneForge
+          ALLOWED_PATTERNS=(
+            "GeneForgeSkill = GFLBioSkill"
+            "export_to_geneforge_adapter"
+            "geneforge.*deprecated"
+            "Deprecated.*GeneForge"
+            "GeneForge.*deprecated"
+            "GFL downstream runtime (GeneForge"
+            "GeneForge, or any third-party"
+          )
+
+          # Build a grep -v chain to exclude allowed lines
+          EXCLUDE_ARGS=""
+          for pattern in "${ALLOWED_PATTERNS[@]}"; do
+            EXCLUDE_ARGS="$EXCLUDE_ARGS -e $'$pattern'"
+          done
+
+          # Search for GeneForge (without Lang) in src/, fail if unexpected hits found
+          HITS=$(grep -rn "GeneForge[^L]" GeneForgeLang/src/ \
+            | grep -v "GeneForgeSkill = GFLBioSkill" \
+            | grep -v "export_to_geneforge_adapter" \
+            | grep -v "deprecated" \
+            | grep -v "Deprecated" \
+            | grep -v "GFL downstream runtime (GeneForge" \
+            | grep -v "GeneForge, or any third-party" \
+            || true)
+
+          if [ -n "$HITS" ]; then
+            echo "❌ Unexpected GeneForge runtime references found in src/:"
+            echo "$HITS"
+            echo ""
+            echo "GFL src/ must remain independent of the GeneForge runtime."
+            echo "If this is intentional, add the pattern to the allowlist in quality.yml."
+            exit 1
+          fi
+
+          echo "✅ No unexpected GeneForge runtime references in src/"
