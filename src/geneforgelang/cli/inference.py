@@ -175,9 +175,7 @@ def demo_inference_models():
                 print_output(f"  Error with {model_name}: {e}", "error")
 
 
-def test_inference_file(
-    file_path: str, model_name: Optional[str] = None, output_file: Optional[str] = None
-):
+def test_inference_file(file_path: str, model_name: Optional[str] = None, output_file: Optional[str] = None):
     """Test inference on a specific GFL file."""
     if not HAS_GFL_API:
         print_output("GFL API not available", "error")
@@ -317,9 +315,7 @@ def benchmark_models(iterations: int = 10):
         for model_name, metrics in results.items():
             print_output(f"{model_name}:")
             print_output(f"  Average: {metrics['avg_time'] * 1000:.2f}ms")
-            print_output(
-                f"  Range: {metrics['min_time'] * 1000:.2f}-{metrics['max_time'] * 1000:.2f}ms"
-            )
+            print_output(f"  Range: {metrics['min_time'] * 1000:.2f}-{metrics['max_time'] * 1000:.2f}ms")
 
 
 def main():
@@ -370,9 +366,7 @@ def main():
             for model_name in models:
                 try:
                     info = engine.get_model_info(model_name)
-                    print_output(
-                        f"  {model_name}: {info['type']} ({'loaded' if info['loaded'] else 'not loaded'})"
-                    )
+                    print_output(f"  {model_name}: {info['type']} ({'loaded' if info['loaded'] else 'not loaded'})")
                 except Exception as e:
                     print_output(f"  {model_name}: Error getting info - {e}")
         else:

@@ -1,0 +1,71 @@
+{
+  "version": "1.0.0",
+  "public_modules": [
+    "geneforgelang.api",
+    "geneforgelang.contracts",
+    "geneforgelang.types"
+  ],
+  "exports": {
+    "geneforgelang.api": {
+      "parse": {
+        "type": "function",
+        "state": "stable",
+        "introduced_in": "0.1.0"
+      },
+      "validate": {
+        "type": "function",
+        "state": "stable",
+        "introduced_in": "0.1.0"
+      },
+      "infer": {
+        "type": "function",
+        "state": "stable",
+        "introduced_in": "0.1.0"
+      },
+      "execute": {
+        "type": "function",
+        "state": "stable",
+        "introduced_in": "0.1.0"
+      },
+      "get_api_info": {
+        "type": "function",
+        "state": "stable",
+        "introduced_in": "0.1.0"
+      }
+    },
+    "geneforgelang.types": {
+      "GFLAST": {
+        "type": "class",
+        "state": "stable",
+        "introduced_in": "0.1.0"
+      },
+      "Experiment": {
+        "type": "class",
+        "state": "stable",
+        "introduced_in": "0.1.0"
+      },
+      "Analysis": {
+        "type": "class",
+        "state": "stable",
+        "introduced_in": "0.1.0"
+      },
+      "Design": {
+        "type": "class",
+        "state": "stable",
+        "introduced_in": "0.1.0"
+      },
+      "Optimize": {
+        "type": "class",
+        "state": "stable",
+        "introduced_in": "0.1.0"
+      }
+    },
+    "geneforgelang.contracts": {}
+  },
+  "type_signatures": {},
+  "deprecations": {},
+  "compatibility_window": {
+    "minimum_supported_version": "1.0.0",
+    "sunset_schedule": {}
+  }
+}

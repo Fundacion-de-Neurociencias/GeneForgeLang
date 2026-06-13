@@ -101,11 +101,7 @@ class EnhancedSemanticValidator:
                 continue
 
             # Resolve relative paths
-            resolved_path = (
-                os.path.join(base_path, schema_path)
-                if not os.path.isabs(schema_path)
-                else schema_path
-            )
+            resolved_path = os.path.join(base_path, schema_path) if not os.path.isabs(schema_path) else schema_path
 
             schema_files.append(resolved_path)
 
@@ -305,9 +301,7 @@ class EnhancedSemanticValidator:
                     self.result.add_error(
                         f"Referenced {entity_type} '{entity_name}' is not defined",
                         ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-                    ).add_fix(
-                        f"Define a {entity_type} with name '{entity_name}' or reference an existing one"
-                    )
+                    ).add_fix(f"Define a {entity_type} with name '{entity_name}' or reference an existing one")
             else:
                 # Entity type registry doesn't exist
                 self.result.add_error(
@@ -520,9 +514,7 @@ class EnhancedSemanticValidator:
             if input_name in producer_outputs:
                 output_contract = producer_outputs[input_name]
                 # Check type compatibility
-                if not self._are_contract_types_compatible(
-                    output_contract.get("type"), input_contract.get("type")
-                ):
+                if not self._are_contract_types_compatible(output_contract.get("type"), input_contract.get("type")):
                     error = self.result.add_error(
                         f"Contract type mismatch: {producer_block} output '{input_name}' "
                         f"(type: {output_contract.get('type')}) is incompatible with "
@@ -549,9 +541,7 @@ class EnhancedSemanticValidator:
             self.result.add_error(
                 f"Contract {section_name} '{name}' must be a dictionary",
                 ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
-            ).add_fix(
-                f"Format {section_name} '{name}' as a dictionary with 'type' and optional 'attributes'"
-            )
+            ).add_fix(f"Format {section_name} '{name}' as a dictionary with 'type' and optional 'attributes'")
             return
 
         # Validate type field
@@ -598,9 +588,7 @@ class EnhancedSemanticValidator:
                     f"for schema type '{schema_def.name}'",
                     ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
                 )
-                error.add_fix(
-                    f"Add '{attr_name}: {expected_value}' to contract {section_name} '{name}' attributes"
-                )
+                error.add_fix(f"Add '{attr_name}: {expected_value}' to contract {section_name} '{name}' attributes")
             elif attr_name in attributes and expected_value is not None:
                 actual_value = attributes[attr_name]
                 if actual_value != expected_value:
@@ -785,9 +773,7 @@ class EnhancedSemanticValidator:
             self.result.add_error(
                 f"Contract {section_name} must be a dictionary",
                 ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
-            ).add_fix(
-                f"Format {section_name} as a dictionary mapping names to contract definitions"
-            )
+            ).add_fix(f"Format {section_name} as a dictionary mapping names to contract definitions")
             return
 
         # Validate each contract definition
@@ -874,11 +860,7 @@ class EnhancedSemanticValidator:
 
         for param_name, param_value in params.items():
             # Skip validation for parameter injection (${...} syntax)
-            if (
-                isinstance(param_value, str)
-                and param_value.startswith("${")
-                and param_value.endswith("}")
-            ):
+            if isinstance(param_value, str) and param_value.startswith("${") and param_value.endswith("}"):
                 continue
 
             # Check for entity references (e.g., pathway(UreaCycle))
@@ -953,9 +935,7 @@ class EnhancedSemanticValidator:
                     self.result.add_error(
                         f"Referenced {entity_type} '{entity_name}' is not defined",
                         ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-                    ).add_fix(
-                        f"Define a {entity_type} with name '{entity_name}' or reference an existing one"
-                    )
+                    ).add_fix(f"Define a {entity_type} with name '{entity_name}' or reference an existing one")
             else:
                 # Entity type registry doesn't exist
                 self.result.add_error(
@@ -1141,9 +1121,7 @@ class EnhancedSemanticValidator:
                         self.result.add_error(
                             f"target_properties must be a dictionary, got {type(value).__name__}",
                             ErrorCodes.TYPE_INVALID_TYPE,
-                        ).add_fix(
-                            "Format target_properties as a dictionary with property specifications"
-                        )
+                        ).add_fix("Format target_properties as a dictionary with property specifications")
                 elif key == "foundation_model" and not isinstance(value, str):
                     self.result.add_error(
                         f"foundation_model must be a string, got {type(value).__name__}",
@@ -1603,14 +1581,9 @@ class EnhancedSemanticValidator:
                 error.add_fix(f"Add '{key}: <value>' to active_learning configuration")
             else:
                 value = active_learning_config[key]
-                if not isinstance(
-                    value, expected_type if isinstance(expected_type, tuple) else (expected_type,)
-                ):
+                if not isinstance(value, expected_type if isinstance(expected_type, tuple) else (expected_type,)):
                     type_names = " or ".join(
-                        t.__name__
-                        for t in (
-                            expected_type if isinstance(expected_type, tuple) else (expected_type,)
-                        )
+                        t.__name__ for t in (expected_type if isinstance(expected_type, tuple) else (expected_type,))
                     )
                     error = self.result.add_error(
                         f"'{key}' must be {type_names}, got {type(value).__name__}",
@@ -1880,9 +1853,7 @@ class EnhancedSemanticValidator:
                 "refine_data block requires 'refinement_config' configuration",
                 ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
             )
-            error.add_fix(
-                "Add 'refinement_config: {...}' with refinement_type, noise_level, and target_resolution"
-            )
+            error.add_fix("Add 'refinement_config: {...}' with refinement_type, noise_level, and target_resolution")
             return
 
         refinement_config = refine_data["refinement_config"]
@@ -1979,9 +1950,7 @@ class EnhancedSemanticValidator:
         # Restore original block context
         self.current_block = original_block
 
-    def _validate_guided_discovery_active_learning_params(
-        self, active_learning_params: Any
-    ) -> None:
+    def _validate_guided_discovery_active_learning_params(self, active_learning_params: Any) -> None:
         """Validate active_learning_params in guided_discovery block."""
         if not isinstance(active_learning_params, dict):
             self.result.add_error(
@@ -2004,9 +1973,7 @@ class EnhancedSemanticValidator:
                 "active_learning_params in guided_discovery requires 'experiments_per_cycle'",
                 ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
             )
-            error.add_fix(
-                "Add 'experiments_per_cycle: <positive_integer>' to active_learning_params"
-            )
+            error.add_fix("Add 'experiments_per_cycle: <positive_integer>' to active_learning_params")
         else:
             experiments_per_cycle = active_learning_params["experiments_per_cycle"]
             if not isinstance(experiments_per_cycle, int) or experiments_per_cycle <= 0:
@@ -2111,9 +2078,7 @@ _validator = SemanticValidator()
 _enhanced_validator = EnhancedSemanticValidator()
 
 
-def validate(
-    ast: dict[str, Any], enhanced: bool = False
-) -> Union[list[str], EnhancedValidationResult]:
+def validate(ast: dict[str, Any], enhanced: bool = False) -> Union[list[str], EnhancedValidationResult]:
     """Validate a GFL AST and return validation results.
 
     Args:

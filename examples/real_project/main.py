@@ -21,9 +21,7 @@ def main():
     # print(results)
 
     print("\n[MODO DE PREPARACIÓN] El script principal está listo.")
-    print(
-        "La llamada al motor de GeneForge está comentada hasta que la implementación de GF esté finalizada."
-    )
+    print("La llamada al motor de GeneForge está comentada hasta que la implementación de GF esté finalizada.")
 
 
 if __name__ == "__main__":

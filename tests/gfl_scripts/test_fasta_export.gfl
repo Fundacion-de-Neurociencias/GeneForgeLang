@@ -11,7 +11,7 @@ metadata:
 run:
   - plugin: "interop"
     operation: "to_fasta"
-    input_data: 
+    input_data:
       - id: "protein_1"
         sequence: "MKTVRQERLKSIVRILERSKEPVSGAQLAEELSVSRQVIVQDIAYLRSLGYNIVATPRGYVLAGG"
       - id: "protein_2"

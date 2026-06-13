@@ -1,0 +1,57 @@
+# GFL Stress Test Fixture — clawbio/pharmgx-reporter
+# Derived from: https://github.com/ClawBio/ClawBio/tree/main/skills/pharmgx-reporter
+# SKILL.md spec: pharmgx-reporter v0.1.0 — 12 genes, 31 SNPs, 51 drugs, CPIC guidelines
+#
+# Expected parser behaviour: PASS
+# Expected validator behaviour: PASS
+# Gap probe: tests IOContract with format attribute on TEXT type
+
+metadata:
+  experiment_id: CB_STRESS_001
+  source_skill: clawbio/pharmgx-reporter
+  skill_version: "0.1.0"
+  domain: pharmacogenomics
+  tags: [pharmacogenomics, CPIC, DTC-genetics, precision-medicine]
+  description: >
+    Pharmacogenomic report from 23andMe raw data.
+    Covers 12 genes (CYP2D6, CYP2C19, CYP2C9, TPMT, DPYD, SLCO1B1,
+    CYP3A5, UGT1A1, NUDT15, CYP1A2, CYP2B6, G6PD),
+    31 pharmacogenomic SNPs, and 51 CPIC-level drug recommendations.
+
+experiment:
+  tool: clawbio_pharmgx
+  type: analysis
+  contract:
+    inputs:
+      raw_genome:
+        type: TEXT
+        attributes:
+          format: "23andme_v5"
+          encoding: "utf-8"
+    outputs:
+      pharmacogenomic_report:
+        type: JSON
+        attributes:
+          schema: "cpic_pgx_report_v1"
+      star_allele_calls:
+        type: CSV
+      metaboliser_phenotypes:
+        type: JSON
+  params:
+    input_file: "demo_patient.txt"
+    genes:
+      - CYP2D6
+      - CYP2C19
+      - CYP2C9
+      - TPMT
+      - DPYD
+      - SLCO1B1
+      - CYP3A5
+      - UGT1A1
+      - NUDT15
+      - CYP1A2
+      - CYP2B6
+      - G6PD
+    output_format: json
+    include_drug_recommendations: true
+    cpic_level_filter: ["A", "B"]

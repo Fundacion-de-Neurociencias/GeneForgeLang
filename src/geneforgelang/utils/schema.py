@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any, Union
 
 import yaml
-
 from geneforgelang.core.errors import (
     EnhancedValidationResult,
     ErrorCodes,
@@ -82,9 +81,7 @@ class SchemaDefinition:
                     ErrorCodes.SCHEMA_INVALID_FORMAT,
                     ErrorSeverity.ERROR,
                 )
-                error.add_fix(
-                    f"Format attribute '{attr_name}' as a dictionary with type and required fields"
-                )
+                error.add_fix(f"Format attribute '{attr_name}' as a dictionary with type and required fields")
                 is_valid = False
                 continue
 
@@ -95,9 +92,7 @@ class SchemaDefinition:
                     ErrorCodes.SCHEMA_MISSING_PROPERTY,
                     ErrorSeverity.ERROR,
                 )
-                error.add_fix(
-                    f"Add 'type: <attr_type>' to attribute '{attr_name}' in schema '{self.name}'"
-                )
+                error.add_fix(f"Add 'type: <attr_type>' to attribute '{attr_name}' in schema '{self.name}'")
                 is_valid = False
 
         return is_valid
@@ -111,9 +106,7 @@ class SchemaLoader:
         self.schemas: dict[str, SchemaDefinition] = {}
         self.loaded_files: list[str] = []
 
-    def load_schema_file(
-        self, file_path: Union[str, Path], result: EnhancedValidationResult
-    ) -> bool:
+    def load_schema_file(self, file_path: Union[str, Path], result: EnhancedValidationResult) -> bool:
         """Load and parse a schema definition file.
 
         Args:
@@ -182,9 +175,7 @@ class SchemaLoader:
                         ErrorCodes.SCHEMA_INVALID_FORMAT,
                         ErrorSeverity.ERROR,
                     )
-                    error.add_fix(
-                        f"Format schema '{schema_name}' as a dictionary with type and attributes"
-                    )
+                    error.add_fix(f"Format schema '{schema_name}' as a dictionary with type and attributes")
                     continue
 
                 # Create schema definition
@@ -254,9 +245,7 @@ def get_global_schema_loader() -> SchemaLoader:
     return _schema_loader
 
 
-def load_schemas_from_files(
-    file_paths: list[Union[str, Path]], result: EnhancedValidationResult
-) -> bool:
+def load_schemas_from_files(file_paths: list[Union[str, Path]], result: EnhancedValidationResult) -> bool:
     """Load schemas from multiple files.
 
     Args:

@@ -65,9 +65,7 @@ def _validate(ls: LanguageServer, params):
             # Procesar errores sintácticos
             for error in validation_result.syntax_errors:
                 line = error.location.line - 1 if error.location and error.location.line > 0 else 0
-                col = (
-                    error.location.column - 1 if error.location and error.location.column > 0 else 0
-                )
+                col = error.location.column - 1 if error.location and error.location.column > 0 else 0
 
                 d = Diagnostic(
                     range=Range(
@@ -82,9 +80,7 @@ def _validate(ls: LanguageServer, params):
             # Procesar errores semánticos
             for error in validation_result.semantic_errors:
                 line = error.location.line - 1 if error.location and error.location.line > 0 else 0
-                col = (
-                    error.location.column - 1 if error.location and error.location.column > 0 else 0
-                )
+                col = error.location.column - 1 if error.location and error.location.column > 0 else 0
 
                 # Determinar severidad
                 severity = DiagnosticSeverity.Error  # Error por defecto
@@ -108,9 +104,7 @@ def _validate(ls: LanguageServer, params):
             # Resultado legacy (lista de strings)
             for i, error_msg in enumerate(validation_result):
                 d = Diagnostic(
-                    range=Range(
-                        start=Position(line=i, character=0), end=Position(line=i, character=50)
-                    ),
+                    range=Range(start=Position(line=i, character=0), end=Position(line=i, character=50)),
                     message=f"[VALIDATION] {error_msg}",
                     severity=DiagnosticSeverity.Error,
                 )
@@ -129,9 +123,7 @@ def _validate(ls: LanguageServer, params):
     ls.publish_diagnostics(text_doc.uri, diagnostics)
 
 
-@server.feature(
-    "textDocument/completion", CompletionOptions(trigger_characters=[":", " ", "(", "\n"])
-)
+@server.feature("textDocument/completion", CompletionOptions(trigger_characters=[":", " ", "(", "\n"]))
 def completions(params):
     """
     Ofrece sugerencias de autocompletado basadas en el contexto.
@@ -438,9 +430,7 @@ def hover(params):
     # A. Hover sobre palabras clave de GFL
     if word in KEYWORD_DOCS:
         return Hover(
-            contents=MarkupContent(
-                kind=MarkupKind.Markdown, value=f"**{word}**\n\n---\n\n{KEYWORD_DOCS[word]}"
-            )
+            contents=MarkupContent(kind=MarkupKind.Markdown, value=f"**{word}**\n\n---\n\n{KEYWORD_DOCS[word]}")
         )
 
     try:
@@ -461,11 +451,7 @@ def hover(params):
                 )
 
         # B. Hover sobre Tipos de Esquemas
-        if (
-            "type:" in document.lines[pos.line]
-            and "import_schemas" in ast
-            and isinstance(ast["import_schemas"], list)
-        ):
+        if "type:" in document.lines[pos.line] and "import_schemas" in ast and isinstance(ast["import_schemas"], list):
             schema_files = ast["import_schemas"]
             for schema_file in schema_files:
                 try:
@@ -493,13 +479,9 @@ def hover(params):
                             for attr, props in schema_def.attributes.items():
                                 required = props.get("required", False)
                                 attr_type = props.get("type", "unknown")
-                                contents_md += (
-                                    f"- `{attr}`: (type: `{attr_type}`, required: `{required}`)\n"
-                                )
+                                contents_md += f"- `{attr}`: (type: `{attr_type}`, required: `{required}`)\n"
 
-                        return Hover(
-                            contents=MarkupContent(kind=MarkupKind.Markdown, value=contents_md)
-                        )
+                        return Hover(contents=MarkupContent(kind=MarkupKind.Markdown, value=contents_md))
                 except Exception:
                     continue
 

@@ -10,7 +10,7 @@ import json
 import logging
 import os
 import sys
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import yaml
 from fastapi import FastAPI, HTTPException
@@ -46,7 +46,7 @@ class ParseRequest(BaseModel):
 class ParseResponse(BaseModel):
     success: bool
     message: str = ""
-    ast: dict[str, Any] = None
+    ast: Optional[dict[str, Any]] = None
 
 
 class ValidateRequest(BaseModel):
@@ -57,7 +57,7 @@ class ValidateRequest(BaseModel):
 class ValidateResponse(BaseModel):
     success: bool
     message: str = ""
-    validation_result: dict[str, Any] = None
+    validation_result: Optional[dict[str, Any]] = None
 
 
 class InferRequest(BaseModel):
@@ -68,7 +68,7 @@ class InferRequest(BaseModel):
 class InferResponse(BaseModel):
     success: bool
     message: str = ""
-    inference_result: dict[str, Any] = None
+    inference_result: Optional[dict[str, Any]] = None
 
 
 class ExecuteRequest(BaseModel):
@@ -80,7 +80,7 @@ class ExecuteRequest(BaseModel):
 class ExecuteResponse(BaseModel):
     success: bool
     message: str = ""
-    result: dict[str, Any] = None
+    result: Optional[dict[str, Any]] = None
 
 
 class SkillExecuteRequest(BaseModel):
@@ -95,8 +95,8 @@ class SkillExecuteResponse(BaseModel):
 
     success: bool
     message: str = ""
-    data: dict[str, Any] = None
-    reproducibility_package: dict[str, Any] = None
+    data: Optional[dict[str, Any]] = None
+    reproducibility_package: Optional[dict[str, Any]] = None
 
 
 @app.get("/health")
@@ -297,10 +297,10 @@ async def list_plugins() -> dict[str, Any]:
         eps = entry_points(group="gfl.plugins")  # type: ignore[call-arg]
         for ep in eps:
             try:
-                plugin_class = ep.load()
+                plugin_class = ep.load()  # type: ignore[attr-defined]
                 discovered_plugins.append(
                     {
-                        "name": ep.name,
+                        "name": ep.name,  # type: ignore[attr-defined]
                         "version": getattr(plugin_class, "version", "1.0.0"),
                         "description": getattr(plugin_class, "description", f"{ep.name} plugin"),
                         "capabilities": ["process_data"],

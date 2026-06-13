@@ -23,4 +23,3 @@ analyze:
     outputs:
       genotype_result:
         type: "LocusGenotypeResult"
-
