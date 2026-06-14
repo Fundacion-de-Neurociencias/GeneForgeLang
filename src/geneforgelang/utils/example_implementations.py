@@ -146,15 +146,11 @@ class ProteinVAEGenerator(SequenceGeneratorPlugin):
         charged_aa = sum(1 for aa in sequence if aa in "RHKED")
         aromatic_aa = sum(1 for aa in sequence if aa in "FYW")
 
-        properties["stability"] = min(
-            1.0, (hydrophobic_aa / len(sequence)) * 2.0 + random.uniform(-0.2, 0.2)
-        )
+        properties["stability"] = min(1.0, (hydrophobic_aa / len(sequence)) * 2.0 + random.uniform(-0.2, 0.2))
         properties["binding_affinity"] = min(
             1.0, ((aromatic_aa + charged_aa) / len(sequence)) * 1.5 + random.uniform(-0.15, 0.15)
         )
-        properties["solubility"] = min(
-            1.0, (charged_aa / len(sequence)) * 3.0 + random.uniform(-0.3, 0.3)
-        )
+        properties["solubility"] = min(1.0, (charged_aa / len(sequence)) * 3.0 + random.uniform(-0.3, 0.3))
         properties["aggregation_propensity"] = max(
             0.0, (hydrophobic_aa / len(sequence)) * 1.2 - 0.4 + random.uniform(-0.1, 0.1)
         )
@@ -321,11 +317,7 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
         ]
 
         # Select scaffold based on target properties (Quinazoline-like kinase inhibitor else random)
-        base = (
-            "c1ccc2c(c1)nc3ccccc3n2"
-            if target_props.get("target") == "kinase_enzyme"
-            else random.choice(scaffolds)
-        )
+        base = "c1ccc2c(c1)nc3ccccc3n2" if target_props.get("target") == "kinase_enzyme" else random.choice(scaffolds)
 
         # Add functional groups (simplified simulation)
         modifications = ["C", "CC", "CCC", "O", "N", "F", "Cl", "C(=O)N", "S(=O)(=O)N", "C(=O)O"]
@@ -356,14 +348,10 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
         properties["logP"] = (
             num_carbons * 0.5 + num_rings * 0.8 - num_oxygens * 0.7 - num_nitrogens * 0.5
         ) + random.uniform(-1, 1)
-        properties["rotatable_bonds"] = max(0, num_carbons - num_rings * 6 - 1) + random.randint(
-            -1, 2
-        )
+        properties["rotatable_bonds"] = max(0, num_carbons - num_rings * 6 - 1) + random.randint(-1, 2)
         properties["hbd_count"] = num_oxygens + num_nitrogens + random.randint(0, 2)
         properties["hba_count"] = num_oxygens + num_nitrogens + random.randint(0, 3)
-        properties["drug_likeness"] = min(
-            1.0, 0.8 - abs(properties["logP"] - 2.5) * 0.1 + random.uniform(-0.1, 0.1)
-        )
+        properties["drug_likeness"] = min(1.0, 0.8 - abs(properties["logP"] - 2.5) * 0.1 + random.uniform(-0.1, 0.1))
 
         return properties
 
@@ -463,9 +451,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
             # Use Bayesian optimization with acquisition function
             self._update_gp_model(experiment_history)
             parameters = self._optimize_acquisition_function(experiment_history)
-            expected_improvement = self._calculate_expected_improvement(
-                parameters, experiment_history
-            )
+            expected_improvement = self._calculate_expected_improvement(parameters, experiment_history)
 
         # Calculate uncertainty estimate
         uncertainty = self._estimate_parameter_uncertainty(parameters, experiment_history)
@@ -476,9 +462,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
             expected_improvement=expected_improvement,
             uncertainty=uncertainty,
             metadata={
-                "acquisition_function": self._strategy_config.get(
-                    "acquisition", "expected_improvement"
-                ),
+                "acquisition_function": self._strategy_config.get("acquisition", "expected_improvement"),
                 "gp_lengthscale": 0.5 + random.uniform(-0.1, 0.1),  # Simulated
                 "exploration_weight": self._strategy_config.get("exploration_weight", 0.1),
             },
@@ -521,9 +505,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
         # In practice, this would train a real GP model with scikit-learn or GPyTorch
         logger.debug(f"Updating GP model with {len(experiment_history)} data points")
 
-    def _optimize_acquisition_function(
-        self, experiment_history: list[ExperimentResult]
-    ) -> dict[str, Any]:
+    def _optimize_acquisition_function(self, experiment_history: list[ExperimentResult]) -> dict[str, Any]:
         """Optimize acquisition function to suggest next parameters."""
 
         # Simulate acquisition function optimization
@@ -591,12 +573,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
         # Distance-based uncertainty simulation
         min_distance = float("inf")
         for result in experiment_history:
-            distance = (
-                sum(
-                    abs(parameters.get(p, 0) - result.parameters.get(p, 0)) ** 2 for p in parameters
-                )
-                ** 0.5
-            )
+            distance = sum(abs(parameters.get(p, 0) - result.parameters.get(p, 0)) ** 2 for p in parameters) ** 0.5
             min_distance = min(min_distance, distance)
 
         # Normalize uncertainty based on exploration

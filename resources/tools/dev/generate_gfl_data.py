@@ -59,9 +59,7 @@ def generate_experiment():
             params.append(f"integrate_datasets: {str(random.choice(['true', 'false'])).lower()}")
     elif selected_tool == "flowjo":
         if random.random() < 0.8:
-            params.append(
-                f'gating_strategy: "{random.choice(["T_cells", "B_cells", "Macrophages"])}"'
-            )
+            params.append(f'gating_strategy: "{random.choice(["T_cells", "B_cells", "Macrophages"])}"')
     elif selected_tool == "qiime2":
         if random.random() < 0.8:
             params.append(f'alpha_diversity_metric: "{random.choice(["shannon", "simpson"])}"')
@@ -128,7 +126,9 @@ def generate_branch():
         ]
     )
 
-    return f"branch {{\n  if: {random.choice(conditions)}\n  then: {{{then_block}\n  }}\n  else: {{{else_block}\n  }}\n}}"
+    return (
+        f"branch {{\n  if: {random.choice(conditions)}\n  then: {{{then_block}\n  }}\n  else: {{{else_block}\n  }}\n}}"
+    )
 
 
 def generate_random_gfl_block():

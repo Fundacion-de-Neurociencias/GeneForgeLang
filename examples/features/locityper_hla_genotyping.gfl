@@ -74,4 +74,3 @@ output:
   - genotype_confidence: "${hla_a_genotype_result.confidence_score}"
   - carbamazepine_risk: "${risk_profile.Carbamazepine.risk_level}"
   - clinical_recommendation: "${risk_profile.Carbamazepine.recommendation}"
-

@@ -161,5 +161,5 @@ docs/
 
 ---
 
-*Last updated: April 2026*  
+*Last updated: April 2026*
 *GeneForgeLang - The Symbolic Language for Biological Reasoning*

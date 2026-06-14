@@ -1,0 +1,68 @@
+# GFL Stress Test Fixture — clawbio/pathway-enricher
+# Derived from: https://github.com/ClawBio/ClawBio/tree/main/skills/pathway-enricher
+# SKILL.md spec: pathway-enricher v0.1.0 (Enrichr backend)
+#
+# Expected parser behaviour: PASS (pathways block exists in GFL)
+# Expected validator behaviour: PASS
+# Gap probe: tests pathways block as input to analyze — currently undocumented chain
+
+metadata:
+  experiment_id: CB_STRESS_007
+  source_skill: clawbio/pathway-enricher
+  skill_version: "0.1.0"
+  domain: functional-genomics
+  tags: [pathway-enrichment, GO, KEGG, Reactome, WikiPathways]
+  description: >
+    Gene-set pathway enrichment analysis using Enrichr.
+    Queries KEGG, GO (BP/MF/CC), Reactome, WikiPathways, and GWAS Catalog
+    gene sets from any ranked gene list.
+
+pathways:
+  KEGG_2023:
+    source: enrichr
+    gene_set_library: KEGG_2023_Human
+    organism: human
+  GO_Biological_Process:
+    source: enrichr
+    gene_set_library: GO_Biological_Process_2023
+    organism: human
+  GO_Molecular_Function:
+    source: enrichr
+    gene_set_library: GO_Molecular_Function_2023
+    organism: human
+  Reactome_2023:
+    source: enrichr
+    gene_set_library: Reactome_2022
+    organism: human
+  WikiPathways_2023:
+    source: enrichr
+    gene_set_library: WikiPathway_2023_Human
+    organism: human
+
+analyze:
+  strategy: pathway
+  data: ranked_gene_list.csv
+  thresholds:
+    adjusted_pvalue: 0.05
+    min_overlap: 3
+    min_odds_ratio: 1.5
+  filters:
+    - "combined_score >= 10"
+  contract:
+    inputs:
+      gene_list:
+        type: CSV
+        attributes:
+          required_columns: [gene_symbol, rank_score]
+          organism: human
+    outputs:
+      enrichment_results:
+        type: JSON
+        attributes:
+          databases: [KEGG, GO_BP, GO_MF, GO_CC, Reactome, WikiPathways]
+      summary_report:
+        type: TEXT
+        attributes:
+          format: html
+      top_pathways:
+        type: CSV

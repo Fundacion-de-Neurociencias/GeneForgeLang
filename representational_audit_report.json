@@ -1,0 +1,8 @@
+{
+  "rsi": 1.0,
+  "fpcr": 0.0,
+  "illegal_collapses": [],
+  "monotonicity_breaches": [],
+  "canonicalization_failures": [],
+  "freeze_decision": "PASS"
+}

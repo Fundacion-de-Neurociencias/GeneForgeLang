@@ -1,0 +1,76 @@
+# GFL Stress Test Fixture — clawbio/metagenomics-profiler
+# Derived from: https://github.com/ClawBio/ClawBio/tree/main/skills/metagenomics-profiler
+# SKILL.md spec: metagenomics-profiler v0.1.0 (Kraken2 + RGI + HUMAnN3)
+#
+# Expected parser behaviour: PASS
+# Expected validator behaviour: WARN (experiment.type: metagenomics not in enum)
+# Gap probe: MAJOR — metagenomics sequencing type missing from ExperimentType enum.
+#            Also probes multi-tool pipeline expressed as single experiment.
+
+metadata:
+  experiment_id: CB_STRESS_009
+  source_skill: clawbio/metagenomics-profiler
+  skill_version: "0.1.0"
+  domain: metagenomics
+  tags: [metagenomics, kraken2, resistome, humann3, taxonomy]
+  description: >
+    Shotgun metagenomics profiling pipeline.
+    Taxonomy via Kraken2 + Bracken,
+    Resistome via RGI (CARD database),
+    Functional pathways via HUMAnN3.
+
+  gap_probe:
+    type: MISSING_EXPERIMENT_TYPE
+    missing_value: "metagenomics"
+    current_values: [gene_editing, sequencing, analysis, simulation, validation]
+    recommendation: >
+      Add 'metagenomics' to ExperimentType enum in gftypes.py.
+      This is a distinct sequencing modality (shotgun WGS of microbial communities)
+      that differs semantically from single-organism sequencing.
+
+experiment:
+  tool: clawbio_metagenomics_profiler
+  type: metagenomics
+  params:
+    input_fastq_r1: "sample_R1.fastq.gz"
+    input_fastq_r2: "sample_R2.fastq.gz"
+    kraken2_database: "k2_standard_20240605"
+    rgi_database: "CARD_v3.2.9"
+    humann3_database: "uniref90_diamond"
+    bracken_read_length: 150
+    bracken_threshold: 10
+    threads: 8
+  contract:
+    inputs:
+      reads_r1:
+        type: FASTQ
+        attributes:
+          paired_end: true
+          compression: gzip
+      reads_r2:
+        type: FASTQ
+        attributes:
+          paired_end: true
+          compression: gzip
+    outputs:
+      taxonomy_report:
+        type: JSON
+        attributes:
+          tool: kraken2
+          format: kreport
+      bracken_abundances:
+        type: CSV
+        attributes:
+          rank: species
+      resistome_report:
+        type: JSON
+        attributes:
+          tool: rgi
+          database: CARD
+      functional_pathways:
+        type: CSV
+        attributes:
+          tool: humann3
+          units: rpk
+      qc_summary:
+        type: JSON

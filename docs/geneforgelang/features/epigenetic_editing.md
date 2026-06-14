@@ -345,7 +345,7 @@ edit:
     delivery_method: "AAV9_vector"
     dosage: "1e11_genome_copies"
     treatment_duration: "48_hours"
-    
+
 # Expected outcomes and validation
 hypothesis:
   id: "H_CRISPRoff_Durable_Silencing"
@@ -382,7 +382,7 @@ rules:
           dsb_risk: "none"
           off_target_mutations: "none"
           reversibility: "yes_with_CRISPRon"
-          
+
   - id: R_Silencing_Persistence
     description: "Methylation-based silencing is mitotically heritable"
     if:
@@ -403,7 +403,7 @@ design:
         permanence: "irreversible"
         safety: "DSB_risk"
         outcome: "complete_loss_of_function"
-        
+
     - strategy_2:
         name: "CRISPRi_Repression"
         tool: "dCas9_KRAB"
@@ -411,7 +411,7 @@ design:
         safety: "high"
         outcome: "requires_continuous_expression"
         limitation: "not_heritable"
-        
+
     - strategy_3:
         name: "CRISPRoff_Epigenetic"
         tool: "CRISPRoff"
@@ -425,7 +425,7 @@ design:
     - maximize: "durability"
     - require: "reversibility"
     - minimize: "off_target_effects"
-  
+
   selected_strategy: "strategy_3"
   rationale: "CRISPRoff provides heritable silencing without genotoxicity, with option for reversal"
 
@@ -480,7 +480,7 @@ loci:
     chromosome: "chr1"
     start: 1000000
     end: 1001000
-    
+
   - id: Distal_Enhancer
     chromosome: "chr1"
     start: 2500000
@@ -588,4 +588,3 @@ rules:
 - [Loci Block Specification](./loci_blocks.md)
 - [Spatial Genomics](./spatial_genomic_capabilities.md)
 - [Multi-Omic Integration](./multi_omic_integration.md)
-

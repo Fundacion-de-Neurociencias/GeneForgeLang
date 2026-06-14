@@ -1,0 +1,27 @@
+metadata:
+  name: "CRISPR_Knockout_Screen"
+  version: "1.0"
+  description: "Genome-wide CRISPR-Cas9 knockout screen for viability"
+  authors: ["Real Paper Extraction"]
+
+experiment:
+  type: CRISPR_cas9
+  design:
+    samples: 12
+    conditions: ["day_0", "day_14"]
+    replicates: 3
+    # GAP INTENCIONAL: Definición de librería de sgRNAs y MOI (Multiplicity of Infection)
+    library: "GeCKOv2"
+    sgRNAs_per_gene: 6
+    moi: 0.3
+  parameters:
+    sequencing_depth: 30M
+
+analyze:
+  input: CRISPR_Screen
+  tool: MAGeCK
+  parameters:
+    # GAP INTENCIONAL: Parámetros específicos de análisis de robustez de ranking
+    normalization: "control_sgRNAs"
+    fdr_threshold: 0.1
+    lfc_threshold: 1.0

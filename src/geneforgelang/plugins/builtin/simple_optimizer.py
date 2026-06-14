@@ -47,12 +47,7 @@ class SimpleOptimizer(BaseOptimizerPlugin):
             results.append({"iteration": i + 1, "parameters": trial_params, "score": score})
 
             # Update best result
-            if (
-                "maximize" in objective
-                and score > best_score
-                or "minimize" in objective
-                and score < best_score
-            ):
+            if "maximize" in objective and score > best_score or "minimize" in objective and score < best_score:
                 best_score = score
                 best_params = trial_params
 

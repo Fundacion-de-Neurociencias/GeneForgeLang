@@ -53,4 +53,3 @@ output:
   - strategy: "CRISPRoff_epigenetic"
   - target: "VEGFA"
   - safety: "no_DSBs_reversible"
-

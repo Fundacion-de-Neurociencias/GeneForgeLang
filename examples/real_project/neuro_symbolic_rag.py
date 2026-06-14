@@ -65,9 +65,7 @@ class NeuroSymbolicRAG:
         Entrez.email = email
 
         # Initialize vector database
-        self.chroma_client = chromadb.Client(
-            Settings(chroma_db_impl="duckdb+parquet", persist_directory=db_path)
-        )
+        self.chroma_client = chromadb.Client(Settings(chroma_db_impl="duckdb+parquet", persist_directory=db_path))
 
         # Create or get collection for scientific documents
         self.collection = self.chroma_client.get_or_create_collection(
@@ -170,9 +168,7 @@ class NeuroSymbolicRAG:
 
         return None
 
-    def fetch_pubmed_abstracts(
-        self, gene: str, disease: str, max_results: int = 10
-    ) -> list[dict[str, str]]:
+    def fetch_pubmed_abstracts(self, gene: str, disease: str, max_results: int = 10) -> list[dict[str, str]]:
         """
         Query PubMed for abstracts related to a gene-disease association.
 
@@ -286,9 +282,7 @@ class NeuroSymbolicRAG:
         """
         print(f"🔎 Semantic search: '{query}'")
 
-        results = self.collection.query(
-            query_texts=[query], n_results=min(n_results, self.collection.count())
-        )
+        results = self.collection.query(query_texts=[query], n_results=min(n_results, self.collection.count()))
 
         retrieved_docs = []
         if results["documents"] and results["documents"][0]:
@@ -318,9 +312,7 @@ class NeuroSymbolicRAG:
         print(f"   Description: {hypothesis['description']}")
 
         # Fetch literature evidence
-        abstracts = self.fetch_pubmed_abstracts(
-            hypothesis["gene"], hypothesis["disease"], max_results=10
-        )
+        abstracts = self.fetch_pubmed_abstracts(hypothesis["gene"], hypothesis["disease"], max_results=10)
 
         # Index new evidence
         self.index_documents(abstracts)
@@ -372,9 +364,7 @@ class NeuroSymbolicRAG:
 
         return confidence
 
-    def process_gfl_file(
-        self, gfl_path: str, output_path: Optional[str] = None
-    ) -> list[dict[str, Any]]:
+    def process_gfl_file(self, gfl_path: str, output_path: Optional[str] = None) -> list[dict[str, Any]]:
         """
         Complete pipeline: parse GFL, reason about hypotheses, generate report.
 

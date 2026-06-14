@@ -36,9 +36,7 @@ class TestRulesBlockValidation:
 
     def test_invalid_rules_block_not_list(self):
         """Test validation when rules block is not a list."""
-        ast = {
-            "rules": {"id": "rule1", "if": {"gene": "TP53"}, "then": {"effect": "increased_risk"}}
-        }
+        ast = {"rules": {"id": "rule1", "if": {"gene": "TP53"}, "then": {"effect": "increased_risk"}}}
         errors = validate(ast)
         assert len(errors) > 0
         assert any("list" in error.lower() for error in errors)
@@ -80,11 +78,7 @@ class TestHypothesisBlockValidation:
 
     def test_invalid_hypothesis_block_not_dict(self):
         """Test validation when hypothesis block is not a dictionary."""
-        ast = {
-            "hypothesis": [
-                {"id": "hypothesis1", "description": "TP53 mutations increase cancer risk"}
-            ]
-        }
+        ast = {"hypothesis": [{"id": "hypothesis1", "description": "TP53 mutations increase cancer risk"}]}
         errors = validate(ast)
         assert len(errors) > 0
         assert any("dictionary" in error.lower() for error in errors)

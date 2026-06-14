@@ -161,9 +161,7 @@ class GFLClient:
 
         for attempt in range(self.retries + 1):
             try:
-                response = self.session.request(
-                    method=method, url=url, timeout=self.timeout, **kwargs
-                )
+                response = self.session.request(method=method, url=url, timeout=self.timeout, **kwargs)
 
                 # Handle HTTP errors
                 if response.status_code >= 400:
@@ -198,9 +196,7 @@ class GFLClient:
                 last_exception = e
                 if attempt < self.retries:
                     wait_time = 2**attempt  # Exponential backoff
-                    logger.warning(
-                        f"Request failed (attempt {attempt + 1}), retrying in {wait_time}s..."
-                    )
+                    logger.warning(f"Request failed (attempt {attempt + 1}), retrying in {wait_time}s...")
                     time.sleep(wait_time)
                 continue
 
@@ -214,9 +210,7 @@ class GFLClient:
             raise GFLAPIError(response.message, response.status_code)
         return response.data
 
-    def parse(
-        self, content: str, use_grammar: bool = False, filename: str = "<client>"
-    ) -> ParseResult:
+    def parse(self, content: str, use_grammar: bool = False, filename: str = "<client>") -> ParseResult:
         """Parse GFL content into AST.
 
         Args:
@@ -267,9 +261,7 @@ class GFLClient:
             execution_time_ms=response.execution_time_ms or 0.0,
         )
 
-    def infer(
-        self, content: str, model_name: str = "heuristic", explain: bool = True
-    ) -> InferenceResult:
+    def infer(self, content: str, model_name: str = "heuristic", explain: bool = True) -> InferenceResult:
         """Run inference on GFL content.
 
         Args:
@@ -413,10 +405,7 @@ class GFLClient:
             List of inference results
         """
         # Build request payload
-        requests_data = [
-            {"content": content, "model_name": model_name, "explain": explain}
-            for content in content_list
-        ]
+        requests_data = [{"content": content, "model_name": model_name, "explain": explain} for content in content_list]
 
         response = self._make_request("POST", "/batch/infer", json=requests_data)
 
@@ -451,9 +440,7 @@ class AsyncGFLClient:
     ):
         """Initialize the async GFL client."""
         if not HAS_HTTPX:
-            raise ImportError(
-                "httpx library required for async client. Install with: pip install httpx"
-            )
+            raise ImportError("httpx library required for async client. Install with: pip install httpx")
 
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
@@ -469,9 +456,7 @@ class AsyncGFLClient:
             headers["Authorization"] = f"Bearer {api_key}"
 
         # Create client
-        self.client = httpx.AsyncClient(
-            base_url=self.base_url, timeout=self.timeout, headers=headers
-        )
+        self.client = httpx.AsyncClient(base_url=self.base_url, timeout=self.timeout, headers=headers)
 
     async def __aenter__(self):
         """Async context manager entry."""
@@ -526,9 +511,7 @@ class AsyncGFLClient:
                 last_exception = e
                 if attempt < self.retries:
                     wait_time = 2**attempt
-                    logger.warning(
-                        f"Request failed (attempt {attempt + 1}), retrying in {wait_time}s..."
-                    )
+                    logger.warning(f"Request failed (attempt {attempt + 1}), retrying in {wait_time}s...")
                     await asyncio.sleep(wait_time)
                 continue
 
@@ -542,9 +525,7 @@ class AsyncGFLClient:
             raise GFLAPIError(response.message, response.status_code)
         return response.data
 
-    async def parse(
-        self, content: str, use_grammar: bool = False, filename: str = "<client>"
-    ) -> ParseResult:
+    async def parse(self, content: str, use_grammar: bool = False, filename: str = "<client>") -> ParseResult:
         """Async version of parse method."""
         payload = {"content": content, "use_grammar": use_grammar, "filename": filename}
 
@@ -560,9 +541,7 @@ class AsyncGFLClient:
             execution_time_ms=response.execution_time_ms or 0.0,
         )
 
-    async def infer(
-        self, content: str, model_name: str = "heuristic", explain: bool = True
-    ) -> InferenceResult:
+    async def infer(self, content: str, model_name: str = "heuristic", explain: bool = True) -> InferenceResult:
         """Async version of infer method."""
         payload = {"content": content, "model_name": model_name, "explain": explain}
 
@@ -624,9 +603,7 @@ async def example_usage():
 
         # Parse and validate
         parse_result = client.parse(gfl_content)
-        print(
-            f"   Parse: {'✅' if parse_result.success else '❌'} ({parse_result.execution_time_ms:.1f}ms)"
-        )
+        print(f"   Parse: {'✅' if parse_result.success else '❌'} ({parse_result.execution_time_ms:.1f}ms)")
 
         validation_result = client.validate(gfl_content)
         print(
@@ -654,15 +631,11 @@ async def example_usage():
 
             # Parse
             parse_result = await async_client.parse(gfl_content)
-            print(
-                f"   Parse: {'✅' if parse_result.success else '❌'} ({parse_result.execution_time_ms:.1f}ms)"
-            )
+            print(f"   Parse: {'✅' if parse_result.success else '❌'} ({parse_result.execution_time_ms:.1f}ms)")
 
             # Inference
             inference_result = await async_client.infer(gfl_content)
-            print(
-                f"   Inference: {inference_result.prediction} ({inference_result.confidence:.1%})"
-            )
+            print(f"   Inference: {inference_result.prediction} ({inference_result.confidence:.1%})")
 
     except Exception as e:
         print(f"   Error: {e}")

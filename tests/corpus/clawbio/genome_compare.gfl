@@ -1,0 +1,83 @@
+# GFL Stress Test Fixture — clawbio/genome-compare
+# Derived from: https://github.com/ClawBio/ClawBio/tree/main/skills/genome-compare
+# SKILL.md spec: genome-compare v0.1.0 (IBS + EM admixture)
+#
+# Expected parser behaviour: PASS
+# Expected validator behaviour: PASS
+# Gap probe: tests VCF input with complex attributes + ancestry estimation output
+#            Probes whether GFL can express comparative genomics workflows.
+
+metadata:
+  experiment_id: CB_STRESS_010
+  source_skill: clawbio/genome-compare
+  skill_version: "0.1.0"
+  domain: comparative-genomics
+  tags: [genome-comparison, IBS, admixture, ancestry, PGP]
+  description: >
+    Compare a personal genome to reference genomes (e.g., George Church PGP-1)
+    and estimate ancestry composition via IBS (Identity By State) distance
+    and EM admixture with 1000 Genomes populations.
+
+analyze:
+  strategy: structural
+  data: personal_genome.vcf
+  thresholds:
+    min_snp_overlap: 10000
+    min_maf_reference: 0.01
+    admixture_convergence: 0.001
+  filters:
+    - "FILTER == 'PASS'"
+    - "AF >= 0.01"
+  contract:
+    inputs:
+      personal_genome:
+        type: VCF
+        attributes:
+          genome_build: GRCh37
+          min_variants: 10000
+      reference_genomes:
+        type: VCF
+        attributes:
+          source: pgp1_george_church
+          genome_build: GRCh37
+      population_panel:
+        type: VCF
+        attributes:
+          source: 1000_genomes_phase3
+          populations: [AFR, AMR, EAS, EUR, SAS]
+    outputs:
+      ibs_distances:
+        type: CSV
+        attributes:
+          description: pairwise_identity_by_state
+      admixture_proportions:
+        type: JSON
+        attributes:
+          method: em_algorithm
+          k_populations: 5
+      ancestry_report:
+        type: TEXT
+        attributes:
+          format: markdown
+      pca_plot:
+        type: BINARY
+        attributes:
+          format: png
+          populations_included: [personal, reference, 1000g]
+  operations:
+    - type: intersect_variants
+      params:
+        min_overlap: 10000
+        match_by: [rsid, position]
+    - type: compute_ibs_distance
+      params:
+        normalize: true
+    - type: em_admixture
+      params:
+        k: 5
+        max_iterations: 1000
+        convergence_tol: 0.001
+    - type: pca_projection
+      params:
+        reference_pca: 1000g_phase3
+        project_samples: [personal, pgp1]

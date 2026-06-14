@@ -1,0 +1,27 @@
+metadata:
+  name: "UKB_GWAS_Asthma"
+  version: "1.0"
+  description: "Genome-wide association study for Asthma in UK Biobank"
+  authors: ["Real Paper Extraction"]
+
+experiment:
+  type: GWAS
+  design:
+    samples: 500000
+    cases: 50000
+    controls: 450000
+    population: "EUR"
+  parameters:
+    platform: "UK_Biobank_Axiom"
+    imputation_panel: "HRC"
+
+analyze:
+  input: GWAS_Asthma
+  tool: PLINK2
+  parameters:
+    model: "logistic"
+    # GAP INTENCIONAL: Lista dinámica de covariables incluyendo componentes principales
+    covariates: ["age", "sex", "PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10"]
+    maf_filter: 0.01
+    hwe_pvalue: 1e-6
+    genome_wide_significance: 5e-8

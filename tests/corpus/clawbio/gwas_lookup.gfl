@@ -1,0 +1,68 @@
+# GFL Stress Test Fixture — clawbio/gwas-lookup
+# Derived from: https://github.com/ClawBio/ClawBio/tree/main/skills/gwas-lookup
+# SKILL.md spec: gwas-lookup v0.1.0 — federated variant lookup across 9 databases
+#
+# Expected parser behaviour: PASS
+# Expected validator behaviour: WARN (params.rsid not a known GFL param type)
+# Gap probe: tests experiment with list-valued params.databases + multi-output JSON
+
+metadata:
+  experiment_id: CB_STRESS_004
+  source_skill: clawbio/gwas-lookup
+  skill_version: "0.1.0"
+  domain: population-genomics
+  tags: [gwas, variant-lookup, eQTL, PheWAS, federated]
+  description: >
+    Federated variant lookup across 9 genomic databases:
+    GWAS Catalog, Open Targets, PheWeb (UKB, FinnGen, BBJ),
+    GTEx, eQTL Catalogue, LocusZoom.
+
+experiment:
+  tool: clawbio_gwas_lookup
+  type: analysis
+  params:
+    rsid: "rs429358"
+    reference_build: GRCh38
+    databases:
+      - gwas_catalog
+      - open_targets
+      - ukb_topmed_pheweb
+      - finngen_r12
+      - biobank_japan
+      - gtex_v8
+      - ebi_eqtl_catalogue
+      - locuszoom
+    parallel_queries: true
+    timeout_seconds: 30
+    output_format: json
+  contract:
+    inputs:
+      variant_id:
+        type: TEXT
+        attributes:
+          format: rsID
+          genome_build: GRCh38
+    outputs:
+      variant_resolution:
+        type: JSON
+        attributes:
+          fields: [chr, pos, ref, alt, consequence, maf]
+          genome_build: GRCh38
+      gwas_associations:
+        type: JSON
+        attributes:
+          sources: [gwas_catalog, open_targets]
+      phewas_results:
+        type: JSON
+        attributes:
+          sources: [ukb_topmed, finngen_r12, biobank_japan]
+      eqtl_data:
+        type: JSON
+        attributes:
+          sources: [gtex_v8, ebi_eqtl_catalogue]
+      fine_mapping:
+        type: JSON
+        attributes:
+          source: open_targets
+      unified_report:
+        type: JSON

@@ -6,8 +6,8 @@ logger = logging.getLogger(__name__)
 class AlphaGenomePlugin:
     def execute(self, method_name: str, params: dict, symbol_table: dict):
         """
-        Simulates execution de métodos de AlphaGenome.
-        When real API is available, este método se conectará a ella.
+        Simulates execution of AlphaGenome methods.
+        When the real API is available, this method will connect to it.
         """
         logger.info(f"AlphaGenomePlugin: Simulating method '{method_name}' with params: {params}")
 
@@ -20,9 +20,7 @@ class AlphaGenomePlugin:
             if not sequence:
                 raise ValueError("Parameter 'sequence' is required for predict_functional_tracks.")
             if not isinstance(tracks, list) or not tracks:
-                raise ValueError(
-                    "Parameter 'tracks' must be a non-empty list for predict_functional_tracks."
-                )
+                raise ValueError("Parameter 'tracks' must be a non-empty list for predict_functional_tracks.")
 
             logger.info(
                 f"AlphaGenomePlugin: Simulating prediction for sequence '{sequence}' with tracks {tracks} and variants {variants}."
@@ -37,9 +35,7 @@ class AlphaGenomePlugin:
 
             for track in tracks:
                 # Simulate data de tracks (very simple example)
-                simulated_results["predicted_tracks"][
-                    track
-                ] = f"Simulated data for {track} on {sequence}"
+                simulated_results["predicted_tracks"][track] = f"Simulated data for {track} on {sequence}"
 
             for var in variants:
                 # Simulate effects de variantes (very simple example)
@@ -55,6 +51,4 @@ class AlphaGenomePlugin:
             logger.info("AlphaGenomePlugin: Simulated prediction complete.")
             return simulated_results
         else:
-            raise NotImplementedError(
-                f"AlphaGenome method '{method_name}' not implemented in simulation."
-            )
+            raise NotImplementedError(f"AlphaGenome method '{method_name}' not implemented in simulation.")

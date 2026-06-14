@@ -103,11 +103,7 @@ class InferenceEngine:
                     explanation_parts.append(f"Rules applied: {', '.join(post['fired_rules'])}")
 
                 return {
-                    "label": (
-                        result.prediction
-                        if isinstance(result.prediction, str)
-                        else str(result.prediction)
-                    ),
+                    "label": (result.prediction if isinstance(result.prediction, str) else str(result.prediction)),
                     "confidence": enhanced_confidence,
                     "explanation": ". ".join(explanation_parts),
                     "enhanced_result": result.to_dict(),
@@ -163,9 +159,7 @@ class InferenceEngine:
             "explanation": "Simple heuristic protein generation",
         }
 
-    def compare_models(
-        self, ast_dict: dict[str, Any], model_names: Optional[list] = None
-    ) -> dict[str, Any]:
+    def compare_models(self, ast_dict: dict[str, Any], model_names: Optional[list] = None) -> dict[str, Any]:
         """Compare predictions across multiple models."""
         if not self.enhanced_engine:
             return {"error": "Enhanced inference engine not available"}

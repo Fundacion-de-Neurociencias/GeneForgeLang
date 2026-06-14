@@ -15,7 +15,7 @@
           "label": { "type": "string" },
           "causal_weight": { "type": "number", "description": "Normalized probabilistic causal weight" },
           "uncertainty": { "type": "number" },
-          "temporal_stage": { 
+          "temporal_stage": {
             "type": "object",
             "properties": {
               "active_stage": { "type": "array", "items": { "type": "string" } },

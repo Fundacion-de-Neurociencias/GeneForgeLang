@@ -1,0 +1,32 @@
+{
+  "extension_name": "protein_evidence",
+  "version": "1.0.0",
+  "description": "Bridges external protein foundation models (ESM, AlphaFold) to provide metadata-only sequence and structure confidence scores.",
+  "scoring": {
+    "dimensions": {
+      "irreducibility_depth": {
+        "score": 4,
+        "justification": "External structural model predictions (AlphaFold pLDDT, ESM embeddings) are high-dimensional stochastic matrices that cannot be represented natively in GFL's base epistemic logic without bloating the compiler core with tensor representations. It is structurally irreducible, but restricted exclusively to metadata annotation."
+      },
+      "ontological_neutrality": {
+        "score": 4,
+        "justification": "The extension strictly adheres to metadata-only attachment. It does not introduce new language-level primitives, classes, or types that mutate core semantic evaluations or represent hidden biological logic that alters GFL's deterministic inference rules."
+      },
+      "provider_abstraction_purity": {
+        "score": 5,
+        "justification": "Completely decouples GFL from specific APIs. The ESM/AlphaFold details are isolated behind general abstract contracts like SequenceNode and EmbeddingReferenceNode, compiling entirely to GFL's neutral Intermediate Representation (IR) without runtime dependencies on external hosts."
+      },
+      "primitive_necessity": {
+        "score": 3,
+        "justification": "While structure and embedding metadata can be modeled as generic annotation tags, providing explicit first-class nodes for Sequence and Evidence Scores allows the compiler to statically type-check structural data inputs, preventing critical science-domain errors."
+      },
+      "sunsetability_confidence": {
+        "score": 5,
+        "justification": "The extension operates strictly on an outer layer. If the 'protein_evidence' subdirectory is fully excised, all core GFL components, lattice closure proofs, and base parsers remain 100% complete and operational, with zero vestigial residues."
+      }
+    },
+    "total_score": 21,
+    "threshold_evaluation": "NORMAL_REVIEW",
+    "notes": "Score is above the threshold of 20, qualifying this extension for the standard OSS review queue without mandatory escalation or automatic blocking."
+  }
+}

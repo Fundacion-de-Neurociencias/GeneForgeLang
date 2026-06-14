@@ -1,0 +1,45 @@
+experiment {
+  tool: "CRISPR_cas9"
+  type: "gene_editing"
+  params: {
+    target_gene: "BRCA1",
+    guide_RNA: "AGCTAGCTAGCT",
+    cas9_concentration: 100,
+    incubation_time: 2.5
+  }
+}
+
+simulate cell_growth
+simulate inflammation
+
+analyze {
+  strategy: "differential_expression"
+  thresholds: {
+    log2FoldChange: 0.5,
+    p_value: 0.01,
+    FDR: 0.05
+  }
+}
+
+branch {
+  if: "gene_mutation_detected"
+  then {
+    simulate apoptosis
+    experiment {
+      tool: "flowjo"
+      type: "flow_cytometry"
+      params: {
+        gating_strategy: "T_cells"
+      }
+    }
+  }
+  else {
+    analyze {
+      strategy: "pathway_enrichment"
+      thresholds: {
+        enrichment_score: 1.5,
+        pathway_p_value: 0.005
+      }
+    }
+  }
+}

@@ -19,7 +19,7 @@ jobs:
   setup:
     name: Setup Environment
     runs-on: ubuntu-latest
-    
+
     steps:
       # Paso 1: Checkout del código del repositorio
       - name: Checkout repository
@@ -67,7 +67,7 @@ jobs:
     name: Code Quality (Ruff)
     needs: setup  # Depende del job 'setup'
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -101,7 +101,7 @@ jobs:
     name: Unit Tests (Pytest)
     needs: setup  # Depende del job 'setup'
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -151,7 +151,7 @@ jobs:
     needs: [ lint, test ]  # Depende de lint y test (ambos deben completar)
     runs-on: ubuntu-latest
     if: always()  # Ejecutar incluso si trabajos anteriores fallan
-    
+
     steps:
       - name: Check pipeline status
         run: |

@@ -1,0 +1,51 @@
+# GeneForgeLang Optimize Block Example
+# Intelligent experimental loop for parameter optimization
+
+metadata:
+  experiment_id: CRISPR_OPTIM_001
+  researcher: Dr. María García
+  project: crispr_parameter_optimization
+  description: AI-guided optimization of CRISPR-Cas9 parameters for maximum editing efficiency
+  date: "2024-01-15"
+
+optimize:
+  # Define parameter search space
+  search_space:
+    guide_concentration: range(10, 100)     # nM concentration range
+    temperature: range(25, 42)              # °C temperature range
+    duration: choice([6, 12, 24, 48])       # hours incubation time
+    cas9_ratio: range(0.5, 2.0)             # Cas9:gRNA molar ratio
+
+  # AI optimization strategy
+  strategy:
+    name: ActiveLearning
+    uncertainty_metric: entropy
+    initial_samples: 5
+    batch_size: 3
+
+  # Optimization objective
+  objective:
+    maximize: editing_efficiency
+
+  # Budget constraints
+  budget:
+    max_experiments: 75
+    max_time: 72h
+    convergence_threshold: 0.01
+
+  # Experiment executed in each optimization iteration
+  run:
+    experiment:
+      tool: CRISPR_cas9
+      type: gene_editing
+      strategy: knockout
+      params:
+        target_gene: TP53
+        guide_rna: GGGCCGGGCGGGCTCCCAGA
+        guide_concentration: ${guide_concentration}
+        incubation_temp: ${temperature}
+        duration: ${duration}h
+        cas9_ratio: ${cas9_ratio}
+        vector: pX458
+        cell_line: HEK293T
+        replicates: 3

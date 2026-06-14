@@ -1,0 +1,14 @@
+# GFL Stress Test Fixture
+metadata:
+  experiment_id: CB_STRESS_082
+  source_skill: clawbio/pathway-enricher
+  domain: functional-genomics
+
+analyze:
+  strategy: variant
+  data:
+    genes: "de_genes.txt"
+  params:
+    databases: ["GWAS_Catalog", "ClinVar", "Reactome"]
+    organism: "rat"
+    fdr_threshold: 0.062

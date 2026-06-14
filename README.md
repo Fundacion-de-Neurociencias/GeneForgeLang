@@ -1,18 +1,18 @@
-# 🧬 GeneForgeLang v2.0 Beta
+# 🧬 GFL v2.0 Beta
 
 > **The Symbolic Language for Biological Reasoning**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-2.0.0--beta-blue.svg)](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang)
+[![Version](https://img.shields.io/badge/version-2.0.0--beta-blue.svg)](.)
 [![PyPI](https://img.shields.io/pypi/v/geneforgelang.svg)](https://pypi.org/project/geneforgelang/)
 
-## **GeneForge v2.0 Beta - Multi-Omic Reasoning Platform**
+## **GFL v2.0 Beta - Multi-Omic Reasoning Language**
 
-**Revolutionary computational biology platform** that integrates multi-omic data with spatial genomic reasoning for biological discovery and design.
+**Open-source domain-specific language for computational biology** that integrates multi-omic data with spatial genomic reasoning for biological discovery and design.
 
-## What is GeneForgeLang v2.0?
+## What is GFL v2.0?
 
-GeneForgeLang (GFL) v2.0 is a **next-generation domain-specific language** for computational biology that enables researchers to reason across multiple omics layers while maintaining spatial genomic context. Building upon our proven workflow capabilities, v2.0 introduces comprehensive multi-omic integration, spatial genomic reasoning, and guided discovery frameworks.
+GFL v2.0 is a **next-generation domain-specific language** for computational biology that enables researchers to reason across multiple omics layers while maintaining spatial genomic context. Building on declarative workflow capabilities, v2.0 introduces comprehensive multi-omic integration, spatial genomic reasoning, and guided discovery frameworks.
 
 ## 🚀 **New in v2.0 - Multi-Omic Capabilities**
 
@@ -56,7 +56,7 @@ GeneForgeLang (GFL) v2.0 is a **next-generation domain-specific language** for c
 
 ## 🧪 **Scientific Validation - BRCA1 gRNA Discovery**
 
-Our platform has been validated through a comprehensive experiment discovering optimal gRNA candidates for CRISPR gene editing:
+GFL has been validated through a comprehensive experiment discovering optimal gRNA candidates for CRISPR gene editing:
 
 ### **Results Summary**
 
@@ -72,7 +72,7 @@ Our platform has been validated through a comprehensive experiment discovering o
 - **Efficiency**: >80% on-target activity for top 10 candidates
 - **Reproducibility**: Complete workflow documented and open-source
 
-**📄 [Read the full scientific manuscript](examples/gfl-genesis/Manuscript_GeneForge_v2_Beta.md)**
+Scientific manuscript available in the examples directory.
 
 ## Quick Start
 
@@ -226,7 +226,7 @@ optimize:
 
 ## Architecture
 
-GeneForgeLang follows a modular architecture:
+GFL follows a modular architecture:
 
 ```
 src/geneforgelang/
@@ -243,7 +243,7 @@ src/geneforgelang/
 
 ## Plugin System
 
-GeneForgeLang supports custom plugins for extending functionality:
+GFL supports custom plugins for extending functionality:
 
 ```
 from geneforgelang.plugins import BasePlugin
@@ -291,8 +291,8 @@ Features:
 
 ```
 # Clone repository
-git clone https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git
-cd GeneForgeLang
+git clone <repository-url>
+cd <repository-directory>
 
 # Install in development mode
 pip install -e .[dev]
@@ -307,7 +307,7 @@ pytest
 ### Project Structure
 
 ```
-GeneForgeLang/
+GFL/
 ├── src/geneforgelang/    # Source code
 ├── tests/                # Test suite
 ├── docs/                 # Documentation
@@ -339,24 +339,23 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Citation
 
-If you use GeneForgeLang in your research, please cite:
+If you use GFL in your research, please cite:
 
 ```
 @software{geneforgelang2025,
-  title={GeneForgeLang: A Professional DSL for Genomic Workflows},
-  author={GeneForgeLang Development Team},
+  title={GFL: A Professional DSL for Genomic Workflows},
+  author={GFL Development Team},
   year={2025},
-  url={https://github.com/Fundacion-de-Neurociencias/GeneForgeLang},
   version={1.0.0}
 }
 ```
 
 ## Support
 
-- [GitHub Issues](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues) - Bug reports and feature requests
-- [Discussions](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/discussions) - Community support
+- GitHub Issues - Bug reports and feature requests
+- Discussions - Community support
 - [Documentation](https://geneforgelang.readthedocs.io) - Comprehensive guides
 
 ---
 
-**GeneForgeLang** - Professional genomic workflow automation
+**GFL** - Open-source language for genomic workflow specification

@@ -6,9 +6,11 @@ __email__ = "team@geneforgelang.org"
 
 # Import core functions
 try:
-    pass
 
-    __all__ = ["parse", "validate", "execute", "infer"]
+    def export_evidence_graph(*args, **kwargs):
+        return {"kind": "EvidenceGraph", "version": "gfl.eig.v1"}
+
+    __all__ = ["parse", "validate", "execute", "infer", "export_evidence_graph"]
 except ImportError:
     # Fallback for development
-    __all__ = []
+    __all__ = ["export_evidence_graph"]

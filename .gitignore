@@ -171,3 +171,5 @@ parsetab.py
 generar_*.py
 *_interactivo.py
 *_desde_*.py
+
+gfl-plugin-*

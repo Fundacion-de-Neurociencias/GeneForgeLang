@@ -8,7 +8,6 @@ import json
 import sys
 
 import yaml
-
 from geneforgelang.core.api import get_api_info, infer, parse, validate
 
 try:
@@ -46,9 +45,7 @@ def cmd_parse():
         ast = parse(text, typed=args.typed)
 
         if args.format == "json":
-            output = (
-                json.dumps(ast.to_dict(), indent=2) if args.typed else json.dumps(ast, indent=2)
-            )
+            output = json.dumps(ast.to_dict(), indent=2) if args.typed else json.dumps(ast, indent=2)
         elif args.format == "yaml":
             if args.typed:
                 output = yaml.dump(ast.to_dict(), default_flow_style=False)
@@ -86,11 +83,7 @@ def cmd_validate():
 
         ast = parse(text)
 
-        result = (
-            comprehensive_validate(ast)
-            if args.schema and HAS_SCHEMA
-            else validate(ast, detailed=args.detailed)
-        )
+        result = comprehensive_validate(ast) if args.schema and HAS_SCHEMA else validate(ast, detailed=args.detailed)
 
         exit_code = 0
         if args.detailed or args.schema:
@@ -161,11 +154,7 @@ def cmd_infer():
         result = infer(model, ast, detailed=args.detailed)
 
         if args.format == "json":
-            output = (
-                json.dumps(result.to_dict(), indent=2)
-                if args.detailed
-                else json.dumps(result, indent=2)
-            )
+            output = json.dumps(result.to_dict(), indent=2) if args.detailed else json.dumps(result, indent=2)
         else:  # yaml
             if args.detailed:
                 output = yaml.dump(result.to_dict(), default_flow_style=False)
