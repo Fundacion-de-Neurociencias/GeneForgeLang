@@ -291,7 +291,7 @@ class ArchitecturalAudit:
                 # Check 1: Base parser and grammar validation tests
                 print("     Running base parser completeness tests...")
                 cmd_parser = [
-                    str(self.root_dir / ".venv" / "Scripts" / "python.exe"),
+                    sys.executable,
                     "-m",
                     "pytest",
                     "tests/unit/test_parser.py",
@@ -301,7 +301,7 @@ class ArchitecturalAudit:
                 # Check 2: Core Semantic test suite (test_closure.py, etc.)
                 print("     Running core semantic closure proofs...")
                 cmd_semantic = [
-                    str(self.root_dir / ".venv" / "Scripts" / "python.exe"),
+                    sys.executable,
                     "-m",
                     "pytest",
                     "tests/unit/semantic",

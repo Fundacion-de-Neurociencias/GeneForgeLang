@@ -294,7 +294,7 @@ async def list_plugins() -> dict[str, Any]:
 
     # Get external plugins from entry points
     try:
-        eps = entry_points(group="gfl.plugins")  # type: ignore[call-arg]
+        eps = entry_points().select(group="gfl.plugins")
         for ep in eps:
             try:
                 plugin_class = ep.load()  # type: ignore[attr-defined]

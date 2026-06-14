@@ -129,20 +129,20 @@ def clean_spanish_comments(file_path: Path) -> bool:
         with open(file_path, encoding="utf-8") as f:
             content = f.read()
 
-        # Common Spanish patterns to replace
+        # Spanish phrases mapped to their English translations
         replacements = {
-            "Simulates execution": "Simulates execution",
-            "When real API is available": "When real API is available",
-            "Execute methods": "Execute methods",
-            "related to": "related to",
-            "variant simulation": "variant simulation",
-            "Basic validation": "Basic validation",
-            "parameters": "parameters",
-            "Simulate results": "Simulate results",
-            "this would be the real output": "this would be the real output",
-            "very simple example": "very simple example",
-            "Simulate data": "Simulate data",
-            "Simulate effects": "Simulate effects",
+            "Simula la ejecución": "Simulates execution",
+            "Cuando la API real esté disponible": "When real API is available",
+            "Ejecutar métodos": "Execute methods",
+            "relacionado con": "related to",
+            "simulación de variantes": "variant simulation",
+            "Validación básica": "Basic validation",
+            "parámetros": "parameters",
+            "Simular resultados": "Simulate results",
+            "este sería el resultado real": "this would be the real output",
+            "ejemplo muy simple": "very simple example",
+            "Simular datos": "Simulate data",
+            "Simular efectos": "Simulate effects",
         }
 
         modified = False

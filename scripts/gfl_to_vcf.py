@@ -1,3 +1,6 @@
+from geneforgelang.core.parser import parse_gfl
+
+
 def gfl_to_vcf(gfl_expr):
     parsed = parse_gfl(gfl_expr)
     if parsed["type"] != "v":

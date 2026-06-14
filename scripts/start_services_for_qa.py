@@ -18,8 +18,9 @@ def start_gfl_service():
     """Start the GFL service in the background."""
     print("Starting GFL service...")
 
-    # Change to the GeneForgeLang directory
-    os.chdir("c:\\Users\\usuario\\GeneForgeLang Ecosystem\\GeneForgeLang")
+    # Locate the project root dynamically (two levels up from this script)
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir(base_dir)
 
     # Check if service is already running
     try:

@@ -77,6 +77,8 @@ def _coerce_perturbation(target: str, spec: dict[str, Any] | BiologicalPerturbat
     if isinstance(spec, str):
         kind, value = _parse_call(spec)
         return _build(target, kind, value, {"value": value} if value else {})
+    if not isinstance(spec, dict):
+        raise TypeError(f"Expected dict for perturbation spec, got {type(spec).__name__}")
     kind = str(spec.get("type", ""))
     _validate_kind(kind)
     parameters = dict(spec.get("parameters", {}))

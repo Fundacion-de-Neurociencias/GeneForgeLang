@@ -6,8 +6,8 @@ logger = logging.getLogger(__name__)
 class AlphaGenomePlugin:
     def execute(self, method_name: str, params: dict, symbol_table: dict):
         """
-        Simulates execution de métodos de AlphaGenome.
-        When real API is available, este método se conectará a ella.
+        Simulates execution of AlphaGenome methods.
+        When the real API is available, this method will connect to it.
         """
         logger.info(f"AlphaGenomePlugin: Simulating method '{method_name}' with params: {params}")
 

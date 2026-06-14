@@ -6,9 +6,12 @@ import gradio as gr
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-# Load symbolic phrase dictionary
-with open("semillas.json", encoding="utf-8") as f:
-    diccionario_semillas = json.load(f)
+# Load symbolic phrase dictionary (fallback to empty dict if file is absent)
+try:
+    with open("semillas.json", encoding="utf-8") as f:
+        diccionario_semillas = json.load(f)
+except FileNotFoundError:
+    diccionario_semillas = {}
 
 
 def phrase_to_seed(phrase):

@@ -813,11 +813,11 @@ class EnhancedSemanticValidator:
         }
 
         try:
-            from geneforgelang.plugins.plugin_registry import discover_plugins, plugin_registry
+            from geneforgelang.plugins.plugin_registry import plugin_registry
 
-            discover_plugins()
+            plugin_registry._discover_plugins()
             known_tools.update(plugin_registry.names())
-        except ImportError:
+        except Exception:
             pass
 
     def _validate_experiment_type(self, exp_type: Any) -> None:

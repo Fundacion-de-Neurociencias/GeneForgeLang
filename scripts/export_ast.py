@@ -1,20 +1,27 @@
 import json
 import sys
 
-from gfl import parser
-from gfl.semantic_validator import validate_ast
+from geneforgelang.core.parser import parse_gfl
+from geneforgelang.core.validator import EnhancedSemanticValidator
+
+
+def _validate_ast(ast: dict) -> bool:
+    """Validate the AST using the canonical EnhancedSemanticValidator."""
+    validator = EnhancedSemanticValidator()
+    result = validator.validate_ast(ast)
+    return result.is_valid
 
 
 def run_export(file_path):
-    print(f"\n📤 Exportando AST de: {file_path}")
+    print(f"\n📤 Exporting AST from: {file_path}")
     with open(file_path, encoding="utf-8") as f:
         code = f.read()
-    ast = parser.parser.parse(code)
+    ast = parse_gfl(code)
     if not ast:
         print("❌ AST nulo.")
         return
     print("✅ AST generado.")
-    if validate_ast(ast):
+    if _validate_ast(ast):
         print("✅ Validación semántica OK.")
         with open("output_ast.json", "w", encoding="utf-8") as out:
             json.dump(ast, out, indent=2)
