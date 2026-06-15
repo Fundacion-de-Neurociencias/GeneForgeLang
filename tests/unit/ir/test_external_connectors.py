@@ -1,6 +1,7 @@
 """Tests for external knowledge connectors (Fase 3)."""
 
 import pytest
+import os
 
 from geneforgelang.ir.external import (
     HuggingScienceConnector,
@@ -32,6 +33,10 @@ class TestOpenMedConnector:
 
         assert emb1 == emb2
 
+    @pytest.mark.skipif(
+        os.getenv("CI") == "true",
+        reason="Requiere acceso a red externa"
+    )
     def test_find_similar_entities(self):
         connector = OpenMedConnector()
         similar = connector.find_similar_entities("TP53", top_k=3)
