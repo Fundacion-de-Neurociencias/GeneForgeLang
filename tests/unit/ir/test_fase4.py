@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+from geneforgelang.ir.external import RetrievalService
 from geneforgelang.ir.fase4 import (
     AsyncRetrievalService,
     CacheConfig,
@@ -17,7 +18,6 @@ from geneforgelang.ir.fase4 import (
     RAGIntegration,
     RetrievalFeedback,
 )
-from geneforgelang.ir.external import RetrievalService
 from geneforgelang.ir.state import BiologicalState, Entity, EntityType, RelationType
 from geneforgelang.ir.strategy import Objective
 

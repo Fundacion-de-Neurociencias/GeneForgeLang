@@ -25,12 +25,12 @@ class RetrievalFeedback:
 
     query: str
     query_type: str  # "entity", "literature", "reasoning", "objective"
-    target_entity: Optional[str] = None
+    target_entity: str | None = None
 
     # Outcome
     success: bool = True
     confidence_score: float = 0.0
-    user_rating: Optional[int] = None  # 1-5 scale
+    user_rating: int | None = None  # 1-5 scale
 
     # Retrieved data quality
     results_count: int = 0
@@ -42,7 +42,7 @@ class RetrievalFeedback:
 
     # Context
     iteration: int = 0  # Reasoning loop iteration
-    final_objective_achieved: Optional[bool] = None
+    final_objective_achieved: bool | None = None
 
     def quality_score(self) -> float:
         """Calculate overall quality score from feedback."""
@@ -74,7 +74,7 @@ class FeedbackStore:
             return
 
         try:
-            with open(self.storage_path, "r", encoding="utf-8") as f:
+            with open(self.storage_path, encoding="utf-8") as f:
                 for line in f:
                     line = line.strip()
                     if not line:
@@ -102,7 +102,7 @@ class FeedbackStore:
             logger.error(f"Failed to record feedback: {e}")
             return False
 
-    def get_stats(self, query_type: Optional[str] = None) -> dict[str, Any]:
+    def get_stats(self, query_type: str | None = None) -> dict[str, Any]:
         """Get statistics for feedback records."""
         records = self._feedback_cache
         if query_type:

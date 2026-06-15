@@ -1,7 +1,7 @@
 import pytest
 
-from geneforgelang.ir.parser_ir import parse_text, ParseError
-from geneforgelang.ir.instruction import Substitute, Insert, Delete, Invert
+from geneforgelang.ir.instruction import Delete, Insert, Invert, Substitute
+from geneforgelang.ir.parser_ir import ParseError, parse_text
 
 
 def test_parse_entities():

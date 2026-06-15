@@ -1,13 +1,13 @@
 import pytest
 
 from geneforgelang.ir.executor import (
-    StrategyExecutor,
     ExecutionError,
+    StrategyExecutor,
     apply,
 )
-from geneforgelang.ir.instruction import Substitute, Insert
+from geneforgelang.ir.instruction import Insert, Substitute
 from geneforgelang.ir.state import BiologicalState, Entity, EntityType
-from geneforgelang.ir.strategy import Strategy, Objective, Constraint
+from geneforgelang.ir.strategy import Constraint, Objective, Strategy
 
 
 def _make_state():

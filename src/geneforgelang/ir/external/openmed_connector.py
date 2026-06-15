@@ -9,10 +9,9 @@ Integrates with OpenMed ecosystem:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Optional
-
 import logging
+from dataclasses import dataclass
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +25,7 @@ class OpenMedEntity:
     start: int
     end: int
     confidence: float
-    normalized_id: Optional[str] = None  # e.g., "HGNC:11998" for TP53
+    normalized_id: str | None = None  # e.g., "HGNC:11998" for TP53
 
 
 @dataclass
@@ -50,7 +49,7 @@ class OpenMedConnector:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         base_url: str = "https://api.openmed.fdn.org/v1",
         enable_privacy_filter: bool = True,
     ):
@@ -86,7 +85,7 @@ class OpenMedConnector:
     # Embeddings & Similarity
     # ------------------------------------------------------------------
 
-    def get_embedding(self, entity_id: str) -> Optional[list[float]]:
+    def get_embedding(self, entity_id: str) -> list[float] | None:
         """Retrieve biomedical embedding for an entity.
 
         Production: Call OpenMed embeddings API.
@@ -106,14 +105,11 @@ class OpenMedConnector:
             if len(chunk) == 2:
                 embedding.append(((int(chunk, 16) / 255.0) - 0.5) * 2)
         # Pad to 768 dimensions by repeating
-        if embedding:
-            embedding = (embedding * ((768 // len(embedding)) + 1))[:768]
-        else:
-            embedding = [0.0] * 768
+        embedding = (embedding * (768 // len(embedding) + 1))[:768] if embedding else [0.0] * 768
         return embedding
 
     def find_similar_entities(
-        self, entity_id: str, entity_type: Optional[str] = None, top_k: int = 5
+        self, entity_id: str, entity_type: str | None = None, top_k: int = 5
     ) -> list[SimilarEntity]:
         """Find entities with similar embeddings.
 

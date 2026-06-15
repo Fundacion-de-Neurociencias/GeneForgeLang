@@ -1,8 +1,8 @@
 import pytest
 
-from geneforgelang.ir.reasoning_loop import ReasoningLoop, MockPlannerBackend
-from geneforgelang.ir.state_evaluator import StateEvaluator
+from geneforgelang.ir.reasoning_loop import MockPlannerBackend, ReasoningLoop
 from geneforgelang.ir.state import BiologicalState, Entity, EntityType
+from geneforgelang.ir.state_evaluator import StateEvaluator
 from geneforgelang.ir.strategy import Objective
 
 

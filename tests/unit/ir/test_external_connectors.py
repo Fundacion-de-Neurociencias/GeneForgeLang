@@ -5,8 +5,8 @@ import pytest
 from geneforgelang.ir.external import (
     HuggingScienceConnector,
     OpenMedConnector,
-    RetrievedEvidence,
     RetrievalService,
+    RetrievedEvidence,
 )
 from geneforgelang.ir.knowledge_grounding import KnowledgeBase
 from geneforgelang.ir.state import BiologicalState, Entity, EntityType

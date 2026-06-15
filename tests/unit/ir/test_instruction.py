@@ -1,13 +1,13 @@
 import pytest
 
 from geneforgelang.ir.instruction import (
-    Substitute,
-    Insert,
     Delete,
-    Invert,
     EntityNotFoundError,
-    ReferenceMismatchError,
+    Insert,
     InvalidSequenceError,
+    Invert,
+    ReferenceMismatchError,
+    Substitute,
 )
 from geneforgelang.ir.state import BiologicalState, Entity, EntityType
 

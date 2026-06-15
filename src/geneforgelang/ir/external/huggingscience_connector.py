@@ -8,10 +8,9 @@ Integrates with HuggingScience models for:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Optional
-
 import logging
+from dataclasses import dataclass
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +47,7 @@ class HuggingScienceConnector:
 
     def __init__(
         self,
-        api_token: Optional[str] = None,
+        api_token: str | None = None,
         model_name: str = "microsoft/biogpt",
         enable_caching: bool = True,
     ):
@@ -64,7 +63,7 @@ class HuggingScienceConnector:
     # ------------------------------------------------------------------
 
     def reason_about_hypothesis(
-        self, hypothesis: str, context: Optional[list[dict[str, Any]]] = None
+        self, hypothesis: str, context: list[dict[str, Any]] | None = None
     ) -> ReasoningResult:
         """Apply scientific reasoning to validate a hypothesis.
 
@@ -109,7 +108,7 @@ class HuggingScienceConnector:
             conclusion = f"Activation of {genes[0] if genes else 'target'} may increase oncogenic potential"
             confidence = 0.70
         else:
-            conclusion = f"Hypothesis requires experimental validation"
+            conclusion = "Hypothesis requires experimental validation"
             confidence = 0.50
 
         # Build reasoning chain
@@ -154,10 +153,7 @@ class HuggingScienceConnector:
 
         # Calculate confidence
         total = len(supporting) + len(contradicting)
-        if total == 0:
-            confidence = 0.5
-        else:
-            confidence = len(supporting) / total
+        confidence = 0.5 if total == 0 else len(supporting) / total
 
         # Identify knowledge gaps
         gaps = []
@@ -179,7 +175,7 @@ class HuggingScienceConnector:
     # ------------------------------------------------------------------
 
     def answer_question(
-        self, question: str, context: Optional[str] = None
+        self, question: str, context: str | None = None
     ) -> dict[str, Any]:
         """Answer biomedical questions using scientific models.
 

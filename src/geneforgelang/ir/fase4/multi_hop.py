@@ -12,8 +12,8 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from geneforgelang.ir.external.openmed_connector import OpenMedConnector
 from geneforgelang.ir.external.huggingscience_connector import HuggingScienceConnector
+from geneforgelang.ir.external.openmed_connector import OpenMedConnector
 from geneforgelang.ir.state import BiologicalState, RelationType
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ class MultiHopPath:
     """Complete multi-hop reasoning path."""
 
     start_entity: str
-    end_entity: Optional[str] = None
+    end_entity: str | None = None
     hops: list[HopResult] = field(default_factory=list)
 
     overall_confidence: float = 0.0
@@ -91,8 +91,8 @@ class MultiHopReasoner:
 
     def __init__(
         self,
-        openmed: Optional[OpenMedConnector] = None,
-        huggingscience: Optional[HuggingScienceConnector] = None,
+        openmed: OpenMedConnector | None = None,
+        huggingscience: HuggingScienceConnector | None = None,
         max_hops: int = 3,
     ):
         self.openmed = openmed or OpenMedConnector()
@@ -106,9 +106,9 @@ class MultiHopReasoner:
     def reason_across_path(
         self,
         start_entity: str,
-        end_entity: Optional[str] = None,
-        state: Optional[BiologicalState] = None,
-        hypothesis: Optional[str] = None,
+        end_entity: str | None = None,
+        state: BiologicalState | None = None,
+        hypothesis: str | None = None,
     ) -> MultiHopPath:
         """Execute multi-hop reasoning from start to end entity.
 
@@ -153,7 +153,7 @@ class MultiHopReasoner:
         self,
         start_entity: str,
         end_entity: str,
-        state: Optional[BiologicalState] = None,
+        state: BiologicalState | None = None,
         max_paths: int = 3,
     ) -> list[MultiHopPath]:
         """Find multiple paths between two entities."""
@@ -179,7 +179,7 @@ class MultiHopReasoner:
         return paths[:max_paths]
 
     def explain_relationship(
-        self, entity_a: str, entity_b: str, state: Optional[BiologicalState] = None
+        self, entity_a: str, entity_b: str, state: BiologicalState | None = None
     ) -> dict[str, Any]:
         """Generate explanation for relationship between two entities."""
         paths = self.find_paths(entity_a, entity_b, state, max_paths=3)
@@ -213,8 +213,8 @@ class MultiHopReasoner:
         self,
         hop_num: int,
         entity_id: str,
-        state: Optional[BiologicalState],
-        hypothesis: Optional[str],
+        state: BiologicalState | None,
+        hypothesis: str | None,
     ) -> HopResult:
         """Execute a single hop of reasoning."""
         hop = HopResult(hop_number=hop_num, entity_id=entity_id)
@@ -300,8 +300,8 @@ class MultiHopReasoner:
         return candidates[:5]  # Limit candidates
 
     def _select_next_hop(
-        self, current_hop: HopResult, visited: set[str], target: Optional[str]
-    ) -> Optional[str]:
+        self, current_hop: HopResult, visited: set[str], target: str | None
+    ) -> str | None:
         """Select best next hop candidate."""
         candidates = [
             c for c in current_hop.next_hop_candidates if c.upper() not in visited
@@ -340,8 +340,8 @@ class MultiHopReasoner:
     # ------------------------------------------------------------------
 
     def _find_via_interactors(
-        self, start: str, end: str, state: Optional[BiologicalState]
-    ) -> Optional[MultiHopPath]:
+        self, start: str, end: str, state: BiologicalState | None
+    ) -> MultiHopPath | None:
         """Find path via common interactors."""
         start_knowledge = self.openmed.get_entity_knowledge(start)
         end_knowledge = self.openmed.get_entity_knowledge(end)
@@ -388,8 +388,8 @@ class MultiHopReasoner:
         return path
 
     def _find_via_pathway(
-        self, start: str, end: str, state: Optional[BiologicalState]
-    ) -> Optional[MultiHopPath]:
+        self, start: str, end: str, state: BiologicalState | None
+    ) -> MultiHopPath | None:
         """Find path via common pathway membership."""
         start_knowledge = self.openmed.get_entity_knowledge(start)
         end_knowledge = self.openmed.get_entity_knowledge(end)

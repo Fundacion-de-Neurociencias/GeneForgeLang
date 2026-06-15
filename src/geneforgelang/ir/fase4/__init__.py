@@ -8,10 +8,10 @@ This module provides:
 - Bridge between IR and gfl-plugin-rag-engine
 """
 
-from geneforgelang.ir.fase4.cache_layer import EmbeddingCache, CacheConfig
 from geneforgelang.ir.fase4.async_retrieval import AsyncRetrievalService
-from geneforgelang.ir.fase4.feedback_loop import RetrievalFeedback, FeedbackStore
-from geneforgelang.ir.fase4.multi_hop import MultiHopReasoner, HopResult
+from geneforgelang.ir.fase4.cache_layer import CacheConfig, EmbeddingCache
+from geneforgelang.ir.fase4.feedback_loop import FeedbackStore, RetrievalFeedback
+from geneforgelang.ir.fase4.multi_hop import HopResult, MultiHopReasoner
 from geneforgelang.ir.fase4.rag_bridge import RAGBridge, RAGIntegration
 
 __all__ = [

@@ -13,15 +13,15 @@ from pathlib import Path
 # Ensure src is on path when run directly
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from geneforgelang.ir.parser_ir import parse_text
-from geneforgelang.ir.executor import StrategyExecutor, GraphExecutor
-from geneforgelang.ir.strategy import Strategy, Objective, PlanNode, PlanGraph
-from geneforgelang.ir.llm_planner import LLMPlanner
-from geneforgelang.ir.state_evaluator import StateEvaluator
+from geneforgelang.ir.executor import GraphExecutor, StrategyExecutor
+from geneforgelang.ir.external import HuggingScienceConnector, OpenMedConnector, RetrievalService
 from geneforgelang.ir.knowledge_grounding import KnowledgeBase
-from geneforgelang.ir.reasoning_loop import ReasoningLoop, MockPlannerBackend
+from geneforgelang.ir.llm_planner import LLMPlanner
+from geneforgelang.ir.parser_ir import parse_text
+from geneforgelang.ir.reasoning_loop import MockPlannerBackend, ReasoningLoop
 from geneforgelang.ir.state import BiologicalState, Entity, EntityType
-from geneforgelang.ir.external import OpenMedConnector, HuggingScienceConnector, RetrievalService
+from geneforgelang.ir.state_evaluator import StateEvaluator
+from geneforgelang.ir.strategy import Objective, PlanGraph, PlanNode, Strategy
 
 
 def demo_parser_executor():
@@ -135,7 +135,7 @@ def demo_graph_executor():
             attrs={"sequence": "ATCGATCG", "status": "wildtype"},
         )
     )
-    from geneforgelang.ir.instruction import Substitute, Delete
+    from geneforgelang.ir.instruction import Delete, Substitute
     root = PlanNode(
         condition='TP53.status == wildtype',
         action=Substitute(gene_id="TP53", position=0, ref="A", alt="G"),
@@ -277,7 +277,7 @@ def demo_knowledge_with_retrieval():
     # Retrieve for objective
     objective = Objective(description="Analyze TP53 knockout viability", target_entity="TP53")
     result = kb_external.retrieve_for_objective(objective)
-    print(f"\nRetrieval for objective:")
+    print("\nRetrieval for objective:")
     print(f"  Enabled: {result['enabled']}")
     print(f"  Similar entities: {result['similar_entities']}")
     print(f"  Literature count: {result['literature_count']}")

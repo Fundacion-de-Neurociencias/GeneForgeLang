@@ -20,8 +20,8 @@ class KnowledgeBase:
 
     def __init__(
         self,
-        entries: Optional[dict[str, dict[str, Any]]] = None,
-        retrieval_service: Optional[RetrievalService] = None,
+        entries: dict[str, dict[str, Any]] | None = None,
+        retrieval_service: RetrievalService | None = None,
         enable_external: bool = False,  # Opt-in for external API calls
     ):
         # Local curated knowledge (fallback / authoritative)
@@ -134,7 +134,7 @@ class KnowledgeBase:
     # ------------------------------------------------------------------
 
     def retrieve_for_objective(
-        self, objective: Objective, state: Optional[BiologicalState] = None
+        self, objective: Objective, state: BiologicalState | None = None
     ) -> dict[str, Any]:
         """Retrieve external knowledge for a biological objective.
 
@@ -184,6 +184,6 @@ class KnowledgeBase:
 
         return enriched
 
-    def get_retrieval_service(self) -> Optional[RetrievalService]:
+    def get_retrieval_service(self) -> RetrievalService | None:
         """Access the underlying retrieval service for advanced usage."""
         return self._retrieval

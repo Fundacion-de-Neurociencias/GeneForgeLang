@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import List, Tuple
-
 from geneforgelang.ir.instruction import (
     Delete,
     Insert,
@@ -16,7 +14,7 @@ class ParseError(Exception):
     pass
 
 
-def _parse_attrs(parts: List[str]) -> dict:
+def _parse_attrs(parts: list[str]) -> dict:
     attrs = {}
     for part in parts:
         if "=" in part:
@@ -38,9 +36,9 @@ def _parse_attrs(parts: List[str]) -> dict:
     return attrs
 
 
-def parse_text(text: str) -> Tuple[BiologicalState, List[Instruction]]:
+def parse_text(text: str) -> tuple[BiologicalState, list[Instruction]]:
     state = BiologicalState()
-    instructions: List[Instruction] = []
+    instructions: list[Instruction] = []
 
     for line in text.splitlines():
         line = line.strip()

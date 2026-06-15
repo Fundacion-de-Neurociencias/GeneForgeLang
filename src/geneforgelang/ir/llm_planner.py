@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any
 
 from geneforgelang.ir.instruction import Insert, Instruction, Substitute
 from geneforgelang.ir.strategy import Constraint, Objective, Strategy
@@ -10,8 +10,8 @@ from geneforgelang.ir.strategy import Constraint, Objective, Strategy
 class LLMBackend(ABC):
     @abstractmethod
     def generate(
-        self, prompt: str, context: Dict[str, Any] | None = None
-    ) -> Dict[str, Any]:
+        self, prompt: str, context: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         raise NotImplementedError
 
 
@@ -19,8 +19,8 @@ class MockLLMBackend(LLMBackend):
     """A mock backend that returns a canned strategy based on keyword matching."""
 
     def generate(
-        self, prompt: str, context: Dict[str, Any] | None = None
-    ) -> Dict[str, Any]:
+        self, prompt: str, context: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         prompt_lower = prompt.lower()
         if "knockout" in prompt_lower and "tp53" in prompt_lower:
             return {
@@ -62,7 +62,7 @@ class LLMPlanner:
         self.backend = backend or MockLLMBackend()
 
     def generate_strategy(
-        self, prompt: str, context: Dict[str, Any] | None = None
+        self, prompt: str, context: dict[str, Any] | None = None
     ) -> Strategy:
         raw = self.backend.generate(prompt, context)
         obj = raw.get("objective", {})
@@ -74,7 +74,7 @@ class LLMPlanner:
         constraints = [
             Constraint(expression=c) for c in raw.get("constraints", [])
         ]
-        steps: List[Instruction] = []
+        steps: list[Instruction] = []
         for step in raw.get("steps", []):
             op = step.get("op", "").upper()
             if op == "SUBSTITUTE":

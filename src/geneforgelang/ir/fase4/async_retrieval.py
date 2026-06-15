@@ -12,10 +12,10 @@ import asyncio
 import logging
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
-from geneforgelang.ir.external.openmed_connector import OpenMedConnector
 from geneforgelang.ir.external.huggingscience_connector import HuggingScienceConnector
+from geneforgelang.ir.external.openmed_connector import OpenMedConnector
 from geneforgelang.ir.external.retrieval_service import (
     RetrievalContext,
     RetrievalService,
@@ -31,8 +31,8 @@ logger = logging.getLogger(__name__)
 class AsyncRetrievalResult:
     """Result from async retrieval operation."""
 
-    context: Optional[RetrievalContext] = None
-    error: Optional[str] = None
+    context: RetrievalContext | None = None
+    error: str | None = None
     elapsed_ms: float = 0.0
     cache_hit: bool = False
 
@@ -46,8 +46,8 @@ class AsyncRetrievalService:
 
     def __init__(
         self,
-        retrieval_service: Optional[RetrievalService] = None,
-        cache: Optional[EmbeddingCache] = None,
+        retrieval_service: RetrievalService | None = None,
+        cache: EmbeddingCache | None = None,
         max_workers: int = 4,
     ):
         self.retrieval = retrieval_service or RetrievalService()
@@ -55,7 +55,7 @@ class AsyncRetrievalService:
         self.max_workers = max_workers
         self._executor = ThreadPoolExecutor(max_workers=max_workers)
         self._prefetch_queue: asyncio.Queue[str] = asyncio.Queue()
-        self._prefetch_task: Optional[asyncio.Task] = None
+        self._prefetch_task: asyncio.Task | None = None
 
     # ------------------------------------------------------------------
     # Async Core Methods
@@ -64,7 +64,7 @@ class AsyncRetrievalService:
     async def retrieve_for_objective_async(
         self,
         objective: Objective,
-        state: Optional[BiologicalState] = None,
+        state: BiologicalState | None = None,
         use_cache: bool = True,
     ) -> AsyncRetrievalResult:
         """Async version of retrieve_for_objective.
@@ -126,7 +126,7 @@ class AsyncRetrievalService:
     async def batch_retrieve_async(
         self,
         objectives: list[Objective],
-        state: Optional[BiologicalState] = None,
+        state: BiologicalState | None = None,
     ) -> list[AsyncRetrievalResult]:
         """Retrieve for multiple objectives concurrently."""
         tasks = [
@@ -210,7 +210,7 @@ class AsyncRetrievalService:
     # Background Prefetching
     # ------------------------------------------------------------------
 
-    def start_prefetching(self, prefetch_func: Optional[Callable[[str], Any]] = None) -> None:
+    def start_prefetching(self, prefetch_func: Callable[[str], Any] | None = None) -> None:
         """Start background prefetching task."""
         if self._prefetch_task is None:
             self._prefetch_task = asyncio.create_task(
@@ -225,7 +225,7 @@ class AsyncRetrievalService:
             self._prefetch_task = None
             logger.info("Stopped background prefetching")
 
-    async def _prefetch_loop(self, prefetch_func: Optional[Callable[[str], Any]]) -> None:
+    async def _prefetch_loop(self, prefetch_func: Callable[[str], Any] | None) -> None:
         """Background loop for prefetching."""
         while True:
             try:

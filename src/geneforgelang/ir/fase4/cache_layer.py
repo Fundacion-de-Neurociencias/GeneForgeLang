@@ -15,7 +15,7 @@ import json
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ class CacheConfig:
     db_path: str = "./gfl_cache"
     collection_name: str = "embeddings"
     max_entries: int = 10000
-    ttl_seconds: Optional[int] = None  # None = no expiration
+    ttl_seconds: int | None = None  # None = no expiration
     similarity_threshold: float = 0.95  # For deduplication
 
 
@@ -38,7 +38,7 @@ class EmbeddingCache:
     Reduces API calls and improves latency.
     """
 
-    def __init__(self, config: Optional[CacheConfig] = None):
+    def __init__(self, config: CacheConfig | None = None):
         self.config = config or CacheConfig()
         self._client: Any = None
         self._collection: Any = None
@@ -83,7 +83,7 @@ class EmbeddingCache:
     # Core Cache Operations
     # ------------------------------------------------------------------
 
-    def get(self, key: str) -> Optional[dict[str, Any]]:
+    def get(self, key: str) -> dict[str, Any] | None:
         """Retrieve cached value by key."""
         # L1: Memory cache
         if key in self._memory_cache:
@@ -104,7 +104,7 @@ class EmbeddingCache:
 
         return None
 
-    def put(self, key: str, value: dict[str, Any], embedding: Optional[list[float]] = None) -> bool:
+    def put(self, key: str, value: dict[str, Any], embedding: list[float] | None = None) -> bool:
         """Store value in cache."""
         # L1: Always store in memory
         self._memory_cache[key] = value
@@ -214,7 +214,7 @@ class EmbeddingCache:
     # Higher-level Operations
     # ------------------------------------------------------------------
 
-    def get_embedding(self, entity_id: str) -> Optional[list[float]]:
+    def get_embedding(self, entity_id: str) -> list[float] | None:
         """Get cached embedding for entity."""
         cache_key = f"emb:{entity_id.upper()}"
         data = self.get(cache_key)
@@ -223,7 +223,7 @@ class EmbeddingCache:
             return data["embedding"]
         return None
 
-    def put_embedding(self, entity_id: str, embedding: list[float], metadata: Optional[dict] = None) -> bool:
+    def put_embedding(self, entity_id: str, embedding: list[float], metadata: dict | None = None) -> bool:
         """Cache embedding for entity."""
         cache_key = f"emb:{entity_id.upper()}"
         value = {
@@ -234,7 +234,7 @@ class EmbeddingCache:
         }
         return self.put(cache_key, value, embedding)
 
-    def get_literature(self, query_hash: str) -> Optional[list[dict]]:
+    def get_literature(self, query_hash: str) -> list[dict] | None:
         """Get cached literature results."""
         cache_key = f"lit:{query_hash}"
         data = self.get(cache_key)
@@ -256,7 +256,7 @@ class EmbeddingCache:
         # No embedding for literature cache
         return self.put(cache_key, value, None)
 
-    def get_reasoning(self, hypothesis_hash: str) -> Optional[dict]:
+    def get_reasoning(self, hypothesis_hash: str) -> dict | None:
         """Get cached reasoning result."""
         cache_key = f"reason:{hypothesis_hash}"
         return self.get(cache_key)
@@ -287,11 +287,7 @@ class EmbeddingCache:
                 val = (int(chunk, 16) / 255.0) * 2 - 1  # Normalize to [-1, 1]
                 embedding.append(val)
         # Pad/repeat to 768 dimensions
-        if embedding:
-            embedding = (embedding * ((768 // len(embedding)) + 1))[:768]
-        else:
-            embedding = [0.0] * 768
-        return embedding
+        embedding = (embedding * (768 // len(embedding) + 1))[:768] if embedding else [0.0] * 768
 
     def _now(self) -> str:
         """Current timestamp string."""

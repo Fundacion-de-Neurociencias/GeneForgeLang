@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
 
-from geneforgelang.ir.external.retrieval_service import RetrievedEvidence, RetrievalService
+from geneforgelang.ir.external.retrieval_service import RetrievalService, RetrievedEvidence
 from geneforgelang.ir.knowledge_grounding import KnowledgeBase
 from geneforgelang.ir.state import BiologicalState, Entity
 from geneforgelang.ir.strategy import Objective
@@ -48,8 +48,8 @@ class RAGBridge:
 
     def __init__(
         self,
-        rag_plugin_path: Optional[str] = None,
-        chroma_db_path: Optional[str] = None,
+        rag_plugin_path: str | None = None,
+        chroma_db_path: str | None = None,
     ):
         self.rag_plugin_path = rag_plugin_path or "./gfl-plugin-rag-engine"
         self.chroma_db_path = chroma_db_path or "./chroma_db"
@@ -211,7 +211,7 @@ class RAGBridge:
         return evidence
 
     def enrich_state_with_rag(
-        self, state: BiologicalState, objective: Optional[Objective] = None
+        self, state: BiologicalState, objective: Objective | None = None
     ) -> BiologicalState:
         """Enrich biological state with RAG-retrieved evidence."""
         enriched = state.fork()
@@ -320,14 +320,14 @@ class RAGIntegration:
 
     def __init__(
         self,
-        retrieval_service: Optional[RetrievalService] = None,
-        rag_bridge: Optional[RAGBridge] = None,
+        retrieval_service: RetrievalService | None = None,
+        rag_bridge: RAGBridge | None = None,
     ):
         self.retrieval = retrieval_service or RetrievalService()
         self.rag = rag_bridge or RAGBridge()
 
     def retrieve_comprehensive(
-        self, objective: Objective, state: Optional[BiologicalState] = None
+        self, objective: Objective, state: BiologicalState | None = None
     ) -> dict[str, Any]:
         """Retrieve evidence from all sources: IR + RAG."""
         # 1. Get IR external knowledge

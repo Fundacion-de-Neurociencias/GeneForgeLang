@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 from geneforgelang.ir.instruction import Instruction
 from geneforgelang.ir.state import BiologicalState
@@ -42,9 +42,9 @@ def apply(state: BiologicalState, instruction: Instruction) -> BiologicalState:
 
 
 class StrategyExecutor:
-    def __init__(self, strategy: Strategy, evaluator: Optional[StateEvaluator] = None):
+    def __init__(self, strategy: Strategy, evaluator: StateEvaluator | None = None):
         self.strategy = strategy
-        self.trace: Optional[StateTrace] = None
+        self.trace: StateTrace | None = None
         self.evaluator = evaluator or StateEvaluator()
 
     def execute(self, initial_state: BiologicalState) -> StateTrace:
@@ -74,14 +74,14 @@ class StrategyExecutor:
         score: float = self.evaluator.evaluate(state, self.strategy.objective)
         return score
 
-    def get_trace(self) -> Optional[StateTrace]:
+    def get_trace(self) -> StateTrace | None:
         return self.trace
 
 
 class GraphExecutor:
     """Execute a conditional PlanGraph by traversing nodes and evaluating conditions."""
 
-    def __init__(self, plan: PlanGraph, evaluator: Optional[StateEvaluator] = None):
+    def __init__(self, plan: PlanGraph, evaluator: StateEvaluator | None = None):
         self.plan = plan
         self.trace = StateTrace(initial_state=BiologicalState())
         self.evaluator = evaluator or StateEvaluator()
@@ -97,9 +97,8 @@ class GraphExecutor:
             return
 
         # Evaluate condition if present
-        if node.condition is not None:
-            if not self._eval_condition(node.condition, state):
-                return
+        if node.condition is not None and not self._eval_condition(node.condition, state):
+            return
 
         # Execute action if present
         if node.action is not None:

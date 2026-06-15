@@ -15,7 +15,7 @@ class Constraint:
 @dataclass
 class Objective:
     description: str
-    target_entity: Optional[str] = None
+    target_entity: str | None = None
     desired_outcome: str = ""
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -47,8 +47,8 @@ class PlanNode:
     unconditional.
     """
 
-    condition: Optional[str] = None
-    action: Optional[Any] = None  # Instruction or None for pure decision nodes
+    condition: str | None = None
+    action: Any | None = None  # Instruction or None for pure decision nodes
     next_nodes: list[PlanNode] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
 

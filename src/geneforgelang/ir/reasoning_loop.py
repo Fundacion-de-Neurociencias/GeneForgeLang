@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from geneforgelang.ir.executor import ExecutionError, StateTrace, StrategyExecutor
 from geneforgelang.ir.state import BiologicalState
@@ -16,7 +16,7 @@ class PlannerBackend:
         self,
         state: BiologicalState,
         objective: Objective,
-        previous_attempts: List[Tuple[StateTrace, float]],
+        previous_attempts: list[tuple[StateTrace, float]],
     ) -> Strategy:
         raise NotImplementedError
 
@@ -32,9 +32,9 @@ class MockPlannerBackend(PlannerBackend):
         self,
         state: BiologicalState,
         objective: Objective,
-        previous_attempts: List[Tuple[StateTrace, float]],
+        previous_attempts: list[tuple[StateTrace, float]],
     ) -> Strategy:
-        from geneforgelang.ir.instruction import Substitute, Delete
+        from geneforgelang.ir.instruction import Delete, Substitute
 
         target = objective.target_entity or "TP53"
         entity = state.get_entity(target)
@@ -93,11 +93,11 @@ class MockPlannerBackend(PlannerBackend):
 
 @dataclass
 class ReasoningResult:
-    trace: Optional[StateTrace]
+    trace: StateTrace | None
     score: float
     iterations: int
-    attempts: List[Tuple[StateTrace, float]] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    attempts: list[tuple[StateTrace, float]] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class ReasoningLoop:
@@ -125,11 +125,11 @@ class ReasoningLoop:
         objective: Objective,
     ) -> ReasoningResult:
         state = initial_state.fork()
-        attempts: List[Tuple[StateTrace, float]] = []
-        best_trace: Optional[StateTrace] = None
+        attempts: list[tuple[StateTrace, float]] = []
+        best_trace: StateTrace | None = None
         best_score = -1.0
 
-        for iteration in range(1, self.max_iterations + 1):
+        for _iteration in range(1, self.max_iterations + 1):
             strategy = self.planner.plan(state, objective, attempts)
             executor = StrategyExecutor(strategy)
 

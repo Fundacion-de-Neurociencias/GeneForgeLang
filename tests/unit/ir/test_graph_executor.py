@@ -1,7 +1,7 @@
 import pytest
 
-from geneforgelang.ir.executor import GraphExecutor, ExecutionError
-from geneforgelang.ir.instruction import Substitute, Delete
+from geneforgelang.ir.executor import ExecutionError, GraphExecutor
+from geneforgelang.ir.instruction import Delete, Substitute
 from geneforgelang.ir.state import BiologicalState, Entity, EntityType
 from geneforgelang.ir.strategy import Objective, PlanGraph, PlanNode
 

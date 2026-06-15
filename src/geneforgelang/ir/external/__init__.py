@@ -5,13 +5,13 @@ This module provides connectors to external knowledge sources:
 - HuggingScience: Scientific reasoning models
 """
 
-from geneforgelang.ir.external.openmed_connector import OpenMedConnector
 from geneforgelang.ir.external.huggingscience_connector import HuggingScienceConnector
+from geneforgelang.ir.external.openmed_connector import OpenMedConnector
 from geneforgelang.ir.external.retrieval_service import RetrievalService, RetrievedEvidence
 
 __all__ = [
     "OpenMedConnector",
-    "HuggingScienceConnector", 
+    "HuggingScienceConnector",
     "RetrievalService",
     "RetrievedEvidence",
 ]

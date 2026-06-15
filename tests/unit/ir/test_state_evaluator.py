@@ -1,7 +1,7 @@
 import pytest
 
-from geneforgelang.ir.state_evaluator import StateEvaluator
 from geneforgelang.ir.state import BiologicalState, Entity, EntityType, Relation, RelationType
+from geneforgelang.ir.state_evaluator import StateEvaluator
 from geneforgelang.ir.strategy import Objective
 
 

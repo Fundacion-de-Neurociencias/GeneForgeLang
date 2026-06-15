@@ -68,7 +68,7 @@ class BiologicalState:
     relations: list[Relation] = field(default_factory=list)
     properties: dict[str, Any] = field(default_factory=dict)
 
-    def get_entity(self, entity_id: str) -> Optional[Entity]:
+    def get_entity(self, entity_id: str) -> Entity | None:
         return self.entities.get(entity_id)
 
     def add_entity(self, entity: Entity) -> None:

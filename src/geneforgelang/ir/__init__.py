@@ -9,8 +9,8 @@ from geneforgelang.ir.executor import (
 from geneforgelang.ir.external import (
     HuggingScienceConnector,
     OpenMedConnector,
-    RetrievedEvidence,
     RetrievalService,
+    RetrievedEvidence,
 )
 from geneforgelang.ir.fase4 import (
     AsyncRetrievalService,

@@ -11,10 +11,9 @@ Architecture:
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Optional
-
 import logging
+from dataclasses import dataclass, field
+from typing import Any
 
 from geneforgelang.ir.external.huggingscience_connector import (
     HuggingScienceConnector,
@@ -32,7 +31,7 @@ class RetrievedEvidence:
     """Evidence retrieved from external sources."""
 
     source: str  # "openmed", "pubmed", "huggingscience"
-    entity_id: Optional[str] = None
+    entity_id: str | None = None
     evidence_type: str = "unknown"  # "similarity", "literature", "reasoning"
     content: dict[str, Any] = field(default_factory=dict)
     confidence: float = 0.0
@@ -44,10 +43,10 @@ class RetrievalContext:
     """Complete retrieval context for a biological objective."""
 
     objective: Objective
-    target_entity: Optional[str] = None
+    target_entity: str | None = None
     similar_entities: list[SimilarEntity] = field(default_factory=list)
     literature_evidence: list[dict[str, Any]] = field(default_factory=list)
-    reasoning_result: Optional[ReasoningResult] = None
+    reasoning_result: ReasoningResult | None = None
     knowledge_summary: dict[str, Any] = field(default_factory=dict)
     combined_confidence: float = 0.0
 
@@ -63,8 +62,8 @@ class RetrievalService:
 
     def __init__(
         self,
-        openmed: Optional[OpenMedConnector] = None,
-        huggingscience: Optional[HuggingScienceConnector] = None,
+        openmed: OpenMedConnector | None = None,
+        huggingscience: HuggingScienceConnector | None = None,
         enable_openmed: bool = True,
         enable_huggingscience: bool = True,
     ):
@@ -81,7 +80,7 @@ class RetrievalService:
     def retrieve_for_objective(
         self,
         objective: Objective,
-        state: Optional[BiologicalState] = None,
+        state: BiologicalState | None = None,
         max_literature: int = 5,
     ) -> RetrievalContext:
         """Execute full retrieval pipeline for a biological objective.
@@ -132,7 +131,7 @@ class RetrievalService:
     def retrieve_for_state(
         self,
         state: BiologicalState,
-        query: Optional[str] = None,
+        query: str | None = None,
     ) -> list[RetrievedEvidence]:
         """Retrieve evidence relevant to a biological state.
 
@@ -195,7 +194,7 @@ class RetrievalService:
 
     def reason_about_edit(
         self, entity_id: str, edit_description: str
-    ) -> Optional[ReasoningResult]:
+    ) -> ReasoningResult | None:
         """Apply scientific reasoning to evaluate an edit."""
         if not self.enable_huggingscience or not self.huggingscience:
             return None
@@ -227,7 +226,7 @@ class RetrievalService:
     # Helper Methods
     # ------------------------------------------------------------------
 
-    def _infer_target_from_state(self, description: str, state: BiologicalState) -> Optional[str]:
+    def _infer_target_from_state(self, description: str, state: BiologicalState) -> str | None:
         """Infer target entity from objective description and state."""
         # Try to match entity IDs mentioned in description
         desc_upper = description.upper()
