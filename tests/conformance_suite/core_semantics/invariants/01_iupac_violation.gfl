@@ -1,0 +1,16 @@
+# CONFORMANCE TEST: 01_iupac_violation
+# CATEGORY: Invariants
+# EXPECTED RESULT: SEMANTIC_ERROR (INVALID_SEQUENCE)
+
+metadata:
+  experiment_id: "TEST_INVARIANT_IUPAC"
+  description: "Ensures GFL rejects non-IUPAC characters in genomic sequences."
+
+experiment:
+  tool: "CRISPR_cas9"
+  type: "gene_editing"
+  params:
+    target_gene: "TP53"
+    # The sequence contains 'X' and 'Z' which are invalid for DNA
+    sequence: "ATCGXYZ123"
+    strategy: "knockout"
