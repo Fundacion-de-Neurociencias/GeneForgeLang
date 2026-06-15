@@ -1,7 +1,8 @@
 import json
 import re
 import sys
-from typing import Dict, Any, List
+from typing import Any
+
 
 class GFLMinimalReferenceInterpreter:
     """
@@ -12,21 +13,21 @@ class GFLMinimalReferenceInterpreter:
         self.schema = self._load_json(schema_path)
         self.invariants = self._load_json(invariants_path)
 
-    def _load_json(self, path: str) -> Dict[str, Any]:
-        with open(path, 'r') as f:
+    def _load_json(self, path: str) -> dict[str, Any]:
+        with open(path) as f:
             return json.load(f)
 
-    def validate_semantics(self, gfl_data: Dict[str, Any]) -> List[str]:
+    def validate_semantics(self, gfl_data: dict[str, Any]) -> list[str]:
         errors = []
         # 1. Validate against Invariants Schema
         errors.extend(self._check_invariants(gfl_data))
-        
+
         # 2. Check for Ambiguity
         errors.extend(self._check_ambiguity(gfl_data))
-        
+
         return errors
 
-    def _check_invariants(self, data: Dict[str, Any]) -> List[str]:
+    def _check_invariants(self, data: dict[str, Any]) -> list[str]:
         errors = []
         # Example check: IUPAC Sequence Integrity
         if 'experiment' in data and 'params' in data['experiment']:
@@ -35,7 +36,7 @@ class GFLMinimalReferenceInterpreter:
                 errors.append(f"INVARIANT_VIOLATION: Invalid IUPAC sequence '{seq}'")
         return errors
 
-    def _check_ambiguity(self, data: Dict[str, Any]) -> List[str]:
+    def _check_ambiguity(self, data: dict[str, Any]) -> list[str]:
         errors = []
         # Example check: Locus specificity
         if 'experiment' in data and 'params' in data['experiment']:
@@ -48,15 +49,15 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python mri.py <script.json>")
         sys.exit(1)
-        
+
     mri = GFLMinimalReferenceInterpreter(
-        "schema/gfl.schema.json", 
+        "schema/gfl.schema.json",
         "schema/gfl_semantic_invariants.schema.json"
     )
-    
-    with open(sys.argv[1], 'r') as f:
+
+    with open(sys.argv[1]) as f:
         data = json.load(f)
-        
+
     errors = mri.validate_semantics(data)
     if not errors:
         print("✅ GFL MRI: Semantic Validation Successful.")

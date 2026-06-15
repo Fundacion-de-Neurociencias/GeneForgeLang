@@ -55,7 +55,7 @@ def fetch_summaries(pmids: list[str]) -> dict[str, dict[str, object]]:
     return {}
 
 
-def generate_gfl(pmid: str, summary: dict[str, object]) -> Optional[str]:
+def generate_gfl(pmid: str, summary: dict[str, object]) -> str | None:
     raw_title = summary.get("title", "")
     title = str(raw_title).replace('"', "'") if raw_title else ""
     if not title:
