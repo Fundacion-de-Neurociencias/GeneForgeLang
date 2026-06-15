@@ -1,0 +1,11 @@
+# GeneForgeLang AI Agent Rules
+
+## Strict Anti-Regression Directives
+1. **NO "gfl/" Directory**: Never recreate the `gfl/` directory. The main package code is located in `src/geneforgelang`.
+2. **NO "archived/" Directory**: Do not revive or recreate the `archived/` directory or its contents.
+3. **NO Duplicate Tools**: Do not use or create `resources/tools/`. The single source of truth for utility scripts is `tools/`.
+4. **NO Root Examples**: Do not place `.gfl` or `.py` files directly in the `examples/` root. Always use appropriate subdirectories (e.g., `basic/`, `cases/`, `features/`).
+5. **NO Artifacts in Commits**: Never commit test reports, `pytest_collection*.txt`, `collect_output.txt`, `test_failures.txt`, `representational_audit_report.json`, or any residual logs.
+6. **CI/CD Checks**: Ensure all changes pass `pytest` and `ruff check .` before proposing them.
+
+Failure to follow these rules will result in CI/CD pipeline failures and pull request rejection.

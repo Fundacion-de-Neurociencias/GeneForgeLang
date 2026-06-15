@@ -173,3 +173,11 @@ generar_*.py
 *_desde_*.py
 
 gfl-plugin-*
+
+# Residual CI/CD logs and reports
+collect_output.txt
+pytest_collection*.txt
+test_failures.txt
+test_sem_error*.txt
+test_reg_error.txt
+representational_audit_report.json

@@ -50,3 +50,10 @@ git push origin feature/nombre-tarea
 - Revisión humana obligatoria de todo código generado.
 - Prohibido subir credenciales o datos sensibles en prompts.
 - La IA asiste en la implementación, pero el desarrollador es responsable de la arquitectura.
+
+## 6. Reglas Estrictas (Prevención de Regresiones)
+- **CI/CD**: Ningún PR puede ser aprobado si no pasa los checks de CI/CD (linting y tests). Verifica localmente con `pytest` y `ruff` antes de subir.
+- **Estructura del Núcleo**: No recrear directorios obsoletos como `gfl/` o `archived/`. El código fuente principal reside exclusivamente en `src/`.
+- **Archivos de Utilidad**: Mantener una única fuente de verdad para scripts de utilidad (e.g., usar `tools/` y no duplicar en `resources/tools/`).
+- **Ejemplos**: Evitar archivos residuales o duplicados en la raíz de `examples/`. Clasificar siempre los ejemplos en sus subdirectorios correspondientes (`basic/`, `cases/`, `features/`, etc.).
+- **Limpieza del Workspace**: Asegurarse de no commitear archivos generados automáticamente, logs o reportes (ej. `collect_output.txt`, `pytest_collection.txt`, `test_failures.txt`, `representational_audit_report.json`). Agregar estos archivos al `.gitignore`.
