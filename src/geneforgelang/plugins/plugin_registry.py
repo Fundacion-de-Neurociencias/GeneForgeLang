@@ -227,11 +227,14 @@ class BaseGFLPlugin:
         }
 
 
-class GeneForgeSkill(BaseGFLPlugin):
+class GFLBioSkill(BaseGFLPlugin):
     """
-    ClawBio-inspired Base Class for all scientific "Bio-Skills".
+    Base class for all GFL scientific Bio-Skills.
+
     Enforces restricted JSON input/output, local data processing,
-    and constructs a Reproducibility Package.
+    and constructs a reproducibility package for every execution.
+    Skills are runtime-agnostic: they can be consumed by any conformant
+    GFL downstream runtime (GeneForge, or any third-party implementation).
     """
 
     @property
@@ -315,6 +318,12 @@ class GeneForgeSkill(BaseGFLPlugin):
             "local_execution": True,
             "status": "FAILED" if failed else "SUCCESS",
         }
+
+
+
+# Deprecated alias — kept for backward compatibility, will be removed in GFL v3.
+# New code should subclass GFLBioSkill directly.
+GeneForgeSkill = GFLBioSkill
 
 
 @dataclass
