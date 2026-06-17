@@ -1,0 +1,8 @@
+entity regulatory_gate
+
+perturbation sequential_gate:
+    activate
+    dwell(transient)
+    gate(signal_window, temporal_constraint=before_rebound)
+    dissociate(facilitated)
+    rebound(moderate)

@@ -1,0 +1,8 @@
+entity immune_signal
+
+perturbation pulse_control:
+    activate
+    pulse(cadence=short_interval)
+    dwell(oscillatory)
+    dissociate(switchable)
+    rebound(minimal)
