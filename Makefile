@@ -11,6 +11,7 @@ install:  ## Install package
 dev-install:  ## Install package in development mode with all dependencies
 	pip install -e .[all]
 	pre-commit install
+	$(MAKE) setup-hooks
 
 test:  ## Run tests
 	pytest --cov=src/geneforgelang --cov-report=term-missing --cov-report=html
@@ -73,6 +74,14 @@ setup-genesis-data:  ## Setup data environment for GFL Genesis project
 	@/bin/bash examples/gfl-genesis/scripts/fetch_data.sh
 	@/bin/bash examples/gfl-genesis/scripts/preprocess_data.sh
 	@echo "✅ Entorno de datos de Genesis configurado."
+
+setup-hooks:  ## Configurar hooks locales y protección de capa 1/2
+	@echo "-> Configurando git hooks para NeuroIA Protocol..."
+	mkdir -p .githooks
+	git config core.hooksPath .githooks
+	@if [ -f .githooks/pre-commit ]; then chmod +x .githooks/pre-commit; fi
+	@if [ -f .githooks/pre-push ]; then chmod +x .githooks/pre-push; fi
+	@echo "✅ Hooks configurados."
 
 # Development shortcuts
 dev: dev-install  ## Alias for dev-install

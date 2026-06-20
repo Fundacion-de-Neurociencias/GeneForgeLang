@@ -1,0 +1,16 @@
+#!/bin/bash
+# Pre-commit hook personalizado - NeuroIA Protocol
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
+    echo "❌ NEUROIA PROTOCOL — COMMIT EN MAIN BLOQUEADO."
+    exit 1
+fi
+
+# Run standard pre-commit hook if it exists
+if [ -f .git/hooks/pre-commit ]; then
+    .git/hooks/pre-commit "$@"
+elif command -v pre-commit >/dev/null 2>&1; then
+    pre-commit run --git-dir .git --work-tree .
+fi

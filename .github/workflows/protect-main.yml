@@ -1,0 +1,26 @@
+name: Protect Main Branch
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  enforce-merge-only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Verify Merge Commit (Layer 3)
+        run: |
+          PARENT_COUNT=$(git log -1 --format="%P" | wc -w)
+          if [ "$PARENT_COUNT" -lt 2 ]; then
+            echo "❌ NEUROIA PROTOCOL VIOLATION — PUSH DIRECTO A MAIN DETECTADO."
+            exit 1
+          else
+            echo "✅ Push aceptado. Se verificó que es un Merge PR."
+          fi
