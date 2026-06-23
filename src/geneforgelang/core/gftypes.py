@@ -65,6 +65,7 @@ class AnalysisStrategy(str, Enum):
     VARIANT = "variant"
     EXPRESSION = "expression"
     STRUCTURAL = "structural"
+    CONTRASTIVE_ALIGNMENT = "contrastive_alignment"
 
     def __str__(self) -> str:
         """Return the enum value as string."""

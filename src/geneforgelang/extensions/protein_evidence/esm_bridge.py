@@ -45,14 +45,4 @@ def export_adapter_contract() -> dict[str, Any]:
 
 # Deprecated alias — kept for backward compatibility, will be removed in GFL v3.
 # Use export_adapter_contract() instead.
-def export_to_geneforge_adapter() -> dict[str, Any]:  # noqa: D401
-    """Deprecated: use export_adapter_contract() instead."""
-    import warnings
-
-    warnings.warn(
-        "export_to_geneforge_adapter() is deprecated and will be removed in GFL v3. "
-        "Use export_adapter_contract() instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return export_adapter_contract()
+export_to_geneforge_adapter = export_adapter_contract
