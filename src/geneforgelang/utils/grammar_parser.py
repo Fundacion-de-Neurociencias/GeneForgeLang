@@ -83,6 +83,7 @@ class AdvancedGFLLexer:
     reserved = {
         # Core blocks
         "experiment": "EXPERIMENT",
+        "design": "DESIGN",
         "analyze": "ANALYZE",
         "analyse": "ANALYZE",  # British spelling
         "simulate": "SIMULATE",
@@ -318,6 +319,7 @@ class AdvancedGFLParser:
         | simulate_statement
         | branch_statement
         | metadata_statement
+        | design_statement
         | assignment_statement"""
         p[0] = p[1]
 
@@ -343,6 +345,18 @@ class AdvancedGFLParser:
 
     def p_analyze_body(self, p):
         """analyze_body : LBRACE property_list RBRACE
+        | property_list"""
+        if len(p) == 4:
+            p[0] = p[2]
+        else:
+            p[0] = p[1]
+
+    def p_design_statement(self, p):
+        """design_statement : DESIGN COLON design_body"""
+        p[0] = {"type": "design", "body": p[3], "location": self._get_location(p, 1)}
+
+    def p_design_body(self, p):
+        """design_body : LBRACE property_list RBRACE
         | property_list"""
         if len(p) == 4:
             p[0] = p[2]
@@ -386,14 +400,7 @@ class AdvancedGFLParser:
         else:
             p[0] = p[1]
 
-    # def p_assignment_statement(self, p):
-    #     """assignment_statement : IDENTIFIER ASSIGN expression"""
-    #     p[0] = {
-    #         "type": "assignment",
-    #         "identifier": p[1],
-    #         "value": p[3],
-    #         "location": self._get_location(p, 1),
-    #     }
+    
     def p_assignment_statement(self, p):
         """assignment_statement : IDENTIFIER COLON value"""
         p[0] = {"type": p[1], "value": p[3]}
