@@ -288,6 +288,63 @@ class TestAdvancedGFLParser:
         metadata = statements[0]
         assert metadata["type"] == "metadata"
 
+    def test_design_statement_unconditional(self):
+        """Test parsing a design block in unconditional mode."""
+        code = """
+        design: {
+         tool: "rfdiffusion",
+         mode: "unconditional",
+         length: 150,
+         num_designs: 10
+        }
+        """
+        result = self.parser.parse(code)
+
+        assert result.is_valid
+        statements = result.ast["statements"]
+        assert len(statements) == 1
+
+        design = statements[0]
+        assert design["type"] == "design"
+        assert "body" in design
+
+    def test_design_statement_scaffolding(self):
+        """Test parsing a design block in scaffolding mode."""
+        code = """
+        design: {
+            tool: "rfdiffusion",
+            mode: "scaffolding",
+            input_pdb: "target.pdb",
+            motifs: "10-40/A163-181/10-40",
+            num_designs: 20
+        }
+        """
+        result = self.parser.parse(code)
+
+        assert result.is_valid
+        design = result.ast["statements"][0]
+        assert design["type"] == "design"
+
+    def test_design_statement_binder(self):
+        """Test parsing a design block in binder mode."""
+        code = """
+        design: {
+            tool: "rfdiffusion",
+            mode: "binder",
+            input_pdb: "alpha_synuclein.pdb",
+            constraints: {
+                hotspots: ["A61", "A70", "A88"]
+            },
+            length: 80,
+            num_designs: 50
+        }
+        """
+        result = self.parser.parse(code)
+
+        assert result.is_valid
+        design = result.ast["statements"][0]
+        assert design["type"] == "design"
+
     @pytest.mark.xfail(reason="Assignment statements not yet supported by parser grammar")
     def test_assignment_statement(self):
         """Test parsing assignment statements."""
@@ -353,6 +410,11 @@ class TestAdvancedGFLParser:
             tool: "CRISPR_cas9"
         }
 
+        design: {
+            tool: "rfdiffusion",
+            mode: "binder"
+        }
+
         analyze: {
             strategy: "differential"
         }
@@ -367,10 +429,10 @@ class TestAdvancedGFLParser:
 
         assert result.is_valid
         statements = result.ast["statements"]
-        assert len(statements) == 4
+        assert len(statements) == 5
 
         types = [stmt["type"] for stmt in statements]
-        expected_types = ["experiment", "analyze", "simulate", "metadata"]
+        expected_types = ["experiment", "design", "analyze", "simulate", "metadata"]
         assert types == expected_types
 
     def test_syntax_error_handling(self):
@@ -380,6 +442,7 @@ class TestAdvancedGFLParser:
             "analyze: invalid syntax here",  # Invalid syntax
             "simulate: {{}",  # Invalid nested braces
             "branch: if condition",  # Incomplete branch
+            "design: { mode \"binder\" }",  # falta el ":" después de mode
         ]
 
         for code in invalid_codes:
