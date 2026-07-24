@@ -1104,6 +1104,8 @@ class EnhancedSemanticValidator:
         # Validate design_type specific requirements
         if design_type == "inverse_design":
             self._validate_inverse_design(design)
+        elif design_type == "protein_design":
+            self._validate_protein_design(design)
 
     def _validate_inverse_design(self, design: dict[str, Any]) -> None:
         """Validate inverse_design configuration."""
@@ -1149,6 +1151,100 @@ class EnhancedSemanticValidator:
                         f"foundation_model must be a string, got {type(value).__name__}",
                         ErrorCodes.TYPE_INVALID_TYPE,
                     ).add_fix("Use a string for foundation_model")
+
+
+    def _validate_protein_design(self, design: dict[str, Any]) -> None:
+        """Validate protein_design configuration (de novo protein design via RFdiffusion)."""
+        if "protein_design" not in design:
+            error = self.result.add_error(
+                "Design block with design_type 'protein_design' requires 'protein_design' configuration",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            )
+            error.add_fix("Add 'protein_design: {...}' with mode, input_pdb, motifs as needed")
+            return
+
+        protein_config = design["protein_design"]
+        if not isinstance(protein_config, dict):
+            self.result.add_error(
+                "protein_design configuration must be a dictionary",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Format protein_design as a dictionary with required keys")
+            return
+
+        # mode is always required, and it drives the rest of the rules
+        if "mode" not in protein_config:
+            error = self.result.add_error(
+                "Missing required key 'mode' in protein_design configuration",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            )
+            error.add_fix("Add 'mode: unconditional | scaffolding | binder' to protein_design")
+            return
+
+        mode = protein_config["mode"]
+        valid_modes = {"unconditional", "scaffolding", "binder"}
+        if mode not in valid_modes:
+            error = self.result.add_error(
+                f"Unknown protein_design mode '{mode}'",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            )
+            error.add_fix(f"Use one of: {', '.join(sorted(valid_modes))}")
+            error.add_context("valid_modes", list(valid_modes))
+            return
+
+        # Conditional requirements per mode
+        if mode == "unconditional":
+            if "length" not in protein_config:
+                error = self.result.add_error(
+                    "protein_design mode 'unconditional' requires 'length'",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                )
+                error.add_fix("Add 'length: <int>' to protein_design")
+            for forbidden in ("input_pdb", "motifs"):
+                if forbidden in protein_config:
+                    error = self.result.add_error(
+                        f"protein_design mode 'unconditional' does not use '{forbidden}'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ErrorSeverity.WARNING,
+                    )
+                    error.add_fix(f"Remove '{forbidden}' or change mode to 'scaffolding'/'binder'")
+
+        elif mode == "scaffolding":
+            for required in ("input_pdb", "motifs"):
+                if required not in protein_config:
+                    error = self.result.add_error(
+                        f"protein_design mode 'scaffolding' requires '{required}'",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    )
+                    error.add_fix(f"Add '{required}: <value>' to protein_design")
+
+        elif mode == "binder":
+            if "input_pdb" not in protein_config:
+                error = self.result.add_error(
+                    "protein_design mode 'binder' requires 'input_pdb'",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                )
+                error.add_fix("Add 'input_pdb: <path>' to protein_design")
+            if "constraints" not in protein_config or "hotspots" not in protein_config.get("constraints", {}):
+                error = self.result.add_error(
+                    "protein_design mode 'binder' should specify constraints.hotspots",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                )
+                error.add_fix("Add 'constraints: { hotspots: [...] }' to protein_design")
+
+        # Type checks for fields that are present, regardless of mode
+        if "input_pdb" in protein_config and not isinstance(protein_config["input_pdb"], str):
+            self.result.add_error(
+                f"input_pdb must be a string (path), got {type(protein_config['input_pdb']).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Use a string path for input_pdb")
+
+        if "motifs" in protein_config and not isinstance(protein_config["motifs"], str):
+            self.result.add_error(
+                f"motifs must be a string, got {type(protein_config['motifs']).__name__}",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Use a contig-syntax string for motifs, e.g. '10-40/A163-181/10-40'")
+
 
     def _validate_design_entity(self, entity: Any) -> None:
         """Validate the entity field in design block."""
