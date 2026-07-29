@@ -7,6 +7,11 @@ GeneForgeLang (GFL) is the **sole authority** for defining the symbolic represen
 *   **GeneForge = The Executive**: Executes the rules, performs inference, and optimizes the state in practice.
 *   **CAL = The Judiciary**: Arbitrates between interpretations and empirical evidence.
 
+### 1.1 The Bio-Thermodynamic Axiom
+> **"El metabolismo es el impuesto termodinámico global que paga el organismo por su orden local."**
+
+GeneForgeLang establishes that no biological structure, information processing, or causal transition exists in isolation from thermodynamic costs. Every local reduction of entropy (structural synthesis, cellular order, genetic fidelity) requires global metabolic dissipation. GFL formalizes metabolic cost and thermodynamic constraints as first-class invariants across all biological representations.
+
 ## 2. Delineation of Responsibilities
 
 ### 🧾 GeneForgeLang (GFL Repository)
