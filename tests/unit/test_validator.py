@@ -445,3 +445,64 @@ class TestValidationPerformance:
 
         _ = validate(ast)  # Explicitly ignore unused variable
         # Should handle deep nesting without stack overflow
+
+class TestDesignValidation:
+    """Test design block validation for protein_design (RFdiffusion)."""
+
+    def test_protein_design_binder_valid(self):
+        ast = {
+            "design": {
+                "design_type": "protein_design",
+                "entity": "ProteinSequence",
+                "model": "rfdiffusion",
+                "objective": {"maximize": "binding_affinity"},
+                "count": 50,
+                "output": "designed_binders",
+                "protein_design": {
+                    "mode": "binder",
+                    "input_pdb": "alpha_synuclein.pdb",
+                    "constraints": {"hotspots": ["A68", "A70"]},
+                },
+            }
+        }
+        errors = validate(ast)
+        print("ERRORES:", errors)
+        assert not errors
+
+    def test_protein_design_binder_missing_input_pdb(self):
+        ast = {
+            "design": {
+                "design_type": "protein_design",
+                "entity": "ProteinSequence",
+                "model": "rfdiffusion",
+                "objective": {"maximize": "binding_affinity"},
+                "count": 50,
+                "output": "designed_binders",
+                "protein_design": {
+                    "mode": "binder",
+                },
+            }
+        }
+        errors = validate(ast)
+        print("ERRORES:", errors)
+        assert len(errors) > 0
+        assert any("input_pdb" in error.lower() for error in errors)
+
+    def test_protein_design_unconditional_valid(self):
+        ast = {
+            "design": {
+                "design_type": "protein_design",
+                "entity": "ProteinSequence",
+                "model": "rfdiffusion",
+                "objective": {"maximize": "diversity"},
+                "count": 10,
+                "output": "designed_candidates",
+                "protein_design": {
+                    "mode": "unconditional",
+                    "length": 150,
+                },
+            }
+        }
+        errors = validate(ast)
+        print("ERRORES:", errors)
+        assert not errors
