@@ -14,6 +14,7 @@ import functools
 import hashlib
 import logging
 import pickle
+import itertools
 import time
 import weakref
 from abc import ABC, abstractmethod
@@ -64,6 +65,7 @@ class CacheEntry(Generic[V]):
     created_at: float
     last_accessed: float
     access_count: int = 1
+    access_seq: int = 0
     size: int = 0
 
     def is_expired(self, ttl: float | None) -> bool:
@@ -101,8 +103,7 @@ class LRUEvictionPolicy(CacheEvictionPolicy):
         """Select least recently used entry."""
         if not entries:
             return None
-        return min(entries.keys(), key=lambda k: entries[k].last_accessed)
-
+        return min(entries.keys(), key=lambda k: entries[k].access_seq)
 
 class TTLEvictionPolicy(CacheEvictionPolicy):
     """Time-to-Live eviction policy."""
@@ -137,6 +138,7 @@ class IntelligentCache(Generic[K, V]):
         self.ttl = ttl
         self.enable_stats = enable_stats
         self._entries: dict[K, CacheEntry[V]] = {}
+        self._access_counter = itertools.count()
         self._lock = RLock() if thread_safe else None
         self._stats = CacheStats() if enable_stats else None
 
@@ -178,6 +180,8 @@ class IntelligentCache(Generic[K, V]):
 
             # Update access metadata
             entry.touch()
+            entry.access_seq = next(self._access_counter)
+
 
             if self._stats:
                 self._stats.hits += 1
@@ -200,6 +204,7 @@ class IntelligentCache(Generic[K, V]):
                 last_accessed=time.time(),
                 size=size,
             )
+            entry.access_seq = next(self._access_counter)
 
             # Check if we need to evict
             if len(self._entries) >= self.max_size and key not in self._entries:
