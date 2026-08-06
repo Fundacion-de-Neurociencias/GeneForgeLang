@@ -152,7 +152,10 @@ class OpenMedConnector:
         norm_b = math.sqrt(sum(x * x for x in b))
         if norm_a == 0 or norm_b == 0:
             return 0.0
-        return dot / (norm_a * norm_b)
+        similarity = dot / (norm_a * norm_b)
+        # Clamp to valid range to guard against floating-point rounding
+        # errors that can push the result marginally outside [-1, 1].
+        return max(-1.0, min(1.0, similarity))
 
     # ------------------------------------------------------------------
     # Named Entity Recognition (NER)
