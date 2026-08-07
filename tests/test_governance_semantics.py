@@ -1,22 +1,25 @@
 """
-test_governance_semantics.py — Tests for Genomic Data Governance & Sovereignty Semantics
-======================================================================================
+test_governance_semantics.py — Decoupled Governance Policy & PolicyEnvelope Tests
+===================================================================================
 Verifies:
-  1. GovernanceProfile initialization, fields, and privacy risk validation.
-  2. EvidenceContract integration with GovernanceProfile.
-  3. Incoherence validation (biosecurity restriction vs public scope).
-  4. Integration with plugin outputs (ClawBio and Causal Evidence).
+  1. GovernancePolicy initialization, fields, and privacy risk validation.
+  2. Orthogonal PolicyEnvelope wrapping EvidenceContract without epistemological contamination.
+  3. Incoherence validation (biosecurity restriction vs public provenance scope).
+  4. Plugin candidate governance metadata integration.
 """
 
 from datetime import datetime
 import pytest
 
-from geneforgelang.semantic.evidence.contract import (
-    EvidenceContract,
-    GovernanceProfile,
+from geneforgelang.governance.policy import (
+    GovernancePolicy,
+    PolicyEnvelope,
     ProvenanceScope,
     ConsentScope,
     PopulationScope,
+)
+from geneforgelang.semantic.evidence.contract import (
+    EvidenceContract,
     ScaleAnchor,
     ObservabilityProfile,
     CompressibilityProfile,
@@ -29,9 +32,9 @@ from gfl_plugin_causal_evidence.causal_triangulation import CausalEvidencePlugin
 from gfl_plugin_clawbio._clawbio_runner import ClawBioRunResult
 
 
-def test_governance_profile_defaults():
-    """Verify default GovernanceProfile values."""
-    gov = GovernanceProfile()
+def test_governance_policy_defaults():
+    """Verify default GovernancePolicy values."""
+    gov = GovernancePolicy()
     assert gov.provenance_scope == ProvenanceScope.PUBLIC
     assert gov.consent_scope == ConsentScope.RESEARCH_ONLY
     assert gov.population_scope == PopulationScope.POPULATION
@@ -40,9 +43,9 @@ def test_governance_profile_defaults():
     assert gov.privacy_risk_score == 0.0
 
 
-def test_governance_profile_custom_values():
-    """Verify custom GovernanceProfile values."""
-    gov = GovernanceProfile(
+def test_governance_policy_custom_values():
+    """Verify custom GovernancePolicy values."""
+    gov = GovernancePolicy(
         provenance_scope=ProvenanceScope.CLINICAL,
         consent_scope=ConsentScope.CLINICAL_CARE,
         population_scope=PopulationScope.INDIVIDUAL,
@@ -59,27 +62,27 @@ def test_governance_profile_custom_values():
 def test_governance_privacy_risk_validation():
     """Privacy risk score out of range [0.0, 1.0] must raise ValueError."""
     with pytest.raises(ValueError, match="privacy_risk_score"):
-        GovernanceProfile(privacy_risk_score=1.5)
+        GovernancePolicy(privacy_risk_score=1.5)
 
 
-def test_evidence_contract_with_governance():
-    """EvidenceContract cleanly integrates GovernanceProfile."""
+def test_incoherent_policy_validation():
+    """Biosecurity restricted data labeled PUBLIC provenance scope must raise ValueError."""
+    with pytest.raises(ValueError, match="Biosecurity restricted data cannot have PUBLIC provenance scope"):
+        GovernancePolicy(
+            provenance_scope=ProvenanceScope.PUBLIC,
+            biosecurity_restricted=True,
+        )
+
+
+def test_policy_envelope_wrapping_evidence_contract():
+    """PolicyEnvelope wraps EvidenceContract orthogonally without mutating evidence semantics."""
     obs = ObservabilityProfile(1.0, 1.0, 1.0, 1.0, "base_pair")
     comp = CompressibilityProfile(0.5, 0.5, True)
     temp = TemporalValidity(datetime.now(), None, 0.9, "exponential")
     prov = Provenance("ClinVar", "RCV000123", datetime.now(), ["germline"])
     inval = InvalidationDependency([], [])
 
-    gov = GovernanceProfile(
-        provenance_scope=ProvenanceScope.RESTRICTED,
-        consent_scope=ConsentScope.RESEARCH_ONLY,
-        population_scope=PopulationScope.COHORT,
-        jurisdiction="US",
-        biosecurity_restricted=True,
-        privacy_risk_score=0.30,
-    )
-
-    contract = EvidenceContract(
+    evidence_contract = EvidenceContract(
         contract_id="EC-GOV-001",
         claim="BRCA1_pathogenic_variant",
         scale_anchor=ScaleAnchor.SEQUENCE,
@@ -90,41 +93,22 @@ def test_evidence_contract_with_governance():
         uncertainty=0.05,
         provenance=prov,
         invalidation_dependencies=inval,
-        governance_profile=gov,
     )
 
-    assert contract.governance_profile is not None
-    assert contract.governance_profile.biosecurity_restricted is True
-    assert contract.governance_profile.provenance_scope == ProvenanceScope.RESTRICTED
-
-
-def test_incoherent_governance_validation():
-    """Biosecurity restricted data labeled PUBLIC provenance must raise ValueError."""
-    obs = ObservabilityProfile(1.0, 1.0, 1.0, 1.0, "base_pair")
-    comp = CompressibilityProfile(0.5, 0.5, True)
-    temp = TemporalValidity(datetime.now(), None, 0.9, "exponential")
-    prov = Provenance("Biobank", "BB-001", datetime.now(), [])
-    inval = InvalidationDependency([], [])
-
-    incoherent_gov = GovernanceProfile(
-        provenance_scope=ProvenanceScope.PUBLIC,
-        biosecurity_restricted=True,  # Incoherent combination
+    policy = GovernancePolicy(
+        provenance_scope=ProvenanceScope.RESTRICTED,
+        consent_scope=ConsentScope.RESEARCH_ONLY,
+        population_scope=PopulationScope.COHORT,
+        jurisdiction="EU",
+        biosecurity_restricted=False,
+        privacy_risk_score=0.30,
     )
 
-    with pytest.raises(ValueError, match="Biosecurity restricted data cannot have PUBLIC provenance scope"):
-        EvidenceContract(
-            contract_id="EC-GOV-ERR",
-            claim="Dual_use_pathogen_sequence",
-            scale_anchor=ScaleAnchor.SEQUENCE,
-            observability=obs,
-            compressibility=comp,
-            temporal_validity=temp,
-            contradiction_state=ContradictionState.SUPPORTED,
-            uncertainty=0.01,
-            provenance=prov,
-            invalidation_dependencies=inval,
-            governance_profile=incoherent_gov,
-        )
+    envelope = PolicyEnvelope(artifact=evidence_contract, policy=policy)
+
+    assert envelope.artifact.contract_id == "EC-GOV-001"
+    assert envelope.policy.jurisdiction == "EU"
+    assert envelope.policy.provenance_scope == ProvenanceScope.RESTRICTED
 
 
 def test_plugin_governance_integration():

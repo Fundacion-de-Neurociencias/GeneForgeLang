@@ -34,48 +34,6 @@ class ScaleAnchor(Enum):
     POPULATION = "POPULATION"
 
 
-class ProvenanceScope(Enum):
-    PUBLIC = "PUBLIC"
-    CONTROLLED = "CONTROLLED"
-    CLINICAL = "CLINICAL"
-    COMMERCIAL = "COMMERCIAL"
-    RESTRICTED = "RESTRICTED"
-
-
-class ConsentScope(Enum):
-    RESEARCH_ONLY = "RESEARCH_ONLY"
-    CLINICAL_CARE = "CLINICAL_CARE"
-    COMMERCIAL_USE = "COMMERCIAL_USE"
-    POPULATION_GENOMICS = "POPULATION_GENOMICS"
-    UNKNOWN = "UNKNOWN"
-
-
-class PopulationScope(Enum):
-    INDIVIDUAL = "INDIVIDUAL"
-    COHORT = "COHORT"
-    POPULATION = "POPULATION"
-    ANCESTRY_SPECIFIC = "ANCESTRY_SPECIFIC"
-
-
-@dataclass(frozen=True)
-class GovernanceProfile:
-    """Genomic Governance & Data Sovereignty Profile (Corpas et al. 2026).
-    
-    Encapsulates data provenance, consent scopes, population sensitivity,
-    international transfer jurisdiction, biosecurity restrictions, and privacy risk scores.
-    """
-    provenance_scope: ProvenanceScope = ProvenanceScope.PUBLIC
-    consent_scope: ConsentScope = ConsentScope.RESEARCH_ONLY
-    population_scope: PopulationScope = PopulationScope.POPULATION
-    jurisdiction: Optional[str] = "GLOBAL"
-    biosecurity_restricted: bool = False
-    privacy_risk_score: float = 0.0
-
-    def __post_init__(self):
-        if not (0.0 <= self.privacy_risk_score <= 1.0):
-            raise ValueError("GovernanceProfile.privacy_risk_score must be in range [0.0, 1.0]")
-
-
 class ContractStateTransitionMatrix:
     """
     Formal DFA for semantic state transitions of an EvidenceContract.
@@ -166,15 +124,10 @@ class EvidenceContract:
     uncertainty: float
     provenance: Provenance
     invalidation_dependencies: InvalidationDependency
-    governance_profile: Optional[GovernanceProfile] = field(default_factory=GovernanceProfile)
 
     def __post_init__(self):
         if not (0.0 <= self.uncertainty <= 1.0):
             raise ValueError("EvidenceContract.uncertainty must be in range [0.0, 1.0]")
-
-        if self.governance_profile:
-            if self.governance_profile.biosecurity_restricted and self.governance_profile.provenance_scope == ProvenanceScope.PUBLIC:
-                raise ValueError("Incoherent governance: Biosecurity restricted data cannot have PUBLIC provenance scope.")
 
         # Temporal logic validation
         if self.contradiction_state == ContradictionState.SUPPORTED and self.temporal_validity.valid_until:
