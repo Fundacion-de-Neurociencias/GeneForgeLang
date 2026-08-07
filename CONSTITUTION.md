@@ -12,6 +12,15 @@ GeneForgeLang (GFL) is the **sole authority** for defining the symbolic represen
 
 GeneForgeLang establishes that no biological structure, information processing, or causal transition exists in isolation from thermodynamic costs. Every local reduction of entropy (structural synthesis, cellular order, genetic fidelity) requires global metabolic dissipation. GFL formalizes metabolic cost and thermodynamic constraints as first-class invariants across all biological representations.
 
+### 1.2 The Genomic Data Governance & Sovereignty Mandate
+> **"A Genome Language Model is not merely an AI inference engine; it is a container of individual, population, and biosecurity information."**
+
+GeneForgeLang is a **Governance-Aware Biological Language**. Symbolic biological expressions, variant analyses, and multi-omic pipelines do not execute in a vacuum. GFL treats genomic data governance as a first-class dimension of semantic validity alongside causal logic:
+1. **Provenance Scope**: Public, Controlled, Clinical, Commercial, or Restricted source system lineage.
+2. **Consent Scope**: Explicit boundaries governing Research Only, Clinical Care, Commercial Use, or Population Genomics.
+3. **Population Scope & Sensitivity**: Ancestry-stratified awareness, cohort boundaries, and equity checks.
+4. **Data Sovereignty & Biosecurity**: Jurisdiction constraints (e.g. EU, US, Local-Only) and biosecurity risk scoring.
+
 ## 2. Delineation of Responsibilities
 
 ### 🧾 GeneForgeLang (GFL Repository)

@@ -22,7 +22,7 @@ import os
 import subprocess
 import sys
 import tempfile
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -40,6 +40,16 @@ class ClawBioRunResult:
     stderr: str | None = None
     return_code: int = 0
     validation_tier: str = "BENCHMARKED"  # Tiered Validation Framework (Corpas et al. 2026)
+    governance_profile: dict[str, Any] = field(
+        default_factory=lambda: {
+            "provenance_scope": "CLINICAL",
+            "consent_scope": "RESEARCH_ONLY",
+            "population_scope": "INDIVIDUAL",
+            "jurisdiction": "LOCAL",
+            "biosecurity_restricted": False,
+            "privacy_risk_score": 0.15,
+        }
+    )
 
 
 def validate_input_file_perturbation(input_file: str | Path | None) -> tuple[bool, str | None]:

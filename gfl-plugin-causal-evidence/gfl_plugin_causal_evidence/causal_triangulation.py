@@ -13,7 +13,7 @@ ADR-0003 compliance:
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from geneforgelang.plugins.interfaces import (
@@ -45,6 +45,16 @@ class CausalTriangulationResult:
     validated_populations: list[str]
     invalidation_reason: str | None = None
     validation_tier: str = "BENCHMARKED"  # Tiered Validation Framework (Corpas et al. 2026)
+    governance_profile: dict[str, Any] = field(
+        default_factory=lambda: {
+            "provenance_scope": "PUBLIC",
+            "consent_scope": "RESEARCH_ONLY",
+            "population_scope": "ANCESTRY_SPECIFIC",
+            "jurisdiction": "GLOBAL",
+            "biosecurity_restricted": False,
+            "privacy_risk_score": 0.05,
+        }
+    )
 
 
 class CausalEvidencePlugin(GeneratorPlugin):
@@ -154,6 +164,7 @@ class CausalEvidencePlugin(GeneratorPlugin):
                 "equity_population_match": result.equity_population_match,
                 "invalidation_reason": result.invalidation_reason,
                 "validation_tier": result.validation_tier,
+                "governance_profile": result.governance_profile,
                 "plugin_name": self.name,
             },
         )
