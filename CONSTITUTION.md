@@ -21,6 +21,14 @@ GeneForgeLang is a **Governance-Aware Biological Language**. Symbolic biological
 3. **Population Scope & Sensitivity**: Ancestry-stratified awareness, cohort boundaries, and equity checks.
 4. **Data Sovereignty & Biosecurity**: Jurisdiction constraints (e.g. EU, US, Local-Only) and biosecurity risk scoring.
 
+### 1.3 The Epistemic Refinement Hypothesis (Representations as Priors)
+> **"GeneForge representations must be treated as epistemic priors, not as final truths. New evidence sources update, refine, or partition claims rather than overwrite them."**
+
+In GeneForgeLang, no biological candidate, causal claim, or structural representation is immutable or dogmatic. Every GFL state represents a belief prior $P(\text{Claim} \mid \mathcal{E}_{\text{prior}})$. When new empirical evidence emerges (from assays, clinical cohorts, or structural predictions):
+1. **Additive Evidence**: Evidence accumulates non-destructively in the provenance graph.
+2. **Context Partitioning**: Contradictory or context-dependent evidence splits claims into conditional equivalence classes (e.g., population-specific or tissue-specific sub-claims) rather than performing destructive overwrites.
+3. **Epistemic Updating**: Belief states transition deterministically through the Evidence DFA (`SUPPORTED` $\to$ `CONTESTED` $\to$ `CONDITIONALLY_VALID` $\to$ `SUPERSEDED`).
+
 ## 2. Delineation of Responsibilities
 
 ### 🧾 GeneForgeLang (GFL Repository)

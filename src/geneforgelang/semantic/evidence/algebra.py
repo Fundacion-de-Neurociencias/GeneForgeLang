@@ -121,3 +121,71 @@ class ContractAlgebra:
                 invalidation_hooks=older.invalidation_dependencies.invalidation_hooks,
             ),
         )
+
+    @staticmethod
+    def refine(prior: EvidenceContract, new_evidence: EvidenceContract) -> EvidenceContract:
+        """
+        Operator ⟳ (Refinement): Epistemic Bayesian update.
+        Treats `prior` as an epistemic prior rather than final truth.
+        Updates parameter bounds, observability, and uncertainty non-destructively.
+        """
+        if prior.scale_anchor != new_evidence.scale_anchor:
+            raise ValueError("Algebraic failure: Cannot refine prior across different scale anchors directly.")
+
+        # Bayesian uncertainty update: u_post = (u_prior * u_new) / (u_prior + u_new - u_prior * u_new)
+        num = prior.uncertainty * new_evidence.uncertainty
+        den = prior.uncertainty + new_evidence.uncertainty - num
+        posterior_uncertainty = num / den if den > 0 else 0.0
+
+        refined_obs = ObservabilityProfile(
+            reachability=max(prior.observability.reachability, new_evidence.observability.reachability),
+            visibility=max(prior.observability.visibility, new_evidence.observability.visibility),
+            accessibility=max(prior.observability.accessibility, new_evidence.observability.accessibility),
+            identifiability=max(prior.observability.identifiability, new_evidence.observability.identifiability),
+            resolution=new_evidence.observability.resolution,
+        )
+
+        return EvidenceContract(
+            contract_id=f"refinement_{prior.contract_id}_{new_evidence.contract_id}",
+            claim=f"REFINED_PRIOR({prior.claim} | {new_evidence.claim})",
+            scale_anchor=prior.scale_anchor,
+            observability=refined_obs,
+            compressibility=prior.compressibility,
+            temporal_validity=new_evidence.temporal_validity,
+            contradiction_state=ContradictionState.SUPPORTED,
+            uncertainty=posterior_uncertainty,
+            provenance=prior.provenance,
+            invalidation_dependencies=InvalidationDependency(
+                upstream_contract_ids=[prior.contract_id, new_evidence.contract_id],
+                invalidation_hooks=[],
+            ),
+        )
+
+    @staticmethod
+    def partition(prior: EvidenceContract, contextual_evidence: dict[str, EvidenceContract]) -> dict[str, EvidenceContract]:
+        """
+        Operator ⫴ (Partition): Epistemic Context Partitioning.
+        Partitions a general prior claim into conditional context-specific claims
+        (e.g., ancestry, tissue, or perturbation contexts) rather than overwriting it.
+        """
+        partitioned_contracts = {}
+        for context_key, ev in contextual_evidence.items():
+            partitioned_id = f"partition_{prior.contract_id}_{context_key}"
+            partitioned_claim = f"PARTITION({prior.claim} | Context={context_key})"
+            partitioned_contracts[context_key] = EvidenceContract(
+                contract_id=partitioned_id,
+                claim=partitioned_claim,
+                scale_anchor=prior.scale_anchor,
+                observability=ev.observability,
+                compressibility=prior.compressibility,
+                temporal_validity=ev.temporal_validity,
+                contradiction_state=ContradictionState.CONDITIONALLY_VALID,
+                uncertainty=ev.uncertainty,
+                provenance=prior.provenance,
+                invalidation_dependencies=InvalidationDependency(
+                    upstream_contract_ids=[prior.contract_id, ev.contract_id],
+                    invalidation_hooks=[],
+                ),
+            )
+        return partitioned_contracts
+
