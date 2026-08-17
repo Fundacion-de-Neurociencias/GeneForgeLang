@@ -17,12 +17,17 @@ class GFLExecutionEngine:
 
     def execute_design_block(
         self, design_block: dict[str, Any], registry: PluginRegistry
-    ) -> dict[str, Any]:
+        ) -> dict[str, Any]:
         """Execute a design block."""
-        print(design_block)
         model_name = design_block.get("model")
         if not model_name:
             raise ExecutionError("Design block missing 'model' parameter")
+
+        # Extract design_type-specific extra parameters (kwargs for generate())
+        design_type = design_block.get("design_type", "standard")
+        extra_kwargs: dict[str, Any] = {}
+        if design_type == "protein_design":
+            extra_kwargs = dict(design_block.get("protein_design", {}))
 
         try:
             generator = registry.get_generator(model_name)
@@ -31,6 +36,7 @@ class GFLExecutionEngine:
                 objective=design_block.get("objective", {}),
                 constraints=design_block.get("constraints", []),
                 count=design_block.get("count", 10),
+                **extra_kwargs,
             )
 
             # Store in workflow state if output specified
