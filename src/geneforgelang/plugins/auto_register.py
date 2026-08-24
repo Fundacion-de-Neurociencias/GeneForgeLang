@@ -24,11 +24,17 @@ def auto_register_example_plugins() -> None:
     except ImportError as e:
         logger.debug(f"Example plugins not available for auto-registration: {e}")
 
-    # Always try to register the genesis project plugins directly
+        # Always try to register the genesis project plugins directly
     try:
         _register_genesis_plugins()
     except Exception as ex:
         logger.warning(f"Failed to auto-register genesis plugins: {ex}")
+
+    # Always try to register the RFdiffusion plugin
+    try:
+        _register_rfdiffusion_plugin()
+    except Exception as ex:
+        logger.warning(f"Failed to auto-register RFdiffusion plugin: {ex}")
 
 
 def _register_genesis_plugins() -> None:
@@ -113,6 +119,24 @@ def _register_genesis_plugins() -> None:
         logger.error(f"Could not register CRISPR evaluator plugin: {e}")
         logger.error(traceback.format_exc())
 
+def _register_rfdiffusion_plugin() -> None:
+    """Register the RFdiffusion generator plugin (de novo protein design)."""
+    try:
+        from geneforgelang.plugins.interfaces import register_generator_plugin
+        from geneforgelang.plugins.plugin_registry import PluginPriority
+        from geneforgelang.plugins.rfdiffusion import RFdiffusionPlugin
+
+        register_generator_plugin(
+            RFdiffusionPlugin,
+            "rfdiffusion",
+            version="1.0.0",
+            priority=PluginPriority.HIGH,
+        )
+        logger.info("Registered RFdiffusion plugin")
+    except Exception as e:
+        logger.error(f"Could not register RFdiffusion plugin: {e}")
+        logger.error(traceback.format_exc())
+
 
 def get_available_plugins_info() -> dict[str, Any]:
     """Get information about available plugins."""
@@ -138,3 +162,4 @@ def get_available_plugins_info() -> dict[str, Any]:
 
 # Auto-register plugins when this module is imported
 auto_register_example_plugins()
+_register_rfdiffusion_plugin()
