@@ -35,8 +35,8 @@ try:
     )
 
     HAS_ML_DEPS = True
-except ImportError:
-    # Graceful fallback for environments without ML dependencies
+except (ImportError, OSError, Exception):
+    # Graceful fallback for environments without ML dependencies or broken shared libs
     HAS_ML_DEPS = False
     torch = None
     F = None

@@ -1,0 +1,37 @@
+﻿# GeneForgeLang Example: AlphaGenome Atlas Variant Impact Prioritization
+# Evaluates non-coding regulatory variant impact using the DeepMind AlphaGenome Atlas (AVI) score.
+
+metadata:
+  experiment_id: ALPHAGENOME_AVI_001
+  researcher: Dr. Manuel Menendez Gonzalez
+  project: neuro_epileptic_encephalopathy_prioritization
+  description: Evaluation of non-coding regulatory variant impact on DNM1 locus
+  date: 2026-09-08
+
+design:
+  entity: DNASequence
+  model: alphagenome_atlas
+  objective:
+    maximize: avi_phred
+    target: 35.0
+  count: 1
+  output: prioritized_candidates
+  constraints:
+    - has_motif(E-box)
+    - length(25)
+
+experiment:
+  tool: alphagenome_atlas
+  type: analysis
+  strategy: variant
+  params:
+    target_gene: DNM1
+    variant: chr9:128225994:G>A
+    min_phred: 20.0
+    modality: ChIP-TF
+
+analyze:
+  strategy: variant
+  thresholds:
+    min_avi_phred: 20.0
+    max_top_percentile: 1.0

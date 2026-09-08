@@ -400,11 +400,134 @@ class GFLAST:
         return ast
 
 
+# AlphaGenome Atlas and Variant Impact Types
+class AviModality(str, Enum):
+    """The 18 biological feature attribution modalities defined in AlphaGenome Atlas."""
+
+    SPLICING = "Splicing"
+    ALPHAMISSENSE = "AlphaMissense"
+    CHIP_TF = "ChIP-TF"
+    DNASE_SEQ = "DNASE-seq"
+    CACTUS_241_WAY = "Cactus"
+    RNA_SEQ = "RNA-seq"
+    HISTONE_CHIP = "Histone-ChIP"
+    SPLICE_JUNCTIONS = "Splice-Junctions"
+    SPLICE_SITE_USAGE = "Splice-Site-Usage"
+    SPLICE_SITES = "Splice-Sites"
+    CAGE = "CAGE"
+    PRO_SEQ = "PRO-seq"
+    RAMPAGE = "RAMPAGE"
+    MICRO_C = "Micro-C"
+    HI_C = "Hi-C"
+    ATAC_SEQ = "ATAC-seq"
+    MOTIF_DISRUPTION = "Motif-Disruption"
+    EVOLUTIONARY_CONSERVATION = "Evolutionary-Conservation"
+
+    def __str__(self) -> str:
+        """Return enum value."""
+        return self.value
+
+
+@dataclass
+class AviScore:
+    """AlphaGenome Variant Impact (AVI) score representation."""
+
+    phred: float
+    raw: float
+    quantile: float
+    top_percentile: float
+    top_modality: str
+    top_feature_importance: float = 0.0
+    feature_importances: dict[str, float] = field(default_factory=dict)
+
+    @property
+    def is_high_impact(self) -> bool:
+        """Check if variant falls into high impact tier (Phred >= 20, top 1%)."""
+        return self.phred >= 20.0
+
+    @property
+    def is_ultra_rare_impact(self) -> bool:
+        """Check if variant falls into ultra-high impact tier (Phred >= 40, top 0.01%)."""
+        return self.phred >= 40.0
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "phred": self.phred,
+            "raw": self.raw,
+            "quantile": self.quantile,
+            "top_percentile": self.top_percentile,
+            "top_modality": self.top_modality,
+            "top_feature_importance": self.top_feature_importance,
+            "feature_importances": self.feature_importances,
+            "is_high_impact": self.is_high_impact,
+            "is_ultra_rare_impact": self.is_ultra_rare_impact,
+        }
+
+
+@dataclass
+class RegulatoryMotifAnnotation:
+    """Regulatory DNA motif disruption or binding annotation."""
+
+    motif_id: str
+    motif_name: str
+    chromosome: str
+    position: int
+    strand: str = "+"
+    affinity_change: float = 0.0
+    transcription_factors: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "motif_id": self.motif_id,
+            "motif_name": self.motif_name,
+            "chromosome": self.chromosome,
+            "position": self.position,
+            "strand": self.strand,
+            "affinity_change": self.affinity_change,
+            "transcription_factors": self.transcription_factors,
+        }
+
+
+@dataclass
+class VariantImpact:
+    """Genomic variant with AlphaGenome Atlas impact annotations."""
+
+    variant_str: str  # 1-based format chr:pos:ref>alt
+    chromosome: str
+    position: int
+    ref: str
+    alt: str
+    avi_score: AviScore | None = None
+    regulatory_motifs: list[RegulatoryMotifAnnotation] = field(default_factory=list)
+    atlas_url: str | None = None
+
+    def __post_init__(self) -> None:
+        """Construct atlas URL if missing."""
+        if not self.atlas_url and self.variant_str:
+            self.atlas_url = f"https://deepmind.google.com/science/alphagenome/atlas/variant/{self.variant_str}"
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "variant": self.variant_str,
+            "chromosome": self.chromosome,
+            "position": self.position,
+            "ref": self.ref,
+            "alt": self.alt,
+            "avi_score": self.avi_score.to_dict() if self.avi_score else None,
+            "regulatory_motifs": [m.to_dict() for m in self.regulatory_motifs],
+            "atlas_url": self.atlas_url,
+        }
+
+
 # Export all public types
 __all__ = [
     # Enums
     "ExperimentType",
     "AnalysisStrategy",
+    "AviModality",
     # Dataclasses
     "ExperimentParams",
     "Experiment",
@@ -412,6 +535,9 @@ __all__ = [
     "Design",
     "Optimize",
     "GFLAST",
+    "AviScore",
+    "RegulatoryMotifAnnotation",
+    "VariantImpact",
     # Validation types
     "ValidationError",
     "ValidationResult",
