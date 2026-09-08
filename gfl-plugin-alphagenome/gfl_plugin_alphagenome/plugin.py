@@ -111,9 +111,21 @@ class AlphaGenomePlugin(GeneratorPlugin):
         atlas_url = self.build_atlas_url(variant_str)
 
         resolved_api_key = api_key or os.environ.get("ALPHAGENOME_API_KEY")
+        if not resolved_api_key:
+            # Fallback to loading from ~/.env or C:/Users/usuario/.env
+            env_path = os.path.expanduser("~/.env")
+            if os.path.exists(env_path):
+                try:
+                    import dotenv
+                    dotenv.load_dotenv(env_path)
+                    resolved_api_key = os.environ.get("ALPHAGENOME_API_KEY")
+                except ImportError:
+                    pass
 
         if resolved_api_key:
             try:
+                import math
+                import numpy as np
                 from alphagenome.atlas import atlas
                 from alphagenome.data import genome
 
@@ -123,12 +135,40 @@ class AlphaGenomePlugin(GeneratorPlugin):
                     var_obj,
                     requested_scorers=["AVI_SCORE", "AVI_SCORE_FEATURE_IMPORTANCE"],
                 )
-                avi_phred = float(getattr(resp, "phred", 0.0))
-                avi_raw = float(getattr(resp, "raw", 0.0))
-                avi_quantile = float(getattr(resp, "quantile", 1.0))
-                top_percentile = float(getattr(resp, "top_percentile", (10 ** (-avi_phred / 10)) * 100.0))
-                top_modality = str(getattr(resp, "top_modality", "Unknown"))
-                top_fi = float(getattr(resp, "top_feature_importance", 0.0))
+
+                avi_raw = 0.0
+                avi_phred = 0.0
+                avi_quantile = 1.0
+                feature_importances: dict[str, float] = {}
+                top_modality = "Unknown"
+                top_fi = 0.0
+
+                if isinstance(resp, dict) and "AVI_SCORE" in resp:
+                    avi_adata = resp["AVI_SCORE"]
+                    if getattr(avi_adata, "X", None) is not None and avi_adata.X.size > 0:
+                        avi_raw = float(np.ravel(avi_adata.X)[0])
+                    if hasattr(avi_adata, "layers") and "quantiles" in avi_adata.layers:
+                        cdf_q = float(np.ravel(avi_adata.layers["quantiles"])[0])
+                        tail = max(1e-7, 1.0 - cdf_q)
+                        avi_quantile = tail
+                        avi_phred = -10.0 * math.log10(tail)
+
+                if isinstance(resp, dict) and "AVI_SCORE_FEATURE_IMPORTANCE" in resp:
+                    fi_adata = resp["AVI_SCORE_FEATURE_IMPORTANCE"]
+                    if getattr(fi_adata, "X", None) is not None and fi_adata.X.size > 0:
+                        vals = np.ravel(fi_adata.X)
+                        names = []
+                        if hasattr(fi_adata, "var") and fi_adata.var is not None and "name" in fi_adata.var.columns:
+                            names = list(fi_adata.var["name"])
+                        elif hasattr(fi_adata, "var_names"):
+                            names = list(fi_adata.var_names)
+                        for i, v in enumerate(vals):
+                            name_str = str(names[i]) if i < len(names) else f"feature_{i}"
+                            feature_importances[name_str] = float(v)
+                        if feature_importances:
+                            top_modality, top_fi = max(feature_importances.items(), key=lambda kv: abs(kv[1]))
+
+                top_percentile = (10 ** (-avi_phred / 10)) * 100.0 if avi_phred > 0 else 100.0
 
                 return AviScoreResult(
                     variant=variant_str,
@@ -142,6 +182,7 @@ class AlphaGenomePlugin(GeneratorPlugin):
                     top_percentile=top_percentile,
                     top_modality=top_modality,
                     top_feature_importance=top_fi,
+                    feature_importances=feature_importances,
                     atlas_url=atlas_url,
                 )
             except Exception as e:
