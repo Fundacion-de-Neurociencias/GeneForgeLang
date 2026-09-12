@@ -29,6 +29,14 @@ class DataType(str, Enum):
     SAM = "SAM"
     VCF = "VCF"
 
+    # Tensor and Geometric AI data types (BioTorch / Structural Biology AI)
+    TENSOR = "TENSOR"
+    DISTANCE_MATRIX = "DISTANCE_MATRIX"
+    BACKBONE_FRAMES = "BACKBONE_FRAMES"
+    CONTACT_MAP = "CONTACT_MAP"
+    SEQUENCE_EMBEDDING = "SEQUENCE_EMBEDDING"
+    ATTENTION_MAP = "ATTENTION_MAP"
+
     # General data types
     CSV = "CSV"
     JSON = "JSON"
@@ -85,6 +93,44 @@ class IOContract:
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
         return {"type": self.type, "attributes": self.attributes}
+
+
+@dataclass
+class TensorContract(IOContract):
+    """Specialized IO contract for biological tensor operations and geometric representations.
+
+    Standardizes tensor shapes, invariant dimensions, and coordinate frames
+    inspired by BioTorch and structural biology foundation models (AlphaFold, ESMFold).
+    """
+
+    shape: list[str | int] = field(default_factory=list)
+    dtype: str = "float32"
+    coordinate_frame: str | None = None  # e.g., 'SE3', 'SO3', 'local_residue_frame'
+    invariant_dimensions: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        """Inject tensor attributes into base attributes dictionary."""
+        if not self.type:
+            self.type = DataType.TENSOR.value
+        self.attributes.setdefault("shape", self.shape)
+        self.attributes.setdefault("dtype", self.dtype)
+        if self.coordinate_frame:
+            self.attributes.setdefault("coordinate_frame", self.coordinate_frame)
+        if self.invariant_dimensions:
+            self.attributes.setdefault("invariant_dimensions", self.invariant_dimensions)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res = super().to_dict()
+        res.update(
+            {
+                "shape": self.shape,
+                "dtype": self.dtype,
+                "coordinate_frame": self.coordinate_frame,
+                "invariant_dimensions": self.invariant_dimensions,
+            }
+        )
+        return res
 
 
 @dataclass
@@ -525,10 +571,14 @@ class VariantImpact:
 # Export all public types
 __all__ = [
     # Enums
+    "DataType",
     "ExperimentType",
     "AnalysisStrategy",
     "AviModality",
     # Dataclasses
+    "IOContract",
+    "TensorContract",
+    "BlockContract",
     "ExperimentParams",
     "Experiment",
     "Analysis",
