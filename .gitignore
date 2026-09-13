@@ -177,6 +177,7 @@ gfl-plugin-*
 !gfl-plugin-causal-evidence/
 !gfl-plugin-alphagenome/
 !gfl-plugin-depmap/
+!gfl-plugin-rfo/
 pytest_output*.txt
 test_output_*/
 

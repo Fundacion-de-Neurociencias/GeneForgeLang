@@ -661,6 +661,123 @@ class CausalTransitionNode:
         }
 
 
+class CandidateStatus(str, Enum):
+    """Lifecycle status of a generated biological design candidate (inspired by RFOptimization)."""
+
+    VALIDATED = "validated"
+    NEAR_MISS = "near_miss"
+    REJECTED = "rejected"
+    OPTIMIZED = "optimized"
+
+    def __str__(self) -> str:
+        """Return the enum value as string."""
+        return self.value
+
+
+class ConsensusModel(str, Enum):
+    """Structural and sequence foundation models for multi-model consensus validation."""
+
+    AF3 = "alphafold3"
+    RF3 = "rosettafold3"
+    BOLTZ = "boltz1"
+    PROTEIN_MPNN = "protein_mpnn"
+    LIGAND_MPNN = "ligand_mpnn"
+
+    def __str__(self) -> str:
+        """Return the enum value as string."""
+        return self.value
+
+
+@dataclass
+class MultiModelConsensus:
+    """Cross-model consensus validation metrics (Baker Lab 2026 RFO consensus).
+
+    Evaluates structural predictions across independent models (AF3, RF3, Boltz)
+    to eliminate single-predictor over-fitting.
+    """
+
+    af3_iptm: float | None = None
+    af3_ipae: float | None = None
+    rf3_confidence: float | None = None
+    boltz_confidence: float | None = None
+    plddt_mean: float | None = None
+
+    def passes_consensus(
+        self,
+        min_iptm: float = 0.8,
+        max_ipae: float = 2.5,
+        min_confidence: float = 0.8,
+    ) -> bool:
+        """Check if candidate satisfies the rigorous three-model consensus thresholds."""
+        if self.af3_iptm is not None and self.af3_iptm < min_iptm:
+            return False
+        if self.af3_ipae is not None and self.af3_ipae > max_ipae:
+            return False
+        if self.rf3_confidence is not None and self.rf3_confidence < min_confidence:
+            return False
+        if self.boltz_confidence is not None and self.boltz_confidence < min_confidence:
+            return False
+        return True
+
+    def is_near_miss(
+        self,
+        iptm_threshold: float = 0.8,
+        ipae_threshold: float = 2.5,
+        margin: float = 0.15,
+    ) -> bool:
+        """Determine if candidate is near the decision boundary and eligible for rescue."""
+        if self.passes_consensus(min_iptm=iptm_threshold, max_ipae=ipae_threshold):
+            return False
+
+        # Check if borderline near pass threshold
+        borderline_iptm = (
+            self.af3_iptm is not None
+            and (iptm_threshold - margin) <= self.af3_iptm < iptm_threshold
+        )
+        borderline_ipae = (
+            self.af3_ipae is not None
+            and ipae_threshold < self.af3_ipae <= (ipae_threshold + margin * 2.0)
+        )
+        return borderline_iptm or borderline_ipae
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "af3_iptm": self.af3_iptm,
+            "af3_ipae": self.af3_ipae,
+            "rf3_confidence": self.rf3_confidence,
+            "boltz_confidence": self.boltz_confidence,
+            "plddt_mean": self.plddt_mean,
+            "passes_consensus": self.passes_consensus(),
+            "is_near_miss": self.is_near_miss(),
+        }
+
+
+@dataclass
+class RescuePolicy:
+    """Policy for rescuing borderline near-miss candidates via alternating gradient-guided search."""
+
+    max_cycles: int = 3
+    near_miss_margin: float = 0.15
+    iptm_threshold: float = 0.8
+    ipae_threshold: float = 2.5
+    consensus_models: list[ConsensusModel] = field(
+        default_factory=lambda: [ConsensusModel.AF3, ConsensusModel.RF3, ConsensusModel.BOLTZ]
+    )
+    strategy: str = "gradient_guided_mcmc"
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "max_cycles": self.max_cycles,
+            "near_miss_margin": self.near_miss_margin,
+            "iptm_threshold": self.iptm_threshold,
+            "ipae_threshold": self.ipae_threshold,
+            "consensus_models": [str(m) for m in self.consensus_models],
+            "strategy": self.strategy,
+        }
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -670,6 +787,8 @@ __all__ = [
     "AviModality",
     "CoDependencyTier",
     "CausalLevel",
+    "CandidateStatus",
+    "ConsensusModel",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -685,6 +804,8 @@ __all__ = [
     "VariantImpact",
     "DepMapCoDependency",
     "CausalTransitionNode",
+    "MultiModelConsensus",
+    "RescuePolicy",
     # Validation types
     "ValidationError",
     "ValidationResult",
