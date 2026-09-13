@@ -568,6 +568,99 @@ class VariantImpact:
         }
 
 
+# DepMap and Causal Transition Graph Types
+class CoDependencyTier(str, Enum):
+    """Co-dependency strength tiers for CRISPR screens."""
+
+    HIGH = "HIGH"
+    MODERATE = "MODERATE"
+    WEAK = "WEAK"
+    NONE = "NONE"
+
+    def __str__(self) -> str:
+        """Return string value."""
+        return self.value
+
+
+class CausalLevel(str, Enum):
+    """Biological abstraction levels in causal transition graph."""
+
+    PHENOTYPIC = "PHENOTYPIC"
+    CELLULAR = "CELLULAR"
+    MOLECULAR = "MOLECULAR"
+    ATOMIC = "ATOMIC"
+
+    def __str__(self) -> str:
+        """Return string value."""
+        return self.value
+
+
+@dataclass
+class DepMapCoDependency:
+    """CRISPR DepMap functional co-dependency between two genes."""
+
+    gene_a: str
+    gene_b: str
+    correlation_score: float
+    p_value: float
+    codependency_tier: CoDependencyTier = CoDependencyTier.NONE
+    screen_type: str = "CRISPR_DepMap_Public"
+
+    def __post_init__(self) -> None:
+        """Infer tier from correlation score if not set."""
+        if self.codependency_tier == CoDependencyTier.NONE and self.correlation_score > 0.0:
+            if self.correlation_score >= 0.5:
+                self.codependency_tier = CoDependencyTier.HIGH
+            elif self.correlation_score >= 0.3:
+                self.codependency_tier = CoDependencyTier.MODERATE
+            elif self.correlation_score >= 0.1:
+                self.codependency_tier = CoDependencyTier.WEAK
+
+    @property
+    def is_significant(self) -> bool:
+        """Check if correlation is statistically significant (p < 0.05)."""
+        return self.p_value < 0.05 and self.correlation_score > 0.0
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "gene_a": self.gene_a,
+            "gene_b": self.gene_b,
+            "correlation_score": self.correlation_score,
+            "p_value": self.p_value,
+            "codependency_tier": str(self.codependency_tier),
+            "screen_type": self.screen_type,
+            "is_significant": self.is_significant,
+        }
+
+
+@dataclass
+class CausalTransitionNode:
+    """Formal representation of a biological causal transition node."""
+
+    node_id: str
+    level: CausalLevel
+    entity_name: str
+    biological_state: str
+    confidence: float = 1.0
+    evidence_sources: list[str] = field(default_factory=list)
+    incoming_edges: list[str] = field(default_factory=list)
+    outgoing_edges: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "node_id": self.node_id,
+            "level": str(self.level),
+            "entity_name": self.entity_name,
+            "biological_state": self.biological_state,
+            "confidence": self.confidence,
+            "evidence_sources": self.evidence_sources,
+            "incoming_edges": self.incoming_edges,
+            "outgoing_edges": self.outgoing_edges,
+        }
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -575,6 +668,8 @@ __all__ = [
     "ExperimentType",
     "AnalysisStrategy",
     "AviModality",
+    "CoDependencyTier",
+    "CausalLevel",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -588,6 +683,8 @@ __all__ = [
     "AviScore",
     "RegulatoryMotifAnnotation",
     "VariantImpact",
+    "DepMapCoDependency",
+    "CausalTransitionNode",
     # Validation types
     "ValidationError",
     "ValidationResult",

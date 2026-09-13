@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gfl-plugin-depmap"
+version = "0.1.0"
+description = "GFL plugin for DepMap CRISPR co-dependency"
+readme = "README.md"
+authors = [{ name = "GeneForgeLang" }]
+license = { text = "MIT" }
+classifiers = ["Programming Language :: Python :: 3"]
+dependencies = []
+
+[project.entry-points."geneforgelang.plugins"]
+depmap = "gfl_plugin_depmap.plugin:DepMapPlugin"
