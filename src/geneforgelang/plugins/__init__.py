@@ -1,7 +1,7 @@
 """GeneForgeLang plugin system."""
 
 try:
-    pass
+    from geneforgelang.plugins import auto_register  # noqa: F401
 
     __all__ = [
         "BaseGFLPlugin",

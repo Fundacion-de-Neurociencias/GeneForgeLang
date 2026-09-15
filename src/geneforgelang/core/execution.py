@@ -28,6 +28,7 @@ class GFLExecutionEngine:
         extra_kwargs: dict[str, Any] = {}
         if design_type == "protein_design":
             extra_kwargs = dict(design_block.get("protein_design", {}))
+            extra_kwargs.pop("constraints", None)  # evita choque con el constraints genérico
 
         try:
             generator = registry.get_generator(model_name)

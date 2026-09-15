@@ -122,16 +122,10 @@ def _register_genesis_plugins() -> None:
 def _register_rfdiffusion_plugin() -> None:
     """Register the RFdiffusion generator plugin (de novo protein design)."""
     try:
-        from geneforgelang.plugins.interfaces import register_generator_plugin
-        from geneforgelang.plugins.plugin_registry import PluginPriority
+        from geneforgelang.plugins.plugin_registry import plugin_registry
         from geneforgelang.plugins.rfdiffusion import RFdiffusionPlugin
 
-        register_generator_plugin(
-            RFdiffusionPlugin,
-            "rfdiffusion",
-            version="1.0.0",
-            priority=PluginPriority.HIGH,
-        )
+        plugin_registry.register_generator_instance("rfdiffusion", RFdiffusionPlugin())
         logger.info("Registered RFdiffusion plugin")
     except Exception as e:
         logger.error(f"Could not register RFdiffusion plugin: {e}")

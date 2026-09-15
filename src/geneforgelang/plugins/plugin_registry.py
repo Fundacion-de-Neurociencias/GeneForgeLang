@@ -913,6 +913,14 @@ class PluginRegistry:
         self._generators[name] = plugin_class
         self._plugins[name] = plugin_class
 
+    def register_generator_instance(self, name: str, instance: Any) -> None:
+        """Register an already-instantiated generator plugin (for the
+        interfaces.GeneratorPlugin family, which is not part of the
+        BaseGeneratorPlugin class hierarchy)."""
+        self.register(name, instance)
+        self._generators[name] = instance
+
+
     def register_optimizer(self, name: str, plugin_class: type[BaseOptimizerPlugin]):
         """Register an optimizer plugin."""
         self._optimizers[name] = plugin_class
