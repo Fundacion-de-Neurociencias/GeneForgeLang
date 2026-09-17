@@ -41,12 +41,20 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 - **📋 Rule-Based Logic**: Complex biological constraint expression
 - **🎭 Simulation Framework**: What-if analysis and hypothesis testing
 
-### **Privacy-Preserving Bio-Skills**
+### **Structural Bio-AI, Consensus & Borderline Rescue**
+
+- **🎯 RFOptimization & Near-Miss Rescue**: Classification of borderline candidates (`NEAR_MISS`) and alternating gradient-guided simulated MCMC mutations + discrete resampling
+- **⚖️ Tri-Model Consensus Screening**: Independent cross-model validation (AlphaFold 3, RoseTTAFold 3, Boltz-1) with strict filtering gates ($iPAE < 2.5, iPTM > 0.8$)
+- **📐 BioTorch Tensor Contracts**: Formal geometry and tensor representations with coordinate frames ($SE(3)$, $SO(3)$, `local_residue_frame`) and invariant dimensions
+- **🛑 DepMap CRISPR Stop-Gates**: Empirical epistemic stopping gates based on Broad DepMap Public co-dependency and statistical significance
+- **🔬 Google DeepMind AlphaGenome**: 18-modality unified variant impact scoring (AVI Score) and regulatory motif disruption analysis
+
+### **Privacy-Preserving Bio-Skills & Governance**
 
 - **🧬 Local Bioinformatics**: High-precision analysis running 100% locally
 - **✅ Scientific Reproducibility**: Automatic generation of Reproducibility Packages (hashes, timestamps, versions)
 - **🧠 Clinical Neuro-Skills**: Specialized skills for PharmGx, Geriatric Risk, and NutriGx
-- **🛡️ Data Sovereignty**: Genome-scale analysis without cloud dependencies or LLM hallucinations
+- **🛡️ Data Sovereignty & Biosecurity**: Provenance, Consent, Jurisdiction, and Population equity tracking as first-class language semantics
 
 ## Key Features
 

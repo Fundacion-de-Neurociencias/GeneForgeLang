@@ -63,8 +63,18 @@ Extend GFL with plugins:
 
 ### Overview & Architecture
 
+- [Architecture Specification](architecture.md) — Comprehensive compiler, runtime, and governance architecture
 - [Plugin Ecosystem Overview](geneforgelang/plugins/plugins_overview.md) — Plugin system architecture
 - [Plugin Ecosystem Documentation](geneforgelang/plugins/PLUGIN_ECOSYSTEM.md) — Complete plugin guide
+
+### Official Decoupled Satellite Plugins (ADR-001 & ADR-0003)
+
+Decoupled, amputable satellite plugins integrating foundational bio-AI models:
+
+- **`gfl-plugin-rfo`**: RFOptimization, borderline candidate rescue (`NEAR_MISS`), and multi-model consensus (AF3, RF3, Boltz1).
+- **`gfl-plugin-depmap`**: Broad DepMap CRISPR co-dependency screening and epistemic stop-gates.
+- **`gfl-plugin-alphagenome`**: Google DeepMind AlphaGenome Atlas (AVI score across 18 modalities, TF-MoDISco-lite motifs).
+- **`gfl-plugin-clawbio`**: Adversarial perturbation and biological stress-testing.
 
 ### Core Plugins
 

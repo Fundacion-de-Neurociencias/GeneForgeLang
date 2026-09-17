@@ -8,6 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **RFOptimization & Multi-Model Consensus Rescue (`gfl-plugin-rfo`)**:
+  - Added `CandidateStatus` enum (`VALIDATED`, `NEAR_MISS`, `REJECTED`, `OPTIMIZED`) and `ConsensusModel` enum.
+  - Added `MultiModelConsensus` dataclass enforcing cross-model consensus ($iPAE < 2.5, iPTM > 0.8$) across independent models (AF3, RF3, Boltz1).
+  - Added `RescuePolicy` dataclass and alternating gradient-guided MCMC with structure recycling in `RFOptimizationPlugin`.
+- **Broad DepMap CRISPR Co-Dependency (`gfl-plugin-depmap`)**:
+  - Added `DepMapCoDependency` dataclass with correlation scoring, p-values, and `CoDependencyTier` (`HIGH`, `MODERATE`, `WEAK`, `NONE`).
+  - Added epistemic stop-gate in `DepMapPlugin` that halts execution when functional co-dependency is null or non-significant.
+- **Multiscale Causal Transition Graphs**:
+  - Added `CausalTransitionNode` dataclass with biological level stratification (`PHENOTYPIC`, `CELLULAR`, `MOLECULAR`, `ATOMIC`).
+- **BioTorch Geometric AI & Tensor Contracts**:
+  - Added `TensorContract` defining standardized tensor shapes, invariant dimensions, and coordinate frames ($SE(3)$, $SO(3)$, `local_residue_frame`).
+  - Added tensor data types: `TENSOR`, `DISTANCE_MATRIX`, `BACKBONE_FRAMES`, `CONTACT_MAP`, `SEQUENCE_EMBEDDING`, `ATTENTION_MAP`.
+- **Google DeepMind AlphaGenome Atlas Integration (`gfl-plugin-alphagenome`)**:
+  - Added `AviScore` with support for 18 additive biological modalities (Splicing, AlphaMissense, ChIP-TF, DNASE).
+  - Added `RegulatoryMotifAnnotation` for TF-MoDISco-lite discovered motifs.
+  - Added live querying against Google DeepMind Science API.
+- **Axiomatic Constitution & Governance**:
+  - Added Bio-Thermodynamic Metabolic Tax Axiom (`CONSTITUTION.md`).
+  - Added Genomic Data Governance & Sovereignty Mandate (`CONSTITUTION.md`).
+  - Added Epistemic Refinement Hypothesis (Representations as Priors).
 - Container-Based Plugin Execution:
   - Implemented container image discovery through `gfl.plugin_containers` entry points
   - Added `ContainerExecutor` for Docker-based plugin execution

@@ -33,6 +33,32 @@ GeneForgeLang's plugin ecosystem provides a sophisticated framework for integrat
 - **Interface**: `gfl.plugins.PriorsPlugin`
 - **Methods**: `specify_priors()`, `update_posteriors()`
 
+### Official Decoupled Satellite Plugins (ADR-001 & ADR-0003)
+
+In accordance with GFL's lightweight core philosophy, domain-specific deep learning, atlas-scale variant prediction, and functional screening tools live in decoupled, amputable satellite packages discovered dynamically via `geneforgelang.plugins` entry-points:
+
+1. **`gfl-plugin-rfo` (RFOptimization & Multi-Model Consensus Rescue)**:
+   - **Origin**: Inspired by David Baker Lab (bioRxiv 2026).
+   - **Role**: Detects borderline candidates near decision boundaries (`CandidateStatus.NEAR_MISS`) and executes alternating gradient-guided MCMC mutations and structure-recycling redesign.
+   - **Cross-Model Validation**: Enforces rigorous consensus across independent structural predictors (AlphaFold3, RoseTTAFold3, Boltz1) with threshold gates ($iPAE < 2.5, iPTM > 0.8$).
+   - **Entry Point**: `geneforgelang.plugins -> rfo = gfl_plugin_rfo.plugin:RFOptimizationPlugin`
+
+2. **`gfl-plugin-depmap` (Broad DepMap CRISPR Co-Dependency)**:
+   - **Origin**: Broad Institute DepMap CRISPR Public Dataset.
+   - **Role**: Queries pairwise functional co-dependencies between genes (`DepMapCoDependency`, `CoDependencyTier`).
+   - **Epistemic Stop-Gate**: Halts workflow execution if an assumed mechanistic co-dependency is null, negative, or not statistically significant ($p > 0.05$).
+   - **Entry Point**: `geneforgelang.plugins -> depmap = gfl_plugin_depmap.plugin:DepMapPlugin`
+
+3. **`gfl-plugin-alphagenome` (Google DeepMind AlphaGenome Atlas)**:
+   - **Origin**: Google DeepMind AlphaGenome Atlas (9 billion SNVs).
+   - **Role**: Computes unified molecular impact scores (**AVI Score**) across 18 additive biological modalities (Splicing, AlphaMissense, ChIP-TF, DNASE, Histone marks) for coding and non-coding variants.
+   - **Regulatory Motifs**: Detects disruption of $>2.500$ transcription factor motifs discovered via TF-MoDISco-lite.
+   - **Entry Point**: `geneforgelang.plugins -> alphagenome = gfl_plugin_alphagenome.plugin:AlphaGenomePlugin`
+
+4. **`gfl-plugin-clawbio` (Stress Testing & Biological Resilience)**:
+   - **Role**: Audits biological hypotheses under adversarial perturbations, noise injection, and extreme parameter boundaries.
+   - **Entry Point**: `geneforgelang.plugins -> clawbio = gfl_plugin_clawbio.plugin:ClawBioPlugin`
+
 ## Getting Started
 
 ### Installing Plugins
@@ -42,6 +68,9 @@ Plugins can be installed via pip if they're packaged properly:
 ```bash
 pip install geneforge-protein-vae-plugin
 pip install geneforge-bayesian-optimizer
+pip install gfl-plugin-rfo
+pip install gfl-plugin-depmap
+pip install gfl-plugin-alphagenome
 ```
 
 ### Registering Plugins
@@ -51,9 +80,10 @@ pip install geneforge-bayesian-optimizer
 Add to your plugin package's `pyproject.toml`:
 
 ```toml
-[project.entry-points."gfl.plugins"]
-protein_vae = "my_package.plugins:ProteinVAEGenerator"
-bayesian_opt = "my_package.plugins:BayesianOptimizer"
+[project.entry-points."geneforgelang.plugins"]
+rfo = "gfl_plugin_rfo.plugin:RFOptimizationPlugin"
+depmap = "gfl_plugin_depmap.plugin:DepMapPlugin"
+alphagenome = "gfl_plugin_alphagenome.plugin:AlphaGenomePlugin"
 ```
 
 #### Manual Registration
