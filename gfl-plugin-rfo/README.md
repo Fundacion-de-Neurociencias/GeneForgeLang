@@ -1,8 +1,8 @@
 # GFL Plugin: RFOptimization & Consensus Rescue
-
-Plugin desacoplado y amputable (ADR-001 y ADR-0003) inspirado en el marco RFOptimization (DNA, research de David Baker Lab, bioRxiv 2026).
-
-## Capacidades:
-- **Clasificación de Frontera (NEAR_MISS)**: Detecta candidatos borderline para evitar su descarte innecesario.
-- **Bucle de Rescate Alternante**: Optimización guiada por gradientes (differentiable heads) y rediseño discreto (ProteinMPON/LigandMPNN).
-- **Consenso Multi-Modelo Screening**: Evita sobreajuste a un único predictor mediante filtros cruzados (Independent AF3: iPAE < 2.5, iPTM > 0.8, RF3 y Boltz1).
+ 
+Decoupled and amputatable plugin (ADR-001 & ADR-0003) inspired by the RFOptimization framework (David Baker Lab, bioRxiv 2026).
+ 
+## Capabilities:
+- **Borderline Classification (`NEAR_MISS`)**: Detects borderline candidates near decision boundaries to prevent discarding viable designs.
+- **Alternating Rescue Loop**: Gradient-guided optimization via differentiable prediction heads combined with discrete sequence redesign (ProteinMPNN / LigandMPNN).
+- **Multi-Model Consensus Screening**: Eliminates single-predictor bias through strict cross-model filters (Independent AlphaFold 3: $iPAE < 2.5, iPTM > 0.8$, RoseTTAFold 3, and Boltz-1).

@@ -1,59 +1,58 @@
-# Protocolo de Buenas Prácticas - NeuroIA v1.0 (GFL Adaptation)
+# Best Practices Protocol - NeuroIA v1.0 (GFL Adaptation)
 
-Este documento detalla los estándares y flujos de trabajo adoptados en el repositorio de GeneForgeLang (GFL) para garantizar la reproducibilidad científica, colaboración eficiente y trazabilidad.
+This document details the standards and workflows adopted in the GeneForgeLang (GFL) repository to ensure scientific reproducibility, efficient collaboration, and full traceability.
 
-## 1. Estructura del Repositorio
-- `data/raw/`: Datos crudos nunca modificados manualmente.
-- `data/processed/`: Salidas de procesamiento intermedio.
-- `src/`: Código fuente reutilizable (paquete `geneforgelang`).
-- `notebooks/`: Exploración y prototipado.
-- `results/`: Salidas reproducibles y figuras finales.
-- `docs/decisions/`: Registro de decisiones técnicas (ADRs).
-- `scripts/`: Utilidades y herramientas de mantenimiento.
-- `tests/`: Suite de pruebas automatizadas.
+## 1. Repository Structure
+- `data/raw/`: Raw data, never modified manually.
+- `data/processed/`: Intermediate processed outputs.
+- `src/`: Reusable source code (`geneforgelang` package).
+- `notebooks/`: Exploration and prototyping.
+- `results/`: Reproducible outputs and final figures.
+- `docs/decisions/`: Technical Architecture Decision Records (ADRs).
+- `scripts/`: Utilities and maintenance tooling.
+- `tests/`: Automated test suite.
 
-## 2. Flujo de Git
-- **main**: Rama siempre estable y desplegable.
-- **feature/*, fix/*, experiment/***: Ramas de trabajo.
-- **Pull Requests (PR)**: Obligatorios para cualquier cambio en `main`. Deben incluir descripción técnica, pasar todos los tests del CI y ser revisados por un par.
-- **Commits Atómicos**: Cada commit debe representar una unidad lógica de cambio. Evitar commits "monolíticos".
+## 2. Git Workflow
+- **main**: Always stable, deployable branch. Direct pushes to `main` are strictly forbidden.
+- **feature/*, fix/*, experiment/***: Working branches.
+- **Pull Requests (PR)**: Mandatory for any change landing in `main`. Must include a technical description, pass all CI tests, and undergo peer review.
+- **Atomic Commits**: Every commit must represent a single logical unit of change. Avoid "monolithic" commits.
 
-## 3. Convención de Commits
-Formato: `tipo: descripción`
-- `feat`: Nueva funcionalidad.
-- `fix`: Corrección de error.
-- `refactor`: Mejora interna sin cambio funcional.
-- `docs`: Cambios en documentación.
-- `test`: Añadir o corregir pruebas.
-- `chore`: Tareas de mantenimiento (dependencias, configuración).
-- `atomic`: Se requiere que los commits sean **atómicos** (una tarea, un commit).
+## 3. Commit Convention
+Format: `type: description`
+- `feat`: New feature or capability.
+- `fix`: Bug fix.
+- `refactor`: Internal improvement without behavioral changes.
+- `docs`: Documentation updates.
+- `test`: Adding or updating tests.
+- `chore`: Maintenance tasks (dependencies, configuration).
+- Commits must be strictly **atomic** (one task, one commit).
 
-### Guía Rápida de Comandos
+### Quick Command Guide
 ```bash
-# 1. Crear rama de trabajo
-git checkout -b feature/nombre-tarea
+# 1. Create working branch
+git checkout -b feature/task-name
 
-# 2. Hacer commit atómico
+# 2. Make atomic commit (English mandatory)
 git add .
-git commit -m "feat: descripción clara de la tarea"
+git commit -m "feat: clear description of the task"
 
-# 3. Subir e iniciar PR
-git push origin feature/nombre-tarea
+# 3. Push and initiate PR
+git push origin feature/task-name
 ```
 
-## 4. Reproducibilidad
-- Versiones fijadas en `requirements.txt`.
-- Uso de semillas (seeds) en procesos estocásticos.
-- Generación automática de Reproducibilidad Packages (hashes, timestamps).
+## 4. Reproducibility & Language Standards
+- **Mandatory English**: English is mandatory across all code, docstrings, comments, commit messages, and documentation.
+- Pinned versions in dependency manifests.
+- Deterministic seeding in stochastic processes.
+- Automatic generation of Reproducibility Packages (hashes, timestamps, versions).
 
-## 5. Uso de IA (Antigravity/GitHub Copilot)
-- Revisión humana obligatoria de todo código generado.
-- Prohibido subir credenciales o datos sensibles en prompts.
-- La IA asiste en la implementación, pero el desarrollador es responsable de la arquitectura.
+## 5. AI Tooling Usage (Antigravity/GitHub Copilot)
+- Mandatory human review of all generated code.
+- Strictly forbidden to commit credentials, API keys, or sensitive tokens.
+- AI assists with implementation; the engineer remains responsible for architecture and scientific validity.
 
-## 6. Reglas Estrictas (Prevención de Regresiones)
-- **CI/CD**: Ningún PR puede ser aprobado si no pasa los checks de CI/CD (linting y tests). Verifica localmente con `pytest` y `ruff` antes de subir.
-- **Estructura del Núcleo**: No recrear directorios obsoletos como `gfl/` o `archived/`. El código fuente principal reside exclusivamente en `src/`.
-- **Archivos de Utilidad**: Mantener una única fuente de verdad para scripts de utilidad (e.g., usar `tools/` y no duplicar en `resources/tools/`).
-- **Ejemplos**: Evitar archivos residuales o duplicados en la raíz de `examples/`. Clasificar siempre los ejemplos en sus subdirectorios correspondientes (`basic/`, `cases/`, `features/`, etc.).
-- **Limpieza del Workspace**: Asegurarse de no commitear archivos generados automáticamente, logs o reportes (ej. `collect_output.txt`, `pytest_collection.txt`, `test_failures.txt`, `representational_audit_report.json`). Agregar estos archivos al `.gitignore`.
+## 6. Strict Quality Gates (Regression Prevention)
+- **CI/CD**: No PR can be approved without passing all CI/CD checks (linting and tests). Validate locally with `pytest` and `ruff` before pushing.
+- **Core Structure**: Do not recreate legacy folders such as `gfl/` or `archived/`. The primary source code lives exclusively in `src/`.
+- **Clean Workspace**: Ensure autogenerated files, logs, or intermediate reports are added to `.gitignore`.

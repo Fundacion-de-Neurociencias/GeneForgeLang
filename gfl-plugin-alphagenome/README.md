@@ -1,8 +1,9 @@
-﻿# GFL Plugin: AlphaGenome Atlas
+# GFL Plugin: AlphaGenome Atlas
 
-Plugin desacoplado y amputable (ADR-001 y ADR-0003) para interactuar con Google DeepMind AlphaGenome Atlas.
-Permite evaluar:
-- **AVI Score (AlphaGenome Variant Impact)** para SNVs codificantes y no codificantes.
-- **18 modalidades biológicas aditivas** (Splicing, AlphaMissense, ChIP-TF, DNASE, etc.).
-- **Disrupción de motivos regulatorios** (>2.500 motivos descubiertos con TF-MoDISco-lite).
-- Enlaces canónicos directos al Atlas de AlphaGenome.
+Decoupled and amputatable plugin (ADR-001 & ADR-0003) for integrating with the Google DeepMind AlphaGenome Atlas.
+Enables evaluation of:
+- **AVI Score (AlphaGenome Variant Impact)** for both coding and non-coding SNVs.
+- **18 additive biological modalities** (Splicing, AlphaMissense, ChIP-TF, DNASE, Histone marks, etc.).
+- **Regulatory motif disruption** (>2,500 motifs discovered via TF-MoDISco-lite).
+- Direct canonical deep links to the AlphaGenome Atlas.
+

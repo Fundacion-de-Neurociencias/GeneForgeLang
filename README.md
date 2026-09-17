@@ -14,9 +14,9 @@
 
 GFL v2.0 is a **next-generation domain-specific language** for computational biology that enables researchers to reason across multiple omics layers while maintaining spatial genomic context. Building on declarative workflow capabilities, v2.0 introduces comprehensive multi-omic integration, spatial genomic reasoning, and guided discovery frameworks.
 
-> ⚡ **Pilar Bio-Termodinámico Fundamental**:  
-> *"El metabolismo es el impuesto termodinámico global que paga el organismo por su orden local."*  
-> En GFL, el costo metabólico y la disipación entrópica global son restricciones de primer orden frente a cualquier reducción de entropía o síntesis de orden biológico local.
+> ⚡ **Fundamental Bio-Thermodynamic Pillar**:  
+> *"Metabolism is the global thermodynamic tax that the organism pays for its local order."*  
+> In GFL, metabolic cost and global entropic dissipation are first-order constraints against any local entropy reduction or biological order synthesis.
 
 ## 🚀 **New in v2.0 - Multi-Omic Capabilities**
 

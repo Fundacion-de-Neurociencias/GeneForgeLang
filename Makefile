@@ -70,18 +70,18 @@ ci:  ## Run all CI checks locally
 	$(MAKE) test
 
 setup-genesis-data:  ## Setup data environment for GFL Genesis project
-	@echo "-> Configurando el entorno de datos para el proyecto GFL Genesis..."
+	@echo "-> Setting up data environment for GFL Genesis project..."
 	@/bin/bash examples/gfl-genesis/scripts/fetch_data.sh
 	@/bin/bash examples/gfl-genesis/scripts/preprocess_data.sh
-	@echo "✅ Entorno de datos de Genesis configurado."
+	@echo "✅ Genesis data environment configured."
 
-setup-hooks:  ## Configurar hooks locales y protección de capa 1/2
-	@echo "-> Configurando git hooks para NeuroIA Protocol..."
+setup-hooks:  ## Configure local hooks and layer 1/2 protection
+	@echo "-> Configuring git hooks for NeuroIA Protocol..."
 	mkdir -p .githooks
 	git config core.hooksPath .githooks
 	@if [ -f .githooks/pre-commit ]; then chmod +x .githooks/pre-commit; fi
 	@if [ -f .githooks/pre-push ]; then chmod +x .githooks/pre-push; fi
-	@echo "✅ Hooks configurados."
+	@echo "✅ Git hooks configured."
 
 # Development shortcuts
 dev: dev-install  ## Alias for dev-install

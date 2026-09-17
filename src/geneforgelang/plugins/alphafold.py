@@ -6,8 +6,8 @@ logger = logging.getLogger(__name__)
 class AlphaGenomePlugin:
     def execute(self, method_name: str, params: dict, symbol_table: dict):
         """
-        Simulates execution de métodos de AlphaGenome.
-        When real API is available, este método se conectará a ella.
+        Simulates execution of AlphaGenome methods.
+        When real API is available, this method connects to it.
         """
         logger.info(f"AlphaGenomePlugin: Simulating method '{method_name}' with params: {params}")
 
@@ -16,7 +16,7 @@ class AlphaGenomePlugin:
             tracks = params.get("tracks", [])
             variants = params.get("variants", [])
 
-            # Basic validation de parameters
+            # Basic parameter validation
             if not sequence:
                 raise ValueError("Parameter 'sequence' is required for predict_functional_tracks.")
             if not isinstance(tracks, list) or not tracks:

@@ -15,10 +15,10 @@ class ValidationPipeline:
         feature_extractor: Callable[[dict[str, Any]], dict[str, Any]],
     ):
         """
-        model: objeto con método predict()
-        data_loader: función que retorna un DataFrame con columnas relevantes
-        label_column: nombre de la columna que contiene la variable objetivo
-        feature_extractor: función que transforma una fila o AST en features
+        model: object implementing a predict() method
+        data_loader: callable returning a DataFrame with relevant columns
+        label_column: name of the column containing the target variable
+        feature_extractor: callable transforming a row or AST into features
         """
         self.model = model
         self.data_loader = data_loader
@@ -31,7 +31,7 @@ class ValidationPipeline:
         y_true = []
 
         for _, row in df.iterrows():
-            gfl_ast = row["gfl_ast"]  # se espera una columna con ASTs ya parseados
+            gfl_ast = row["gfl_ast"]  # expects a column containing parsed ASTs
             label = row[self.label_column]
             features = self.feature_extractor(gfl_ast)
             X.append(features)
