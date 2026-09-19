@@ -1,6 +1,6 @@
 # GeneForgeLang (GFL) Architecture Specification
 
-> **The Symbolic Language & Semantic Constitution for Biological Reasoning and Multi-Omic Design**  
+> **The Symbolic Language & Semantic Constitution for Biological Reasoning and Multi-Omic Design**
 > *Canonical Version: GFL v2.0+ (NeuroIA Ecosystem / Fundación de Neurociencias)*
 
 ---
@@ -130,6 +130,7 @@ In compliance with **ADR-001** and **ADR-0003**:
 alphagenome = "gfl_plugin_alphagenome.plugin:AlphaGenomePlugin"
 depmap = "gfl_plugin_depmap.plugin:DepMapPlugin"
 rfo = "gfl_plugin_rfo.plugin:RFOptimizationPlugin"
+bgc = "gfl_plugin_bgc.plugin:BGCPlugin"
 clawbio = "gfl_plugin_clawbio.plugin:ClawBioPlugin"
 ```
 
@@ -152,4 +153,3 @@ clawbio = "gfl_plugin_clawbio.plugin:ClawBioPlugin"
    - `CHANGELOG.md`
    - `README.md`
 5. **Pull Request Protocol**: Verified PRs submitted via `gh pr create` with comprehensive descriptions.
-

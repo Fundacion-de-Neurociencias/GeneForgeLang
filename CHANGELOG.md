@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Biosynthetic Gene Cluster & Megasynthase Domain Architecture (`gfl-plugin-bgc`)**:
+  - Added `BiosyntheticDomainType` enum representing modular enzymatic domains (PKS: `KS`, `AT`, `KR`, `DH`, `ER`, `ACP`, `TE`; NRPS: `CONDENSATION`, `ADENYLATION`, `THIOLATION`, `EPIMERIZATION`, `CYCLIZATION`).
+  - Added `MegasynthaseDomain`, `MegasynthaseModule`, and `BGCAssemblyContract` dataclasses for multi-domain enzyme complexes (~2,500+ AA).
+  - Implemented decoupled satellite plugin `gfl-plugin-bgc` (`BGCPlugin`) validating assembly invariants, carrier domain presence, chain-termination release, and scoring cross-domain transitions inspired by Keasling Lab / gLM2 (bioRxiv 2026).
 - **RFOptimization & Multi-Model Consensus Rescue (`gfl-plugin-rfo`)**:
   - Added `CandidateStatus` enum (`VALIDATED`, `NEAR_MISS`, `REJECTED`, `OPTIMIZED`) and `ConsensusModel` enum.
   - Added `MultiModelConsensus` dataclass enforcing cross-model consensus ($iPAE < 2.5, iPTM > 0.8$) across independent models (AF3, RF3, Boltz1).

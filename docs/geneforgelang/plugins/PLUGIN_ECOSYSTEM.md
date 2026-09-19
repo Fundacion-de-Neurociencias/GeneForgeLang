@@ -55,7 +55,14 @@ In accordance with GFL's lightweight core philosophy, domain-specific deep learn
    - **Regulatory Motifs**: Detects disruption of $>2.500$ transcription factor motifs discovered via TF-MoDISco-lite.
    - **Entry Point**: `geneforgelang.plugins -> alphagenome = gfl_plugin_alphagenome.plugin:AlphaGenomePlugin`
 
-4. **`gfl-plugin-clawbio` (Stress Testing & Biological Resilience)**:
+4. **`gfl-plugin-bgc` (Biosynthetic Gene Clusters & Megasynthase Assembly Lines)**:
+   - **Origin**: Inspired by Keasling Lab / gLM2 genomic language models (bioRxiv 2026).
+   - **Role**: Validates multi-domain enzymatic assembly lines (PKS, NRPS, hybrid complexes, ~2,500+ AA) to access non-natural chemical space (e.g. $\delta$-valerolactam nylon precursors).
+   - **Assembly Invariants**: Validates module ordering, carrier domain presence (ACP/THIOLATION), chain-termination release (TE/CYCLIZATION), and domain coordinate boundaries.
+   - **Cross-Domain Scoring**: Evaluates catalytic succession and inter-domain linker transitions.
+   - **Entry Point**: `geneforgelang.plugins -> bgc = gfl_plugin_bgc.plugin:BGCPlugin`
+
+5. **`gfl-plugin-clawbio` (Stress Testing & Biological Resilience)**:
    - **Role**: Audits biological hypotheses under adversarial perturbations, noise injection, and extreme parameter boundaries.
    - **Entry Point**: `geneforgelang.plugins -> clawbio = gfl_plugin_clawbio.plugin:ClawBioPlugin`
 

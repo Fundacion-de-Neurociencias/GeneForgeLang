@@ -178,6 +178,7 @@ gfl-plugin-*
 !gfl-plugin-alphagenome/
 !gfl-plugin-depmap/
 !gfl-plugin-rfo/
+!gfl-plugin-bgc/
 pytest_output*.txt
 test_output_*/
 

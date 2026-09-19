@@ -343,7 +343,7 @@ class GFLAST:
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation for backward compatibility."""
-        result = {}
+        result: dict[str, Any] = {}
         if self.experiment is not None:
             result["experiment"] = self.experiment.to_dict()
         if self.analyze is not None:
@@ -730,13 +730,9 @@ class MultiModelConsensus:
             return False
 
         # Check if borderline near pass threshold
-        borderline_iptm = (
-            self.af3_iptm is not None
-            and (iptm_threshold - margin) <= self.af3_iptm < iptm_threshold
-        )
-        borderline_ipae = (
-            self.af3_ipae is not None
-            and ipae_threshold < self.af3_ipae <= (ipae_threshold + margin * 2.0)
+        borderline_iptm = self.af3_iptm is not None and (iptm_threshold - margin) <= self.af3_iptm < iptm_threshold
+        borderline_ipae = self.af3_ipae is not None and ipae_threshold < self.af3_ipae <= (
+            ipae_threshold + margin * 2.0
         )
         return borderline_iptm or borderline_ipae
 
@@ -778,6 +774,118 @@ class RescuePolicy:
         }
 
 
+class BiosyntheticDomainType(str, Enum):
+    """Enzymatic domain types in modular megasynthases (PKS, NRPS, and hybrid BGCs)."""
+
+    # Polyketide Synthase (PKS) domains
+    KS = "KS"  # Ketosynthase (condensation)
+    AT = "AT"  # Acyltransferase (substrate loading/selection)
+    KR = "KR"  # Ketoreductase (beta-keto reduction)
+    DH = "DH"  # Dehydratase (hydroxyl dehydration to double bond)
+    ER = "ER"  # Enoylreductase (double bond reduction to single bond)
+    ACP = "ACP"  # Acyl carrier protein (phosphopantetheine arm tether)
+    TE = "TE"  # Thioesterase (chain termination/release/cyclization)
+
+    # Non-Ribosomal Peptide Synthetase (NRPS) domains
+    CONDENSATION = "CONDENSATION"  # C domain: amide bond formation
+    ADENYLATION = "ADENYLATION"  # A domain: amino/carboxylic acid activation
+    THIOLATION = "THIOLATION"  # T / PCP domain: peptidyl carrier protein
+    EPIMERIZATION = "EPIMERIZATION"  # E domain: D/L chiral inversion
+    CYCLIZATION = "CYCLIZATION"  # Cy domain: heterocyclic ring formation
+
+    # Tailoring / Specialized domains
+    METHYLTRANSFERASE = "METHYLTRANSFERASE"  # MT (C-MT, O-MT, N-MT)
+    OXYGENASE = "OXYGENASE"
+    HALOGENASE = "HALOGENASE"
+    CUSTOM = "CUSTOM"
+
+    def __str__(self) -> str:
+        """Return the enum value as string."""
+        return self.value
+
+
+@dataclass
+class MegasynthaseDomain:
+    """Individual enzymatic domain within a modular megasynthase."""
+
+    domain_id: str
+    domain_type: BiosyntheticDomainType
+    start_pos: int
+    end_pos: int
+    substrate_specificity: str | None = None
+    stereochemistry: str | None = None
+    sequence_slice: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "domain_id": self.domain_id,
+            "domain_type": str(self.domain_type),
+            "start_pos": self.start_pos,
+            "end_pos": self.end_pos,
+            "substrate_specificity": self.substrate_specificity,
+            "stereochemistry": self.stereochemistry,
+            "sequence_slice": self.sequence_slice,
+            "metadata": self.metadata,
+        }
+
+
+@dataclass
+class MegasynthaseModule:
+    """Modular unit in an enzymatic assembly line performing an elongation or loading cycle."""
+
+    module_index: int
+    domains: list[MegasynthaseDomain]
+    elongation_substrate: str | None = None
+    is_loading: bool = False
+    is_termination: bool = False
+
+    def has_domain(self, domain_type: BiosyntheticDomainType) -> bool:
+        """Check if module contains a domain of specified type."""
+        return any(d.domain_type == domain_type for d in self.domains)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "module_index": self.module_index,
+            "domains": [d.to_dict() for d in self.domains],
+            "elongation_substrate": self.elongation_substrate,
+            "is_loading": self.is_loading,
+            "is_termination": self.is_termination,
+        }
+
+
+@dataclass
+class BGCAssemblyContract:
+    """Formal specification and validation contract for Biosynthetic Gene Clusters and Megasynthases."""
+
+    cluster_id: str
+    cluster_type: str  # e.g., "PKS_TYPE_I", "NRPS", "PKS_NRPS_HYBRID"
+    target_chemical_product: str  # Target molecule (e.g., "delta-valerolactam")
+    modules: list[MegasynthaseModule]
+    cross_domain_compatibility_score: float = 1.0
+    validation_status: str = "PENDING"
+    notes: str | None = None
+
+    def total_domains(self) -> int:
+        """Return total domain count across all modules."""
+        return sum(len(m.domains) for m in self.modules)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "cluster_id": self.cluster_id,
+            "cluster_type": self.cluster_type,
+            "target_chemical_product": self.target_chemical_product,
+            "modules": [m.to_dict() for m in self.modules],
+            "total_domains": self.total_domains(),
+            "cross_domain_compatibility_score": self.cross_domain_compatibility_score,
+            "validation_status": self.validation_status,
+            "notes": self.notes,
+        }
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -789,6 +897,7 @@ __all__ = [
     "CausalLevel",
     "CandidateStatus",
     "ConsensusModel",
+    "BiosyntheticDomainType",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -806,6 +915,9 @@ __all__ = [
     "CausalTransitionNode",
     "MultiModelConsensus",
     "RescuePolicy",
+    "MegasynthaseDomain",
+    "MegasynthaseModule",
+    "BGCAssemblyContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

@@ -14,8 +14,8 @@
 
 GFL v2.0 is a **next-generation domain-specific language** for computational biology that enables researchers to reason across multiple omics layers while maintaining spatial genomic context. Building on declarative workflow capabilities, v2.0 introduces comprehensive multi-omic integration, spatial genomic reasoning, and guided discovery frameworks.
 
-> ⚡ **Fundamental Bio-Thermodynamic Pillar**:  
-> *"Metabolism is the global thermodynamic tax that the organism pays for its local order."*  
+> ⚡ **Fundamental Bio-Thermodynamic Pillar**:
+> *"Metabolism is the global thermodynamic tax that the organism pays for its local order."*
 > In GFL, metabolic cost and global entropic dissipation are first-order constraints against any local entropy reduction or biological order synthesis.
 
 ## 🚀 **New in v2.0 - Multi-Omic Capabilities**
@@ -43,6 +43,7 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 
 ### **Structural Bio-AI, Consensus & Borderline Rescue**
 
+- **🔬 BGC & Megasynthase Assembly Lines**: Multi-domain modular enzyme complex validation (PKS, NRPS, hybrid megasynthases, ~2,500+ AA) to explore non-natural chemical space (e.g. $\delta$-valerolactam nylon precursors) inspired by gLM2
 - **🎯 RFOptimization & Near-Miss Rescue**: Classification of borderline candidates (`NEAR_MISS`) and alternating gradient-guided simulated MCMC mutations + discrete resampling
 - **⚖️ Tri-Model Consensus Screening**: Independent cross-model validation (AlphaFold 3, RoseTTAFold 3, Boltz-1) with strict filtering gates ($iPAE < 2.5, iPTM > 0.8$)
 - **📐 BioTorch Tensor Contracts**: Formal geometry and tensor representations with coordinate frames ($SE(3)$, $SO(3)$, `local_residue_frame`) and invariant dimensions
