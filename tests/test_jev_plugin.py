@@ -109,3 +109,30 @@ def test_candidate_pre_screening_filter():
     assert passed[0].sequence == "SEQ1"
     assert passed[1].sequence == "SEQ3"
     assert rejected[0].sequence == "SEQ2"
+
+
+def test_laya_science_endpoint_integration_and_fallback(monkeypatch):
+    plugin = JevDecisionPlugin(endpoint_url="http://127.0.0.1:8009")
+    assert plugin.endpoint_url == "http://127.0.0.1:8009"
+
+    # 1. Fallback when offline
+    res_fallback = plugin.decide_discrete_option(
+        context="Classify protein domain",
+        options=["KS", "AT", "TE"],
+    )
+    assert res_fallback.selected_option_id in ["KS", "AT", "TE"]
+    assert res_fallback.confidence > 0.0
+
+    # 2. Mocked Laya-Science response
+    def mock_query(context, options):
+        return ("KS", 0.94, 2.5, {"KS": 0.94, "AT": 0.04, "TE": 0.02})
+
+    monkeypatch.setattr(plugin, "_query_laya_science", mock_query)
+    res_laya = plugin.decide_discrete_option(
+        context="Predict domain for sequence MSK...",
+        options=["KS", "AT", "TE"],
+    )
+    assert res_laya.selected_option_id == "KS"
+    assert res_laya.confidence == 0.94
+    assert res_laya.calibration_method == "laya_science_macstudio"
+    assert res_laya.is_ambiguous is False
