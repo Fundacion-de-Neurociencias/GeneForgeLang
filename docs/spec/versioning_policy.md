@@ -14,7 +14,7 @@ To maintain its status as an open-source project "open to everyone", GFL adopts 
 3.  **Formalization**: Once approved, the change is integrated into the core specification files (`docs/spec/`).
 
 ## 3. Runtime Compatibility Guarantee
-Runtimes (like GeneForge) must declare which GFL version they support.
+Runtimes (like GeneForge) must declare which GFL version they support. 
 *   **Forward Compatibility**: GFL 1.2 runtimes should be able to execute GFL 1.1 scripts.
 *   **Graceful Degradation**: If a script uses a feature from GFL 1.3 that a 1.2 runtime doesn't understand, the runtime must fail with a clear `UNSUPPORTED_SEMANTIC` error rather than producing an incorrect biological result.
 

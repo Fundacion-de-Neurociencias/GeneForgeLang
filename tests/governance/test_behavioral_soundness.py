@@ -1,4 +1,5 @@
 import pytest
+
 from geneforgelang.core.parser import parse_gfl
 from geneforgelang.governance.behavioral.semantic_hash import semantic_hash
 from geneforgelang.governance.behavioral.semantic_projection import project

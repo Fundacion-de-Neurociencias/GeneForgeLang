@@ -123,6 +123,7 @@ jobs:
         run: |
           pip install -e .
           pip install pytest
+          pip install pytest-asyncio  # Si se usan pruebas asíncronas
 
       # Paso clave: Ejecutar suite de pruebas con reporte detallado
       - name: Run pytest

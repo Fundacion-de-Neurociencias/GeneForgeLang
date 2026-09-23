@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fundacion-neurociencias.org/schemas/gfl_semantic_invariants.schema.json",
+  "title": "GFL Biological Invariants Schema",
+  "description": "Defines the formal structure for biological invariants in GeneForgeLang",
+  "type": "object",
+  "properties": {
+    "invariants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z0-9_]+$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "expression": {
+            "type": "string",
+            "description": "Formal symbolic expression of the invariant"
+          },
+          "scope": {
+            "type": "string",
+            "enum": ["GLOBAL", "CELLULAR", "GENOMIC", "PROTEOMIC"]
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["ABSOLUTE", "WARNING", "INFORMATIONAL"]
+          }
+        },
+        "required": ["id", "expression", "scope", "severity"]
+      }
+    }
+  }
+}
