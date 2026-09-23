@@ -179,6 +179,7 @@ gfl-plugin-*
 !gfl-plugin-depmap/
 !gfl-plugin-rfo/
 !gfl-plugin-bgc/
+!gfl-plugin-jev/
 pytest_output*.txt
 test_output_*/
 

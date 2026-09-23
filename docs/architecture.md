@@ -131,6 +131,7 @@ alphagenome = "gfl_plugin_alphagenome.plugin:AlphaGenomePlugin"
 depmap = "gfl_plugin_depmap.plugin:DepMapPlugin"
 rfo = "gfl_plugin_rfo.plugin:RFOptimizationPlugin"
 bgc = "gfl_plugin_bgc.plugin:BGCPlugin"
+jev = "gfl_plugin_jev.plugin:JevDecisionPlugin"
 clawbio = "gfl_plugin_clawbio.plugin:ClawBioPlugin"
 ```
 

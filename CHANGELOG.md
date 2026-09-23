@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Jev & AnyJev Discrete Decision Architecture (`gfl-plugin-jev`)**:
+  - Added `DecisionStrategy` enum (`PERMUTATION_INVARIANT_LOGITS`, `CALIBRATED_TEMPERATURE`, `EXACT_MATCH_PRIOR`, `ENSEMBLE_MARGINALIZED`).
+  - Added `DecisionOption`, `DecisionOutcome`, and `DecisionContract` dataclasses for fast Neural System 1 discrete arbitration.
+  - Implemented decoupled satellite plugin `gfl-plugin-jev` (`JevDecisionPlugin`) providing permutation-invariant logit evaluation, temperature calibration, ambiguity escalation gates, and fast candidate pre-screening to prevent unnecessary GPU consumption before heavy System 2 structural runs (e.g. AlphaFold3/RoseTTAFold3).
 - **Biosynthetic Gene Cluster & Megasynthase Domain Architecture (`gfl-plugin-bgc`)**:
   - Added `BiosyntheticDomainType` enum representing modular enzymatic domains (PKS: `KS`, `AT`, `KR`, `DH`, `ER`, `ACP`, `TE`; NRPS: `CONDENSATION`, `ADENYLATION`, `THIOLATION`, `EPIMERIZATION`, `CYCLIZATION`).
   - Added `MegasynthaseDomain`, `MegasynthaseModule`, and `BGCAssemblyContract` dataclasses for multi-domain enzyme complexes (~2,500+ AA).

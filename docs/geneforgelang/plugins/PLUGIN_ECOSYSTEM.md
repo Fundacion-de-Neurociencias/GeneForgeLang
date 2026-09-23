@@ -62,7 +62,14 @@ In accordance with GFL's lightweight core philosophy, domain-specific deep learn
    - **Cross-Domain Scoring**: Evaluates catalytic succession and inter-domain linker transitions.
    - **Entry Point**: `geneforgelang.plugins -> bgc = gfl_plugin_bgc.plugin:BGCPlugin`
 
-5. **`gfl-plugin-clawbio` (Stress Testing & Biological Resilience)**:
+5. **`gfl-plugin-jev` (TypeSafe Discrete Decision Models & Fast Pre-Screening)**:
+   - **Origin**: Inspired by Diogo Almeida (Jev / TypeSafe AI) & AnyJev (Nokia).
+   - **Role**: High-speed, training-free discrete option arbitration and candidate pre-screening (Neural System 1).
+   - **Permutation Invariance & Calibration**: Eliminates LLM recency/primacy bias through cyclic option permutation averaging and temperature-scaled confidence calibration ($P \in [0, 1]$).
+   - **Ambiguity Escalation Gate**: Flags borderline probability gaps (`is_ambiguous = True`) to immediately escalate to GFL formal semantic arbitration (System 2) without wasting GPU cycles.
+   - **Entry Point**: `geneforgelang.plugins -> jev = gfl_plugin_jev.plugin:JevDecisionPlugin`
+
+6. **`gfl-plugin-clawbio` (Stress Testing & Biological Resilience)**:
    - **Role**: Audits biological hypotheses under adversarial perturbations, noise injection, and extreme parameter boundaries.
    - **Entry Point**: `geneforgelang.plugins -> clawbio = gfl_plugin_clawbio.plugin:ClawBioPlugin`
 

@@ -886,6 +886,84 @@ class BGCAssemblyContract:
         }
 
 
+class DecisionStrategy(str, Enum):
+    """Decision strategies for discrete option selection and pre-screening (System 1)."""
+
+    PERMUTATION_INVARIANT_LOGITS = "permutation_invariant_logits"  # AnyJev style cyclic option permutation
+    CALIBRATED_TEMPERATURE = "calibrated_temperature"  # Temperature-scaled confidence calibration
+    EXACT_MATCH_PRIOR = "exact_match_prior"  # Deterministic schema prior match
+    ENSEMBLE_MARGINALIZED = "ensemble_marginalized"  # Marginalized over permutation distribution
+
+    def __str__(self) -> str:
+        """Return the enum value as string."""
+        return self.value
+
+
+@dataclass
+class DecisionOption:
+    """An option candidate evaluated during discrete decision selection."""
+
+    option_id: str
+    label: str
+    raw_score: float = 0.0
+    calibrated_probability: float = 0.0
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "option_id": self.option_id,
+            "label": self.label,
+            "raw_score": self.raw_score,
+            "calibrated_probability": self.calibrated_probability,
+            "metadata": self.metadata,
+        }
+
+
+@dataclass
+class DecisionOutcome:
+    """Result of a fast discrete decision evaluation (System 1)."""
+
+    selected_option_id: str
+    confidence: float
+    is_ambiguous: bool
+    options_evaluated: list[DecisionOption]
+    calibration_method: str = "temperature_scaling"
+    latency_ms: float = 0.0
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "selected_option_id": self.selected_option_id,
+            "confidence": self.confidence,
+            "is_ambiguous": self.is_ambiguous,
+            "options_evaluated": [opt.to_dict() for opt in self.options_evaluated],
+            "calibration_method": self.calibration_method,
+            "latency_ms": self.latency_ms,
+        }
+
+
+@dataclass
+class DecisionContract:
+    """Formal IO contract for pre-screening routing and discrete option arbitration."""
+
+    task_id: str
+    allowed_options: list[str]
+    confidence_threshold: float = 0.85
+    fallback_strategy: str = "ESCALATE_TO_SYSTEM2"
+    strategy: DecisionStrategy = DecisionStrategy.PERMUTATION_INVARIANT_LOGITS
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "task_id": self.task_id,
+            "allowed_options": self.allowed_options,
+            "confidence_threshold": self.confidence_threshold,
+            "fallback_strategy": self.fallback_strategy,
+            "strategy": str(self.strategy),
+        }
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -898,6 +976,7 @@ __all__ = [
     "CandidateStatus",
     "ConsensusModel",
     "BiosyntheticDomainType",
+    "DecisionStrategy",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -918,6 +997,9 @@ __all__ = [
     "MegasynthaseDomain",
     "MegasynthaseModule",
     "BGCAssemblyContract",
+    "DecisionOption",
+    "DecisionOutcome",
+    "DecisionContract",
     # Validation types
     "ValidationError",
     "ValidationResult",
