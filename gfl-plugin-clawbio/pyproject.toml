@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gfl-plugin-clawbio"
+version = "0.1.0"
+description = "GFL plugin adapters wrapping ClawBio bioinformatics skills — amputatable by design (ADR-0003)"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "GeneForgeLang Community"}
+]
+keywords = ["bioinformatics", "gfl", "clawbio", "genomics", "plugin"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+
+# ClawBio is an OPTIONAL runtime dependency — not required for the plugin to load
+# If clawbio is not installed, plugins degrade gracefully with a descriptive error
+dependencies = [
+    "geneforgelang>=2.0.0",
+]
+
+[project.optional-dependencies]
+clawbio = [
+    "clawbio>=0.5.2",
+]
+test = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]
+dev = [
+    "gfl-plugin-clawbio[test]",
+    "ruff",
+    "mypy",
+]
+
+[project.entry-points."gfl.plugins"]
+# GFL plugin registry discovery — installed automatically on `pip install`
+clawbio_pharmgx           = "gfl_plugin_clawbio.pharmgx:PharmGxPlugin"
+clawbio_crispr_screen     = "gfl_plugin_clawbio.crispr_screen:CrisprScreenPlugin"
+clawbio_rnaseq_de         = "gfl_plugin_clawbio.rnaseq_de:RnaseqDEPlugin"
+clawbio_gwas_lookup       = "gfl_plugin_clawbio.gwas_lookup:GwasLookupPlugin"
+
+[project.urls]
+Repository = "https://github.com/GeneForgeLang/gfl-plugin-clawbio"
+"ClawBio upstream" = "https://github.com/ClawBio/ClawBio"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gfl_plugin_clawbio*"]

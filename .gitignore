@@ -173,6 +173,14 @@ generar_*.py
 *_desde_*.py
 
 gfl-plugin-*
+!gfl-plugin-clawbio/
+!gfl-plugin-causal-evidence/
+!gfl-plugin-alphagenome/
+!gfl-plugin-depmap/
+!gfl-plugin-rfo/
+!gfl-plugin-bgc/
+pytest_output*.txt
+test_output_*/
 
 # Residual CI/CD logs and reports
 collect_output.txt

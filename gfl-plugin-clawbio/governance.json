@@ -1,0 +1,48 @@
+{
+  "plugin_name": "gfl-plugin-clawbio",
+  "plugin_version": "0.1.0",
+  "adr_reference": "ADR-0003",
+  "evaluation_date": "2026-06-13",
+  "evaluator": "GFL Governance — automated + manual review",
+
+  "dimensions": {
+    "irreducibility_depth": {
+      "score": 4,
+      "max": 5,
+      "rationale": "PharmGx, CRISPR Screen, RNA-seq DE, and GWAS Lookup represent domain-specific pipelines with established scientific standards (CPIC, DESeq2, GWAS Catalog) that cannot be expressed as simple metadata overlays on existing GFL primitives. The skill logic (star-allele calling, depletion z-score, DESeq2 normalisation, federated DB queries) is irreducible to existing GFL experiment/analyze blocks without losing scientific specificity. Score 4/5 because RNA-seq DE partially overlaps the existing differential strategy."
+    },
+    "ontological_neutrality": {
+      "score": 5,
+      "max": 5,
+      "rationale": "No plugin introduces new ontology terms into GFL core. Tools are registered by string name in the plugin registry. No causal claims, no inference rules, no contradiction policies are introduced. Plugins carry execution logic only. The GFL semantic lattice is untouched."
+    },
+    "provider_abstraction_purity": {
+      "score": 5,
+      "max": 5,
+      "rationale": "_clawbio_runner.py is the single boundary point. All four plugins call ClawBio exclusively via subprocess (never via Python import from geneforgelang modules). If clawbio is not installed, the runner returns a well-typed error DesignCandidate rather than crashing. The plugin compiles to GFL-native DesignCandidate and ExperimentResult objects — provider-neutral IR."
+    },
+    "primitive_necessity": {
+      "score": 4,
+      "max": 5,
+      "rationale": "PharmGx and GWAS Lookup require the plugin system to express tool identities (clawbio_pharmgx, clawbio_gwas_lookup) that the validator currently rejects with SEMANTIC003. This demonstrates genuine primitive necessity: the plugin registry must be the authoritative source of valid tools, not a hardcoded list in the validator. Score 4/5 because one plugin (RnaseqDEPlugin) could theoretically use an existing analyze block with only configuration changes."
+    },
+    "sunsetability_confidence": {
+      "score": 5,
+      "max": 5,
+      "rationale": "Physical excision test: removing gfl_plugin_clawbio/ entirely leaves zero residue in geneforgelang/. No core module imports gfl_plugin_clawbio. No ADR, governance rule, or semantic invariant references ClawBio. The plugin is discovered only at runtime via entry_points. Sunset procedure: pip uninstall gfl-plugin-clawbio. Done."
+    }
+  },
+
+  "total_score": 23,
+  "max_score": 25,
+  "decision_threshold": 20,
+  "decision": "APPROVED — Normal Review Queue (score > 20)",
+
+  "constitutionality_checks": {
+    "core_contamination_free": true,
+    "reverse_contamination_free": true,
+    "physical_excision_safe": true,
+    "semantic_lattice_unchanged": true,
+    "parser_completeness_preserved": true
+  }
+}

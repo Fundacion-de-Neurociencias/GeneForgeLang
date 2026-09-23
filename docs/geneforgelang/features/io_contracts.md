@@ -27,16 +27,42 @@ experiment:
 
 ### Contract Components
 
-1. **Type**: Specifies the data type (e.g., FASTQ, BAM, CSV, JSON)
-2. **Attributes**: Optional metadata about the data (e.g., quality scores, paired-end status)
+1. **Type**: Specifies the data type (e.g., FASTQ, BAM, CSV, JSON, TENSOR)
+2. **Attributes**: Optional metadata about the data (e.g., quality scores, paired-end status, shape, coordinate frames)
 
 ## Available Data Types
 
 GeneForgeLang supports several built-in data types:
 
-- **Sequence Data**: FASTA, FASTQ, BAM, SAM, VCF
+- **Sequence & Alignment Data**: FASTA, FASTQ, BAM, SAM, VCF
+- **Geometric & Structural AI Tensors (BioTorch / AlphaFold / ESMFold)**:
+  - `TENSOR`: Generalized biological multi-dimensional arrays
+  - `DISTANCE_MATRIX`: Pairwise inter-residue distance tensors $[N, N]$
+  - `BACKBONE_FRAMES`: Rigid-body rotations and translations in $SE(3)$ or $SO(3)$ $[N, 3, 3]$
+  - `CONTACT_MAP`: Binary or probabilistic spatial contact grids $[N, N]$
+  - `SEQUENCE_EMBEDDING`: Latent representations from biological foundation models $[N, D]$
+  - `ATTENTION_MAP`: Cross-attention or self-attention matrix tensors $[H, N, N]$
 - **General Data**: CSV, JSON, TEXT, BINARY
 - **Custom Types**: User-defined types via schema registry
+
+### Geometric Tensor Contracts (`TensorContract`)
+
+For structural biology and deep learning pipelines, GFL provides specialized `TensorContract` definitions specifying invariant dimensions, shape symbols, and coordinate frames:
+
+```yaml
+experiment:
+  tool: BioTorchGeometryEngine
+  type: structural_inference
+  contract:
+    outputs:
+      backbone_coordinates:
+        type: BACKBONE_FRAMES
+        attributes:
+          shape: ["batch", "residues", 3, 3]
+          coordinate_frame: "SE3"
+          invariant_dimensions: ["batch"]
+          dtype: "float32"
+```
 
 ## Example Usage
 

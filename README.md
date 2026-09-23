@@ -14,9 +14,9 @@
 
 GFL v2.0 is a **next-generation domain-specific language** for computational biology that enables researchers to reason across multiple omics layers while maintaining spatial genomic context. Building on declarative workflow capabilities, v2.0 introduces comprehensive multi-omic integration, spatial genomic reasoning, and guided discovery frameworks.
 
-> ⚡ **Pilar Bio-Termodinámico Fundamental**:  
-> *"El metabolismo es el impuesto termodinámico global que paga el organismo por su orden local."*  
-> En GFL, el costo metabólico y la disipación entrópica global son restricciones de primer orden frente a cualquier reducción de entropía o síntesis de orden biológico local.
+> ⚡ **Fundamental Bio-Thermodynamic Pillar**:
+> *"Metabolism is the global thermodynamic tax that the organism pays for its local order."*
+> In GFL, metabolic cost and global entropic dissipation are first-order constraints against any local entropy reduction or biological order synthesis.
 
 ## 🚀 **New in v2.0 - Multi-Omic Capabilities**
 
@@ -41,29 +41,25 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 - **📋 Rule-Based Logic**: Complex biological constraint expression
 - **🎭 Simulation Framework**: What-if analysis and hypothesis testing
 
-### **Privacy-Preserving Bio-Skills**
+### **Structural Bio-AI, Consensus & Borderline Rescue**
+
+- **🔬 BGC & Megasynthase Assembly Lines**: Multi-domain modular enzyme complex validation (PKS, NRPS, hybrid megasynthases, ~2,500+ AA) to explore non-natural chemical space (e.g. $\delta$-valerolactam nylon precursors) inspired by gLM2
+- **🎯 RFOptimization & Near-Miss Rescue**: Classification of borderline candidates (`NEAR_MISS`) and alternating gradient-guided simulated MCMC mutations + discrete resampling
+- **⚖️ Tri-Model Consensus Screening**: Independent cross-model validation (AlphaFold 3, RoseTTAFold 3, Boltz-1) with strict filtering gates ($iPAE < 2.5, iPTM > 0.8$)
+- **📐 BioTorch Tensor Contracts**: Formal geometry and tensor representations with coordinate frames ($SE(3)$, $SO(3)$, `local_residue_frame`) and invariant dimensions
+- **🛑 DepMap CRISPR Stop-Gates**: Empirical epistemic stopping gates based on Broad DepMap Public co-dependency and statistical significance
+- **🔬 Google DeepMind AlphaGenome**: 18-modality unified variant impact scoring (AVI Score) and regulatory motif disruption analysis
+
+### **Privacy-Preserving Bio-Skills & Governance**
 
 - **🧬 Local Bioinformatics**: High-precision analysis running 100% locally
 - **✅ Scientific Reproducibility**: Automatic generation of Reproducibility Packages (hashes, timestamps, versions)
 - **🧠 Clinical Neuro-Skills**: Specialized skills for PharmGx, Geriatric Risk, and NutriGx
-- **🛡️ Data Sovereignty**: Genome-scale analysis without cloud dependencies or LLM hallucinations
+- **🛡️ Data Sovereignty & Biosecurity**: Provenance, Consent, Jurisdiction, and Population equity tracking as first-class language semantics
 
-## 🌐 Open-Source and Universal
-GeneForgeLang is an **open-source project** dedicated to the entire scientific community. While it serves as the foundation for the GeneForge platform, its design and evolution are governed by universal biological principles, not by any specific commercial or execution environment.
+## Key Features
 
-*   **Universal Semantic Authority**: GFL defines the biological world independently of how it is executed.
-*   **Open to Everyone**: Anyone can implement a GFL-compatible runtime or contribute to the language specifications.
-*   **Decoupled Architecture**: Formal separation between Language Specification, Semantic Validation, and Execution Runtimes.
-
-## 📜 Formal Specifications
-To ensure consistency across the ecosystem, GFL maintains a set of formal specifications:
-*   **[Architectural Directive](docs/architecture/ARCHITECTURAL_DIRECTIVE.md)**: The foundational decoupling mandate.
-*   **[RFC Process](docs/rfc/README.md)**: Formal procedure for language evolution.
-*   [Causal Semantics](docs/spec/causal_semantics.md): Rules for biological transformations.
-*   [Biological State Space](docs/spec/state_space.md): Structural definition of the biological world.
-*   [Instruction Set](docs/spec/instruction_set.md): Primitive biological operations.
-*   [Execution Contract](docs/spec/execution_contract.md): Boundary between language and runtimes.
-*   [Versioning Policy](docs/spec/versioning_policy.md): How the language evolves.
+- **Declarative Syntax**: Clean, readable YAML-based workflow definitions
 - **Type Safety**: Strong typing system with comprehensive validation
 - **Plugin Architecture**: Extensible system for custom tools and algorithms
 - **Web Interface**: Modern web UI for workflow creation and management

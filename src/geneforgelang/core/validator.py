@@ -649,6 +649,13 @@ class EnhancedSemanticValidator:
             "VCF": ["VCF", "TEXT"],
             "CSV": ["CSV", "TEXT"],
             "JSON": ["JSON", "TEXT"],
+            # Biological Tensors & Geometric AI Representations
+            "TENSOR": ["TENSOR", "BINARY"],
+            "DISTANCE_MATRIX": ["DISTANCE_MATRIX", "TENSOR", "BINARY"],
+            "BACKBONE_FRAMES": ["BACKBONE_FRAMES", "TENSOR", "BINARY"],
+            "CONTACT_MAP": ["CONTACT_MAP", "TENSOR", "BINARY"],
+            "SEQUENCE_EMBEDDING": ["SEQUENCE_EMBEDDING", "TENSOR", "BINARY"],
+            "ATTENTION_MAP": ["ATTENTION_MAP", "TENSOR", "BINARY"],
         }
 
         if output_base_type in compatibility_rules:

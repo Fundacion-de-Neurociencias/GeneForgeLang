@@ -29,6 +29,14 @@ class DataType(str, Enum):
     SAM = "SAM"
     VCF = "VCF"
 
+    # Tensor and Geometric AI data types (BioTorch / Structural Biology AI)
+    TENSOR = "TENSOR"
+    DISTANCE_MATRIX = "DISTANCE_MATRIX"
+    BACKBONE_FRAMES = "BACKBONE_FRAMES"
+    CONTACT_MAP = "CONTACT_MAP"
+    SEQUENCE_EMBEDDING = "SEQUENCE_EMBEDDING"
+    ATTENTION_MAP = "ATTENTION_MAP"
+
     # General data types
     CSV = "CSV"
     JSON = "JSON"
@@ -65,6 +73,7 @@ class AnalysisStrategy(str, Enum):
     VARIANT = "variant"
     EXPRESSION = "expression"
     STRUCTURAL = "structural"
+    CONTRASTIVE_ALIGNMENT = "contrastive_alignment"
 
     def __str__(self) -> str:
         """Return the enum value as string."""
@@ -84,6 +93,44 @@ class IOContract:
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
         return {"type": self.type, "attributes": self.attributes}
+
+
+@dataclass
+class TensorContract(IOContract):
+    """Specialized IO contract for biological tensor operations and geometric representations.
+
+    Standardizes tensor shapes, invariant dimensions, and coordinate frames
+    inspired by BioTorch and structural biology foundation models (AlphaFold, ESMFold).
+    """
+
+    shape: list[str | int] = field(default_factory=list)
+    dtype: str = "float32"
+    coordinate_frame: str | None = None  # e.g., 'SE3', 'SO3', 'local_residue_frame'
+    invariant_dimensions: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        """Inject tensor attributes into base attributes dictionary."""
+        if not self.type:
+            self.type = DataType.TENSOR.value
+        self.attributes.setdefault("shape", self.shape)
+        self.attributes.setdefault("dtype", self.dtype)
+        if self.coordinate_frame:
+            self.attributes.setdefault("coordinate_frame", self.coordinate_frame)
+        if self.invariant_dimensions:
+            self.attributes.setdefault("invariant_dimensions", self.invariant_dimensions)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res = super().to_dict()
+        res.update(
+            {
+                "shape": self.shape,
+                "dtype": self.dtype,
+                "coordinate_frame": self.coordinate_frame,
+                "invariant_dimensions": self.invariant_dimensions,
+            }
+        )
+        return res
 
 
 @dataclass
@@ -296,7 +343,7 @@ class GFLAST:
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation for backward compatibility."""
-        result = {}
+        result: dict[str, Any] = {}
         if self.experiment is not None:
             result["experiment"] = self.experiment.to_dict()
         if self.analyze is not None:
@@ -399,18 +446,478 @@ class GFLAST:
         return ast
 
 
+# AlphaGenome Atlas and Variant Impact Types
+class AviModality(str, Enum):
+    """The 18 biological feature attribution modalities defined in AlphaGenome Atlas."""
+
+    SPLICING = "Splicing"
+    ALPHAMISSENSE = "AlphaMissense"
+    CHIP_TF = "ChIP-TF"
+    DNASE_SEQ = "DNASE-seq"
+    CACTUS_241_WAY = "Cactus"
+    RNA_SEQ = "RNA-seq"
+    HISTONE_CHIP = "Histone-ChIP"
+    SPLICE_JUNCTIONS = "Splice-Junctions"
+    SPLICE_SITE_USAGE = "Splice-Site-Usage"
+    SPLICE_SITES = "Splice-Sites"
+    CAGE = "CAGE"
+    PRO_SEQ = "PRO-seq"
+    RAMPAGE = "RAMPAGE"
+    MICRO_C = "Micro-C"
+    HI_C = "Hi-C"
+    ATAC_SEQ = "ATAC-seq"
+    MOTIF_DISRUPTION = "Motif-Disruption"
+    EVOLUTIONARY_CONSERVATION = "Evolutionary-Conservation"
+
+    def __str__(self) -> str:
+        """Return enum value."""
+        return self.value
+
+
+@dataclass
+class AviScore:
+    """AlphaGenome Variant Impact (AVI) score representation."""
+
+    phred: float
+    raw: float
+    quantile: float
+    top_percentile: float
+    top_modality: str
+    top_feature_importance: float = 0.0
+    feature_importances: dict[str, float] = field(default_factory=dict)
+
+    @property
+    def is_high_impact(self) -> bool:
+        """Check if variant falls into high impact tier (Phred >= 20, top 1%)."""
+        return self.phred >= 20.0
+
+    @property
+    def is_ultra_rare_impact(self) -> bool:
+        """Check if variant falls into ultra-high impact tier (Phred >= 40, top 0.01%)."""
+        return self.phred >= 40.0
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "phred": self.phred,
+            "raw": self.raw,
+            "quantile": self.quantile,
+            "top_percentile": self.top_percentile,
+            "top_modality": self.top_modality,
+            "top_feature_importance": self.top_feature_importance,
+            "feature_importances": self.feature_importances,
+            "is_high_impact": self.is_high_impact,
+            "is_ultra_rare_impact": self.is_ultra_rare_impact,
+        }
+
+
+@dataclass
+class RegulatoryMotifAnnotation:
+    """Regulatory DNA motif disruption or binding annotation."""
+
+    motif_id: str
+    motif_name: str
+    chromosome: str
+    position: int
+    strand: str = "+"
+    affinity_change: float = 0.0
+    transcription_factors: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "motif_id": self.motif_id,
+            "motif_name": self.motif_name,
+            "chromosome": self.chromosome,
+            "position": self.position,
+            "strand": self.strand,
+            "affinity_change": self.affinity_change,
+            "transcription_factors": self.transcription_factors,
+        }
+
+
+@dataclass
+class VariantImpact:
+    """Genomic variant with AlphaGenome Atlas impact annotations."""
+
+    variant_str: str  # 1-based format chr:pos:ref>alt
+    chromosome: str
+    position: int
+    ref: str
+    alt: str
+    avi_score: AviScore | None = None
+    regulatory_motifs: list[RegulatoryMotifAnnotation] = field(default_factory=list)
+    atlas_url: str | None = None
+
+    def __post_init__(self) -> None:
+        """Construct atlas URL if missing."""
+        if not self.atlas_url and self.variant_str:
+            self.atlas_url = f"https://deepmind.google.com/science/alphagenome/atlas/variant/{self.variant_str}"
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "variant": self.variant_str,
+            "chromosome": self.chromosome,
+            "position": self.position,
+            "ref": self.ref,
+            "alt": self.alt,
+            "avi_score": self.avi_score.to_dict() if self.avi_score else None,
+            "regulatory_motifs": [m.to_dict() for m in self.regulatory_motifs],
+            "atlas_url": self.atlas_url,
+        }
+
+
+# DepMap and Causal Transition Graph Types
+class CoDependencyTier(str, Enum):
+    """Co-dependency strength tiers for CRISPR screens."""
+
+    HIGH = "HIGH"
+    MODERATE = "MODERATE"
+    WEAK = "WEAK"
+    NONE = "NONE"
+
+    def __str__(self) -> str:
+        """Return string value."""
+        return self.value
+
+
+class CausalLevel(str, Enum):
+    """Biological abstraction levels in causal transition graph."""
+
+    PHENOTYPIC = "PHENOTYPIC"
+    CELLULAR = "CELLULAR"
+    MOLECULAR = "MOLECULAR"
+    ATOMIC = "ATOMIC"
+
+    def __str__(self) -> str:
+        """Return string value."""
+        return self.value
+
+
+@dataclass
+class DepMapCoDependency:
+    """CRISPR DepMap functional co-dependency between two genes."""
+
+    gene_a: str
+    gene_b: str
+    correlation_score: float
+    p_value: float
+    codependency_tier: CoDependencyTier = CoDependencyTier.NONE
+    screen_type: str = "CRISPR_DepMap_Public"
+
+    def __post_init__(self) -> None:
+        """Infer tier from correlation score if not set."""
+        if self.codependency_tier == CoDependencyTier.NONE and self.correlation_score > 0.0:
+            if self.correlation_score >= 0.5:
+                self.codependency_tier = CoDependencyTier.HIGH
+            elif self.correlation_score >= 0.3:
+                self.codependency_tier = CoDependencyTier.MODERATE
+            elif self.correlation_score >= 0.1:
+                self.codependency_tier = CoDependencyTier.WEAK
+
+    @property
+    def is_significant(self) -> bool:
+        """Check if correlation is statistically significant (p < 0.05)."""
+        return self.p_value < 0.05 and self.correlation_score > 0.0
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "gene_a": self.gene_a,
+            "gene_b": self.gene_b,
+            "correlation_score": self.correlation_score,
+            "p_value": self.p_value,
+            "codependency_tier": str(self.codependency_tier),
+            "screen_type": self.screen_type,
+            "is_significant": self.is_significant,
+        }
+
+
+@dataclass
+class CausalTransitionNode:
+    """Formal representation of a biological causal transition node."""
+
+    node_id: str
+    level: CausalLevel
+    entity_name: str
+    biological_state: str
+    confidence: float = 1.0
+    evidence_sources: list[str] = field(default_factory=list)
+    incoming_edges: list[str] = field(default_factory=list)
+    outgoing_edges: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "node_id": self.node_id,
+            "level": str(self.level),
+            "entity_name": self.entity_name,
+            "biological_state": self.biological_state,
+            "confidence": self.confidence,
+            "evidence_sources": self.evidence_sources,
+            "incoming_edges": self.incoming_edges,
+            "outgoing_edges": self.outgoing_edges,
+        }
+
+
+class CandidateStatus(str, Enum):
+    """Lifecycle status of a generated biological design candidate (inspired by RFOptimization)."""
+
+    VALIDATED = "validated"
+    NEAR_MISS = "near_miss"
+    REJECTED = "rejected"
+    OPTIMIZED = "optimized"
+
+    def __str__(self) -> str:
+        """Return the enum value as string."""
+        return self.value
+
+
+class ConsensusModel(str, Enum):
+    """Structural and sequence foundation models for multi-model consensus validation."""
+
+    AF3 = "alphafold3"
+    RF3 = "rosettafold3"
+    BOLTZ = "boltz1"
+    PROTEIN_MPNN = "protein_mpnn"
+    LIGAND_MPNN = "ligand_mpnn"
+
+    def __str__(self) -> str:
+        """Return the enum value as string."""
+        return self.value
+
+
+@dataclass
+class MultiModelConsensus:
+    """Cross-model consensus validation metrics (Baker Lab 2026 RFO consensus).
+
+    Evaluates structural predictions across independent models (AF3, RF3, Boltz)
+    to eliminate single-predictor over-fitting.
+    """
+
+    af3_iptm: float | None = None
+    af3_ipae: float | None = None
+    rf3_confidence: float | None = None
+    boltz_confidence: float | None = None
+    plddt_mean: float | None = None
+
+    def passes_consensus(
+        self,
+        min_iptm: float = 0.8,
+        max_ipae: float = 2.5,
+        min_confidence: float = 0.8,
+    ) -> bool:
+        """Check if candidate satisfies the rigorous three-model consensus thresholds."""
+        if self.af3_iptm is not None and self.af3_iptm < min_iptm:
+            return False
+        if self.af3_ipae is not None and self.af3_ipae > max_ipae:
+            return False
+        if self.rf3_confidence is not None and self.rf3_confidence < min_confidence:
+            return False
+        if self.boltz_confidence is not None and self.boltz_confidence < min_confidence:
+            return False
+        return True
+
+    def is_near_miss(
+        self,
+        iptm_threshold: float = 0.8,
+        ipae_threshold: float = 2.5,
+        margin: float = 0.15,
+    ) -> bool:
+        """Determine if candidate is near the decision boundary and eligible for rescue."""
+        if self.passes_consensus(min_iptm=iptm_threshold, max_ipae=ipae_threshold):
+            return False
+
+        # Check if borderline near pass threshold
+        borderline_iptm = self.af3_iptm is not None and (iptm_threshold - margin) <= self.af3_iptm < iptm_threshold
+        borderline_ipae = self.af3_ipae is not None and ipae_threshold < self.af3_ipae <= (
+            ipae_threshold + margin * 2.0
+        )
+        return borderline_iptm or borderline_ipae
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "af3_iptm": self.af3_iptm,
+            "af3_ipae": self.af3_ipae,
+            "rf3_confidence": self.rf3_confidence,
+            "boltz_confidence": self.boltz_confidence,
+            "plddt_mean": self.plddt_mean,
+            "passes_consensus": self.passes_consensus(),
+            "is_near_miss": self.is_near_miss(),
+        }
+
+
+@dataclass
+class RescuePolicy:
+    """Policy for rescuing borderline near-miss candidates via alternating gradient-guided search."""
+
+    max_cycles: int = 3
+    near_miss_margin: float = 0.15
+    iptm_threshold: float = 0.8
+    ipae_threshold: float = 2.5
+    consensus_models: list[ConsensusModel] = field(
+        default_factory=lambda: [ConsensusModel.AF3, ConsensusModel.RF3, ConsensusModel.BOLTZ]
+    )
+    strategy: str = "gradient_guided_mcmc"
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "max_cycles": self.max_cycles,
+            "near_miss_margin": self.near_miss_margin,
+            "iptm_threshold": self.iptm_threshold,
+            "ipae_threshold": self.ipae_threshold,
+            "consensus_models": [str(m) for m in self.consensus_models],
+            "strategy": self.strategy,
+        }
+
+
+class BiosyntheticDomainType(str, Enum):
+    """Enzymatic domain types in modular megasynthases (PKS, NRPS, and hybrid BGCs)."""
+
+    # Polyketide Synthase (PKS) domains
+    KS = "KS"  # Ketosynthase (condensation)
+    AT = "AT"  # Acyltransferase (substrate loading/selection)
+    KR = "KR"  # Ketoreductase (beta-keto reduction)
+    DH = "DH"  # Dehydratase (hydroxyl dehydration to double bond)
+    ER = "ER"  # Enoylreductase (double bond reduction to single bond)
+    ACP = "ACP"  # Acyl carrier protein (phosphopantetheine arm tether)
+    TE = "TE"  # Thioesterase (chain termination/release/cyclization)
+
+    # Non-Ribosomal Peptide Synthetase (NRPS) domains
+    CONDENSATION = "CONDENSATION"  # C domain: amide bond formation
+    ADENYLATION = "ADENYLATION"  # A domain: amino/carboxylic acid activation
+    THIOLATION = "THIOLATION"  # T / PCP domain: peptidyl carrier protein
+    EPIMERIZATION = "EPIMERIZATION"  # E domain: D/L chiral inversion
+    CYCLIZATION = "CYCLIZATION"  # Cy domain: heterocyclic ring formation
+
+    # Tailoring / Specialized domains
+    METHYLTRANSFERASE = "METHYLTRANSFERASE"  # MT (C-MT, O-MT, N-MT)
+    OXYGENASE = "OXYGENASE"
+    HALOGENASE = "HALOGENASE"
+    CUSTOM = "CUSTOM"
+
+    def __str__(self) -> str:
+        """Return the enum value as string."""
+        return self.value
+
+
+@dataclass
+class MegasynthaseDomain:
+    """Individual enzymatic domain within a modular megasynthase."""
+
+    domain_id: str
+    domain_type: BiosyntheticDomainType
+    start_pos: int
+    end_pos: int
+    substrate_specificity: str | None = None
+    stereochemistry: str | None = None
+    sequence_slice: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "domain_id": self.domain_id,
+            "domain_type": str(self.domain_type),
+            "start_pos": self.start_pos,
+            "end_pos": self.end_pos,
+            "substrate_specificity": self.substrate_specificity,
+            "stereochemistry": self.stereochemistry,
+            "sequence_slice": self.sequence_slice,
+            "metadata": self.metadata,
+        }
+
+
+@dataclass
+class MegasynthaseModule:
+    """Modular unit in an enzymatic assembly line performing an elongation or loading cycle."""
+
+    module_index: int
+    domains: list[MegasynthaseDomain]
+    elongation_substrate: str | None = None
+    is_loading: bool = False
+    is_termination: bool = False
+
+    def has_domain(self, domain_type: BiosyntheticDomainType) -> bool:
+        """Check if module contains a domain of specified type."""
+        return any(d.domain_type == domain_type for d in self.domains)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "module_index": self.module_index,
+            "domains": [d.to_dict() for d in self.domains],
+            "elongation_substrate": self.elongation_substrate,
+            "is_loading": self.is_loading,
+            "is_termination": self.is_termination,
+        }
+
+
+@dataclass
+class BGCAssemblyContract:
+    """Formal specification and validation contract for Biosynthetic Gene Clusters and Megasynthases."""
+
+    cluster_id: str
+    cluster_type: str  # e.g., "PKS_TYPE_I", "NRPS", "PKS_NRPS_HYBRID"
+    target_chemical_product: str  # Target molecule (e.g., "delta-valerolactam")
+    modules: list[MegasynthaseModule]
+    cross_domain_compatibility_score: float = 1.0
+    validation_status: str = "PENDING"
+    notes: str | None = None
+
+    def total_domains(self) -> int:
+        """Return total domain count across all modules."""
+        return sum(len(m.domains) for m in self.modules)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "cluster_id": self.cluster_id,
+            "cluster_type": self.cluster_type,
+            "target_chemical_product": self.target_chemical_product,
+            "modules": [m.to_dict() for m in self.modules],
+            "total_domains": self.total_domains(),
+            "cross_domain_compatibility_score": self.cross_domain_compatibility_score,
+            "validation_status": self.validation_status,
+            "notes": self.notes,
+        }
+
+
 # Export all public types
 __all__ = [
     # Enums
+    "DataType",
     "ExperimentType",
     "AnalysisStrategy",
+    "AviModality",
+    "CoDependencyTier",
+    "CausalLevel",
+    "CandidateStatus",
+    "ConsensusModel",
+    "BiosyntheticDomainType",
     # Dataclasses
+    "IOContract",
+    "TensorContract",
+    "BlockContract",
     "ExperimentParams",
     "Experiment",
     "Analysis",
     "Design",
     "Optimize",
     "GFLAST",
+    "AviScore",
+    "RegulatoryMotifAnnotation",
+    "VariantImpact",
+    "DepMapCoDependency",
+    "CausalTransitionNode",
+    "MultiModelConsensus",
+    "RescuePolicy",
+    "MegasynthaseDomain",
+    "MegasynthaseModule",
+    "BGCAssemblyContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

@@ -228,7 +228,7 @@ class GFLBioSkill(BaseGFLPlugin):
     Enforces restricted JSON input/output, local data processing,
     and constructs a reproducibility package for every execution.
     Skills are runtime-agnostic: they can be consumed by any conformant
-    GFL downstream runtime (GeneForge, or any third-party implementation).
+    downstream runtime or third-party implementation.
     """
 
     @property
@@ -309,9 +309,6 @@ class GFLBioSkill(BaseGFLPlugin):
 
 # Deprecated alias — kept for backward compatibility, will be removed in GFL v3.
 # New code should subclass GFLBioSkill directly.
-GeneForgeSkill = GFLBioSkill
-
-
 @dataclass
 class PluginInfo:
     """Enhanced information about a registered plugin."""

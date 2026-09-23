@@ -23,6 +23,29 @@ tokenizer = AutoTokenizer.from_pretrained("nferruz/ProtGPT2", do_lower_case=Fals
 tokenizer.pad_token = tokenizer.eos_token
 model = AutoModelForCausalLM.from_pretrained("nferruz/ProtGPT2")
 
+AMINO_ACID_MW = {
+    "A": 89.1,
+    "C": 121.2,
+    "D": 133.1,
+    "E": 147.1,
+    "F": 165.2,
+    "G": 75.1,
+    "H": 155.2,
+    "I": 131.2,
+    "K": 146.2,
+    "L": 131.2,
+    "M": 149.2,
+    "N": 132.1,
+    "P": 115.1,
+    "Q": 146.2,
+    "R": 174.2,
+    "S": 105.1,
+    "T": 119.1,
+    "V": 117.1,
+    "W": 204.2,
+    "Y": 181.2,
+}
+
 
 def generate_protein_and_props(phrase):
     seed = phrase_to_seed(phrase)
@@ -49,33 +72,7 @@ def generate_protein_and_props(phrase):
     length = len(seq)
     aa_count = {aa: seq.count(aa) for aa in "ACDEFGHIKLMNPQRSTVWY"}
     charge = sum([aa_count.get(a, 0) for a in "KR"]) - sum([aa_count.get(a, 0) for a in "DE"])
-    mw = sum(
-        [
-            aa_count[a] * w
-            for a, w in {
-                "A": 89.1,
-                "C": 121.2,
-                "D": 133.1,
-                "E": 147.1,
-                "F": 165.2,
-                "G": 75.1,
-                "H": 155.2,
-                "I": 131.2,
-                "K": 146.2,
-                "L": 131.2,
-                "M": 149.2,
-                "N": 132.1,
-                "P": 115.1,
-                "Q": 146.2,
-                "R": 174.2,
-                "S": 105.1,
-                "T": 119.1,
-                "V": 117.1,
-                "W": 204.2,
-                "Y": 181.2,
-            }.items()
-        ]
-    )
+    mw = sum(aa_count.get(a, 0) * w for a, w in AMINO_ACID_MW.items())
 
     props = f"🧪 Seed: {seed}\n🧬 Protein: {seq}\n\n🔬 Properties:\n- Length: {length} aa\n- Charge: {charge}\n- MW: {mw:.1f} Da"
 

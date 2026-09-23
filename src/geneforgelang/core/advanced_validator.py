@@ -1,8 +1,10 @@
 import json
+from pathlib import Path
 
 
 def validate_with_rules(ast):
-    with open("rules.json", encoding="utf-8-sig") as f:
+    rules_path = Path(__file__).resolve().parent.parent.parent / "rules.json"
+    with open(rules_path, encoding="utf-8-sig") as f:
         rules = json.load(f)
 
     for entry in ast:

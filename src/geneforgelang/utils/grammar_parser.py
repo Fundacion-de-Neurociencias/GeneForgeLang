@@ -417,8 +417,27 @@ class AdvancedGFLParser:
     def p_value(self, p):
         """value : expression
         | object_literal
-        | array_literal"""
+        | array_literal
+        | function_call"""
         p[0] = p[1]
+
+    def p_function_call(self, p):
+        """function_call : IDENTIFIER LPAREN expression_list RPAREN
+        | IDENTIFIER LPAREN RPAREN"""
+        if len(p) == 5:
+            p[0] = {
+                "type": "function_call",
+                "function": p[1],
+                "arguments": p[3],
+                "location": self._get_location(p, 1),
+            }
+        else:
+            p[0] = {
+                "type": "function_call",
+                "function": p[1],
+                "arguments": [],
+                "location": self._get_location(p, 1),
+            }
 
     def p_object_literal(self, p):
         """object_literal : LBRACE property_list RBRACE
@@ -547,6 +566,7 @@ class AdvancedGFLParser:
 
     def p_atom(self, p):
         """atom : LPAREN expression RPAREN
+        | function_call
         | literal
         | IDENTIFIER"""
         if len(p) == 4:

@@ -504,3 +504,69 @@ class TestTypesPerformance:
         # Should complete quickly
         assert end_time - start_time < 1.0  # Less than 1 second
         assert len(result["experiment"]["params"]) >= 1000
+
+
+class TestBioTensorContracts:
+    """Test BioTorch-inspired biological tensor contracts and operations."""
+
+    def test_tensor_contract_initialization(self):
+        """Verify TensorContract creates typed attributes and validates correctly."""
+        from geneforgelang.core.gftypes import DataType, TensorContract
+
+        contract = TensorContract(
+            type=DataType.DISTANCE_MATRIX.value,
+            shape=["N", "N"],
+            dtype="float32",
+            coordinate_frame="SE3",
+            invariant_dimensions=["N"],
+        )
+        assert contract.type == DataType.DISTANCE_MATRIX.value
+        assert contract.shape == ["N", "N"]
+        assert contract.attributes["coordinate_frame"] == "SE3"
+        d = contract.to_dict()
+        assert d["shape"] == ["N", "N"]
+        assert d["dtype"] == "float32"
+
+    def test_pairwise_distances_and_contact_map(self):
+        """Verify 3D coordinate distance and contact matrix computation."""
+        import numpy as np
+        from geneforgelang.core.api import compute_contact_map, compute_pairwise_distances
+
+        # 3 residues in a line spaced by 3.8 Angstroms (typical C-alpha spacing)
+        ca_coords = np.array([[0.0, 0.0, 0.0], [3.8, 0.0, 0.0], [7.6, 0.0, 0.0]])
+        dist = compute_pairwise_distances(ca_coords)
+
+        assert dist.shape == (3, 3)
+        assert np.isclose(dist[0, 0], 0.0, atol=1e-4)
+        assert np.isclose(dist[0, 1], 3.8, atol=1e-2)
+        assert np.isclose(dist[0, 2], 7.6, atol=1e-2)
+
+        # Contact map at 5.0 Angstrom threshold (0-1 and 1-2 in contact, 0-2 not in contact)
+        cmap = compute_contact_map(ca_coords, threshold=5.0)
+        assert cmap[0, 1] == 1.0
+        assert cmap[1, 2] == 1.0
+        assert cmap[0, 2] == 0.0
+
+    def test_backbone_frames_construction(self):
+        """Verify SE(3) rigid frame reconstruction and local point transformation."""
+        import numpy as np
+        from geneforgelang.core.api import (
+            construct_backbone_frames,
+            transform_points_to_local_frames,
+        )
+
+        n = np.array([[-1.0, 1.0, 0.0]])
+        ca = np.array([[0.0, 0.0, 0.0]])
+        c = np.array([[1.0, 0.0, 0.0]])
+
+        rots, trans = construct_backbone_frames(n, ca, c)
+        assert rots.shape == (1, 3, 3)
+        assert trans.shape == (1, 3)
+
+        # Orthonormality check: R^T * R = I
+        r = rots[0]
+        assert np.allclose(r.T @ r, np.eye(3), atol=1e-4)
+
+        # Local frame transform of CA must be origin (0, 0, 0)
+        local_ca = transform_points_to_local_frames(ca, rots, trans)
+        assert np.allclose(local_ca, np.zeros((1, 3)), atol=1e-4)
