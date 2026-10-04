@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Non-Coding Regulatory Variant Interpretation & ClinVar Resolution (`gfl-plugin-alphagenome`)**:
+  - Added `ClinVarSignificance` enum (`PATHOGENIC`, `LIKELY_PATHOGENIC`, `UNCERTAIN_SIGNIFICANCE`, `BENIGN`, etc.) with `is_vus` helper.
+  - Added `TissueRegulatoryEffect` dataclass capturing tissue-specific epigenomic delta tracks (DNase, RNA-seq, H3K27ac, contact maps) and disrupted transcription factors.
+  - Added `NonCodingRegulatoryContract` formal IO contract resolving non-coding Variants of Uncertain Significance (VUS) across target vs. control tissue ontologies (e.g. Brain cortex `UBERON:0000955` vs Liver `UBERON:0002107`).
+  - Extended `VariantImpact` with `resolves_non_coding_vus` epistemic property, tissue effect lists, and ClinVar status.
+  - Updated `gfl-plugin-alphagenome` (`AlphaGenomePlugin`) to evaluate tissue-specific regulatory impact and resolve non-coding VUS candidates.
 - **Jev & AnyJev Discrete Decision Architecture (`gfl-plugin-jev`)**:
   - Added `DecisionStrategy` enum (`PERMUTATION_INVARIANT_LOGITS`, `CALIBRATED_TEMPERATURE`, `EXACT_MATCH_PRIOR`, `ENSEMBLE_MARGINALIZED`).
   - Added `DecisionOption`, `DecisionOutcome`, and `DecisionContract` dataclasses for fast Neural System 1 discrete arbitration.

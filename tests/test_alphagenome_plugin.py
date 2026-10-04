@@ -1,24 +1,27 @@
-"r""Tests for AlphaGenome Atlas GFL Integration and Plugin."""
+"r" "Tests for AlphaGenome Atlas GFL Integration and Plugin." ""
 
 import os
 import sys
+
 import pytest
 
 sys.path.insert(0, os.path.abspath("src"))
 sys.path.insert(0, os.path.abspath("gfl-plugin-alphagenome"))
 
 from geneforgelang.core.gftypes import (
-AviModality,
-AviScore,
-RegulatoryMotifAnnotation as CoreMotifAnnotation,
-VariantImpact,
+    AviModality,
+    AviScore,
+    VariantImpact,
 )
-from gfl_plugin_alphagenome.plugin import (
-AlphaGenomePlugin,
-AviScoreResult,
-RegulatoryMotifAnnotation,
+from geneforgelang.core.gftypes import (
+    RegulatoryMotifAnnotation as CoreMotifAnnotation,
 )
 from geneforgelang.plugins.interfaces import EntityType
+from gfl_plugin_alphagenome.plugin import (
+    AlphaGenomePlugin,
+    AviScoreResult,
+    RegulatoryMotifAnnotation,
+)
 
 
 def test_alphagenome_core_types():
@@ -100,3 +103,40 @@ def test_alphagenome_plugin_generate_candidate():
     assert cand.properties["variant"] == "chr9:128225994:G>A"
     assert cand.properties["is_high_impact"] is True
     assert cand.properties["plugin_name"] == "alphagenome_atlas"
+
+
+def test_alphagenome_clinvar_vus_resolution():
+    from geneforgelang.core.gftypes import (
+        ClinVarSignificance,
+        NonCodingRegulatoryContract,
+        TissueRegulatoryEffect,
+    )
+
+    plugin = AlphaGenomePlugin()
+    res = plugin.score_variant(
+        variant_str="chr19:44906584:C>T",
+        min_phred=28.5,
+        clinvar_significance="Uncertain significance",
+        target_tissue="UBERON:0000955",  # Brain cortex
+        control_tissue="UBERON:0002107",  # Liver
+    )
+
+    assert res.is_high_impact is True
+    assert res.clinvar_significance == "Uncertain significance"
+    assert res.resolves_non_coding_vus is True
+    assert len(res.tissue_effects) == 2
+    target = res.tissue_effects[0]
+    assert target.tissue_ontology_id == "UBERON:0000955"
+    assert "SPI1" in target.disrupted_tfs
+
+    # Verify Core GFL Types contract
+    contract = NonCodingRegulatoryContract(
+        target_locus="APOE/TOMM40 regulatory enhancer",
+        target_tissue="UBERON:0000955",
+        control_tissue="UBERON:0002107",
+        clinvar_status=ClinVarSignificance.UNCERTAIN_SIGNIFICANCE,
+        min_avi_phred_threshold=20.0,
+    )
+    d = contract.to_dict()
+    assert d["target_tissue"] == "UBERON:0000955"
+    assert d["clinvar_status"] == "Uncertain significance"

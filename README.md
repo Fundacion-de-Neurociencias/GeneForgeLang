@@ -43,6 +43,7 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 
 ### **Structural Bio-AI, Consensus & Borderline Rescue**
 
+- **🧬 Non-Coding Regulatory Variant Interpretation (ClinVar + AlphaGenome)**: Tissue-specific regulatory triage resolving non-coding Variants of Uncertain Significance (VUS) across target vs. control tissue ontologies (e.g. Brain cortex vs Liver) with AVI scores and epigenomic disruption tracks
 - **⚡ Jev & AnyJev Fast Decision Pre-Screening**: Training-free, permutation-invariant discrete option selection and calibrated confidence gating (Neural System 1) before escalating to formal biological arbitrament (System 2)
 - **🔬 BGC & Megasynthase Assembly Lines**: Multi-domain modular enzyme complex validation (PKS, NRPS, hybrid megasynthases, ~2,500+ AA) to explore non-natural chemical space (e.g. $\delta$-valerolactam nylon precursors) inspired by gLM2
 - **🎯 RFOptimization & Near-Miss Rescue**: Classification of borderline candidates (`NEAR_MISS`) and alternating gradient-guided simulated MCMC mutations + discrete resampling

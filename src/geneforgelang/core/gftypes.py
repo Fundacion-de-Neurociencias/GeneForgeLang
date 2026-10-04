@@ -536,9 +536,80 @@ class RegulatoryMotifAnnotation:
         }
 
 
+class ClinVarSignificance(str, Enum):
+    """Clinical significance classification according to ClinVar / ACMG standards."""
+
+    PATHOGENIC = "Pathogenic"
+    LIKELY_PATHOGENIC = "Likely pathogenic"
+    UNCERTAIN_SIGNIFICANCE = "Uncertain significance"  # VUS
+    LIKELY_BENIGN = "Likely benign"
+    BENIGN = "Benign"
+    CONFLICTING = "Conflicting classifications of pathogenicity"
+    NOT_PROVIDED = "not provided"
+
+    def __str__(self) -> str:
+        """Return string value."""
+        return self.value
+
+    @property
+    def is_vus(self) -> bool:
+        """Check if classification corresponds to a Variant of Uncertain Significance."""
+        return self == ClinVarSignificance.UNCERTAIN_SIGNIFICANCE or self == ClinVarSignificance.CONFLICTING
+
+
+@dataclass
+class TissueRegulatoryEffect:
+    """Tissue-specific regulatory alteration predicted by genomic foundation models."""
+
+    tissue_ontology_id: str  # e.g., UBERON:0000955 (Brain cortex) or CL:0000129 (Microglial cell)
+    tissue_name: str
+    dnase_delta: float = 0.0
+    rna_fold_change: float = 0.0
+    h3k27ac_delta: float = 0.0
+    promoter_enhancer_contact_delta: float = 0.0
+    disrupted_transcription_factors: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "tissue_ontology_id": self.tissue_ontology_id,
+            "tissue_name": self.tissue_name,
+            "dnase_delta": self.dnase_delta,
+            "rna_fold_change": self.rna_fold_change,
+            "h3k27ac_delta": self.h3k27ac_delta,
+            "promoter_enhancer_contact_delta": self.promoter_enhancer_contact_delta,
+            "disrupted_transcription_factors": self.disrupted_transcription_factors,
+        }
+
+
+@dataclass
+class NonCodingRegulatoryContract:
+    """Formal IO Contract for non-coding regulatory variant interpretation (ClinVar + AlphaGenome)."""
+
+    target_locus: str
+    target_tissue: str  # Primary affected tissue (e.g., UBERON:0000955)
+    control_tissue: str  # Control / unaffected tissue (e.g., UBERON:0002107)
+    clinvar_status: ClinVarSignificance = ClinVarSignificance.UNCERTAIN_SIGNIFICANCE
+    min_avi_phred_threshold: float = 20.0
+    required_tf_conservation: list[str] = field(default_factory=list)
+    max_control_tissue_impact: float = 5.0  # Asserts specificity: control tissue must not be disrupted
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "target_locus": self.target_locus,
+            "target_tissue": self.target_tissue,
+            "control_tissue": self.control_tissue,
+            "clinvar_status": str(self.clinvar_status),
+            "min_avi_phred_threshold": self.min_avi_phred_threshold,
+            "required_tf_conservation": self.required_tf_conservation,
+            "max_control_tissue_impact": self.max_control_tissue_impact,
+        }
+
+
 @dataclass
 class VariantImpact:
-    """Genomic variant with AlphaGenome Atlas impact annotations."""
+    """Genomic variant with AlphaGenome Atlas impact annotations and ClinVar resolution."""
 
     variant_str: str  # 1-based format chr:pos:ref>alt
     chromosome: str
@@ -547,12 +618,21 @@ class VariantImpact:
     alt: str
     avi_score: AviScore | None = None
     regulatory_motifs: list[RegulatoryMotifAnnotation] = field(default_factory=list)
+    tissue_effects: list[TissueRegulatoryEffect] = field(default_factory=list)
+    clinvar_significance: ClinVarSignificance = ClinVarSignificance.NOT_PROVIDED
     atlas_url: str | None = None
 
     def __post_init__(self) -> None:
         """Construct atlas URL if missing."""
         if not self.atlas_url and self.variant_str:
             self.atlas_url = f"https://deepmind.google.com/science/alphagenome/atlas/variant/{self.variant_str}"
+
+    @property
+    def resolves_non_coding_vus(self) -> bool:
+        """Determines if a ClinVar VUS can be resolved into a regulatory damaging candidate."""
+        if self.clinvar_significance.is_vus and self.avi_score and self.avi_score.is_high_impact:
+            return True
+        return False
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
@@ -564,6 +644,9 @@ class VariantImpact:
             "alt": self.alt,
             "avi_score": self.avi_score.to_dict() if self.avi_score else None,
             "regulatory_motifs": [m.to_dict() for m in self.regulatory_motifs],
+            "tissue_effects": [t.to_dict() for t in self.tissue_effects],
+            "clinvar_significance": str(self.clinvar_significance),
+            "resolves_non_coding_vus": self.resolves_non_coding_vus,
             "atlas_url": self.atlas_url,
         }
 
@@ -977,6 +1060,7 @@ __all__ = [
     "ConsensusModel",
     "BiosyntheticDomainType",
     "DecisionStrategy",
+    "ClinVarSignificance",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -989,6 +1073,8 @@ __all__ = [
     "GFLAST",
     "AviScore",
     "RegulatoryMotifAnnotation",
+    "TissueRegulatoryEffect",
+    "NonCodingRegulatoryContract",
     "VariantImpact",
     "DepMapCoDependency",
     "CausalTransitionNode",

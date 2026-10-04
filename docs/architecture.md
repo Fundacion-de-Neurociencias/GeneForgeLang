@@ -112,10 +112,14 @@ GFL Core centralizes all data contracts in immutable, serializable structures:
    - `MultiModelConsensus`: Independent tri-model screening ($iPAE < 2.5, iPTM > 0.8$, minimum confidence) preventing single-predictor overfitting.
    - `RescuePolicy`: Parameterizes gradient-guided MCMC mutations and discrete structure-recycling resampling.
 
-4. **Genomic Foundation Model Annotations (AlphaGenome)**:
+4. **Genomic Foundation Model Annotations (AlphaGenome & ClinVar Resolution)**:
    - `AviModality`: 18 additive biological modalities (Splicing, AlphaMissense, ChIP-TF, DNASE, Histone marks).
    - `AviScore`: Unified variant impact metric for 9 billion SNVs across coding and non-coding regions.
    - `RegulatoryMotifAnnotation`: Disruption metrics for $>2,500$ TF motifs discovered via TF-MoDISco-lite.
+   - `ClinVarSignificance`: Clinical classification standard (`PATHOGENIC`, `LIKELY_PATHOGENIC`, `UNCERTAIN_SIGNIFICANCE`, `BENIGN`, etc.).
+   - `TissueRegulatoryEffect`: Quantifies tissue-specific delta tracks (DNase, RNA-seq, H3K27ac, contact maps) and disrupted transcription factors.
+   - `NonCodingRegulatoryContract`: Formal IO contract resolving non-coding Variants of Uncertain Significance (VUS) across target vs. control tissue ontologies (e.g. Brain cortex `UBERON:0000955` vs Liver `UBERON:0002107`).
+   - `VariantImpact.resolves_non_coding_vus`: Epistemic predicate determining if a ClinVar VUS is promoted/clarified via high-impact regulatory disruption ($Phred \ge 20.0$).
 
 ---
 
