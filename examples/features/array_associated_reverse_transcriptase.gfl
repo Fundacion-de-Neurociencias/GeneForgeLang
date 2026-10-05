@@ -1,0 +1,47 @@
+# GeneForgeLang Example: Deterministic Replay and Metagenomic Retroelement Discovery
+# Inspired by Anthropic Mythos ART (Array-associated Reverse Transcriptase) discovery,
+# enforcing deterministic replay gates and 100% continuous coverage scanning to prevent
+# stochastic loss across autonomous agent runs.
+
+metadata:
+  experiment_id: RETROELEMENT_MINING_DETERMINISTIC_001
+  researcher: Dr. Manuel Menendez Gonzalez
+  project: metagenomic_mobile_element_architecture
+  description: Deterministic discovery of Array-associated Reverse Transcriptases (ART) with replay verification
+  date: 2026-10-05
+
+design:
+  entity: DNASequence
+  model: deterministic_retroelement_scanner
+  objective:
+    maximize: catalytic_triad_conservation
+    target: 1.0
+  count: 1
+  output: validated_retroelement_candidates
+  constraints:
+    - exhaustive_coverage(100.0)
+    - deterministic_replay_rate(1.0)
+    - motif_required("YADD")
+
+experiment:
+  tool: retroelement_miner
+  type: analysis
+  strategy: continuous_scan
+  params:
+    target_class: ARRAY_ASSOCIATED_RT
+    target_contig: metagenomic_assembly_bin_42.fasta
+    sequence_checksum: "a1b2c3d4e5f67890123456789abcdef0123456789abcdef0123456789abcdef0"
+    window_bp: 1000
+    stride_bp: 200
+    scan_both_strands: true
+    min_coverage_pct: 100.0
+    required_catalytic_triad: ["YADD", "YMDD"]
+    flanking_repeat_detection: true
+    deterministic_seed: 42
+
+analyze:
+  strategy: deterministic_verification
+  thresholds:
+    min_reproducibility_rate: 1.0
+    enforce_replay_contract: true
+    require_canonical_triad: true

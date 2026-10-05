@@ -121,6 +121,12 @@ GFL Core centralizes all data contracts in immutable, serializable structures:
    - `NonCodingRegulatoryContract`: Formal IO contract resolving non-coding Variants of Uncertain Significance (VUS) across target vs. control tissue ontologies (e.g. Brain cortex `UBERON:0000955` vs Liver `UBERON:0002107`).
    - `VariantImpact.resolves_non_coding_vus`: Epistemic predicate determining if a ClinVar VUS is promoted/clarified via high-impact regulatory disruption ($Phred \ge 20.0$).
 
+5. **Deterministic Discovery & Retroelement Architecture (Anti-Stochasticity Gates)**:
+   - `RetroelementType`: Taxonomy of non-canonical enzymes and mobile elements (`ARRAY_ASSOCIATED_RT` / ART, `RETRON`, `GROUP_II_INTRON`, `DGR`, `CRISPR_ASSOCIATED_RT`, `VIRAL_RT`).
+   - `RetroelementArchitecture`: Formal structural contract defining reverse transcriptase domain boundaries, catalytic triad verification (`YADD`, `YMDD`, `LGDD`), and flanking repeat arrays.
+   - `ExhaustiveCoverageContract`: Enforces full, continuous, non-fragmented base scanning ($100\%$ base coverage, sliding window/stride, dual-strand verification) preventing LLM agent context-window drift.
+   - `DeterministicReplayContract`: Guarantees reproducible re-discovery across independent agent runs via cryptographic verification hashes ($seed \times candidate \times checksum$), preventing the "stochastic trap" observed in unstructured agent swarms (e.g., Anthropic Mythos ART discovery).
+
 ---
 
 ## 5. Decoupled Satellite Plugin Ecosystem

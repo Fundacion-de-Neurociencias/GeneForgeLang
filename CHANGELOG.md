@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Deterministic Replay Contracts & Retroelement Architecture (Anti-Stochasticity Gates)**:
+  - Added `RetroelementType` enum (`ARRAY_ASSOCIATED_RT`, `RETRON`, `GROUP_II_INTRON`, `DGR`, `CRISPR_ASSOCIATED_RT`, `VIRAL_RT`).
+  - Added `RetroelementArchitecture` dataclass formalizing reverse transcriptase domain ranges, catalytic triad verification (`YADD`, `YMDD`, `LGDD`), and flanking repeat arrays.
+  - Added `ExhaustiveCoverageContract` enforcing 100% continuous base scanning across sequence contigs to prevent LLM agent context-window drift.
+  - Added `DeterministicReplayContract` binding agent discoveries to cryptographic verification hashes ($seed \times candidate \times checksum$), guaranteeing 100% reproducible re-discovery across independent agent runs (overcoming the stochastic discovery loss observed in Anthropic Mythos ART experiments).
 - **Non-Coding Regulatory Variant Interpretation & ClinVar Resolution (`gfl-plugin-alphagenome`)**:
   - Added `ClinVarSignificance` enum (`PATHOGENIC`, `LIKELY_PATHOGENIC`, `UNCERTAIN_SIGNIFICANCE`, `BENIGN`, etc.) with `is_vus` helper.
   - Added `TissueRegulatoryEffect` dataclass capturing tissue-specific epigenomic delta tracks (DNase, RNA-seq, H3K27ac, contact maps) and disrupted transcription factors.

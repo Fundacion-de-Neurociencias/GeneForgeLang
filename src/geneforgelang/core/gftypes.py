@@ -1047,6 +1047,122 @@ class DecisionContract:
         }
 
 
+# Deterministic Discovery & Retroelement Architecture Types
+# (Addressing the stochasticity and reproducibility trap in LLM agent discoveries)
+class RetroelementType(str, Enum):
+    """Classification of mobile genetic elements, retrons, and reverse transcriptases."""
+
+    ARRAY_ASSOCIATED_RT = "ARRAY_ASSOCIATED_RT"  # ART: Array-associated Reverse Transcriptase
+    RETRON = "RETRON"  # Bacterial retrons (msr-msd + RT)
+    GROUP_II_INTRON = "GROUP_II_INTRON"  # Self-splicing ribozyme with RT
+    DIVERSITY_GENERATING_RETROELEMENT = "DGR"  # Targeted mutagenic RT systems
+    CRISPR_ASSOCIATED_RT = "CRISPR_ASSOCIATED_RT"  # Cas1-RT / Type III RT fusions
+    VIRAL_RT = "VIRAL_RT"  # Retroviral reverse transcriptase
+
+    def __str__(self) -> str:
+        """Return enum value."""
+        return self.value
+
+
+@dataclass
+class ExhaustiveCoverageContract:
+    """Contract enforcing full, non-fragmented base-level sequence scanning.
+
+    Guarantees that an autonomous agent or screening tool does not suffer from
+    stochastic context-window drift or partial sequence inspection.
+    """
+
+    window_size_bp: int = 1000
+    stride_bp: int = 200
+    min_coverage_pct: float = 100.0
+    scan_both_strands: bool = True
+    sequence_checksum: str = ""  # SHA-256 hash of the target sequence being screened
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "window_size_bp": self.window_size_bp,
+            "stride_bp": self.stride_bp,
+            "min_coverage_pct": self.min_coverage_pct,
+            "scan_both_strands": self.scan_both_strands,
+            "sequence_checksum": self.sequence_checksum,
+        }
+
+
+@dataclass
+class DeterministicReplayContract:
+    """Formal reproducibility contract binding candidate discoveries to deterministic proof.
+
+    Guarantees that any biological discovery reported by an agent (e.g. Anthropic Mythos ART)
+    is deterministically replayable across N independent runs without stochastic loss.
+    """
+
+    seed: int
+    candidate_id: str
+    target_checksum: str  # SHA-256 of the sequence/dataset
+    coordinates: str  # Format: "start-end" or "chr:start-end"
+    catalytic_motifs_verified: list[str] = field(default_factory=list)  # e.g., ["YADD", "YMDD"]
+    required_reproducibility_rate: float = 1.0  # 1.0 = 100% deterministic re-discovery
+    verification_hash: str = ""
+
+    def __post_init__(self) -> None:
+        """Compute verification hash if missing."""
+        if not self.verification_hash and self.candidate_id and self.target_checksum:
+            import hashlib
+            data = f"{self.seed}:{self.candidate_id}:{self.target_checksum}:{self.coordinates}".encode()
+            self.verification_hash = hashlib.sha256(data).hexdigest()
+
+    @property
+    def is_deterministic(self) -> bool:
+        """Checks if the discovery meets the deterministic replay standard."""
+        return self.required_reproducibility_rate >= 1.0 and bool(self.verification_hash)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "seed": self.seed,
+            "candidate_id": self.candidate_id,
+            "target_checksum": self.target_checksum,
+            "coordinates": self.coordinates,
+            "catalytic_motifs_verified": self.catalytic_motifs_verified,
+            "required_reproducibility_rate": self.required_reproducibility_rate,
+            "verification_hash": self.verification_hash,
+            "is_deterministic": self.is_deterministic,
+        }
+
+
+@dataclass
+class RetroelementArchitecture:
+    """Formal biological specification for Reverse Transcriptases and repeat-associated retroelements."""
+
+    element_id: str
+    element_type: RetroelementType
+    rt_domain_range: tuple[int, int]  # Amino acid coordinate range of the RT domain
+    catalytic_triad: str  # Catalytic triad motif, typically YADD, YMDD, or LGDD
+    associated_repeat_array: str = ""  # Nucleotide repeat pattern (e.g., direct repeat array)
+    flanking_genes: list[str] = field(default_factory=list)
+    replay_proof: DeterministicReplayContract | None = None
+
+    @property
+    def has_canonical_catalytic_triad(self) -> bool:
+        """Verify presence of canonical reverse transcriptase active site."""
+        return self.catalytic_triad in ["YADD", "YMDD", "RYADD", "RYVDD", "LGDD"]
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "element_id": self.element_id,
+            "element_type": str(self.element_type),
+            "rt_domain_range": list(self.rt_domain_range),
+            "catalytic_triad": self.catalytic_triad,
+            "associated_repeat_array": self.associated_repeat_array,
+            "flanking_genes": self.flanking_genes,
+            "has_canonical_catalytic_triad": self.has_canonical_catalytic_triad,
+            "replay_proof": self.replay_proof.to_dict() if self.replay_proof else None,
+        }
+
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -1061,6 +1177,7 @@ __all__ = [
     "BiosyntheticDomainType",
     "DecisionStrategy",
     "ClinVarSignificance",
+    "RetroelementType",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -1086,6 +1203,9 @@ __all__ = [
     "DecisionOption",
     "DecisionOutcome",
     "DecisionContract",
+    "ExhaustiveCoverageContract",
+    "DeterministicReplayContract",
+    "RetroelementArchitecture",
     # Validation types
     "ValidationError",
     "ValidationResult",
