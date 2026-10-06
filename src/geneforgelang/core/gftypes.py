@@ -1162,6 +1162,116 @@ class RetroelementArchitecture:
         }
 
 
+# De Novo Catalytic & Enzyme Design Layer (AlphaProtein Novo Synergy)
+# Pure syntactic representation & structural observation containers (ADR-ARCH-001)
+class CatalyticResidueRole(str, Enum):
+    """Functional role of a catalytic active-site residue."""
+
+    NUCLEOPHILE = "NUCLEOPHILE"
+    GENERAL_ACID = "GENERAL_ACID"
+    GENERAL_BASE = "GENERAL_BASE"
+    TRANSITION_STATE_STABILIZER = "TRANSITION_STATE_STABILIZER"
+    OXYANION_HOLE = "OXYANION_HOLE"
+    ELECTROPHILE = "ELECTROPHILE"
+    COFACTOR_COORDINATOR = "COFACTOR_COORDINATOR"
+
+    def __str__(self) -> str:
+        """Return the enum string value."""
+        return self.value
+
+
+@dataclass
+class CatalyticResidue:
+    """Specification of an active-site catalytic residue."""
+
+    residue_name: str  # 3-letter code: 'SER', 'HIS', 'ASP', 'CYS', 'GLU', 'LYS'
+    role: CatalyticResidueRole
+    position: int | None = None  # None for de novo unassigned scaffolds
+    chain: str = "A"
+    target_atom: str = "CA"  # Key interaction atom: 'OG', 'NE2', 'OD1', 'SG'
+    ideal_coordinates: tuple[float, float, float] | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "residue_name": self.residue_name,
+            "role": str(self.role),
+            "position": self.position,
+            "chain": self.chain,
+            "target_atom": self.target_atom,
+            "ideal_coordinates": list(self.ideal_coordinates) if self.ideal_coordinates else None,
+        }
+
+
+@dataclass
+class SubstrateLigandContainer:
+    """Syntactic container representing a bound ligand or transition-state substrate."""
+
+    substrate_name: str
+    smiles: str
+    charge: int = 0
+    transition_state_analog: bool = False
+    reactive_atom_indices: list[int] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "substrate_name": self.substrate_name,
+            "smiles": self.smiles,
+            "charge": self.charge,
+            "transition_state_analog": self.transition_state_analog,
+            "reactive_atom_indices": self.reactive_atom_indices,
+        }
+
+
+@dataclass
+class CatalyticMotif:
+    """Multi-residue catalytic geometry declaration (e.g. Ser-His-Asp catalytic triad)."""
+
+    motif_id: str
+    residues: list[CatalyticResidue]
+    max_active_site_rmsd: float = 1.0  # Angstrom tolerance for de novo scaffold matching
+    spatial_distance_constraints: dict[str, tuple[float, float]] = field(default_factory=dict)
+    # e.g. {"SER:OG-HIS:NE2": (2.6, 3.2), "HIS:ND1-ASP:OD1": (2.5, 3.1)}
+
+    @property
+    def residue_count(self) -> int:
+        """Count of catalytic residues in the motif."""
+        return len(self.residues)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "motif_id": self.motif_id,
+            "residues": [r.to_dict() for r in self.residues],
+            "max_active_site_rmsd": self.max_active_site_rmsd,
+            "spatial_distance_constraints": self.spatial_distance_constraints,
+            "residue_count": self.residue_count,
+        }
+
+
+@dataclass
+class EnzymeDesignContract:
+    """Formal GFL IO Contract for de novo enzyme design candidates and catalytic scaffolding."""
+
+    enzyme_family: str  # e.g., 'SERINE_PROTEASE', 'ESTERASE', 'RETRO_ALDOLASE'
+    catalytic_motif: CatalyticMotif
+    substrate: SubstrateLigandContainer | None = None
+    target_transition_state_distance: float = 3.5  # Maximum Angstrom distance to substrate
+    max_scaffold_pocket_clash: float = 0.0  # Steric clash tolerance
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "enzyme_family": self.enzyme_family,
+            "catalytic_motif": self.catalytic_motif.to_dict(),
+            "substrate": self.substrate.to_dict() if self.substrate else None,
+            "target_transition_state_distance": self.target_transition_state_distance,
+            "max_scaffold_pocket_clash": self.max_scaffold_pocket_clash,
+        }
+
+
+
 
 # Export all public types
 __all__ = [
@@ -1178,6 +1288,7 @@ __all__ = [
     "DecisionStrategy",
     "ClinVarSignificance",
     "RetroelementType",
+    "CatalyticResidueRole",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -1206,6 +1317,10 @@ __all__ = [
     "ExhaustiveCoverageContract",
     "DeterministicReplayContract",
     "RetroelementArchitecture",
+    "CatalyticResidue",
+    "SubstrateLigandContainer",
+    "CatalyticMotif",
+    "EnzymeDesignContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

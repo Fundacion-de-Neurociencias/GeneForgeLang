@@ -127,6 +127,14 @@ GFL Core centralizes all data contracts in immutable, serializable structures:
    - `ExhaustiveCoverageContract`: Enforces full, continuous, non-fragmented base scanning ($100\%$ base coverage, sliding window/stride, dual-strand verification) preventing LLM agent context-window drift.
    - `DeterministicReplayContract`: Guarantees reproducible re-discovery across independent agent runs via cryptographic verification hashes ($seed \times candidate \times checksum$), preventing the "stochastic trap" observed in unstructured agent swarms (e.g., Anthropic Mythos ART discovery).
 
+6. **De Novo Catalytic & Enzyme Design Layer (AlphaProtein Novo Synergy - ADR-ARCH-001)**:
+   - *Constitutional Boundary*: GFL provides strict syntactic representation and observational contracts, strictly delegating active kinetic solvers, energy barrier optimization ($\Delta G^\ddagger$), and generative diffusion to the GeneForge runtime (`gf/simulation/catalytic_kinetics/` and `gf/models/catalytic_scaffolder.py`).
+   - `CatalyticResidueRole`: Functional roles for active-site residues (`NUCLEOPHILE`, `GENERAL_ACID`, `GENERAL_BASE`, `TRANSITION_STATE_STABILIZER`, `OXYANION_HOLE`, `ELECTROPHILE`, `COFACTOR_COORDINATOR`).
+   - `CatalyticResidue`: Container defining residue identity, chain, target interaction atom (e.g., `OG`, `NE2`, `OD1`), and ideal 3D coordinates.
+   - `CatalyticMotif`: Multi-residue active site declaration (e.g. classical Ser-His-Asp triad), spatial distance bounds, and max active-site RMSD tolerances ($\le 0.8\text{ \AA}$).
+   - `SubstrateLigandContainer`: Declarative container for transition-state analogs and substrate SMILES with reactive atom indices.
+   - `EnzymeDesignContract`: Formal IO contract specifying enzyme family, catalytic motif geometry, and substrate transition-state distance constraints ($\le 3.5\text{ \AA}$).
+
 ---
 
 ## 5. Decoupled Satellite Plugin Ecosystem

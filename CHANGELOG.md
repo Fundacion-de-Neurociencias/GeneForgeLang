@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **De Novo Catalytic Motif & Enzyme Design Layer (AlphaProtein Novo Synergy - ADR-ARCH-001)**:
+  - Added `CatalyticResidueRole` enum (`NUCLEOPHILE`, `GENERAL_ACID`, `GENERAL_BASE`, `TRANSITION_STATE_STABILIZER`, `OXYANION_HOLE`, `ELECTROPHILE`, `COFACTOR_COORDINATOR`).
+  - Added `CatalyticResidue` dataclass specifying residue identity, chain, target interaction atom (e.g., `OG`, `NE2`, `OD1`), and ideal coordinates.
+  - Added `CatalyticMotif` dataclass declaring multi-residue active-site geometry (e.g. classical Ser-His-Asp triad), spatial distance bounds, and max active-site RMSD tolerances ($\le 0.8\text{ \AA}$).
+  - Added `SubstrateLigandContainer` dataclass for transition-state analogs and substrate SMILES with reactive atom indices.
+  - Added `EnzymeDesignContract` formal IO contract specifying enzyme family, catalytic motif geometry, and substrate transition-state distance constraints ($\le 3.5\text{ \AA}$).
+  - Preserved strict architectural boundary between GFL (observational contracts and syntax) and GeneForge (kinetic solver, energy barrier minimization, and scaffolding engine).
 - **Deterministic Replay Contracts & Retroelement Architecture (Anti-Stochasticity Gates)**:
   - Added `RetroelementType` enum (`ARRAY_ASSOCIATED_RT`, `RETRON`, `GROUP_II_INTRON`, `DGR`, `CRISPR_ASSOCIATED_RT`, `VIRAL_RT`).
   - Added `RetroelementArchitecture` dataclass formalizing reverse transcriptase domain ranges, catalytic triad verification (`YADD`, `YMDD`, `LGDD`), and flanking repeat arrays.

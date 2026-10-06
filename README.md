@@ -43,6 +43,7 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 
 ### **Structural Bio-AI, Consensus & Borderline Rescue**
 
+- **⚗️ De Novo Catalytic Motif & Enzyme Design (AlphaProtein Novo Synergy)**: Observational syntactic contracts for active-site catalytic triad geometry (`SER:OG`, `HIS:NE2`, `ASP:OD1`), transition-state substrate containers, and spatial distance tolerances ($\le 3.5\text{ \AA}$) strictly preserving GFL's observational boundary while enabling GeneForge's kinetic and scaffolding engines
 - **🔁 Deterministic Replay & Retroelement Mining (Anti-Stochasticity Gates)**: Cryptographic verification contracts ($seed \times checksum$) and continuous base-level sequence coverage ($100\%$ sliding window) guaranteeing reproducible re-discovery of Array-associated Reverse Transcriptases (ART) and mobile elements across autonomous agent swarms (overcoming the Anthropic Mythos stochasticity trap)
 - **🧬 Non-Coding Regulatory Variant Interpretation (ClinVar + AlphaGenome)**: Tissue-specific regulatory triage resolving non-coding Variants of Uncertain Significance (VUS) across target vs. control tissue ontologies (e.g. Brain cortex vs Liver) with AVI scores and epigenomic disruption tracks
 - **⚡ Jev & AnyJev Fast Decision Pre-Screening**: Training-free, permutation-invariant discrete option selection and calibrated confidence gating (Neural System 1) before escalating to formal biological arbitrament (System 2)
