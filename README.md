@@ -60,6 +60,7 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 - **✅ Scientific Reproducibility**: Automatic generation of Reproducibility Packages (hashes, timestamps, versions)
 - **🧠 Clinical Neuro-Skills**: Specialized skills for PharmGx, Geriatric Risk, and NutriGx
 - **🛡️ Data Sovereignty & Biosecurity**: Provenance, Consent, Jurisdiction, and Population equity tracking as first-class language semantics
+- **🔒 Security Policy & Continuous AI Scanning**: Coordinated vulnerability reporting via [SECURITY.md](SECURITY.md) with support for automated AI security auditing (Anthropic OSS Scanner) and Bandit static analysis gates
 
 ## Key Features
 

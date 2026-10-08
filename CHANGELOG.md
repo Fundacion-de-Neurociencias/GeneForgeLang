@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Security Policy & Automated AI Vulnerability Auditing (Anthropic OSS Scanner Integration)**:
+  - Added comprehensive security policy (`SECURITY.md`) outlining supported versions, coordinated disclosure SLAs, and GitHub Private Vulnerability Reporting channels.
+  - Formally authorized opt-in AI security scanner integrations including Anthropic OSS Scanner (Claude 3.5 Sonnet / Opus) with automated empirical proof-of-concept (PoC) validation and direct remediation PRs.
 - **De Novo Catalytic Motif & Enzyme Design Layer (AlphaProtein Novo Synergy - ADR-ARCH-001)**:
   - Added `CatalyticResidueRole` enum (`NUCLEOPHILE`, `GENERAL_ACID`, `GENERAL_BASE`, `TRANSITION_STATE_STABILIZER`, `OXYANION_HOLE`, `ELECTROPHILE`, `COFACTOR_COORDINATOR`).
   - Added `CatalyticResidue` dataclass specifying residue identity, chain, target interaction atom (e.g., `OG`, `NE2`, `OD1`), and ideal coordinates.
