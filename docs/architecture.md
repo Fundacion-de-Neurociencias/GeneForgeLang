@@ -35,6 +35,18 @@ In GFL, design candidates and causal assertions are epistemic belief priors rath
 - **Context Partitioning**: Divergent evidence across cell types or populations partitions claims into conditional equivalence classes rather than destructive overwrites.
 - **Belief State Machine (Evidence DFA)**: Explicit lifecycle transitions: `SUPPORTED` $\to$ `CONTESTED` $\to$ `CONDITIONALLY_VALID` $\to$ `SUPERSEDED`.
 
+### 2.4. The Context-Bound Claims Principle (Tangermeme S2F Primitives)
+> *"Claims are not globally true; biological claims are valid strictly under explicit contextual conditions."*
+
+Through this architectural principle, GeneForgeLang is endowed with the constitutional capability to decipher **why and under what exact conditions a DNA sequence functions**, eliminating flat or generic assertions and enabling both human researchers and autonomous AI agents to operate on contextualized, testable, and falsifiable hypotheses.
+
+GFL formally enforces the distinction between flat assertions and context-bound claims:
+$$\text{Evaluated Claim} \iff (\text{Claim}, \text{ContextState}, \text{Provenance})$$
+- **Claim**: The biological assertion (e.g. TF binding disruption, expression alteration).
+- **ContextState**: Explicit experimental and epigenetic conditions (`species`, `cell_line_or_tissue`, `assay_type`, `target_factor`, `condition`).
+- **Provenance**: Computational lineage and model confidence verification (`model_name`, `model_version_or_hash`, `attribution_method`, `convergence_delta_checked`).
+- **Computational Engine**: Downstream interpretation is performed via decoupled sequence-to-function primitives (`gfl-plugin-tangermeme`), including recursive variable-length seqlet calling and pairwise motif syntax analysis ($P \in \mathbb{Z}^{n,m,m}$).
+
 ---
 
 ## 3. System Architecture (Compiler Layers & Runtime)

@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Tangermeme Cis-Regulatory Logic & Context-Bound Claims Primitives (Nature Methods 2026 - ADR-0003)**:
+  - Formally integrated Tangermeme (*Schreiber J. et al., Nature Methods 2025/2026*) sequence-to-function (S2F) post-training interpretation engine.
+  - Implemented **Context-Bound Claims** representation preserving biological truth boundaries: $\text{Evaluated Claim} \iff (\text{Claim}, \text{ContextState}, \text{Provenance})$.
+  - Implemented decoupled sequence manipulation and attribution execution with DeepLIFT/SHAP convergence delta auditing.
+  - Implemented pure, deterministic **Recursive Variable-Length Seqlet Caller** with discrete convolution null distributions and diagonal subspan significance filtering ($P_{i,j} = \max(P_{i,j}, P_{i-1, j+1})$).
+  - Implemented seqlet motif annotation via `tomtom-lite` and cis-regulatory syntax extraction (symmetric/asymmetric pairwise co-occurrence matrices $P \in \mathbb{Z}^{n,m,m}$ and spatial spacing distributions).
+  - Added core plugin adapter in `src/geneforgelang/plugins/tangermeme_plugin.py` and decoupled amputatable satellite plugin `gfl-plugin-tangermeme`.
+  - Registered `tangermeme` as an authorized analysis tool in `EnhancedSemanticValidator`.
+  - Added canonical example in `examples/features/tangermeme_cis_regulatory_logic.gfl` and comprehensive documentation in `docs/geneforgelang/features/tangermeme_cis_regulatory_logic.md`.
 - **Security Policy & Automated AI Vulnerability Auditing (Anthropic OSS Scanner Integration)**:
   - Added comprehensive security policy (`SECURITY.md`) outlining supported versions, coordinated disclosure SLAs, and GitHub Private Vulnerability Reporting channels.
   - Formally authorized opt-in AI security scanner integrations including Anthropic OSS Scanner (Claude 3.5 Sonnet / Opus) with automated empirical proof-of-concept (PoC) validation and direct remediation PRs.

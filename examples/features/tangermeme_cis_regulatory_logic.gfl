@@ -1,0 +1,36 @@
+# GeneForgeLang (GFL) v2.0 - Declarative Cis-Regulatory Logic & Seqlet Syntax Workflow
+# Demonstrates Tangermeme primitives integration with GFL Context-Bound Claims
+metadata:
+  experiment_name: "PLD6 Promoter Cis-Regulatory Logic & Seqlet Calling"
+  version: "2.0.0"
+  author: "GeneForgeLang & Fundacion de Neurociencias"
+  citation: "Schreiber et al., Nature Methods 2026"
+  target_organism: "Homo sapiens"
+
+experiment:
+  tool: "tangermeme"
+  type: "analysis"
+  params:
+    strategy: "cis_regulatory_syntax"
+    target_gene: "PLD6"
+    cell_line: "K562"
+    assay: "ChIP-seq"
+    model_name: "BPNet_MYC_fold0"
+    attribution_method: "DeepLIFT"
+    p_value_threshold: 0.01
+    min_seqlet_len: 6
+    max_seqlet_len: 25
+    max_spacing_bp: 100
+    symmetric_syntax: true
+    motif_database:
+      MYC: "CACGTG"
+      E2F3: "TTTCGCGC"
+      SP1: "GGGCGG"
+      MAX: "CACGTG"
+
+analyze:
+  strategy: "structural"
+  data: "PLD6_promoter_attributions"
+  thresholds:
+    p_value: 0.01
+    min_effect_size: 2.0

@@ -7,7 +7,7 @@ reporting, including location tracking, error codes, and suggested fixes.
 import logging
 import os
 import re
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
 
 from geneforgelang.core.errors import (
     EnhancedValidationResult,
@@ -809,6 +809,7 @@ class EnhancedSemanticValidator:
             "WGS",
             "WES",
             "targeted_seq",
+            "tangermeme",
         }
 
         if tool not in known_tools:
@@ -897,64 +898,6 @@ class EnhancedSemanticValidator:
         pattern = r"^[a-zA-Z_][a-zA-Z0-9_]*\([a-zA-Z_][a-zA-Z0-9_]*\)$"
         return bool(re.match(pattern, value))
 
-    def _validate_entity_reference(self, entity_ref: str) -> None:
-        """Validate entity reference in parameter values."""
-
-        # Extract entity type and name
-        match = re.match(r"^([a-zA-Z_][a-zA-Z0-9_]*)\(([a-zA-Z_][a-zA-Z0-9_]*)\)$", entity_ref)
-        if not match:
-            self.result.add_error(
-                f"Invalid entity reference format: {entity_ref}",
-                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
-            ).add_fix("Use format 'entity_type(entity_name)' for entity references")
-            return
-
-        entity_type, entity_name = match.groups()
-
-        # Check if entity type is supported
-        supported_entity_types = {"pathway", "complex"}
-        if entity_type not in supported_entity_types:
-            self.result.add_error(
-                f"Unsupported entity type '{entity_type}' in reference: {entity_ref}",
-                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
-            ).add_fix(f"Use one of the supported entity types: {', '.join(supported_entity_types)}")
-            return
-
-        # Check if entity is defined
-        if hasattr(self, "entity_registry"):
-            # Debug: Print entity registry contents
-            print(f"Entity registry: {self.entity_registry}")
-            print(f"Looking for entity type: {entity_type}")
-            print(f"Looking for entity name: {entity_name}")
-
-            registry_key = entity_type + "s"  # "pathway" -> "pathways", "complex" -> "complexes"
-            # Fix for complex -> complexes
-            if entity_type == "complex":
-                registry_key = "complexes"
-            print(f"Registry key: {registry_key}")
-            if registry_key in self.entity_registry:
-                print(f"Found registry key: {registry_key}")
-                print(f"Available entities: {list(self.entity_registry[registry_key].keys())}")
-                if entity_name in self.entity_registry[registry_key]:
-                    print(f"Found entity: {entity_name}")
-                    return  # Valid reference
-                else:
-                    self.result.add_error(
-                        f"Referenced {entity_type} '{entity_name}' is not defined",
-                        ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-                    ).add_fix(f"Define a {entity_type} with name '{entity_name}' or reference an existing one")
-            else:
-                # Entity type registry doesn't exist
-                self.result.add_error(
-                    f"Referenced {entity_type} '{entity_name}' is not defined (no {entity_type} definitions found)",
-                    ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-                ).add_fix(f"Add a {entity_type} definition section or reference an existing one")
-        else:
-            self.result.add_error(
-                f"Referenced {entity_type} '{entity_name}' is not defined (no entity definitions found)",
-                ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-            ).add_fix("Add entity definitions or reference an existing one")
-
     def _validate_tool_type_compatibility(self, tool: str, exp_type: str) -> None:
         """Validate tool and type compatibility."""
         compatibility_matrix = {
@@ -964,6 +907,7 @@ class EnhancedSemanticValidator:
             "RNAseq": ["sequencing", "analysis"],
             "ChIPseq": ["sequencing", "analysis"],
             "ATACseq": ["sequencing", "analysis"],
+            "tangermeme": ["analysis", "simulation", "validation"],
         }
 
         if tool in compatibility_matrix:
@@ -1754,7 +1698,7 @@ class EnhancedSemanticValidator:
             self._validate_analysis_block(run["analyze"])
             self._validate_parameter_injection(run["analyze"])
 
-    def _validate_parameter_injection(self, block: dict) -> None:
+    def _validate_parameter_injection(self, block: dict[str, Any]) -> None:
         """Validate ${...} parameter injection syntax in nested blocks."""
         # Recursively check all values in the block for parameter injection
         self._check_parameter_injection_recursive(block, "")
@@ -2062,17 +2006,17 @@ class SemanticValidator:
     Maintains the original API while delegating to the enhanced validator.
     """
 
-    def __init__(self):
-        self.symbol_table = {}
-        self.errors = []
+    def __init__(self) -> None:
+        self.symbol_table: dict[str, Any] = {}
+        self.errors: list[str] = []
         self._enhanced_validator = EnhancedSemanticValidator()
 
-    def validate_program(self, ast):
+    def validate_program(self, ast: Any) -> list[str]:
         """Validate a program AST and return a list of error strings."""
         result = self._enhanced_validator.validate_ast(ast)
-        return result.to_legacy_format()
+        return cast(list[str], result.to_legacy_format())
 
-    def validate(self, ast):
+    def validate(self, ast: Any) -> list[str]:
         """Validate a program AST and return a list of error strings.
 
         This is an alias for validate_program for API compatibility.
@@ -2081,8 +2025,8 @@ class SemanticValidator:
 
 
 # Global validator instances
-_validator = SemanticValidator()
-_enhanced_validator = EnhancedSemanticValidator()
+_validator: SemanticValidator = SemanticValidator()
+_enhanced_validator: EnhancedSemanticValidator = EnhancedSemanticValidator()
 
 
 def validate(ast: dict[str, Any], enhanced: bool = False) -> Union[list[str], EnhancedValidationResult]:

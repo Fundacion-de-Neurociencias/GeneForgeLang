@@ -53,6 +53,7 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 - **📐 BioTorch Tensor Contracts**: Formal geometry and tensor representations with coordinate frames ($SE(3)$, $SO(3)$, `local_residue_frame`) and invariant dimensions
 - **🛑 DepMap CRISPR Stop-Gates**: Empirical epistemic stopping gates based on Broad DepMap Public co-dependency and statistical significance
 - **🔬 Google DeepMind AlphaGenome**: 18-modality unified variant impact scoring (AVI Score) and regulatory motif disruption analysis
+- **🍊 Tangermeme Cis-Regulatory Logic & Seqlet Syntax (Nature Methods)**: Decoupled sequence-to-function interpretation, recursive variable-length seqlet calling, and context-bound claims preserving formal conditions ($\text{Claim}, \text{ContextState}, \text{Provenance}$). Empowers researchers and AI agents to decipher why and under what exact conditions a DNA sequence functions, eliminating generic assertions in favor of contextualized, falsifiable hypotheses.
 
 ### **Privacy-Preserving Bio-Skills & Governance**
 

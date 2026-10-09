@@ -73,6 +73,12 @@ In accordance with GFL's lightweight core philosophy, domain-specific deep learn
    - **Role**: Audits biological hypotheses under adversarial perturbations, noise injection, and extreme parameter boundaries.
    - **Entry Point**: `geneforgelang.plugins -> clawbio = gfl_plugin_clawbio.plugin:ClawBioPlugin`
 
+7. **`gfl-plugin-tangermeme` (Cis-Regulatory Deep Learning & Syntax Extraction)**:
+   - **Origin**: *Nature Methods* (Schreiber J. et al., 2025/2026).
+   - **Role**: High-performance sequence-to-function post-training interpretation, recursive variable-length seqlet calling, and motif syntax extraction.
+   - **Context-Bound Claims**: Evaluates claims under explicit `ContextState` (species, cell line/tissue, assay type) with full computational `Provenance` (weights hash, attribution method, convergence delta verification).
+   - **Entry Point**: `geneforgelang.plugins -> tangermeme = gfl_plugin_tangermeme.plugin:TangermemePlugin`
+
 ## Getting Started
 
 ### Installing Plugins
