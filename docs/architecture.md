@@ -47,6 +47,14 @@ $$\text{Evaluated Claim} \iff (\text{Claim}, \text{ContextState}, \text{Provenan
 - **Provenance**: Computational lineage and model confidence verification (`model_name`, `model_version_or_hash`, `attribution_method`, `convergence_delta_checked`).
 - **Computational Engine**: Downstream interpretation is performed via decoupled sequence-to-function primitives (`gfl-plugin-tangermeme`), including recursive variable-length seqlet calling and pairwise motif syntax analysis ($P \in \mathbb{Z}^{n,m,m}$).
 
+### 2.5. The Physics-AI Dialectic & Measurement-Consistent Ensembles
+> *"AI guides physics by navigating the macroscopic conformational landscape; physics refines AI by enforcing microscopic thermodynamic conservation."*
+
+GFL constitutionalizes the complementary roles of generative structural models (AlphaFold 3, Boltz-1, Chai-1, Protenix) and empirical physics/measurement restraints:
+1. **Measurement-Consistent Conformational Ensembles**: Ground-state structural predictions are steered by sparse empirical data (`NMR_NOE`, `CRYO_EM_MAP`, `XL_MS`, `SAXS_ENVELOPE`) via `ExperimentalRestraintsContract`, eliminating unconstrained diffusion hallucinations and resolving measurement-consistent conformational ensembles.
+2. **Ligand-Conditioned Cryptic Pockets**: Protein pockets exist in dynamic equilibrium; cryptic binding sites remain collapsed in uninduced (*apo*) states unless co-folded with cognate ligands (*holo* induced). GFL models this conditional transition via `LigandConditionedPocketContract`.
+3. **Physics-Based Refinement as Epistemic Stop-Gate**: Co-folding predictions are evaluated under the *Runs N' Poses* benchmark (`RunsNPosesMetric`). In unrefined predictions of complex transmembrane receptors (e.g. GPCRs), steric collisions and strained geometries are resolved through molecular mechanics energy minimization (`PhysicsRefinementPolicy`), ensuring thermodynamic admissibility.
+
 ---
 
 ## 3. System Architecture (Compiler Layers & Runtime)
@@ -118,10 +126,14 @@ GFL Core centralizes all data contracts in immutable, serializable structures:
    - `CoDependencyTier`: CRISPR functional dependency strength (`HIGH`, `MODERATE`, `WEAK`, `NONE`).
    - `DepMapCoDependency`: Broad DepMap CRISPR co-dependency score with statistical stop-gate (`is_significant`).
 
-3. **Candidate Lifecycle & Decision Boundary Rescue (RFOptimization)**:
+3. **Candidate Lifecycle, 5-Model Consensus & Physics Refinement**:
    - `CandidateStatus`: `VALIDATED`, `NEAR_MISS`, `REJECTED`, `OPTIMIZED`.
-   - `ConsensusModel`: `AF3`, `RF3`, `BOLTZ`, `PROTEIN_MPNN`, `LIGAND_MPNN`.
-   - `MultiModelConsensus`: Independent tri-model screening ($iPAE < 2.5, iPTM > 0.8$, minimum confidence) preventing single-predictor overfitting.
+   - `ConsensusModel`: `AF3`, `RF3`, `BOLTZ`, `CHAI_1`, `PROTENIX`, `PROTEIN_MPNN`, `LIGAND_MPNN`.
+   - `MultiModelConsensus`: Independent 5-model cross-validation ($iPAE < 2.5, iPTM > 0.8$, confidence $\ge 0.80$) preventing single-architecture inductive bias.
+   - `RunsNPosesMetric`: Evaluates protein-ligand co-folding pose accuracy (RMSD $\le 2.0\text{ \AA}$) and steric clash constraints ($\text{clash} \le 10.0$).
+   - `ExperimentalRestraintsContract`: Injects NMR NOE, Cryo-EM map, or SAXS empirical distance and envelope constraints.
+   - `LigandConditionedPocketContract`: Differentiates ligand-induced cryptic pocket opening vs. collapsed apo states.
+   - `PhysicsRefinementPolicy`: Molecular mechanics (OpenMM, Amber14SB) energy minimization for steric clash elimination.
    - `RescuePolicy`: Parameterizes gradient-guided MCMC mutations and discrete structure-recycling resampling.
 
 4. **Genomic Foundation Model Annotations (AlphaGenome & ClinVar Resolution)**:

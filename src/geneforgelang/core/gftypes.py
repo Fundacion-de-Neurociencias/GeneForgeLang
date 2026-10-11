@@ -630,9 +630,7 @@ class VariantImpact:
     @property
     def resolves_non_coding_vus(self) -> bool:
         """Determines if a ClinVar VUS can be resolved into a regulatory damaging candidate."""
-        if self.clinvar_significance.is_vus and self.avi_score and self.avi_score.is_high_impact:
-            return True
-        return False
+        return bool(self.clinvar_significance.is_vus and self.avi_score and self.avi_score.is_high_impact)
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
@@ -763,6 +761,8 @@ class ConsensusModel(str, Enum):
     AF3 = "alphafold3"
     RF3 = "rosettafold3"
     BOLTZ = "boltz1"
+    CHAI_1 = "chai1"
+    PROTENIX = "protenix"
     PROTEIN_MPNN = "protein_mpnn"
     LIGAND_MPNN = "ligand_mpnn"
 
@@ -773,9 +773,9 @@ class ConsensusModel(str, Enum):
 
 @dataclass
 class MultiModelConsensus:
-    """Cross-model consensus validation metrics (Baker Lab 2026 RFO consensus).
+    """Cross-model consensus validation metrics (Baker Lab RFO & Runs N' Poses consensus).
 
-    Evaluates structural predictions across independent models (AF3, RF3, Boltz)
+    Evaluates structural predictions across independent models (AF3, RF3, Boltz, Chai-1, Protenix)
     to eliminate single-predictor over-fitting.
     """
 
@@ -783,6 +783,8 @@ class MultiModelConsensus:
     af3_ipae: float | None = None
     rf3_confidence: float | None = None
     boltz_confidence: float | None = None
+    chai1_confidence: float | None = None
+    protenix_confidence: float | None = None
     plddt_mean: float | None = None
 
     def passes_consensus(
@@ -791,7 +793,7 @@ class MultiModelConsensus:
         max_ipae: float = 2.5,
         min_confidence: float = 0.8,
     ) -> bool:
-        """Check if candidate satisfies the rigorous three-model consensus thresholds."""
+        """Check if candidate satisfies the multi-model consensus thresholds."""
         if self.af3_iptm is not None and self.af3_iptm < min_iptm:
             return False
         if self.af3_ipae is not None and self.af3_ipae > max_ipae:
@@ -800,6 +802,10 @@ class MultiModelConsensus:
             return False
         if self.boltz_confidence is not None and self.boltz_confidence < min_confidence:
             return False
+        if self.chai1_confidence is not None and self.chai1_confidence < min_confidence:
+            return False
+        if self.protenix_confidence is not None:
+            return self.protenix_confidence >= min_confidence
         return True
 
     def is_near_miss(
@@ -826,9 +832,132 @@ class MultiModelConsensus:
             "af3_ipae": self.af3_ipae,
             "rf3_confidence": self.rf3_confidence,
             "boltz_confidence": self.boltz_confidence,
+            "chai1_confidence": self.chai1_confidence,
+            "protenix_confidence": self.protenix_confidence,
             "plddt_mean": self.plddt_mean,
             "passes_consensus": self.passes_consensus(),
             "is_near_miss": self.is_near_miss(),
+        }
+
+
+class RestraintType(str, Enum):
+    """Experimental structural restraint modalities for measurement-guided ensembles."""
+
+    NMR_NOE = "nmr_noe"
+    CRYO_EM_MAP = "cryo_em_map"
+    XL_MS = "xl_ms"
+    SAXS_ENVELOPE = "saxs_envelope"
+    EPR_DEER = "epr_deer"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+@dataclass
+class ExperimentalRestraintsContract:
+    """Steers AI structural diffusion toward measurement-consistent conformational ensembles.
+
+    Based on 'Experiment-guided AlphaFold3 resolves measurement-consistent protein ensembles' (2025/2026).
+    """
+
+    restraint_type: RestraintType = RestraintType.NMR_NOE
+    restraint_file: str | None = None
+    tolerance_angstrom: float = 3.0
+    weight: float = 1.0
+    satisfaction_ratio: float | None = None
+    min_satisfaction_threshold: float = 0.8
+    target_chain: str | None = None
+
+    def is_satisfied(self) -> bool:
+        """Check if empirical experimental restraints are satisfied within the tolerance threshold."""
+        if self.satisfaction_ratio is None:
+            return True
+        return self.satisfaction_ratio >= self.min_satisfaction_threshold
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "restraint_type": str(self.restraint_type),
+            "restraint_file": self.restraint_file,
+            "tolerance_angstrom": self.tolerance_angstrom,
+            "weight": self.weight,
+            "satisfaction_ratio": self.satisfaction_ratio,
+            "min_satisfaction_threshold": self.min_satisfaction_threshold,
+            "target_chain": self.target_chain,
+            "is_satisfied": self.is_satisfied(),
+        }
+
+
+@dataclass
+class RunsNPosesMetric:
+    """Benchmark metrics for protein-ligand co-folding generalization (Runs N' Poses benchmark 2026)."""
+
+    pose_rmsd: float | None = None
+    clash_score: float | None = None
+    contact_recovery: float | None = None
+    force_field_energy_kcal_mol: float | None = None
+
+    def passes_pose_gate(self, max_rmsd: float = 2.0, max_clash: float = 10.0) -> bool:
+        """Evaluate whether co-folding pose generalizes without steric clashes or conformational distortion."""
+        if self.pose_rmsd is not None and self.pose_rmsd > max_rmsd:
+            return False
+        if self.clash_score is not None:
+            return self.clash_score <= max_clash
+        return True
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "pose_rmsd": self.pose_rmsd,
+            "clash_score": self.clash_score,
+            "contact_recovery": self.contact_recovery,
+            "force_field_energy_kcal_mol": self.force_field_energy_kcal_mol,
+            "passes_pose_gate": self.passes_pose_gate(),
+        }
+
+
+@dataclass
+class LigandConditionedPocketContract:
+    """Models ligand-induced cryptic pocket opening vs. collapsed apo states in AlphaFold3 / Boltz co-folding."""
+
+    target_receptor: str
+    probe_ligand_smiles: str | None = None
+    pocket_mode: str = "differential"  # 'apo_uninduced', 'holo_induced', 'differential'
+    cryptic_delta_score: float | None = None
+    min_cryptic_delta_threshold: float = 0.35
+
+    def is_cryptic_induced(self) -> bool:
+        """Check if pocket opening is significantly favored in the presence of ligand."""
+        if self.cryptic_delta_score is None:
+            return False
+        return self.cryptic_delta_score >= self.min_cryptic_delta_threshold
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "target_receptor": self.target_receptor,
+            "probe_ligand_smiles": self.probe_ligand_smiles,
+            "pocket_mode": self.pocket_mode,
+            "cryptic_delta_score": self.cryptic_delta_score,
+            "min_cryptic_delta_threshold": self.min_cryptic_delta_threshold,
+            "is_cryptic_induced": self.is_cryptic_induced(),
+        }
+
+
+@dataclass
+class PhysicsRefinementPolicy:
+    """Physics-based force field energy minimization and steric clash relief for co-folding predictions."""
+
+    engine: str = "openmm"  # 'openmm', 'rosetta', 'amber'
+    force_field: str = "amber14sb"
+    max_iterations: int = 500
+    tolerance_kj_mol: float = 10.0
+    restrain_backbone: bool = True
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "engine": self.engine,
+            "force_field": self.force_field,
+            "max_iterations": self.max_iterations,
+            "tolerance_kj_mol": self.tolerance_kj_mol,
+            "restrain_backbone": self.restrain_backbone,
         }
 
 
@@ -1109,6 +1238,7 @@ class DeterministicReplayContract:
         """Compute verification hash if missing."""
         if not self.verification_hash and self.candidate_id and self.target_checksum:
             import hashlib
+
             data = f"{self.seed}:{self.candidate_id}:{self.target_checksum}:{self.coordinates}".encode()
             self.verification_hash = hashlib.sha256(data).hexdigest()
 
@@ -1271,8 +1401,6 @@ class EnzymeDesignContract:
         }
 
 
-
-
 # Export all public types
 __all__ = [
     # Enums
@@ -1308,6 +1436,11 @@ __all__ = [
     "CausalTransitionNode",
     "MultiModelConsensus",
     "RescuePolicy",
+    "RestraintType",
+    "ExperimentalRestraintsContract",
+    "RunsNPosesMetric",
+    "LigandConditionedPocketContract",
+    "PhysicsRefinementPolicy",
     "MegasynthaseDomain",
     "MegasynthaseModule",
     "BGCAssemblyContract",

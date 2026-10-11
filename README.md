@@ -49,7 +49,9 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 - **⚡ Jev & AnyJev Fast Decision Pre-Screening**: Training-free, permutation-invariant discrete option selection and calibrated confidence gating (Neural System 1) before escalating to formal biological arbitrament (System 2)
 - **🔬 BGC & Megasynthase Assembly Lines**: Multi-domain modular enzyme complex validation (PKS, NRPS, hybrid megasynthases, ~2,500+ AA) to explore non-natural chemical space (e.g. $\delta$-valerolactam nylon precursors) inspired by gLM2
 - **🎯 RFOptimization & Near-Miss Rescue**: Classification of borderline candidates (`NEAR_MISS`) and alternating gradient-guided simulated MCMC mutations + discrete resampling
-- **⚖️ Tri-Model Consensus Screening**: Independent cross-model validation (AlphaFold 3, RoseTTAFold 3, Boltz-1) with strict filtering gates ($iPAE < 2.5, iPTM > 0.8$)
+- **⚖️ 5-Model Consensus Screening & Runs N' Poses Gate**: Cross-model validation across AlphaFold 3, RoseTTAFold 3, Boltz-1, Chai-1, and Protenix with pose gating ($iPAE < 2.5, iPTM > 0.8$, RMSD $\le 2.0\text{ \AA}$) to prevent co-folding hallucinations
+- **🧲 Measurement-Guided Ensembles & Physics Refinement**: Steers generative diffusion models via empirical sparse restraints (NMR NOE, Cryo-EM, SAXS) and resolves steric clashes in complex receptors (GPCRs) via OpenMM force field energy minimization
+- **🔍 Ligand-Conditioned Cryptic Pockets**: Dynamic modeling of allosteric and cryptic pockets transitioning from collapsed apo states to open holo states upon probe binding
 - **📐 BioTorch Tensor Contracts**: Formal geometry and tensor representations with coordinate frames ($SE(3)$, $SO(3)$, `local_residue_frame`) and invariant dimensions
 - **🛑 DepMap CRISPR Stop-Gates**: Empirical epistemic stopping gates based on Broad DepMap Public co-dependency and statistical significance
 - **🔬 Google DeepMind AlphaGenome**: 18-modality unified variant impact scoring (AVI Score) and regulatory motif disruption analysis

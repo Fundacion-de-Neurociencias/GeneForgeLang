@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Measurement-Consistent Structural Ensembles, 5-Model Co-folding Consensus & Physics Refinement (Nature Methods / Nature Biotechnology 2026)**:
+  - Expanded `ConsensusModel` to include `CHAI_1 = "chai1"` and `PROTENIX = "protenix"` alongside AlphaFold3, RoseTTAFold3, and Boltz-1.
+  - Implemented 5-model cross-validation in `MultiModelConsensus` with strict confidence gating.
+  - Added `ExperimentalRestraintsContract` and `RestraintType` enum (`NMR_NOE`, `CRYO_EM_MAP`, `XL_MS`, `SAXS_ENVELOPE`, `EPR_DEER`) to steer AI structural diffusion toward measurement-consistent conformational ensembles.
+  - Added `RunsNPosesMetric` implementing protein-ligand pose evaluation gates (RMSD $\le 2.0\text{ \AA}$, clash score $\le 10.0$).
+  - Added `LigandConditionedPocketContract` formalizing allosteric and cryptic pocket transitions (apo collapsed vs. holo induced).
+  - Added `PhysicsRefinementPolicy` for molecular mechanics energy minimization (OpenMM / Amber14SB) eliminating steric clash artifacts in complex receptor co-folding predictions.
+  - Registered `chai1`, `protenix`, `openmm`, and `runs_n_poses` as validated tools and generative models in `EnhancedSemanticValidator`.
+  - Added canonical example in `examples/features/measurement_consistent_gpcr_cofolding.gfl` and comprehensive documentation in `docs/geneforgelang/features/structural_ensembles_and_cofolding.md`.
 - **Tangermeme Cis-Regulatory Logic & Context-Bound Claims Primitives (Nature Methods 2026 - ADR-0003)**:
   - Formally integrated Tangermeme (*Schreiber J. et al., Nature Methods 2025/2026*) sequence-to-function (S2F) post-training interpretation engine.
   - Implemented **Context-Bound Claims** representation preserving biological truth boundaries: $\text{Evaluated Claim} \iff (\text{Claim}, \text{ContextState}, \text{Provenance})$.

@@ -810,6 +810,13 @@ class EnhancedSemanticValidator:
             "WES",
             "targeted_seq",
             "tangermeme",
+            "alphafold3",
+            "boltz1",
+            "chai1",
+            "protenix",
+            "rosettafold3",
+            "openmm",
+            "runs_n_poses",
         }
 
         if tool not in known_tools:
@@ -908,6 +915,13 @@ class EnhancedSemanticValidator:
             "ChIPseq": ["sequencing", "analysis"],
             "ATACseq": ["sequencing", "analysis"],
             "tangermeme": ["analysis", "simulation", "validation"],
+            "alphafold3": ["analysis", "simulation", "validation"],
+            "boltz1": ["analysis", "simulation", "validation"],
+            "chai1": ["analysis", "simulation", "validation"],
+            "protenix": ["analysis", "simulation", "validation"],
+            "rosettafold3": ["analysis", "simulation", "validation"],
+            "openmm": ["simulation", "analysis", "validation"],
+            "runs_n_poses": ["analysis", "validation"],
         }
 
         if tool in compatibility_matrix:
@@ -1122,6 +1136,18 @@ class EnhancedSemanticValidator:
             "MoleculeTransformer",
             "SequenceOptimizer",
             "StructurePredictor",
+            "AlphaFold3",
+            "alphafold3",
+            "Boltz1",
+            "boltz1",
+            "Chai1",
+            "chai1",
+            "Protenix",
+            "protenix",
+            "RoseTTAFold3",
+            "rosettafold3",
+            "RFdiffusion",
+            "BindCraft",
         }
 
         if model not in known_models:
