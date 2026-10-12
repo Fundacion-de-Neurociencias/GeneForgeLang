@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **BioDecision-4B & System 1 Fast Calibrated Gating Engine (Qwen3.5-4B + LoRA Tev1 Recipe)**:
+  - Added first-class support for `BioDecision-4B` as the canonical biomedical System 1 decision engine.
+  - Implemented `DecisionContract` formal IO contract with deterministic latency budgets (`latency_budget_ms <= 50.0`) and empirical calibration bounds (`calibration_error_max <= 0.08`, benchmarked at $ECE = 0.068$).
+  - Added `DecisionStrategy.SYSTEM_1_CALIBRATED`, `DecisionStrategy.BIODECISION_SINGLE_FORWARD`, and `DecisionStrategy.SYSTEM_1_FAST`.
+  - Added `DecisionMode` (`CHOICE`, `BINARY`, `SCORE`) for discrete multi-class selection, binary gates, and continuous probability alignment.
+  - Added `DecisionOutcome` tracking top predictions, ambiguity detection margins, empirical ECE, latency, and automated escalation triggers.
+  - Integrated `decision` root block in `GFLAST` and `EnhancedSemanticValidator`.
+  - Registered `biodecision-4b` as an authorized tool and analysis engine in `EnhancedSemanticValidator`.
+  - Implemented `BioDecisionPlugin` in `src/geneforgelang/plugins/biodecision_plugin.py` with temperature-scaled softmax, ECE verification, and sub-50ms execution profiles.
+  - Added canonical example in `examples/features/biodecision_clinical_trial_gating.gfl` and documentation in `docs/geneforgelang/features/biodecision_system1_gating.md`.
+  - Added unit test suite in `tests/unit/test_biodecision_system1_gating.py` (100% passing).
 - **Measurement-Consistent Structural Ensembles, 5-Model Co-folding Consensus & Physics Refinement (Nature Methods / Nature Biotechnology 2026)**:
   - Expanded `ConsensusModel` to include `CHAI_1 = "chai1"` and `PROTENIX = "protenix"` alongside AlphaFold3, RoseTTAFold3, and Boltz-1.
   - Implemented 5-model cross-validation in `MultiModelConsensus` with strict confidence gating.

@@ -1,0 +1,38 @@
+# GeneForgeLang (GFL) v2.0 - Clinical Trial Endpoint Fast Calibrated Gating
+# Demonstrates BioDecision-4B integration as System 1 decision engine
+# Sub-50ms deterministic latency budget, calibrated empirical ECE <= 0.08
+metadata:
+  experiment_name: "Phase III Oncology Primary Endpoint Gating"
+  version: "2.0.0"
+  author: "GeneForgeLang & Fundacion de Neurociencias"
+  citation: "BioDecision-4B (Qwen3.5-4B + LoRA Tev1 / Together AI 2026)"
+  target_organism: "Homo sapiens"
+
+decision:
+  task_id: "ClinicalTrialEndpointGating"
+  strategy: "system_1_calibrated"
+  engine: "biodecision-4b"
+  latency_budget_ms: 50.0
+  calibration_error_max: 0.08
+  allowed_space:
+    - "SUPPORTED"
+    - "CONTRADICTED"
+    - "INSUFFICIENT_EVIDENCE"
+  threshold: 0.85
+  mode: "choice"
+  fallback_strategy: "ESCALATE_TO_SYSTEM2"
+
+experiment:
+  tool: "biodecision-4b"
+  type: "analysis"
+  params:
+    query: "Primary endpoint overall survival achieved with hazard ratio 0.68"
+    evidence: "Randomized double-blind study demonstrated significant improvement in median OS (HR 0.68, 95% CI 0.52-0.89, p=0.002)."
+    temperature: 1.0
+
+analyze:
+  strategy: "statistical"
+  thresholds:
+    confidence: 0.85
+    max_latency_ms: 50.0
+    max_ece: 0.08

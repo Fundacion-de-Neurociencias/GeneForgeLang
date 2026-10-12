@@ -55,6 +55,20 @@ GFL constitutionalizes the complementary roles of generative structural models (
 2. **Ligand-Conditioned Cryptic Pockets**: Protein pockets exist in dynamic equilibrium; cryptic binding sites remain collapsed in uninduced (*apo*) states unless co-folded with cognate ligands (*holo* induced). GFL models this conditional transition via `LigandConditionedPocketContract`.
 3. **Physics-Based Refinement as Epistemic Stop-Gate**: Co-folding predictions are evaluated under the *Runs N' Poses* benchmark (`RunsNPosesMetric`). In unrefined predictions of complex transmembrane receptors (e.g. GPCRs), steric collisions and strained geometries are resolved through molecular mechanics energy minimization (`PhysicsRefinementPolicy`), ensuring thermodynamic admissibility.
 
+### 2.6. Fast Calibrated Gating & The BioDecision Dialectic (System 1 vs. System 2)
+> *"Slow reasoning without calibrated probability is epistemic debt; fast routing without calibration bounds is reckless heuristic."*
+
+In complex multi-agent scientific pipelines, evaluating candidate claims (*"Is this clinical endpoint statistically supported?"*, *"Does this extraction hallucinate?"*, *"Should this candidate proceed to full atomic co-folding?"*) using standard frontier autoregressive models (GPT-4o, Claude Opus, Gemini) creates a dual bottleneck: excessive latency (thousands of milliseconds of reasoning token generation) and uncalibrated verbal outputs devoid of deterministic mathematical thresholding.
+
+GFL formally constitutionalizes **System 1 Fast Calibrated Gating** via `BioDecision-4B` (single forward pass architecture, Qwen3.5-4B + LoRA Tev1 recipe):
+1. **Single Forward Pass Execution ($\le 50$ ms)**: Replaces autoregressive generation loops with direct logit projection over a constrained, discrete response space (`allowed_space`), cutting execution latency by $\sim 98\%$.
+2. **Strict Calibration Error Bounds ($ECE \le 0.08$)**: Requires empirical calibration error verification ($ECE = 0.068$ on HaluBench/PubMedQA). Unambiguous probability gating ($P \ge \tau$, default $\tau = 0.85$) enables deterministic routing without stochastic context drift.
+3. **Formal Decision Modes (`DecisionMode`)**:
+   - `CHOICE`: Multi-class single selection from an admissible biological hypothesis space.
+   - `BINARY`: Deterministic binary gate (`SUPPORTED` vs `CONTRADICTED`, `PASS` vs `FAIL`).
+   - `SCORE`: Continuous calibrated confidence estimate $[0.0, 1.0]$.
+4. **Epistemic Escalation Gate**: When ambiguity is detected ($P_{\text{top1}} - P_{\text{top2}} < \text{margin}$) or confidence drops below $\tau$, the contract deterministically triggers fallback escalation (`fallback_strategy: ESCALATE_TO_SYSTEM2`), seamlessly preserving deep reasoning rigor only when ambiguity warrants it.
+
 ---
 
 ## 3. System Architecture (Compiler Layers & Runtime)

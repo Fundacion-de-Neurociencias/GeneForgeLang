@@ -451,7 +451,7 @@ class GFLAST:
                 strategy_val = dec_data.get("strategy", DecisionStrategy.SYSTEM_1_CALIBRATED)
                 if isinstance(strategy_val, str):
                     try:
-                        strategy_enum = DecisionStrategy(strategy_val)
+                        strategy_enum = DecisionStrategy(strategy_val.lower())
                     except ValueError:
                         strategy_enum = DecisionStrategy.SYSTEM_1_CALIBRATED
                 else:
@@ -460,14 +460,20 @@ class GFLAST:
                 mode_val = dec_data.get("mode", DecisionMode.CHOICE)
                 if isinstance(mode_val, str):
                     try:
-                        mode_enum = DecisionMode(mode_val)
+                        mode_enum = DecisionMode(mode_val.lower())
                     except ValueError:
                         mode_enum = DecisionMode.CHOICE
                 else:
                     mode_enum = mode_val
+                raw_space = dec_data.get("allowed_space")
+                if raw_space is None:
+                    raw_space = dec_data.get("allowed_options", [])
+                allowed = [str(opt) for opt in raw_space]
 
-                allowed = list(dec_data.get("allowed_space", dec_data.get("allowed_options", [])))
-                thresh = float(dec_data.get("threshold", dec_data.get("confidence_threshold", 0.85)))
+                raw_thresh = dec_data.get("threshold")
+                if raw_thresh is None:
+                    raw_thresh = dec_data.get("confidence_threshold", 0.85)
+                thresh = float(raw_thresh)
 
                 ast.decision = DecisionContract(
                     task_id=str(dec_data.get("task_id", dec_data.get("name", "decision_task"))),
@@ -1512,6 +1518,7 @@ __all__ = [
     "ConsensusModel",
     "BiosyntheticDomainType",
     "DecisionStrategy",
+    "DecisionMode",
     "ClinVarSignificance",
     "RetroelementType",
     "CatalyticResidueRole",

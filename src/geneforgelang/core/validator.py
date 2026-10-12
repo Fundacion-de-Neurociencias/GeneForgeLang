@@ -133,6 +133,7 @@ class EnhancedSemanticValidator:
             "timeline",
             "pathways",
             "complexes",
+            "decision",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -143,7 +144,7 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'pathways', or 'complexes' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', or 'complexes' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
@@ -201,6 +202,8 @@ class EnhancedSemanticValidator:
                 self._validate_hypothesis_block(block_content)
             elif block_name == "timeline":
                 self._validate_timeline_block(block_content)
+            elif block_name == "decision":
+                self._validate_decision_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -481,6 +484,96 @@ class EnhancedSemanticValidator:
                     f"Timeline event {i} 'expectations' field must be a list",
                     ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
                 ).add_fix(f"Format 'expectations' field as a list in timeline event {i}")
+
+    def _validate_decision_block(self, decision_block: Any) -> None:
+        """Validate the decision block structure (System 1 fast gating)."""
+        if not isinstance(decision_block, dict):
+            if hasattr(decision_block, "to_dict"):
+                decision_block = decision_block.to_dict()
+            else:
+                self.result.add_error(
+                    "Decision block must be a dictionary or DecisionContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format decision as a dictionary with strategy, engine, and allowed_space")
+                return
+
+        # Check allowed_space / allowed_options
+        has_space = "allowed_space" in decision_block
+        has_options = "allowed_options" in decision_block
+        if has_space or has_options:
+            allowed_space = decision_block.get("allowed_space") if has_space else decision_block.get("allowed_options")
+            if not isinstance(allowed_space, list):
+                self.result.add_error(
+                    "Decision 'allowed_space' must be a list of allowed outcome options",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Format allowed_space as a list of strings, e.g., ['SUPPORTED', 'CONTRADICTED']")
+            elif len(allowed_space) == 0:
+                self.result.add_error(
+                    "Decision 'allowed_space' cannot be empty",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Provide at least one outcome option in allowed_space")
+
+        # Check strategy
+        if "strategy" in decision_block:
+            strat = decision_block["strategy"]
+            valid_strategies = {
+                "system_1_calibrated",
+                "system_1_fast",
+                "biodecision_single_forward",
+                "permutation_invariant_logits",
+                "calibrated_temperature",
+                "exact_match_prior",
+                "ensemble_marginalized",
+                "SYSTEM_1_CALIBRATED",
+                "SYSTEM_1_FAST",
+                "BIODECISION_SINGLE_FORWARD",
+                "PERMUTATION_INVARIANT_LOGITS",
+                "CALIBRATED_TEMPERATURE",
+                "EXACT_MATCH_PRIOR",
+                "ENSEMBLE_MARGINALIZED",
+            }
+            strat_str = str(strat)
+            if strat_str.lower() not in {s.lower() for s in valid_strategies}:
+                self.result.add_error(
+                    f"Unknown decision strategy '{strat}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'SYSTEM_1_CALIBRATED', 'SYSTEM_1_FAST', or 'BIODECISION_SINGLE_FORWARD'")
+
+        # Check latency budget
+        if "latency_budget_ms" in decision_block:
+            budget = decision_block["latency_budget_ms"]
+            if not isinstance(budget, (int, float)) or budget <= 0:
+                self.result.add_error(
+                    f"latency_budget_ms must be a positive number, got {budget}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set latency_budget_ms to a positive millisecond threshold (e.g. 50)")
+
+        # Check calibration error max
+        if "calibration_error_max" in decision_block:
+            ece_max = decision_block["calibration_error_max"]
+            if not isinstance(ece_max, (int, float)) or not (0.0 <= ece_max <= 1.0):
+                self.result.add_error(
+                    f"calibration_error_max must be a float between 0.0 and 1.0, got {ece_max}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set calibration_error_max between 0.0 and 1.0 (recommended <= 0.08)")
+
+        # Check threshold
+        thresh = decision_block.get("threshold") or decision_block.get("confidence_threshold")
+        if thresh is not None and (not isinstance(thresh, (int, float)) or not (0.0 <= thresh <= 1.0)):
+            self.result.add_error(
+                f"Decision threshold must be a float between 0.0 and 1.0, got {thresh}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set threshold between 0.0 and 1.0 (e.g., 0.85)")
+
+        # Check mode if present
+        if "mode" in decision_block:
+            mode = str(decision_block["mode"]).lower()
+            if mode not in {"choice", "binary", "score"}:
+                self.result.add_error(
+                    f"Unknown decision mode '{decision_block['mode']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set mode to 'choice', 'binary', or 'score'")
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
@@ -817,6 +910,7 @@ class EnhancedSemanticValidator:
             "rosettafold3",
             "openmm",
             "runs_n_poses",
+            "biodecision-4b",
         }
 
         if tool not in known_tools:
@@ -922,6 +1016,7 @@ class EnhancedSemanticValidator:
             "rosettafold3": ["analysis", "simulation", "validation"],
             "openmm": ["simulation", "analysis", "validation"],
             "runs_n_poses": ["analysis", "validation"],
+            "biodecision-4b": ["analysis", "validation", "simulation"],
         }
 
         if tool in compatibility_matrix:
