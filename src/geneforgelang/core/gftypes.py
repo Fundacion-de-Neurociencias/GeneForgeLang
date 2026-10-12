@@ -340,6 +340,7 @@ class GFLAST:
     simulate: bool | None = None
     branch: dict[str, Any] | None = None
     decision: DecisionContract | dict[str, Any] | None = None
+    tape_recorder: TapeRecorderContract | dict[str, Any] | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -359,6 +360,10 @@ class GFLAST:
             result["branch"] = self.branch
         if self.decision is not None:
             result["decision"] = self.decision.to_dict() if hasattr(self.decision, "to_dict") else self.decision
+        if self.tape_recorder is not None:
+            result["tape_recorder"] = (
+                self.tape_recorder.to_dict() if hasattr(self.tape_recorder, "to_dict") else self.tape_recorder
+            )
         if self.metadata:
             result["metadata"] = self.metadata
         return result
@@ -487,6 +492,36 @@ class GFLAST:
                     latency_budget_ms=float(dec_data.get("latency_budget_ms", 50.0)),
                     calibration_error_max=float(dec_data.get("calibration_error_max", 0.08)),
                     mode=mode_enum,
+                )
+
+        if "tape_recorder" in data:
+            tr_data = data["tape_recorder"]
+            if isinstance(tr_data, TapeRecorderContract):
+                ast.tape_recorder = tr_data
+            elif isinstance(tr_data, dict):
+                arch_raw = tr_data.get("cassette_architecture", CassetteArchitecture.TANDEM_PEGRNA_INSERTIONAL)
+                if isinstance(arch_raw, str):
+                    try:
+                        arch_enum = CassetteArchitecture(arch_raw)
+                    except ValueError:
+                        arch_enum = CassetteArchitecture.TANDEM_PEGRNA_INSERTIONAL
+                else:
+                    arch_enum = arch_raw
+
+                sigs_raw = tr_data.get("edit_signature_alphabet", [])
+                sigs = [str(s) for s in sigs_raw]
+
+                ast.tape_recorder = TapeRecorderContract(
+                    recorder_id=str(tr_data.get("recorder_id", tr_data.get("name", "TapeRecorder"))),
+                    cassette_architecture=arch_enum,
+                    tape_capacity_sites=int(tr_data.get("tape_capacity_sites", 50)),
+                    recording_interval_hours=float(tr_data.get("recording_interval_hours", 6.0)),
+                    edit_signature_alphabet=sigs,
+                    target_organism=str(tr_data["target_organism"]) if "target_organism" in tr_data else None,
+                    developmental_window=str(tr_data["developmental_window"])
+                    if "developmental_window" in tr_data
+                    else None,
+                    readout_modality=str(tr_data["readout_modality"]) if "readout_modality" in tr_data else None,
                 )
 
         if "metadata" in data:
@@ -1505,6 +1540,99 @@ class EnzymeDesignContract:
         }
 
 
+# DNA Typewriter & Developmental Lineage Tracing Layer
+# Grounded in Science 2026 (Yu et al., DOI: 10.1126/science.ael0508)
+class CassetteArchitecture(str, Enum):
+    """Architecture of recording cassette for continuous cellular lineage tracing."""
+
+    TANDEM_PEGRNA_INSERTIONAL = "tandem_pegRNA_insertional"
+    BASE_EDITOR_ACCUMULATION = "base_editor_accumulation"
+    CRISPR_HOMING_BARCODE = "crispr_homing_barcode"
+    PRIME_EDITING_TAPE = "prime_editing_tape"
+
+    def __str__(self) -> str:
+        """Return the enum value."""
+        return self.value
+
+
+class ReadoutModality(str, Enum):
+    """Modality for reading out recorded cellular tape barcodes."""
+
+    TARGETED_AMPLICON_DNA_SEQ = "targeted_amplicon_dna_seq"
+    SINGLE_CELL_RNA_SEQ_EXPRESSION = "single_cell_rna_seq_expression"
+    MULTIPLEX_AMPLICON_SEQ = "multiplex_amplicon_seq"
+    LONG_READ_PACBIO = "long_read_pacbio"
+    LONG_READ_ONT = "long_read_ont"
+
+    def __str__(self) -> str:
+        """Return the enum value."""
+        return self.value
+
+
+@dataclass
+class TapeRecorderContract:
+    """Formal IO contract for DNA Typewriter sequential recording cassette.
+
+    Captures non-destructive, sequential insertion markings stored in cells' own DNA
+    to reconstruct cellular developmental family trees from zygote to organogenesis.
+    """
+
+    recorder_id: str
+    cassette_architecture: CassetteArchitecture = CassetteArchitecture.TANDEM_PEGRNA_INSERTIONAL
+    tape_capacity_sites: int = 50
+    recording_interval_hours: float = 6.0
+    edit_signature_alphabet: list[str] = field(default_factory=list)
+    target_organism: str | None = "mus_musculus"
+    developmental_window: str | None = "13.5_days"
+    readout_modality: str | ReadoutModality | None = ReadoutModality.TARGETED_AMPLICON_DNA_SEQ
+
+    @property
+    def total_recording_capacity_hours(self) -> float:
+        """Theoretical maximum continuous recording window before tape saturation."""
+        return self.tape_capacity_sites * self.recording_interval_hours
+
+    def can_accommodate_duration_hours(self, duration_hours: float) -> bool:
+        """Verify whether duration fits within cassette site capacity."""
+        return duration_hours <= self.total_recording_capacity_hours
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "recorder_id": self.recorder_id,
+            "cassette_architecture": str(self.cassette_architecture),
+            "tape_capacity_sites": self.tape_capacity_sites,
+            "recording_interval_hours": self.recording_interval_hours,
+            "edit_signature_alphabet": list(self.edit_signature_alphabet),
+            "target_organism": self.target_organism,
+            "developmental_window": self.developmental_window,
+            "readout_modality": str(self.readout_modality) if self.readout_modality else None,
+            "total_recording_capacity_hours": self.total_recording_capacity_hours,
+        }
+
+
+@dataclass
+class LineageNode:
+    """Node in an embryonic cellular lineage tree reconstructed from tape barcodes."""
+
+    cell_id: str
+    generation: int
+    tape_state: list[str] = field(default_factory=list)
+    children: list[str] = field(default_factory=list)
+    cell_type_annotation: str | None = None
+    time_point_hours: float | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "cell_id": self.cell_id,
+            "generation": self.generation,
+            "tape_state": list(self.tape_state),
+            "children": list(self.children),
+            "cell_type_annotation": self.cell_type_annotation,
+            "time_point_hours": self.time_point_hours,
+        }
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -1559,6 +1687,10 @@ __all__ = [
     "SubstrateLigandContainer",
     "CatalyticMotif",
     "EnzymeDesignContract",
+    "CassetteArchitecture",
+    "ReadoutModality",
+    "TapeRecorderContract",
+    "LineageNode",
     # Validation types
     "ValidationError",
     "ValidationResult",

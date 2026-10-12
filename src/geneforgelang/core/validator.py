@@ -134,6 +134,7 @@ class EnhancedSemanticValidator:
             "pathways",
             "complexes",
             "decision",
+            "tape_recorder",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -204,6 +205,8 @@ class EnhancedSemanticValidator:
                 self._validate_timeline_block(block_content)
             elif block_name == "decision":
                 self._validate_decision_block(block_content)
+            elif block_name == "tape_recorder":
+                self._validate_tape_recorder_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -575,6 +578,83 @@ class EnhancedSemanticValidator:
                     ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                 ).add_fix("Set mode to 'choice', 'binary', or 'score'")
 
+    def _validate_tape_recorder_block(self, recorder_block: Any) -> None:
+        """Validate DNA Typewriter cellular tape recorder contract block."""
+        if not isinstance(recorder_block, dict):
+            if hasattr(recorder_block, "to_dict"):
+                recorder_block = recorder_block.to_dict()
+            else:
+                self.result.add_error(
+                    "Tape recorder block must be a dictionary or TapeRecorderContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format tape_recorder as a dictionary with cassette_architecture, tape_capacity_sites, etc.")
+                return
+
+        # Validate cassette architecture
+        if "cassette_architecture" in recorder_block:
+            arch = str(recorder_block["cassette_architecture"])
+            valid_architectures = {
+                "tandem_pegrna_insertional",
+                "base_editor_accumulation",
+                "crispr_homing_barcode",
+                "prime_editing_tape",
+            }
+            if arch.lower() not in valid_architectures:
+                self.result.add_error(
+                    f"Unknown cassette_architecture '{arch}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'tandem_pegRNA_insertional', 'base_editor_accumulation', or 'crispr_homing_barcode'")
+
+        # Validate tape capacity sites
+        if "tape_capacity_sites" in recorder_block:
+            sites = recorder_block["tape_capacity_sites"]
+            if not isinstance(sites, int) or sites <= 0:
+                self.result.add_error(
+                    f"tape_capacity_sites must be a positive integer, got {sites}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set tape_capacity_sites to a positive integer (e.g. 50)")
+
+        # Validate recording interval hours
+        if "recording_interval_hours" in recorder_block:
+            interval = recorder_block["recording_interval_hours"]
+            if not isinstance(interval, (int, float)) or interval <= 0:
+                self.result.add_error(
+                    f"recording_interval_hours must be a positive number, got {interval}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set recording_interval_hours to a positive float or int (e.g. 6.0)")
+
+        # Validate edit signature alphabet
+        if "edit_signature_alphabet" in recorder_block:
+            alphabet = recorder_block["edit_signature_alphabet"]
+            if not isinstance(alphabet, list):
+                self.result.add_error(
+                    "edit_signature_alphabet must be a list of edit signature strings",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Format edit_signature_alphabet as a list of strings, e.g. ['Ins_A1', 'Ins_B2']")
+            elif len(alphabet) == 0:
+                self.result.add_error(
+                    "edit_signature_alphabet cannot be empty",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Provide at least one edit signature in edit_signature_alphabet")
+
+        # Validate readout modality if specified
+        if "readout_modality" in recorder_block and recorder_block["readout_modality"] is not None:
+            modality = str(recorder_block["readout_modality"]).lower()
+            valid_modalities = {
+                "targeted_amplicon_dna_seq",
+                "single_cell_rna_seq_expression",
+                "multiplex_amplicon_seq",
+                "long_read_pacbio",
+                "long_read_ont",
+            }
+            if modality not in valid_modalities:
+                self.result.add_error(
+                    f"Unknown readout_modality '{recorder_block['readout_modality']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'targeted_amplicon_dna_seq' or 'single_cell_rna_seq_expression'")
+
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
         self.symbol_table[block_name] = {"contract": contract}
@@ -911,6 +991,8 @@ class EnhancedSemanticValidator:
             "openmm",
             "runs_n_poses",
             "biodecision-4b",
+            "dna_typewriter",
+            "targeted_amplicon_dna_seq",
         }
 
         if tool not in known_tools:
@@ -1017,6 +1099,8 @@ class EnhancedSemanticValidator:
             "openmm": ["simulation", "analysis", "validation"],
             "runs_n_poses": ["analysis", "validation"],
             "biodecision-4b": ["analysis", "validation", "simulation"],
+            "dna_typewriter": ["gene_editing", "sequencing", "analysis", "simulation"],
+            "targeted_amplicon_dna_seq": ["sequencing", "analysis", "validation"],
         }
 
         if tool in compatibility_matrix:

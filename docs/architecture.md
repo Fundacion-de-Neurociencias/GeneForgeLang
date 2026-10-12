@@ -173,6 +173,13 @@ GFL Core centralizes all data contracts in immutable, serializable structures:
    - `SubstrateLigandContainer`: Declarative container for transition-state analogs and substrate SMILES with reactive atom indices.
    - `EnzymeDesignContract`: Formal IO contract specifying enzyme family, catalytic motif geometry, and substrate transition-state distance constraints ($\le 3.5\text{ \AA}$).
 
+7. **Continuous Cellular Lineage Recording (DNA Typewriter - Science 2026)**:
+   - *Biological Foundation*: Based on sequential primer-extension insertional editing using tandem pegRNAs (Yu et al., *Science* 2026, DOI: 10.1126/science.ael0508) tracing mammalian development over 13.5 days from zygote to late organogenesis.
+   - `CassetteArchitecture`: Architecture of recording cassette (`tandem_pegRNA_insertional`, `base_editor_accumulation`, `crispr_homing_barcode`, `prime_editing_tape`).
+   - `ReadoutModality`: Sequencing modality for tape barcode extraction (`targeted_amplicon_dna_seq`, `single_cell_rna_seq_expression`, `multiplex_amplicon_seq`).
+   - `TapeRecorderContract`: First-class GFL AST construct and IO contract specifying cassette site capacity (`tape_capacity_sites`), insertion frequency (`recording_interval_hours`), edit alphabet (`edit_signature_alphabet`), and continuous temporal window verification (`can_accommodate_duration_hours`).
+   - `LineageNode`: Phylogenetic node in reconstructed embryonic developmental trees recording cell generation, cumulative tape state, cell-type annotation, and temporal commitment points.
+
 ---
 
 ## 5. Decoupled Satellite Plugin Ecosystem

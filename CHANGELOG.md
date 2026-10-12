@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **DNA Typewriter Continuous Cellular Lineage Recording (Science 2026 - Yu et al.)**:
+  - Implemented `tape_recorder` first-class AST construct and `TapeRecorderContract` based on *Science* 2026 (DOI: 10.1126/science.ael0508).
+  - Added `CassetteArchitecture` enum (`tandem_pegRNA_insertional`, `base_editor_accumulation`, `crispr_homing_barcode`, `prime_editing_tape`).
+  - Added `ReadoutModality` enum (`targeted_amplicon_dna_seq`, `single_cell_rna_seq_expression`, `multiplex_amplicon_seq`).
+  - Added continuous recording capacity calculations (`total_recording_capacity_hours`) and feasibility verification (`can_accommodate_duration_hours`).
+  - Added `LineageNode` phylogenetic representation tracking embryonic cellular generations, sequential tape state barcodes, and temporal commitment points.
+  - Registered `dna_typewriter` and `targeted_amplicon_dna_seq` in `EnhancedSemanticValidator` tool catalog and compatibility matrix.
+  - Added canonical example in `examples/features/dna_typewriter_embryo_lineage.gfl` and documentation in `docs/geneforgelang/features/dna_typewriter_lineage_recording.md`.
+  - Added comprehensive unit test suite in `tests/unit/test_tape_recorder_lineage.py` (100% passing).
 - **BioDecision-4B & System 1 Fast Calibrated Gating Engine (Qwen3.5-4B + LoRA Tev1 Recipe)**:
   - Added first-class support for `BioDecision-4B` as the canonical biomedical System 1 decision engine.
   - Implemented `DecisionContract` formal IO contract with deterministic latency budgets (`latency_budget_ms <= 50.0`) and empirical calibration bounds (`calibration_error_max <= 0.08`, benchmarked at $ECE = 0.068$).
