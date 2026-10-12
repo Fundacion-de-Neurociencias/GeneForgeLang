@@ -339,6 +339,7 @@ class GFLAST:
     optimize: Optimize | None = None
     simulate: bool | None = None
     branch: dict[str, Any] | None = None
+    decision: DecisionContract | dict[str, Any] | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -356,6 +357,8 @@ class GFLAST:
             result["simulate"] = self.simulate
         if self.branch is not None:
             result["branch"] = self.branch
+        if self.decision is not None:
+            result["decision"] = self.decision.to_dict() if hasattr(self.decision, "to_dict") else self.decision
         if self.metadata:
             result["metadata"] = self.metadata
         return result
@@ -439,6 +442,46 @@ class GFLAST:
 
         if "branch" in data:
             ast.branch = dict(data["branch"])
+
+        if "decision" in data:
+            dec_data = data["decision"]
+            if isinstance(dec_data, DecisionContract):
+                ast.decision = dec_data
+            elif isinstance(dec_data, dict):
+                strategy_val = dec_data.get("strategy", DecisionStrategy.SYSTEM_1_CALIBRATED)
+                if isinstance(strategy_val, str):
+                    try:
+                        strategy_enum = DecisionStrategy(strategy_val)
+                    except ValueError:
+                        strategy_enum = DecisionStrategy.SYSTEM_1_CALIBRATED
+                else:
+                    strategy_enum = strategy_val
+
+                mode_val = dec_data.get("mode", DecisionMode.CHOICE)
+                if isinstance(mode_val, str):
+                    try:
+                        mode_enum = DecisionMode(mode_val)
+                    except ValueError:
+                        mode_enum = DecisionMode.CHOICE
+                else:
+                    mode_enum = mode_val
+
+                allowed = list(dec_data.get("allowed_space", dec_data.get("allowed_options", [])))
+                thresh = float(dec_data.get("threshold", dec_data.get("confidence_threshold", 0.85)))
+
+                ast.decision = DecisionContract(
+                    task_id=str(dec_data.get("task_id", dec_data.get("name", "decision_task"))),
+                    allowed_options=allowed,
+                    allowed_space=allowed,
+                    confidence_threshold=thresh,
+                    threshold=thresh,
+                    fallback_strategy=str(dec_data.get("fallback_strategy", "ESCALATE_TO_SYSTEM2")),
+                    strategy=strategy_enum,
+                    engine=str(dec_data.get("engine", "biodecision-4b")),
+                    latency_budget_ms=float(dec_data.get("latency_budget_ms", 50.0)),
+                    calibration_error_max=float(dec_data.get("calibration_error_max", 0.08)),
+                    mode=mode_enum,
+                )
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -1105,6 +1148,21 @@ class DecisionStrategy(str, Enum):
     CALIBRATED_TEMPERATURE = "calibrated_temperature"  # Temperature-scaled confidence calibration
     EXACT_MATCH_PRIOR = "exact_match_prior"  # Deterministic schema prior match
     ENSEMBLE_MARGINALIZED = "ensemble_marginalized"  # Marginalized over permutation distribution
+    SYSTEM_1_CALIBRATED = "system_1_calibrated"  # BioDecision-4B Tev1 calibrated single-forward-pass
+    SYSTEM_1_FAST = "system_1_fast"  # Sub-50ms deterministic fast gating
+    BIODECISION_SINGLE_FORWARD = "biodecision_single_forward"  # Dedicated single forward pass recipe
+
+    def __str__(self) -> str:
+        """Return the enum value as string."""
+        return self.value
+
+
+class DecisionMode(str, Enum):
+    """Operating mode for discrete decision evaluation."""
+
+    CHOICE = "choice"  # Multi-class single selection from allowed space
+    BINARY = "binary"  # Binary gating (e.g. YES / NO, PASS / FAIL)
+    SCORE = "score"  # Continuous calibrated alignment score in [0.0, 1.0]
 
     def __str__(self) -> str:
         """Return the enum value as string."""
@@ -1142,6 +1200,12 @@ class DecisionOutcome:
     options_evaluated: list[DecisionOption]
     calibration_method: str = "temperature_scaling"
     latency_ms: float = 0.0
+    ece: float | None = None
+    mode: str = "choice"
+
+    def passes_threshold(self, threshold: float = 0.85) -> bool:
+        """Check if outcome satisfies confidence threshold without ambiguity."""
+        return self.confidence >= threshold and not self.is_ambiguous
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
@@ -1152,6 +1216,8 @@ class DecisionOutcome:
             "options_evaluated": [opt.to_dict() for opt in self.options_evaluated],
             "calibration_method": self.calibration_method,
             "latency_ms": self.latency_ms,
+            "ece": self.ece,
+            "mode": self.mode,
         }
 
 
@@ -1160,19 +1226,51 @@ class DecisionContract:
     """Formal IO contract for pre-screening routing and discrete option arbitration."""
 
     task_id: str
-    allowed_options: list[str]
+    allowed_options: list[str] = field(default_factory=list)
+    allowed_space: list[str] = field(default_factory=list)
     confidence_threshold: float = 0.85
+    threshold: float = 0.85
     fallback_strategy: str = "ESCALATE_TO_SYSTEM2"
-    strategy: DecisionStrategy = DecisionStrategy.PERMUTATION_INVARIANT_LOGITS
+    strategy: DecisionStrategy = DecisionStrategy.SYSTEM_1_CALIBRATED
+    engine: str = "biodecision-4b"
+    latency_budget_ms: float = 50.0
+    calibration_error_max: float = 0.08
+    mode: DecisionMode = DecisionMode.CHOICE
+
+    def __post_init__(self) -> None:
+        """Synchronize allowed_options and allowed_space, and confidence threshold."""
+        if not self.allowed_space and self.allowed_options:
+            self.allowed_space = list(self.allowed_options)
+        elif not self.allowed_options and self.allowed_space:
+            self.allowed_options = list(self.allowed_space)
+
+        if self.threshold != 0.85 and self.confidence_threshold == 0.85:
+            self.confidence_threshold = self.threshold
+        elif self.confidence_threshold != 0.85 and self.threshold == 0.85:
+            self.threshold = self.confidence_threshold
+
+    def is_within_budget(self, measured_latency_ms: float) -> bool:
+        """Check if inference latency is within the allocated budget."""
+        return measured_latency_ms <= self.latency_budget_ms
+
+    def passes_calibration(self, measured_ece: float) -> bool:
+        """Check if empirical calibration error is within the allowed bound."""
+        return measured_ece <= self.calibration_error_max
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
         return {
             "task_id": self.task_id,
             "allowed_options": self.allowed_options,
+            "allowed_space": self.allowed_space,
             "confidence_threshold": self.confidence_threshold,
+            "threshold": self.threshold,
             "fallback_strategy": self.fallback_strategy,
             "strategy": str(self.strategy),
+            "engine": self.engine,
+            "latency_budget_ms": self.latency_budget_ms,
+            "calibration_error_max": self.calibration_error_max,
+            "mode": str(self.mode),
         }
 
 
