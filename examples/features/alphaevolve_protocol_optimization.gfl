@@ -1,0 +1,32 @@
+// AlphaEvolve Program Evolution Specification in GeneForgeLang (GFL)
+// Formalizing the declarative evolution contract for laboratory robotics pipetting protocols
+
+program_evolution AlphaEvolvePipettingFoundry {
+  seed_program: "protocols/hts_liquid_handling_v1.py"
+  mutation_engine: "gemini-1.5-pro"
+  population_size: 25
+  generations: 15
+  elitism_rate: 0.20
+  mutation_operators: [
+    "diff_prompt",
+    "semantic_refactor",
+    "hyperparameter_tune",
+    "algorithmic_crossover"
+  ]
+  deterministic_eval_harness: "evals/eval_pipetting_precision.py"
+  timeout_per_eval_seconds: 45.0
+  target_fitness_threshold: 0.985
+}
+
+optimize PipettingProtocolOptimization {
+  strategy: "AlphaEvolve"
+  alpha_evolve: {
+    seed_program: "protocols/hts_liquid_handling_v1.py"
+    population_size: 25
+    generations: 15
+    elitism_rate: 0.20
+  }
+  objective: {
+    maximize: "liquid_transfer_accuracy_f1"
+  }
+}

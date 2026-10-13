@@ -1685,6 +1685,8 @@ class EnhancedSemanticValidator:
         # Known optimization strategies
         known_strategies = {
             "ActiveLearning",
+            "AlphaEvolve",
+            "ProgramEvolution",
             "BayesianOptimization",
             "GeneticAlgorithm",
             "SimulatedAnnealing",
@@ -1704,6 +1706,58 @@ class EnhancedSemanticValidator:
         # Special validation for ActiveLearning strategy
         if strategy_name == "ActiveLearning":
             self._validate_active_learning_strategy(strategy)
+        elif strategy_name in {"AlphaEvolve", "ProgramEvolution"}:
+            self._validate_alpha_evolve_strategy(strategy)
+
+    def _validate_alpha_evolve_strategy(self, strategy: dict[str, Any]) -> None:
+        """Validate AlphaEvolve / ProgramEvolution strategy with required keys."""
+        config = strategy.get("alpha_evolve") or strategy.get("program_evolution")
+        if config is None:
+            # If inline parameters are directly at the strategy level
+            config = strategy
+
+        if not isinstance(config, dict):
+            self.result.add_error(
+                "AlphaEvolve configuration must be a dictionary",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Format alpha_evolve as a dictionary with required parameters")
+            return
+
+        # Check population_size if present
+        if "population_size" in config:
+            pop_size = config["population_size"]
+            if not isinstance(pop_size, int) or pop_size <= 0:
+                self.result.add_error(
+                    f"population_size must be a positive integer, got {pop_size}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set population_size to a positive integer (e.g., 20)")
+
+        # Check generations if present
+        if "generations" in config:
+            gens = config["generations"]
+            if not isinstance(gens, int) or gens <= 0:
+                self.result.add_error(
+                    f"generations must be a positive integer, got {gens}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set generations to a positive integer (e.g., 15)")
+
+        # Check elitism_rate if present
+        if "elitism_rate" in config:
+            rate = config["elitism_rate"]
+            if not isinstance(rate, (int, float)) or not (0.0 <= float(rate) <= 1.0):
+                self.result.add_error(
+                    f"elitism_rate must be a float between 0.0 and 1.0, got {rate}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set elitism_rate to a float between 0.0 and 1.0 (e.g., 0.20)")
+
+        # Check seed_program if present
+        if "seed_program" in config:
+            seed = config["seed_program"]
+            if not isinstance(seed, str) or not seed.strip():
+                self.result.add_error(
+                    "seed_program must be a non-empty string path or identifier",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Provide a valid string path or module name for seed_program")
 
     def _validate_active_learning_strategy(self, strategy: dict[str, Any]) -> None:
         """Validate ActiveLearning strategy with required nested keys."""

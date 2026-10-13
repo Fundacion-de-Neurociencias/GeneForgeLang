@@ -1633,6 +1633,48 @@ class LineageNode:
         }
 
 
+@dataclass
+class ProgramEvolutionContract:
+    """Declarative specification for an AlphaEvolve program evolution optimization run.
+
+    AlphaEvolve evolves code representations (executable protocols, scoring functions,
+    or design heuristics) via LLM mutation engines guided by deterministic fitness evaluations.
+    """
+
+    seed_program: str
+    fitness_metric: str
+    mutation_engine: str = "gemini-1.5-pro"
+    population_size: int = 20
+    generations: int = 15
+    elitism_rate: float = 0.20
+    mutation_operators: list[str] = field(
+        default_factory=lambda: [
+            "diff_prompt",
+            "semantic_refactor",
+            "hyperparameter_tune",
+            "algorithmic_crossover",
+        ]
+    )
+    timeout_per_eval_seconds: float = 60.0
+    deterministic_eval_harness: str | None = None
+    target_fitness_threshold: float | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "seed_program": self.seed_program,
+            "fitness_metric": self.fitness_metric,
+            "mutation_engine": self.mutation_engine,
+            "population_size": self.population_size,
+            "generations": self.generations,
+            "elitism_rate": self.elitism_rate,
+            "mutation_operators": list(self.mutation_operators),
+            "timeout_per_eval_seconds": self.timeout_per_eval_seconds,
+            "deterministic_eval_harness": self.deterministic_eval_harness,
+            "target_fitness_threshold": self.target_fitness_threshold,
+        }
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -1691,6 +1733,7 @@ __all__ = [
     "ReadoutModality",
     "TapeRecorderContract",
     "LineageNode",
+    "ProgramEvolutionContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

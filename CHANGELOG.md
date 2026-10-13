@@ -8,7 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **AlphaEvolve Program Evolution & Autonomous Protocol Foundry (DeepMind / Google Cloud 2026)**:
+  - Added `ProgramEvolutionContract` formalizing evolutionary optimization of code representations, liquid-handler pipetting schedules, and heuristic algorithms via LLM mutation engines guided by deterministic fitness evaluators.
+  - Added `AlphaEvolve` and `ProgramEvolution` strategies to `EnhancedSemanticValidator` with strict domain constraints (`population_size > 0`, `generations > 0`, `0.0 <= elitism_rate <= 1.0`, non-empty `seed_program`).
+  - Added canonical example in `examples/features/alphaevolve_protocol_optimization.gfl` and documentation in `docs/geneforgelang/features/alphaevolve_program_optimization.md`.
+  - Added unit test suite in `tests/unit/test_alphaevolve_program_optimization.py` (100% passing).
 - **DNA Typewriter Continuous Cellular Lineage Recording (Science 2026 - Yu et al.)**:
+
   - Implemented `tape_recorder` first-class AST construct and `TapeRecorderContract` based on *Science* 2026 (DOI: 10.1126/science.ael0508).
   - Added `CassetteArchitecture` enum (`tandem_pegRNA_insertional`, `base_editor_accumulation`, `crispr_homing_barcode`, `prime_editing_tape`).
   - Added `ReadoutModality` enum (`targeted_amplicon_dna_seq`, `single_cell_rna_seq_expression`, `multiplex_amplicon_seq`).
