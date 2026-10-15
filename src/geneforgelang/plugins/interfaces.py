@@ -133,6 +133,8 @@ class GeneratorPlugin(BaseGFLPlugin):
         Returns:
             List of EntityType enums that this plugin supports.
         """
+#se puede pasar el device como kwargs para que el plugin pueda decidir si usar cpu o gpu
+# ejemplo device = kwargs.get("device")
 
     @abstractmethod
     def generate(
