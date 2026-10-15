@@ -8,7 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Epigenetic Deconvolution & cfDNA Fragmentomics Foundation Contracts (Pleiades Architecture)**:
+  - Formalized `EpigeneticDeconvolutionContract` and `FragmentomicsModality` enum for whole-epigenome foundation model deconvolution from liquid biopsy plasma cfDNA.
+  - Expanded `DecisionContract` to natively accept `target_tissue` and `cfdna_methylation_profile` parameters for fast calibrated System 1 gating.
+  - Registered `"pleiades"`, `"pleiades-biodecision"`, and `"pleiades-7b"` in `EnhancedSemanticValidator` tool catalog, and authorized `"epigenetic_deconvolution"` and `"fragmentomics"` analysis strategies.
+  - Added canonical example in `examples/features/epigenetic_deconvolution_cfdna.gfl` and documentation in `docs/geneforgelang/features/epigenetic_deconvolution_cfdna.md`.
+  - Added unit test suite in `tests/unit/test_epigenetic_deconvolution_cfdna.py` (100% passing).
 - **AlphaEvolve Program Evolution & Autonomous Protocol Foundry (DeepMind / Google Cloud 2026)**:
+
   - Added `ProgramEvolutionContract` formalizing evolutionary optimization of code representations, liquid-handler pipetting schedules, and heuristic algorithms via LLM mutation engines guided by deterministic fitness evaluators.
   - Added `AlphaEvolve` and `ProgramEvolution` strategies to `EnhancedSemanticValidator` with strict domain constraints (`population_size > 0`, `generations > 0`, `0.0 <= elitism_rate <= 1.0`, non-empty `seed_program`).
   - Added canonical example in `examples/features/alphaevolve_protocol_optimization.gfl` and documentation in `docs/geneforgelang/features/alphaevolve_program_optimization.md`.

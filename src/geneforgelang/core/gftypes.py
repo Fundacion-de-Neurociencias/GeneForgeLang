@@ -1277,6 +1277,8 @@ class DecisionContract:
     latency_budget_ms: float = 50.0
     calibration_error_max: float = 0.08
     mode: DecisionMode = DecisionMode.CHOICE
+    target_tissue: str | None = None
+    cfdna_methylation_profile: str | None = None
 
     def __post_init__(self) -> None:
         """Synchronize allowed_options and allowed_space, and confidence threshold."""
@@ -1312,6 +1314,8 @@ class DecisionContract:
             "latency_budget_ms": self.latency_budget_ms,
             "calibration_error_max": self.calibration_error_max,
             "mode": str(self.mode),
+            "target_tissue": self.target_tissue,
+            "cfdna_methylation_profile": self.cfdna_methylation_profile,
         }
 
 
@@ -1675,6 +1679,60 @@ class ProgramEvolutionContract:
         }
 
 
+class FragmentomicsModality(str, Enum):
+    """Modality for cell-free DNA fragmentomics and epigenetic deconvolution."""
+
+    METHYLATION_DENSITY = "methylation_density"
+    FRAGMENT_LENGTH_DISTRIBUTION = "fragment_length_distribution"
+    END_MOTIF_FREQUENCY = "end_motif_frequency"
+    WINDOW_PROTECTION_SCORE = "window_protection_score"
+    HIERARCHICAL_STACKED_ATTENTION = "hierarchical_stacked_attention"
+
+    def __str__(self) -> str:
+        """Return enum value."""
+        return self.value
+
+
+@dataclass
+class EpigeneticDeconvolutionContract:
+    """Formal IO Contract for whole-epigenome foundation model deconvolution.
+
+    Captures joint DNA sequence and CpG methylation patterns from liquid biopsy plasma cfDNA,
+    mapping fragment-level, region-level, and sample-level signals to cell-type-of-origin
+    deconvolution (e.g. Pleiades 90M / 600M / 7B architecture).
+    """
+
+    deconvolution_id: str
+    target_tissue: str  # e.g., "central_nervous_system", "cortex", "hippocampus", "pancreas"
+    cfdna_methylation_profile: str  # identifier or path to plasma sample run
+    engine: str = "pleiades-biodecision"
+    modality: FragmentomicsModality = FragmentomicsModality.HIERARCHICAL_STACKED_ATTENTION
+    confidence_threshold: float = 0.90
+    min_fragment_coverage: int = 100000
+    sub_cell_types: list[str] = field(default_factory=list)  # e.g. ["astrocytes", "neurons", "microglia"]
+    calibration_method: str = "temperature_scaling"
+    max_ece: float = 0.05
+
+    def passes_gate(self, inferred_confidence: float, sample_fragments: int) -> bool:
+        """Check if inferred confidence and depth satisfy deconvolution criteria."""
+        return inferred_confidence >= self.confidence_threshold and sample_fragments >= self.min_fragment_coverage
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "deconvolution_id": self.deconvolution_id,
+            "target_tissue": self.target_tissue,
+            "cfdna_methylation_profile": self.cfdna_methylation_profile,
+            "engine": self.engine,
+            "modality": str(self.modality),
+            "confidence_threshold": self.confidence_threshold,
+            "min_fragment_coverage": self.min_fragment_coverage,
+            "sub_cell_types": list(self.sub_cell_types),
+            "calibration_method": self.calibration_method,
+            "max_ece": self.max_ece,
+        }
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -1692,6 +1750,7 @@ __all__ = [
     "ClinVarSignificance",
     "RetroelementType",
     "CatalyticResidueRole",
+    "FragmentomicsModality",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -1734,6 +1793,7 @@ __all__ = [
     "TapeRecorderContract",
     "LineageNode",
     "ProgramEvolutionContract",
+    "EpigeneticDeconvolutionContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

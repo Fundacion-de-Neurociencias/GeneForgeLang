@@ -1,0 +1,27 @@
+// Epigenetic Deconvolution and cfDNA Fragmentomics Gate in GeneForgeLang (GFL)
+// Powered by Whole-Epigenome Foundation Models (Pleiades 90M/600M/7B)
+
+decision EpigeneticDeconvolutionGate {
+  strategy: SYSTEM_1_CALIBRATED
+  engine: "pleiades-biodecision"
+  target_tissue: "central_nervous_system"
+  cfdna_methylation_profile: "patient_plasma_run_04"
+  threshold: 0.90
+  latency_budget_ms: 50.0
+  calibration_error_max: 0.05
+  mode: "binary"
+}
+
+experiment PlasmaEpigeneticScreening {
+  tool: "pleiades-biodecision"
+  type: "analysis"
+  params: {
+    sample_id: "patient_plasma_run_04"
+    target_organism: "homo_sapiens"
+    sequencing_depth: 30
+  }
+}
+
+analyze CNSOriginDeconvolution {
+  strategy: "epigenetic_deconvolution"
+}

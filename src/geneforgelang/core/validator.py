@@ -578,6 +578,24 @@ class EnhancedSemanticValidator:
                     ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                 ).add_fix("Set mode to 'choice', 'binary', or 'score'")
 
+        # Check target_tissue if present
+        if decision_block.get("target_tissue") is not None:
+            target_tissue = decision_block["target_tissue"]
+            if not isinstance(target_tissue, str) or not target_tissue.strip():
+                self.result.add_error(
+                    "Decision target_tissue must be a non-empty string",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Provide a valid anatomical tissue identifier (e.g. 'central_nervous_system')")
+
+        # Check cfdna_methylation_profile if present
+        if decision_block.get("cfdna_methylation_profile") is not None:
+            profile = decision_block["cfdna_methylation_profile"]
+            if not isinstance(profile, str) or not profile.strip():
+                self.result.add_error(
+                    "Decision cfdna_methylation_profile must be a non-empty string",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Provide a valid plasma cfDNA sample run identifier (e.g. 'patient_plasma_run_04')")
+
     def _validate_tape_recorder_block(self, recorder_block: Any) -> None:
         """Validate DNA Typewriter cellular tape recorder contract block."""
         if not isinstance(recorder_block, dict):
@@ -991,6 +1009,9 @@ class EnhancedSemanticValidator:
             "openmm",
             "runs_n_poses",
             "biodecision-4b",
+            "pleiades",
+            "pleiades-biodecision",
+            "pleiades-7b",
             "dna_typewriter",
             "targeted_amplicon_dna_seq",
         }
@@ -1099,6 +1120,9 @@ class EnhancedSemanticValidator:
             "openmm": ["simulation", "analysis", "validation"],
             "runs_n_poses": ["analysis", "validation"],
             "biodecision-4b": ["analysis", "validation", "simulation"],
+            "pleiades": ["analysis", "validation", "simulation", "sequencing"],
+            "pleiades-biodecision": ["analysis", "validation", "simulation"],
+            "pleiades-7b": ["analysis", "validation", "simulation"],
             "dna_typewriter": ["gene_editing", "sequencing", "analysis", "simulation"],
             "targeted_amplicon_dna_seq": ["sequencing", "analysis", "validation"],
         }
@@ -1160,6 +1184,8 @@ class EnhancedSemanticValidator:
             "functional",
             "comparative",
             "longitudinal",
+            "epigenetic_deconvolution",
+            "fragmentomics",
         }
 
         if strategy not in valid_strategies:
