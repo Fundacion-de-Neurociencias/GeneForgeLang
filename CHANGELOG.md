@@ -8,7 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Prompteina Text-Conditioned All-Atom Protein & Binder Design (Baker Lab / IPD & Ai2 2026)**:
+  - Formalized `NaturalLanguageConditioningContract` capturing macro-topology, active-site interaction coordinates, negative design constraints, and classifier-free guidance scales.
+  - Added `TextConditionedDesignContract` for end-to-end de novo binder generation and structural scaffolding from natural language descriptions.
+  - Registered `"prompteina"` and `"Prompteina"` as authorized generative design models and tools in `EnhancedSemanticValidator`.
+  - Added `_validate_prompt_conditioning` semantic rules enforcing positive guidance scale and inference step budgets.
+  - Added canonical example in `examples/features/prompteina_gm2a_binder_design.gfl` for GM2A neurodegenerative disease binder design.
+  - Added feature documentation in `docs/geneforgelang/features/prompteina_text_conditioned_design.md` and unit tests in `tests/unit/test_prompteina_design.py` (100% passing).
 - **Epigenetic Deconvolution & cfDNA Fragmentomics Foundation Contracts (Pleiades Architecture)**:
+
   - Formalized `EpigeneticDeconvolutionContract` and `FragmentomicsModality` enum for whole-epigenome foundation model deconvolution from liquid biopsy plasma cfDNA.
   - Expanded `DecisionContract` to natively accept `target_tissue` and `cfdna_methylation_profile` parameters for fast calibrated System 1 gating.
   - Registered `"pleiades"`, `"pleiades-biodecision"`, and `"pleiades-7b"` in `EnhancedSemanticValidator` tool catalog, and authorized `"epigenetic_deconvolution"` and `"fragmentomics"` analysis strategies.

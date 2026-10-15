@@ -1012,6 +1012,7 @@ class EnhancedSemanticValidator:
             "pleiades",
             "pleiades-biodecision",
             "pleiades-7b",
+            "prompteina",
             "dna_typewriter",
             "targeted_amplicon_dna_seq",
         }
@@ -1123,6 +1124,7 @@ class EnhancedSemanticValidator:
             "pleiades": ["analysis", "validation", "simulation", "sequencing"],
             "pleiades-biodecision": ["analysis", "validation", "simulation"],
             "pleiades-7b": ["analysis", "validation", "simulation"],
+            "prompteina": ["design", "simulation", "analysis", "validation"],
             "dna_typewriter": ["gene_editing", "sequencing", "analysis", "simulation"],
             "targeted_amplicon_dna_seq": ["sequencing", "analysis", "validation"],
         }
@@ -1251,9 +1253,41 @@ class EnhancedSemanticValidator:
         if "constraints" in design:
             self._validate_design_constraints(design["constraints"])
 
+        # Validate prompt_conditioning field if present (Prompteina)
+        if "prompt_conditioning" in design:
+            self._validate_prompt_conditioning(design["prompt_conditioning"])
+
         # Validate design_type specific requirements
         if design_type == "inverse_design":
             self._validate_inverse_design(design)
+
+    def _validate_prompt_conditioning(self, prompt_config: Any) -> None:
+        """Validate Prompteina natural language prompt conditioning in design block."""
+        if hasattr(prompt_config, "to_dict"):
+            prompt_config = prompt_config.to_dict()
+
+        if not isinstance(prompt_config, dict):
+            self.result.add_error(
+                "prompt_conditioning must be a dictionary or NaturalLanguageConditioningContract",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Format prompt_conditioning as a dictionary with 'prompt' or structural keys")
+            return
+
+        if "guidance_scale" in prompt_config:
+            scale = prompt_config["guidance_scale"]
+            if not isinstance(scale, (int, float)) or scale <= 0:
+                self.result.add_error(
+                    f"guidance_scale must be a positive number, got {scale}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set guidance_scale to a positive float (e.g. 7.5)")
+
+        if "num_inference_steps" in prompt_config:
+            steps = prompt_config["num_inference_steps"]
+            if not isinstance(steps, int) or steps <= 0:
+                self.result.add_error(
+                    f"num_inference_steps must be a positive integer, got {steps}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set num_inference_steps to a positive integer (e.g. 50)")
 
     def _validate_inverse_design(self, design: dict[str, Any]) -> None:
         """Validate inverse_design configuration."""
@@ -1353,6 +1387,8 @@ class EnhancedSemanticValidator:
             "rosettafold3",
             "RFdiffusion",
             "BindCraft",
+            "Prompteina",
+            "prompteina",
         }
 
         if model not in known_models:

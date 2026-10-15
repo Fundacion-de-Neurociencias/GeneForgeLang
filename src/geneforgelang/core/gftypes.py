@@ -1733,6 +1733,66 @@ class EpigeneticDeconvolutionContract:
         }
 
 
+@dataclass
+class NaturalLanguageConditioningContract:
+    """Multi-scale natural language prompt conditioning for de novo protein design.
+
+    Grounded in Prompteina (Baker Lab / IPD & Ai2, 2026), capturing macro-topology,
+    residue-specific target interactions, negative design gates, and diffusion guidance scale.
+    """
+
+    prompt: str = ""
+    macro_topology: str = ""  # e.g., "three-helix bundle", "TIM barrel", "beta-propeller"
+    interaction_site: str = ""  # e.g., "binds apical hydrophobic cavity of GM2A"
+    negative_design: str = ""  # e.g., "avoid lipid transfer gateway Lys88-Asp91"
+    symmetry: str = "C1"
+    sequence_composition: str = ""
+    guidance_scale: float = 7.5  # Text classifier-free guidance weight
+    num_inference_steps: int = 50
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "prompt": self.prompt,
+            "macro_topology": self.macro_topology,
+            "interaction_site": self.interaction_site,
+            "negative_design": self.negative_design,
+            "symmetry": self.symmetry,
+            "sequence_composition": self.sequence_composition,
+            "guidance_scale": self.guidance_scale,
+            "num_inference_steps": self.num_inference_steps,
+        }
+
+
+@dataclass
+class TextConditionedDesignContract:
+    """Formal GFL IO Contract for Prompteina text-conditioned all-atom binder and structure design."""
+
+    design_id: str
+    target_pdb: str
+    prompt_conditioning: NaturalLanguageConditioningContract
+    entity: str = "ProteinSequence"
+    model: str = "prompteina"
+    count: int = 100
+    target_protein_name: str | None = None  # e.g. "GM2A"
+    min_affinity_nm: float = 1000.0  # Sub-micromolar target hit threshold
+    max_interface_rmsd: float = 2.0
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "design_id": self.design_id,
+            "target_pdb": self.target_pdb,
+            "prompt_conditioning": self.prompt_conditioning.to_dict(),
+            "entity": self.entity,
+            "model": self.model,
+            "count": self.count,
+            "target_protein_name": self.target_protein_name,
+            "min_affinity_nm": self.min_affinity_nm,
+            "max_interface_rmsd": self.max_interface_rmsd,
+        }
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -1794,6 +1854,8 @@ __all__ = [
     "LineageNode",
     "ProgramEvolutionContract",
     "EpigeneticDeconvolutionContract",
+    "NaturalLanguageConditioningContract",
+    "TextConditionedDesignContract",
     # Validation types
     "ValidationError",
     "ValidationResult",
