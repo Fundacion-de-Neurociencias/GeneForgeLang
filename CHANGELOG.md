@@ -8,7 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Viral Interactome Complexes & AlphaGenome Locus Linking (AlphaFold DB Pandemic Portal & DeepMind 2026)**:
+  - Added `ViralInteractomeComplexContract` and `ViralInteractomeType` enum formalizing quaternary viral-host and intra-viral complexes across 2,812 proteomes (8,028 high-confidence all-vs-all dimeric interactions).
+  - Added `AlphaGenomeLocusLink` bridging quaternary viral complex interfaces with host receptor genomic variants (1-based `chr:pos:ref>alt` AlphaGenome Atlas format).
+  - Enhanced `EnhancedSemanticValidator` with semantic validation for `complexes` blocks (subunits validation, `iplddt_threshold`, `iptm_threshold`, and strict AlphaGenome variant format checking).
+  - Added canonical example in `examples/features/viral_interactome_pandemic_complexes.gfl` and documentation in `docs/geneforgelang/features/viral_interactome_complexes.md`.
+  - Added unit test suite in `tests/unit/test_viral_interactome_complexes.py` (100% passing).
 - **Prompteina Text-Conditioned All-Atom Protein & Binder Design (Baker Lab / IPD & Ai2 2026)**:
+
   - Formalized `NaturalLanguageConditioningContract` capturing macro-topology, active-site interaction coordinates, negative design constraints, and classifier-free guidance scales.
   - Added `TextConditionedDesignContract` for end-to-end de novo binder generation and structural scaffolding from natural language descriptions.
   - Registered `"prompteina"` and `"Prompteina"` as authorized generative design models and tools in `EnhancedSemanticValidator`.

@@ -253,11 +253,62 @@ class EnhancedSemanticValidator:
                 self.entity_registry["complexes"] = complexes
                 # Validate complex structure
                 for complex_name, complex_def in complexes.items():
+                    if hasattr(complex_def, "to_dict"):
+                        complex_def = complex_def.to_dict()
+
                     if not isinstance(complex_def, dict):
                         self.result.add_error(
-                            f"Complex '{complex_name}' must be a dictionary",
+                            f"Complex '{complex_name}' must be a dictionary or ViralInteractomeComplexContract",
                             ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
                         ).add_fix(f"Format complex '{complex_name}' as a dictionary")
+                        continue
+
+                    # Validate subunits if specified
+                    if "subunits" in complex_def:
+                        subunits = complex_def["subunits"]
+                        if not isinstance(subunits, list) or len(subunits) < 2:
+                            self.result.add_error(
+                                f"Complex '{complex_name}' 'subunits' must be a list with at least 2 proteins",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ).add_fix("Provide at least 2 subunit identifiers in 'subunits'")
+
+                    # Validate confidence thresholds if present
+                    if "iplddt_threshold" in complex_def:
+                        thresh = complex_def["iplddt_threshold"]
+                        if not isinstance(thresh, (int, float)) or not (0.0 <= thresh <= 100.0):
+                            self.result.add_error(
+                                f"Complex '{complex_name}' iplddt_threshold must be between 0.0 and 100.0, got {thresh}",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ).add_fix("Set iplddt_threshold between 0.0 and 100.0 (e.g. 75.0)")
+
+                    if "iptm_threshold" in complex_def:
+                        thresh = complex_def["iptm_threshold"]
+                        if not isinstance(thresh, (int, float)) or not (0.0 <= thresh <= 1.0):
+                            self.result.add_error(
+                                f"Complex '{complex_name}' iptm_threshold must be between 0.0 and 1.0, got {thresh}",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ).add_fix("Set iptm_threshold between 0.0 and 1.0 (e.g. 0.70)")
+
+                    # Validate AlphaGenome host locus link if present
+                    if "host_locus_link" in complex_def and complex_def["host_locus_link"] is not None:
+                        link = complex_def["host_locus_link"]
+                        if hasattr(link, "to_dict"):
+                            link = link.to_dict()
+                        if not isinstance(link, dict) or "variant" not in link:
+                            self.result.add_error(
+                                f"Complex '{complex_name}' host_locus_link must contain 'variant' in chr:pos:ref>alt format",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ).add_fix(
+                                "Provide 'variant' in 1-based 'chr:pos:ref>alt' format for AlphaGenome Atlas linking"
+                            )
+                        else:
+                            var_str = str(link["variant"])
+                            # Strict AlphaGenome 1-based chr:pos:ref>alt format check
+                            if not re.match(r"^chr[0-9XYM]+:[0-9]+:[ACGTN]+>[ACGTN]+$", var_str):
+                                self.result.add_error(
+                                    f"Invalid AlphaGenome variant format '{var_str}' in host_locus_link. Expected 'chr:pos:ref>alt'",
+                                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                                ).add_fix("Format variant as 'chr:pos:ref>alt' (e.g., 'chrX:15579998:G>A')")
 
         # Debug: Print entity registry contents
         print(f"Collected entity registry: {self.entity_registry}")

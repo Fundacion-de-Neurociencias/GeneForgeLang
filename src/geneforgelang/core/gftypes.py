@@ -1793,6 +1793,86 @@ class TextConditionedDesignContract:
         }
 
 
+class ViralInteractomeType(str, Enum):
+    """Type of viral-host or intra-viral multimeric complex."""
+
+    HOMODIMER = "homodimer"
+    HETERODIMER = "heterodimer"
+    HIGHER_ORDER_OLIGOMER = "higher_order_oligomer"
+    HOST_PATHOGEN_INTERACTION = "host_pathogen_interaction"
+
+    def __str__(self) -> str:
+        """Return enum value."""
+        return self.value
+
+
+@dataclass
+class AlphaGenomeLocusLink:
+    """Genomic locus cross-reference for host receptor or viral escape variants.
+
+    Constructs and verifies coordinate links formatted for the AlphaGenome Atlas
+    (e.g., 1-based chr:pos:ref>alt, target biosample, and functional modalities).
+    """
+
+    variant: str  # 1-based "chr:pos:ref>alt"
+    gene: str | None = None  # e.g., "ACE2", "NRP1"
+    biosample: str = "Lung"
+    modalities: list[str] = field(default_factory=lambda: ["RNA_SEQ", "DNASE"])
+
+    def to_atlas_query(self) -> str:
+        """Format variant query according to AlphaGenome Atlas specification."""
+        return self.variant
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "variant": self.variant,
+            "gene": self.gene,
+            "biosample": self.biosample,
+            "modalities": list(self.modalities),
+        }
+
+
+@dataclass
+class ViralInteractomeComplexContract:
+    """Formal GFL IO Contract for viral-host protein complexes.
+
+    Grounded in AlphaFold Database Pandemic Preparedness Portal (DeepMind, EMBL-EBI, NVIDIA,
+    CEPI, SIB, MRC Glasgow 2026), systematically exploring viral proteome interactomes
+    (~1.7M predicted dimers, 8,028 high-confidence complexes across 2,812 proteomes).
+    """
+
+    complex_id: str
+    subunits: list[str]  # UniProt accession IDs or subunit symbols
+    interactome_type: ViralInteractomeType = ViralInteractomeType.HETERODIMER
+    portal: str = "alphafold_pandemic_preparedness"
+    viral_family: str | None = None  # e.g., "coronaviridae", "flaviviridae", "filoviridae"
+    proteome_id: str | None = None  # e.g., "UP000464024"
+    iplddt_threshold: float = 75.0
+    iptm_threshold: float = 0.70
+    is_high_confidence_portal_hit: bool = True
+    host_locus_link: AlphaGenomeLocusLink | None = None
+
+    def passes_confidence_gate(self, iplddt: float, iptm: float) -> bool:
+        """Check if complex prediction meets the high-confidence threshold."""
+        return iplddt >= self.iplddt_threshold and iptm >= self.iptm_threshold
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "complex_id": self.complex_id,
+            "subunits": list(self.subunits),
+            "interactome_type": str(self.interactome_type),
+            "portal": self.portal,
+            "viral_family": self.viral_family,
+            "proteome_id": self.proteome_id,
+            "iplddt_threshold": self.iplddt_threshold,
+            "iptm_threshold": self.iptm_threshold,
+            "is_high_confidence_portal_hit": self.is_high_confidence_portal_hit,
+            "host_locus_link": self.host_locus_link.to_dict() if self.host_locus_link else None,
+        }
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -1811,6 +1891,7 @@ __all__ = [
     "RetroelementType",
     "CatalyticResidueRole",
     "FragmentomicsModality",
+    "ViralInteractomeType",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -1856,6 +1937,8 @@ __all__ = [
     "EpigeneticDeconvolutionContract",
     "NaturalLanguageConditioningContract",
     "TextConditionedDesignContract",
+    "AlphaGenomeLocusLink",
+    "ViralInteractomeComplexContract",
     # Validation types
     "ValidationError",
     "ValidationResult",
