@@ -1,0 +1,107 @@
+# .autodev/project.toml: the contract between this repository and the autodev system.
+# Written at onboarding (2026-10-18). Owner decisions are recorded in interview.md.
+
+[project]
+name = "geneforgelang"
+mission = "GeneForgeLang (GFL) is an open, MIT-licensed Python library and CLI for writing, parsing and validating structured descriptions of biological design workflows (a YAML-based language plus typed contract dataclasses and a plugin system). The first goal is a usable open library: installable from PyPI with one coherent version and a small, stable, tested public API that GeneForge and third parties can depend on. Formal-standard work (specification, conformance suite) follows, backed by real code. GFL is a research tool. It is not for clinical use and gives no legal advice."
+stage = "existing"
+owner = "Manuel Menéndez (Fundación de Neurociencias)"
+
+[usage]
+# Confirmed by the owner on 2026-10-18 (interview.md).
+audience = ["public-anonymous", "partners"]
+business_model = ["open-source", "research"]
+# internal-http-api applies only if the FastAPI apps (src/geneforgelang/api/gfl_service.py,
+# src/geneforgelang/web/server.py) are kept; feature F013 decides. Until then they are listed.
+channels = ["library-sdk", "cli", "internal-http-api"]
+# genetic: only where examples handle sequences or variant data; the library itself stores none.
+data_sensitivity = ["genetic"]
+regulatory = ["none"]
+deployment = "local-only"
+tenancy = "single-user"
+criticality = "customer-facing"   # public repository and package
+product = "geneforge"
+
+[stack]
+languages = ["python"]
+frameworks = ["pydantic", "pyyaml", "ply", "fastapi (optional extra)", "click/typer (optional extra)"]
+
+[commands]
+# Every command runs from the repository root. Empty = not yet established.
+setup = "python -m pip install -e \".[dev,cli]\" pytest-asyncio"
+# Building needs the PyPA 'build' package, which no extra declares yet (F010 adds it).
+build = ""
+# pytest.ini (asyncio_mode = auto, --strict-config) requires pytest-asyncio installed.
+test = "python -m pytest tests -q"
+# ruff.toml takes precedence over [tool.ruff] in pyproject.toml; F007 unifies them.
+lint = "ruff check src tests"
+run = ""
+e2e = ""
+url = ""
+
+[git]
+integration_branch = "autodev/integration"
+protected_branches = ["main"]
+
+[ecosystem]
+registries = []
+watch_datasets = ["ADNI", "NACC", "DepMap", "AlphaGenome", "UniProt", "Ensembl"]
+manuscript_globs = ["examples/real_project/*Manuscript*.md", "whitepaper.md", "docs/**/paper*", "**/*.tex"]
+
+[collaboration]
+mode = "team"
+merge_authority = "owner"
+min_human_reviews = 1
+sensitive_paths = [
+  ".github/workflows/**",
+  "pyproject.toml",
+  "src/geneforgelang/__init__.py",
+  "src/geneforgelang/core/api.py",
+  "src/geneforgelang/governance/public_manifest.json",
+  "src/geneforgelang/core/**",   # NeuroIA annex A.4 lists core/ as sensitive
+]
+# Annex A.4 asks for 2 reviews (one from the Coordination) on sensitive paths. Set to 1 per owner
+# decision 7; the gap and a proposed amendment are in spec/protocol-compliance.md.
+sensitive_min_reviews = 1   # owner exception to NeuroIA annex A.4 (2026-10-18): his approval suffices; recorded in the audit log
+branch_prefix = "autodev/"     # NeuroIA protocol annex A.2
+# English equivalents of the NeuroIA protocol sections (Qué hace / Por qué / Cómo reproducir /
+# Impacto en resultados); the repository is English-only. See spec/protocol-compliance.md.
+pr_sections = ["What it does", "Why", "How to reproduce", "Impact on results"]
+changelog = "CHANGELOG.md"
+release_requires_tag = true
+protocols = ["C:/Users/usuario/AutonomousClaude/products/neurodiagnoses/protocols/PROTOCOLO_BUENAS_PRACTICAS_NEUROIA.md"]
+
+[docs]
+prune = "ask"
+
+[team]
+reply_to_reviews = true
+
+[guard]
+# On top of the defaults (.env*, *key*.json, *credentials*, *.pem, *.db, private/).
+forbidden_paths = [".devcontainer/.env", "**/*.pkl"]
+irreversible_commands = [
+  "twine upload",
+  "gh release create",
+  "git push .*--force",
+  "git filter-repo",
+  "bfg",
+]
+
+[loop]
+max_attempts_per_feature = 3
+max_features_per_run = 3
+budget_usd_per_run = 20.0
+model = ""
+
+[release]
+# Publishing to PyPI or TestPyPI is an owner gate (F011); never run by an agent.
+deploy_command = ""
+merge_to = "main"
+notes = "Releases only from a vX.Y.Z tag with owner approval (NeuroIA annex A.5). No PyPI upload until F011 passes and the owner approves."
+
+[release.verify]
+base_url = ""
+wait_ci = ""
+required_headers = []
+command = ""
