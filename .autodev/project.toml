@@ -40,6 +40,7 @@ e2e = ""
 url = ""
 
 [git]
+publish_autodev_state = false   # PUBLIC repository: .autodev/ stays local (lesson 17)
 integration_branch = "autodev/integration"
 protected_branches = ["main"]
 
