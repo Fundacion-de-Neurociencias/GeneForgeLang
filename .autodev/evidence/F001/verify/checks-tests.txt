@@ -1,0 +1,15 @@
+tests\unit\test_types.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m              [ 96%][0m
+tests\unit\test_validator.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m           [100%][0m
+
+============================ slowest 10 durations =============================
+0.68s call     tests/test_platform.py::test_cli_tools
+0.24s call     tests/security/test_repository_hygiene.py::test_no_inline_gitleaks_allow
+0.18s call     tests/security/test_repository_hygiene.py::test_no_code_executing_deserialization
+0.18s call     tests/unit/test_parser.py::TestParsingPerformance::test_parse_large_parameter_set
+0.15s call     tests/unit/test_performance.py::TestIntelligentCache::test_ttl_eviction
+0.15s call     tests/unit/test_performance.py::TestIntelligentCache::test_cache_cleanup
+0.15s call     tests/unit/test_performance.py::TestPerformanceOptimizer::test_cache_cleanup
+0.11s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_performance_caching
+0.11s setup    tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_error_locations
+0.07s call     tests/unit/test_enhanced_plugins.py::TestEnhancedRegistry::test_get_plugins_by_state
+[32m================= [32m[1m878 passed[0m, [33m22 skipped[0m, [33m5 xfailed[0m[32m in 9.98s[0m[32m ==================[0m

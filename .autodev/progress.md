@@ -32,3 +32,9 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Owner: rotate the credentials (`spec/secret-rotation.md`), decide on the history purge, make `gitleaks` a required check, and add `.gitleaks.toml` and `.pre-commit-config.yaml` to `sensitive_paths` (all in next-steps.md).
 - Next: `/autodev:verify F001` in a separate session.
 - Addendum (same session, Stop gate): fixed both baseline failures at the root cause in commit `fix(core): deterministic LRU order and unit-interval similarity scores` (coordination with María's branch noted in the contract). Full suite: 878 passed, 22 skipped, 5 xfailed, 0 failed; `ruff check src tests`: all checks passed. This commit is a product commit and belongs in the PR (rebase note for María: `core/performance.py`, `ir/external/openmed_connector.py`).
+
+## 2026-10-19: verify, F001 - FAIL
+- Independent session at 881f7d9. pytest 878 passed / 0 failed, ruff clean, language check clean (`evidence/F001/verify/`).
+- New check: the workflow script on `origin/main` + product commits (base has no `.gitleaks.toml`, default rules) exits 0 in WSL (`verify/06b-*.log`).
+- Blocking (governance audit): commit 3e9f9ec changes `core/performance.py` and `openmed_connector.py`, outside the contract scope, on a sensitive path and on the teammate's in-flight files; the PR draft claims no library changes and stale test counts.
+- Feedback: `contracts/F001-feedback-1.md`. The hosted CI run, or owner acceptance of local evidence, is still required.

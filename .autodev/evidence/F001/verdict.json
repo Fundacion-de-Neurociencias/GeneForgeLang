@@ -1,0 +1,36 @@
+{
+  "feature": "F001",
+  "verdict": "FAIL",
+  "commit": "881f7d92af7e3e099d7aa14d8540841917501bbe",
+  "acceptance": [
+    {"item": "git ls-files lists no .env (except *.env.example) and no *.pkl/*.pickle/*.joblib", "result": "PASS", "evidence": "tests/security/test_repository_hygiene.py passes in verify/checks-tests.txt (878 passed, 0 failed)"},
+    {"item": "gitleaks reports zero findings on the PR head; fake AWS key blocked by pre-commit and CI job", "result": "PARTIAL", "evidence": "verify/06b-first-pr-base-without-config.log: workflow run: blocks verbatim in WSL on origin/main + product commits, default rules, exit 0. Pre-commit and fake-key blocking: generator logs 05-precommit-hook-linux.log and 06-ci-script-wsl.log (not re-run). Hosted GitHub run does not exist; contract item 6 says F001 is not passes:true until it exists or the owner accepts local evidence."},
+    {"item": "CI gitleaks step pinned by SHA and listed as required check in F003 request", "result": "PASS", "evidence": ".github/workflows/secret-scan.yml (checkout@11bd719..., literal sha256 -c); test_secret_scan_workflow_pinned passes; next-steps.md entry"},
+    {"item": "secret-rotation.md names services and owners only; gitleaks finds nothing", "result": "PASS", "evidence": "08-rotation-doc.log; governance audit G3 found no values"},
+    {"item": "ADR records pickle removal and no-pickle rule", "result": "PASS", "evidence": "docs/decisions/20261019-no-pickle-artifacts.md"},
+    {"item": "PR body has the four sections and lists sensitive files", "result": "FAIL", "evidence": ".autodev/contracts/F001-pr.md claims 'No library code changes' and '873 passed, 2 failed' while the branch includes 3e9f9ec (core/performance.py, ir/external/openmed_connector.py) and the suite shows 878 passed, 0 failed"}
+  ],
+  "rubric": [
+    {"check": "Deterministic checks (pytest, ruff)", "result": "PASS", "evidence": "verify/checks-tests.txt, verify/checks-ruff.txt"},
+    {"check": "G10 language", "result": "PASS", "evidence": "verify/language-check.txt (0 segments not in en)"},
+    {"check": "G3 secrets / data isolation", "result": "PASS", "evidence": "governance audit: no secrets, no patient data, .env.example names only, logs redacted"},
+    {"check": "G1.1 mocks in verification", "result": "PASS", "evidence": "governance audit: external gitleaks binary, real git check-ignore"},
+    {"check": "G2.2 scope", "result": "FAIL (blocking)", "evidence": "commit 3e9f9ec edits src/geneforgelang/core/performance.py and ir/external/openmed_connector.py; contract 'Does not change: src/geneforgelang/**'; core/** is a sensitive path; files are on a teammate's in-flight branch; no owner approval on record"},
+    {"check": "G5.1 claims with evidence", "result": "FAIL (blocking)", "evidence": "F001-pr.md stale/false impact and test-count claims; 10-11-pr-rehearsal.log predates 3e9f9ec"},
+    {"check": ".autodev isolation in PR", "result": "PASS", "evidence": "every commit is all-.autodev or no-.autodev; cherry-pick of product commits onto origin/main clean (verify/06b log)"}
+  ],
+  "feedback": [
+    "Remove 3e9f9ec from F001 (scope and sensitive path). Propose the LRU and similarity fixes as a separate feature coordinated with the teammate's branch, or get explicit owner approval recorded in the audit log.",
+    "Restore contract item 13 to its original form (failing ids subset of the 2 baseline ids) and drop the coordination addendum.",
+    "Update F001-pr.md for the final head: commit list, real test counts on the cherry-picked head, impact section.",
+    "Re-run the PR rehearsal (item 10) on the final head and save the log.",
+    "Hosted run of secret-scan.yml still missing: record owner acceptance of local evidence or the hosted run before PASS."
+  ],
+  "claims": [
+    {"claim": "Full suite 878 passed, 0 failed; ruff clean at 881f7d9", "class": "OBSERVED"},
+    {"claim": "First PR (base origin/main with no .gitleaks.toml) passes the workflow scan with default rules on Linux", "class": "OBSERVED (WSL simulation, not hosted)"},
+    {"claim": "The hosted GitHub run would pass the same way", "class": "INFERRED"},
+    {"claim": "Pre-commit hook blocks a fake AWS key on Linux", "class": "INFERRED from generator log 05, not re-run"},
+    {"claim": "3e9f9ec is out of contract scope and touches a sensitive path", "class": "OBSERVED (git diff --stat, project.toml sensitive_paths)"}
+  ]
+}
