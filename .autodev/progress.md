@@ -110,3 +110,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Hygiene tests re-run: 16 passed. Evidence: `evidence/F001/verify6/reconfirm.txt`. Verdict file unchanged.
 - Loop note: the runner should stop invoking sprint/verify on F001 and move to F002, or the owner should schedule the baseline-fix feature (`next-steps.md`, "Needs owner").
 - Stop gate (this session): blocked by the same 2 baseline failures (`test_lru_eviction`, `test_find_similar_entities`). Not fixed: the evaluator does not change code, both files are out of F001 scope (sensitive `core/**`, on María's in-flight branch), and weakening tests is forbidden. Ended under "When stuck"; owner decision still pending in `next-steps.md`.
+
+## 2026-10-19: sprint, F001 - no-op (third time, already PASS)
+- `/autodev:sprint F001` invoked again at ada4676. No build work and no code change: F001 passed in verify round 4.
+- Stop gate: same 2 baseline failures (`test_lru_eviction`, `test_find_similar_entities`), out of F001 scope; reasons already recorded above.
+- Loop note: the runner must stop targeting F001. Next is F002, or the baseline-fix feature once the owner decides (`next-steps.md`, "Needs owner").
