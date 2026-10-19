@@ -1,0 +1,82 @@
+pre-commit pre-commit 4.3.0; system go: none
+
+### positive control: clean staged change
+[INFO] Initializing environment for https://github.com/pre-commit/pre-commit-hooks.
+[WARNING] repo `https://github.com/pre-commit/pre-commit-hooks` uses deprecated stage names (commit, push) which will be removed in a future version.  Hint: often `pre-commit autoupdate --repo https://github.com/pre-commit/pre-commit-hooks` will fix this.  if it does not -- consider reporting an issue to that repo.
+[INFO] Initializing environment for https://github.com/astral-sh/ruff-pre-commit.
+[INFO] Initializing environment for https://github.com/pre-commit/mirrors-mypy.
+[INFO] Initializing environment for https://github.com/pre-commit/mirrors-mypy:types-PyYAML,types-requests.
+[INFO] Initializing environment for https://github.com/PyCQA/bandit.
+[INFO] Initializing environment for https://github.com/python-poetry/poetry.
+[INFO] Initializing environment for https://github.com/gitleaks/gitleaks.
+[INFO] Installing environment for https://github.com/gitleaks/gitleaks.
+[INFO] Once installed this environment will be reused.
+[INFO] This may take a few minutes...
+Detect hardcoded secrets.................................................Passed
+exit=0 (expect 0)
+
+### negative: staged fake AWS key
+Detect hardcoded secrets.................................................Failed
+- hook id: gitleaks
+- exit code: 1
+
+○
+    │╲
+    │ ○
+    ○ ░
+    ░    gitleaks
+
+Finding:     aws_access_key_id = REDACTED
+Secret:      REDACTED
+RuleID:      aws-access-token
+Entropy:     3.921928
+File:        src/tmp/leak.txt
+Line:        1
+Fingerprint: src/tmp/leak.txt:aws-access-token:1
+
+5:24AM INF 1 commits scanned.
+5:24AM INF scanned ~41 bytes (41 bytes) in 110ms
+5:24AM WRN leaks found: 1
+
+exit=1 (expect 1)
+
+### negative via git commit with the hook installed (other hooks skipped via SKIP)
+pre-commit installed at .git/hooks/pre-commit
+trim trailing whitespace................................................Skipped
+fix end of files........................................................Skipped
+check yaml..............................................................Skipped
+check for added large files.............................................Skipped
+check for merge conflicts...............................................Skipped
+check toml..............................................................Skipped
+debug statements (python)...............................................Skipped
+mixed line ending.......................................................Skipped
+ruff....................................................................Skipped
+ruff-format.............................................................Skipped
+mypy....................................................................Skipped
+bandit..................................................................Skipped
+poetry-check............................................................Skipped
+pytest-check............................................................Skipped
+Detect hardcoded secrets.................................................Failed
+- hook id: gitleaks
+- exit code: 1
+
+○
+    │╲
+    │ ○
+    ○ ░
+    ░    gitleaks
+
+Finding:     aws_access_key_id = REDACTED
+Secret:      REDACTED
+RuleID:      aws-access-token
+Entropy:     3.921928
+File:        src/tmp/leak.txt
+Line:        1
+Fingerprint: src/tmp/leak.txt:aws-access-token:1
+
+5:24AM INF 1 commits scanned.
+5:24AM INF scanned ~41 bytes (41 bytes) in 80.7ms
+5:24AM WRN leaks found: 1
+
+exit=1 (expect 1)
+throwaway commit created: 0 (expect 0)

@@ -1,0 +1,3 @@
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_find_similar_entities - assert False
+FAILED tests/unit/test_performance.py::TestIntelligentCache::test_lru_eviction - AssertionError: assert None == 100
+============ 2 failed, 873 passed, 22 skipped, 5 xfailed in 21.88s ============

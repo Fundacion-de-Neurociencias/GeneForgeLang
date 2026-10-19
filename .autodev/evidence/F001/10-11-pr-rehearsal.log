@@ -1,0 +1,11 @@
+## per-commit paths (164e7df..HEAD)
+e3afeb9 docs(autodev): F001 sprint contract and evaluator review [F001] | autodev=2 product=0
+e793288 fix(security): untrack dev-container secrets file and remove pickle model [F001] | autodev=0 product=7
+2cec236 ci(security): gitleaks secret scan in pre-commit and CI [F001] | autodev=0 product=5
+11b9118 fix(security): allowlist the public ProtGPT2 model id in gitleaks [F001] | autodev=0 product=2
+5ac769b docs(autodev): F001 contract amendment for the gitleaks false positive [F001] | autodev=1 product=0
+
+## rehearsal: origin/main + product commits
+cherry-pick ok
+autodev paths in diff origin/main...rehearsal: 0 (expect 0)
+ 12 files changed, 381 insertions(+), 129 deletions(-)
