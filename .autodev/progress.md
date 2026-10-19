@@ -147,3 +147,4 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 ## 2026-10-19: sprint, F001 - no-op (sixth time, already PASS)
 - `/autodev:sprint F001` invoked again at 34337ed. `features.json` shows `passes: true`; no build work, no code change.
 - Same stop-gate blocker (2 baseline failures, out of F001 scope). Runner should target F002; owner decision pending in `next-steps.md`, "Needs owner".
+- Stop gate (sixth no-op): blocked twice by the same 2 baseline failures (873 passed). Not fixed: out of F001 scope, sensitive `core/**` files on María's branch, fix `3e9f9ec` already reverted as scope creep. Ended under "When stuck"; owner decision in `next-steps.md`, "Needs owner".
