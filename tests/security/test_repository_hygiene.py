@@ -42,6 +42,8 @@ UNSAFE_DESERIALIZATION = re.compile(
     r"pickle\.loads?\(|Unpickler|read_pickle|allow_pickle\s*=\s*True|torch\.load\("
     r"|joblib\.load\(|\bdill\b|cloudpickle|\bshelve\b"
 )
+# An allowlist regex must be "^literal$" where the literal uses only [A-Za-z0-9_/-] and escaped dots.
+EXACT_LITERAL_REGEX = re.compile(r"\^(?:[A-Za-z0-9_/-]|\\\.)+\$")
 # Built from parts so this file does not itself contain the inline marker it forbids.
 INLINE_ALLOW_MARKER = "gitleaks" + ":allow"
 
@@ -151,12 +153,17 @@ def test_gitleaks_config_allowlist_is_fixture_only() -> None:
     assert "allowlists" not in config, "use the single [allowlist] table"
     allowlist = config.get("allowlist")
     assert isinstance(allowlist, dict)
-    assert set(allowlist) <= {"description", "paths"}
+    assert set(allowlist) <= {"description", "paths", "regexes"}
+    # Without regexTarget, regexes match the detected secret only, not the line or the path.
+    assert "regexTarget" not in allowlist and "condition" not in allowlist
     paths = allowlist.get("paths")
     assert isinstance(paths, list) and len(paths) == 1
     assert SECRET_FIXTURES_DIR in paths[0]
     assert re.search(paths[0], SECRET_FIXTURES_DIR + "fake.txt")
     assert not re.search(paths[0], "src/geneforgelang/settings.py")
+    for regex in allowlist.get("regexes", []):
+        # Each entry is one exact public value: fully anchored, literal characters only.
+        assert EXACT_LITERAL_REGEX.fullmatch(regex), f"allowlist regex is not an exact literal: {regex}"
     for rule in config.get("rules", []):
         assert "allowlist" not in rule and "allowlists" not in rule, rule.get("id")
 
