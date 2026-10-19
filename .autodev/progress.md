@@ -71,3 +71,11 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - New regression tests fail against the pre-fix product code (12 failed, `verify-oracle.txt`). Tests diff removes only the false CI skip; no config or conftest change. Ruff clean (changed files and repo-wide). Language check: 0 findings.
 - Governance auditor: 0 blocking. Notes: publish only the product/test commits, never `.autodev/`; `core/performance.py` is a sensitive path (owner review gate).
 - Next: F001.
+
+## 2026-10-19: build, F002 attempt 3 (amended acceptance item 1)
+- The planner amended item 1: in-scope rows `fixed`; rows owned by later features `prevented` and naming the feature. C15-C20 were still `open`.
+- `tests/docs/test_public_claims.py`: new `test_owned_claim_absent`, one guard per C15-C20 claim. Absent claims (C15 version drift, C16, C20 truth-audit doc) are plain guards; present claims (C15 1.0.0 vs Beta, C17 privacy flag, C18 mocked conformance, C19 readthedocs URL, C20 PR description doc) are strict xfails naming F011/F004/F006/F011/F009, so they fail the suite when the owner removes the claim until the marker is dropped.
+- Inventory: 0 rows `open` (14 fixed, 8 prevented). Contract: D15-D17 under "Attempt 3".
+- Verified: injection makes the 3 plain guards fail, removing C17 makes its strict xfail XPASS -> fail (`evidence/F002/attempt3-owned-guards.log`); full suite 968 passed, 22 skipped, 10 xfailed; ruff clean (`attempt3-checks.txt`).
+- Still needs owner: PR approval (item 6), Zenodo DOI (A2).
+- Next: `/autodev:verify F002` in a separate session.

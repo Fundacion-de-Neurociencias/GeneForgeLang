@@ -21,6 +21,11 @@ from pathlib import Path
 import pytest
 import yaml
 
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python < 3.11
+    tomllib = None
+
 from geneforgelang.core.api import parse, validate
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -351,3 +356,87 @@ def test_readme_relative_links_resolve() -> None:
         if not _exists_case_sensitive(target.split("#", 1)[0]):
             broken.append(target)
     assert not broken, f"README.md links to missing paths: {broken}"
+
+
+# Rows of the claims inventory owned by later features. Each guard asserts the
+# claim is absent. While the claim is still in the tree the guard is a strict
+# xfail naming the owning feature: when that feature removes the claim the guard
+# XPASSes and fails the suite until the marker is dropped, and from then on it
+# blocks the claim from returning.
+def _owned_xfail(row: str, feature: str) -> pytest.MarkDecorator:
+    return pytest.mark.xfail(strict=True, reason=f"{row} still present; {feature} removes it, then drop this marker")
+
+
+def _pyproject() -> dict:
+    if tomllib is None:
+        pytest.skip("tomllib needs Python 3.11")
+    return tomllib.loads(_read(ROOT / "pyproject.toml"))
+
+
+def _c15_version_consistent() -> list[str]:
+    project = _pyproject()["project"]
+    citation = yaml.safe_load(_read(ROOT / "CITATION.cff"))
+    if str(citation.get("version")) != project["version"]:
+        return [f"CITATION.cff version {citation.get('version')} != pyproject {project['version']}"]
+    return []
+
+
+def _c15_stable_major_not_beta() -> list[str]:
+    project = _pyproject()["project"]
+    major = int(project["version"].split(".")[0])
+    beta = "Development Status :: 4 - Beta" in project.get("classifiers", [])
+    return [f"version {project['version']} is a stable major but classified Beta"] if major >= 1 and beta else []
+
+
+def _c16_no_calibration_claim() -> list[str]:
+    hits = []
+    for path in sorted((ROOT / "src").rglob("*.py")):
+        hits += [f"{_rel(path)}: {h}" for h in _find(_read(path), ("ECE <= 0.08", "benchmarked at 0.068"))]
+    return hits
+
+
+def _c17_no_unconditional_privacy_flag() -> list[str]:
+    path = ROOT / "src" / "geneforgelang" / "ir" / "external" / "openmed_connector.py"
+    return [f"{_rel(path)}: privacy_cleared is hardcoded True"] if '"privacy_cleared": True' in _read(path) else []
+
+
+def _c18_no_mocked_conformance() -> list[str]:
+    hits = []
+    for base in ("resources", "scripts"):
+        for path in sorted((ROOT / base).rglob("conformance_runner.py")):
+            hits += [f"{_rel(path)}: {h}" for h in _find(_read(path), ("Mocking success",))]
+    return hits
+
+
+def _c19_no_dead_docs_url() -> list[str]:
+    urls = _pyproject()["project"].get("urls", {})
+    return [f"pyproject.toml [project.urls]: {u}" for u in urls.values() if "readthedocs.io" in u]
+
+
+def _c20_no_status_doc(name: str):
+    def check() -> list[str]:
+        return [f"docs/{name} exists"] if (ROOT / "docs" / name).is_file() else []
+
+    return check
+
+
+OWNED_CLAIMS = [
+    pytest.param(_c15_version_consistent, id="C15-citation-matches-pyproject-F011"),
+    pytest.param(_c15_stable_major_not_beta, id="C15-version-vs-beta-F011", marks=_owned_xfail("C15", "F011")),
+    pytest.param(_c16_no_calibration_claim, id="C16-calibration-claim-F008"),
+    pytest.param(_c17_no_unconditional_privacy_flag, id="C17-privacy-cleared-F004", marks=_owned_xfail("C17", "F004")),
+    pytest.param(_c18_no_mocked_conformance, id="C18-mocked-conformance-F006", marks=_owned_xfail("C18", "F006")),
+    pytest.param(_c19_no_dead_docs_url, id="C19-readthedocs-url-F011", marks=_owned_xfail("C19", "F011")),
+    pytest.param(_c20_no_status_doc("END_TO_END_TRUTH_AUDIT.md"), id="C20-truth-audit-doc-F009"),
+    pytest.param(
+        _c20_no_status_doc("PULL_REQUEST_DESCRIPTION.md"),
+        id="C20-pr-description-doc-F009",
+        marks=_owned_xfail("C20", "F009"),
+    ),
+]
+
+
+@pytest.mark.parametrize("check", OWNED_CLAIMS)
+def test_owned_claim_absent(check) -> None:
+    hits = check()
+    assert not hits, f"Claim owned by a later feature is present: {hits}"
