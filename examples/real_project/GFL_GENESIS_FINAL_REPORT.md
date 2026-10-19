@@ -14,7 +14,7 @@
 
 ## Experimental Overview
 
-The GFL Genesis project successfully demonstrated the full capabilities of GeneForge v2.0 in a real-world scientific application: discovering optimal gRNA candidates for CRISPR gene editing of the BRCA1 gene. This represents the first complete end-to-end execution of a multi-omic discovery workflow using the new GeneForge platform.
+The GFL Genesis project is an illustrative simulation of a GeneForge v2.0 workflow for ranking gRNA candidates for CRISPR gene editing of the BRCA1 gene. The scores are random draws, not measurements.
 
 ## Methodology
 
@@ -88,7 +88,7 @@ This simulation run exercises the following workflow features (it does not valid
 4. **Guided Discovery Engine:** Iterative learning and candidate optimization
 5. **Rule-Based Logic:** Effective application of biological constraints and rules
 
-### Real-World Application
+### Illustrative Application
 The simulated ranking of gRNA candidates for BRCA1 illustrates:
 - **Workflow Expression:** How a discovery workflow is written in GFL
 - **Example Target:** BRCA1, a well-known cancer-research gene

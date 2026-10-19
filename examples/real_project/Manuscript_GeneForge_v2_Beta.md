@@ -11,7 +11,7 @@ GeneForge Research Foundation
 
 ## Abstract
 
-We present GeneForgeLang v2.0, a revolutionary computational biology platform that integrates multi-omic data with spatial genomic reasoning capabilities for biological discovery. Building upon the foundation of GeneForgeLang (GFL), our domain-specific language for bio-design, this new version introduces comprehensive support for transcripts, proteins, metabolites, and their spatial relationships within the genome. We demonstrate the platform's capabilities through two comprehensive real-world applications executed on the GeneForge WebApp: (1) the discovery of optimal gRNA candidates for CRISPR gene editing of the BRCA1 gene, and (2) the advanced regulatory targeting of MYC oncogene enhancers using spatial genomic reasoning. In a simulation with random scores, the best BRCA1 candidate reached an 89.7% combined score, 84.8% on-target and 3.0% off-target; the MYC enhancer figures (85% contact strength, 91% chromatin accessibility) have no recorded source in this repository. These simulated results illustrate how such workflows are expressed in GeneForgeLang v2.0; they do not validate the platform or any candidate.
+We present GeneForgeLang v2.0, a computational biology platform that integrates multi-omic data with spatial genomic reasoning capabilities for biological discovery. Building upon the foundation of GeneForgeLang (GFL), our domain-specific language for bio-design, this new version introduces comprehensive support for transcripts, proteins, metabolites, and their spatial relationships within the genome. We illustrate the platform's capabilities with two simulated example workflows: (1) the discovery of optimal gRNA candidates for CRISPR gene editing of the BRCA1 gene, and (2) the advanced regulatory targeting of MYC oncogene enhancers using spatial genomic reasoning. In a simulation with random scores, the best BRCA1 candidate reached an 89.7% combined score, 84.8% on-target and 3.0% off-target; the MYC enhancer figures (85% contact strength, 91% chromatin accessibility) have no recorded source in this repository. These simulated results illustrate how such workflows are expressed in GeneForgeLang v2.0; they do not validate the platform or any candidate.
 
 **Keywords:** computational biology, multi-omics, CRISPR, gene editing, domain-specific language, spatial genomics, regulatory elements, enhancer targeting, Hi-C, ATAC-seq
 
@@ -294,7 +294,7 @@ Table 2 presents the top 10 gRNA candidates identified for MYC enhancer targetin
 
 ### Scientific Impact
 
-The successful discovery of high-quality gRNA candidates for both BRCA1 gene editing and MYC enhancer targeting demonstrates the practical utility of GeneForge v2.0 for diverse real-world scientific applications. The platform's ability to integrate multi-omic data, apply spatial genomic reasoning, and perform iterative optimization represents a significant advancement in computational biology tools.
+The successful discovery of high-quality gRNA candidates for both BRCA1 gene editing and MYC enhancer targeting illustrates how GeneForge v2.0 workflows could be applied to diverse scientific questions; the results are simulated. The platform's ability to integrate multi-omic data, apply spatial genomic reasoning, and perform iterative optimization represents a significant advancement in computational biology tools.
 
 BRCA1 mutations are associated with increased risk of breast and ovarian cancer, which makes BRCA1 a common example target in gene editing research. The simulated scores above (>80% on-target, <30% off-target) are random draws and say nothing about the efficiency or safety of these guides.
 
@@ -350,7 +350,7 @@ The release of GeneForge v2.0 as an open-source platform enables the broader com
 
 ## Conclusions
 
-GeneForgeLang v2.0 represents a significant advancement in computational biology platforms, successfully integrating multi-omic data with spatial genomic reasoning to enable sophisticated biological discovery workflows. The successful application to both BRCA1 gRNA discovery and MYC enhancer targeting, executed on the GeneForge WebApp platform, illustrates how such workflows can be expressed; the results are simulated and validate neither the platform nor the candidates.
+GeneForgeLang v2.0 represents a significant advancement in computational biology platforms, successfully integrating multi-omic data with spatial genomic reasoning to enable sophisticated biological discovery workflows. The simulated BRCA1 gRNA discovery and MYC enhancer targeting workflows illustrate how such workflows can be expressed; the results are simulated and validate neither the platform nor the candidates.
 
 The platform's modular architecture, comprehensive language support, and capability-aware design make it suitable for diverse applications across computational biology research. The successful integration of Hi-C, ATAC-seq, and ChIP-seq data demonstrates the platform's capability to handle complex spatial genomic reasoning, which is essential for understanding and targeting non-coding regulatory elements.
 
@@ -358,7 +358,7 @@ The breakthrough in regulatory element targeting, as demonstrated by the MYC enh
 
 The open-source nature of the platform ensures transparency, reproducibility, and community-driven development. The comprehensive validation framework ensures reliable execution in production environments, for research use. GeneForgeLang is not intended for clinical use.
 
-We anticipate that GeneForge v2.0 will accelerate research in computational biology by providing researchers with powerful, integrated tools for multi-omic analysis and biological design optimization. The platform's success in real-world applications, as demonstrated by both the BRCA1 gRNA discovery and MYC enhancer targeting, establishes its credibility and utility for the scientific community.
+We anticipate that GeneForge v2.0 will accelerate research in computational biology by providing researchers with powerful, integrated tools for multi-omic analysis and biological design optimization. Establishing its utility requires validation on real data, which has not been done.
 
 ## Acknowledgments
 

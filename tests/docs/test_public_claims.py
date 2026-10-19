@@ -14,6 +14,8 @@ from __future__ import annotations
 
 import ast
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -26,10 +28,7 @@ ROOT = Path(__file__).resolve().parents[2]
 # Flip to True in the release that publishes geneforgelang on PyPI (feature F012).
 PYPI_RELEASED = False
 
-NOTICE = (
-    "Research software. Not a medical device, not for clinical use, "
-    "and not legal or regulatory advice."
-)
+NOTICE = "Research software. Not a medical device, not for clinical use, and not legal or regulatory advice."
 
 SIMULATION_BANNER_TERMS = ("illustrative simulation", "np.random.beta", "not a validated study")
 BANNER_WINDOW_LINES = 15
@@ -68,6 +67,9 @@ README_DENYLIST = (
     "5-model consensus",
     "v2.0",
     "img.shields.io/badge/version",
+    # External resources that do not exist (HTTP 404 on 2026-10-19).
+    "geneforgelang.readthedocs.io",
+    "geneforgelang/discussions",
 )
 
 WHITEPAPER_DENYLIST = (
@@ -85,6 +87,9 @@ SIMULATION_REPORT_DENYLIST = (
     "clinical applications",
     "clinical relevance",
     "suitable for both research and clinical",
+    "revolutionary",
+    "real-world application",
+    "executed on the geneforge webapp",
 )
 
 PROPOSED_LABEL = "proposed, not implemented"
@@ -190,11 +195,7 @@ def _exists_case_sensitive(relative: str) -> bool:
 
 def _python_string_literals(source: str) -> list[str]:
     tree = ast.parse(source)
-    return [
-        node.value
-        for node in ast.walk(tree)
-        if isinstance(node, ast.Constant) and isinstance(node.value, str)
-    ]
+    return [node.value for node in ast.walk(tree) if isinstance(node, ast.Constant) and isinstance(node.value, str)]
 
 
 def _assert_valid_gfl(source: str, where: str) -> None:
@@ -251,9 +252,7 @@ def test_whitepaper_labels_proposed_notation() -> None:
     assert not unlabelled, f"whitepaper.md describes unimplemented notation without '{PROPOSED_LABEL}': {unlabelled}"
 
 
-@pytest.mark.parametrize(
-    "path", sorted((ROOT / "examples" / "real_project").glob("*.md")), ids=_rel
-)
+@pytest.mark.parametrize("path", sorted((ROOT / "examples" / "real_project").glob("*.md")), ids=_rel)
 def test_simulation_reports_are_labelled(path: Path) -> None:
     text = _read(path)
     hits = _find(text, SIMULATION_REPORT_DENYLIST)
@@ -307,6 +306,39 @@ def test_readme_python_block_is_honest(block: tuple[int, str, str, str]) -> None
     for literal in _python_string_literals(body):
         if _gfl_mapping(literal):
             _assert_valid_gfl(literal, f"README.md:{line} (embedded workflow)")
+
+
+@pytest.mark.parametrize(
+    "block",
+    [
+        b
+        for b in README_FENCES
+        if b[1] == "python" and b[3] not in {DOES_NOT_RUN_MARKER, PROPOSED_SYNTAX_MARKER} and "geneforgelang" in b[2]
+    ],
+    ids=lambda b: f"README.md:{b[0]}",
+)
+def test_readme_python_block_runs(block: tuple[int, str, str, str], tmp_path: Path) -> None:
+    """An unmarked example that uses geneforgelang must run as a reader would run it.
+
+    The block runs in a fresh isolated interpreter (-I) from an empty directory,
+    so the repository root is not on sys.path and only the installed package is
+    importable.
+    """
+    line, _, body, _ = block
+    script = tmp_path / "readme_block.py"
+    script.write_text(body, encoding="utf-8")
+    result = subprocess.run(
+        [sys.executable, "-I", str(script)],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        timeout=60,
+        check=False,
+    )
+    assert result.returncode == 0, (
+        f"README.md:{line}: example fails (exit {result.returncode}); fix it or precede it with "
+        f"{DOES_NOT_RUN_MARKER}\n{result.stderr}"
+    )
 
 
 def test_readme_relative_links_resolve() -> None:

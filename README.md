@@ -232,23 +232,30 @@ src/geneforgelang/
 
 ## Plugin System
 
-GeneForgeLang supports custom plugins for extending functionality:
+A plugin subclasses `BaseGFLPlugin` and implements `process`:
 
 ```python
-from geneforgelang.plugins import BasePlugin
+from typing import Any
 
-class CustomAnalysisPlugin(BasePlugin):
-    name = "custom_analysis"
-    version = "1.0.0"
+from geneforgelang.plugins.base import BaseGFLPlugin
 
-    def execute(self, params: dict) -> dict:
+
+class CustomAnalysisPlugin(BaseGFLPlugin):
+    def __init__(self) -> None:
+        super().__init__()
+        self.name = "custom_analysis"
+        self.description = "Example analysis plugin"
+
+    def process(self, data: dict[str, Any]) -> dict[str, Any]:
         # Custom analysis logic
-        return {"result": "analysis_complete"}
+        return {"result": "analysis_complete", "input_keys": sorted(data)}
 
-# Register plugin
-from geneforgelang.plugins import register_plugin
-register_plugin(CustomAnalysisPlugin())
+
+plugin = CustomAnalysisPlugin()
+print(plugin.process({"sequence": "MKTAYIAKQR"}))
 ```
+
+Registering a plugin with `geneforgelang.plugins.plugin_registry.register_plugin` does not work in an installed package in this version: the registry module imports `src.geneforgelang`, which only resolves from a source checkout. Feature F010 fixes this.
 
 ## Web Interface (Not working!)
 
@@ -342,9 +349,8 @@ If you use GeneForgeLang in your research, please cite:
 
 ## Support
 
-- [GitHub Issues](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues) - Bug reports and feature requests
-- [Discussions](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/discussions) - Community support
-- [Documentation](https://geneforgelang.readthedocs.io) - Comprehensive guides
+- [GitHub Issues](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues) - Bug reports, questions and feature requests
+- [Documentation](docs/index.md) - Guides and reference in this repository
 
 ---
 
