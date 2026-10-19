@@ -1,0 +1,22 @@
+== CI=true run
+================= 871 passed, 22 skipped, 5 xfailed in 4.64s ==================
+== impact journeys
+======================= 155 passed, 5 xfailed in 1.37s ========================
+== D2 numstat
+29	5	tests/unit/ir/test_external_connectors.py
+26	0	tests/unit/test_performance.py
+== D2 removed lines in tests
+-import os
+-    @pytest.mark.skipif(
+-        os.getenv("CI") == "true",
+-        reason="Requiere acceso a red externa"
+-    )
+== D3 config untouched
+unchanged
+== D3 added skip/xfail lines
+none
+== lint changed files (HEAD)
+All checks passed!
+== lint repo-wide (commands.lint)
+All checks passed!
+exit=0

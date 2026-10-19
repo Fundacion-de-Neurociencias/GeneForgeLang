@@ -330,8 +330,9 @@
         "Every previously failing test is fixed at its root cause in product or test code; none is skipped, deleted, marked xfail or weakened (evidence: per-test root cause in the contract).",
         "Failing at start: tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_find_similar_entities, tests/unit/test_performance.py::TestIntelligentCache::test_lru_eviction."
       ],
-      "passes": false,
-      "notes": "Inserted by the runner on 2026-10-19: the baseline suite was red before building."
+      "passes": true,
+      "notes": "Inserted by the runner on 2026-10-19: the baseline suite was red before building.",
+      "evidence": ".autodev/evidence/F018/verdict.json"
     }
   ]
 }

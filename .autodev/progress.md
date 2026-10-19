@@ -20,3 +20,10 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Findings for later features: `OpenMedConnector` is a mock with hardcoded embeddings and a fictitious `base_url` (G9, F002); TTL expiry uses wall-clock `time.time()` rather than `time.monotonic()`.
 - Owner gate: `core/performance.py` is a sensitive path; the PR needs owner review.
 - Next: independent verification (`/autodev:verify F018`).
+
+## 2026-10-19: verify, F018 - PASS
+- Independent evaluator at b5dbe76. Verdict: `.autodev/evidence/F018/verdict.json`.
+- Full suite (CI unset and CI=true): 871 passed, 22 skipped, 5 xfailed, exit 0 (`verify-suite.log`, `verify-checks.txt`). Both originally failing tests pass, 20/20 repeats.
+- New regression tests fail against the pre-fix product code (12 failed, `verify-oracle.txt`). Tests diff removes only the false CI skip; no config or conftest change. Ruff clean (changed files and repo-wide). Language check: 0 findings.
+- Governance auditor: 0 blocking. Notes: publish only the product/test commits, never `.autodev/`; `core/performance.py` is a sensitive path (owner review gate).
+- Next: F001.
