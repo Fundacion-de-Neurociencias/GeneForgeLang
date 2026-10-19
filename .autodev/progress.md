@@ -104,3 +104,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - `/autodev:sprint F001` invoked once more. No build work and no code change, because F001 passed in verify round 4.
 - Stop gate: blocked by the same 2 baseline failures (`test_lru_eviction`, `test_find_similar_entities`). Not fixed, for the reasons already recorded (out of F001 scope; `3e9f9ec` rejected; weakening tests is forbidden). Ended under "When stuck".
 - Loop note: the runner keeps re-invoking sprint/verify on F001 although it passes. It should move to F002 once the owner decides on the baseline fix (`next-steps.md`, "Needs owner").
+
+## 2026-10-19: verify, F001 - PASS stands (re-confirmation 2)
+- Invoked again at 268aaff. Since the round-4 PASS (5893f94) only autodev bookkeeping changed (`progress.md`, `verify5/reconfirm.txt`); no product change.
+- Hygiene tests re-run: 16 passed. Evidence: `evidence/F001/verify6/reconfirm.txt`. Verdict file unchanged.
+- Loop note: the runner should stop invoking sprint/verify on F001 and move to F002, or the owner should schedule the baseline-fix feature (`next-steps.md`, "Needs owner").
