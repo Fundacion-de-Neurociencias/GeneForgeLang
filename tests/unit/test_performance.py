@@ -53,6 +53,32 @@ class TestIntelligentCache:
         assert cache.get("key2") is None  # Evicted
         assert cache.get("key3") == 300
 
+    def test_lru_eviction_independent_of_clock_resolution(self, monkeypatch):
+        """Regression (F018): LRU order must hold when accesses share a timestamp.
+
+        A coarse wall clock (about 15.6 ms on Windows) gives several accesses the
+        same time.time() value; freezing the clock reproduces that on every OS.
+        """
+        monkeypatch.setattr("geneforgelang.core.performance.time.time", lambda: 1_000.0)
+        cache = IntelligentCache[str, int](max_size=3, eviction_policy=LRUEvictionPolicy())
+
+        cache.put("a", 1)
+        cache.put("b", 2)
+        cache.put("c", 3)
+        cache.get("a")
+        cache.get("b")
+
+        cache.put("d", 4)  # "c" is least recently used
+        assert cache.get("c") is None
+        assert cache.get("a") == 1
+
+        cache.put("b", 20)  # overwriting counts as an access
+        cache.put("e", 5)  # "d" is now least recently used
+        assert cache.get("d") is None
+        assert cache.get("a") == 1
+        assert cache.get("b") == 20
+        assert cache.get("e") == 5
+
     def test_ttl_eviction(self):
         """Test TTL-based eviction."""
         cache = IntelligentCache[str, int](max_size=10, ttl=0.1)  # 100ms TTL

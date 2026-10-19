@@ -1,16 +1,20 @@
 # GFL Genesis Project - Final Experimental Report
 
+> **Illustrative simulation - not a validated study.** Every score in this report (on-target, off-target, combined, confidence) is a random draw from `np.random.beta` or `np.random.uniform` in [`execute_genesis_real.py`](execute_genesis_real.py). The "experiment" is a simulation run, not a laboratory or benchmark experiment, and its results measure nothing about real guide RNAs.
+>
+> Research software. Not a medical device, not for clinical use, and not legal or regulatory advice.
+
 ## Executive Summary
 
 **Project:** GFL Genesis CRISPR gRNA Discovery
 **Date:** September 25, 2025
 **GeneForge Version:** v2.0 with Multi-Omic Capabilities
 **Target Gene:** BRCA1
-**Status:** ✅ **EXPERIMENT COMPLETED SUCCESSFULLY**
+**Status:** Simulation run completed (random scores)
 
 ## Experimental Overview
 
-The GFL Genesis project successfully demonstrated the full capabilities of GeneForge v2.0 in a real-world scientific application: discovering optimal gRNA candidates for CRISPR gene editing of the BRCA1 gene. This represents the first complete end-to-end execution of a multi-omic discovery workflow using the new GeneForge platform.
+The GFL Genesis project is an illustrative simulation of a GeneForge v2.0 workflow for ranking gRNA candidates for CRISPR gene editing of the BRCA1 gene. The scores are random draws, not measurements.
 
 ## Methodology
 
@@ -75,8 +79,8 @@ The GFL Genesis project successfully demonstrated the full capabilities of GeneF
 
 ## Scientific Impact
 
-### Validation of GeneForge v2.0 Capabilities
-This experiment successfully validates all major features of GeneForge v2.0:
+### GeneForge v2.0 Capabilities Exercised
+This simulation run exercises the following workflow features (it does not validate them):
 
 1. **Multi-Omic Integration:** Seamless integration of transcript, protein, and genomic data
 2. **Spatial Genomic Reasoning:** Effective use of genomic loci for context-aware discovery
@@ -84,10 +88,10 @@ This experiment successfully validates all major features of GeneForge v2.0:
 4. **Guided Discovery Engine:** Iterative learning and candidate optimization
 5. **Rule-Based Logic:** Effective application of biological constraints and rules
 
-### Real-World Application
-The discovery of high-quality gRNA candidates for BRCA1 gene editing demonstrates:
-- **Practical Utility:** Real-world scientific problem solving
-- **Clinical Relevance:** BRCA1 is a critical cancer-related gene
+### Illustrative Application
+The simulated ranking of gRNA candidates for BRCA1 illustrates:
+- **Workflow Expression:** How a discovery workflow is written in GFL
+- **Example Target:** BRCA1, a well-known cancer-research gene
 - **Safety Focus:** Emphasis on off-target risk minimization
 - **Efficiency Optimization:** Balance between on-target efficiency and safety
 
@@ -123,23 +127,23 @@ The discovery of high-quality gRNA candidates for BRCA1 gene editing demonstrate
 ## Conclusions
 
 ### Mission Accomplished
-The GFL Genesis project has successfully demonstrated that GeneForge v2.0 is not only a powerful computational platform but also a practical tool for real-world scientific discovery. The experiment achieved:
+The GFL Genesis simulation shows how a guided-discovery workflow is expressed and run end to end with random scores. It achieved:
 
-1. **Scientific Success:** Discovery of high-quality gRNA candidates for BRCA1 editing
-2. **Technical Validation:** Confirmation of all v2.0 multi-omic capabilities
-3. **Practical Application:** Real-world problem solving with clinical relevance
+1. **Workflow Demonstration:** A ranked list of simulated gRNA candidates for BRCA1
+2. **Feature Coverage:** Use of the v2.0 workflow blocks listed above
+3. **Example Application:** A worked example on a well-known research target
 4. **Complete Workflow:** End-to-end execution from data input to publication-ready results
 
 ### Future Directions
 This successful experiment opens the door for:
-- **Clinical Applications:** Translation to therapeutic gRNA design
+- **Real Scoring Models:** Replace the random scores with published on-target and off-target models
 - **Expanded Targets:** Application to other critical genes
 - **Enhanced Features:** Integration of additional omics data types
 - **Community Adoption:** Real-world deployment in research laboratories
 
 ## Recommendations
 
-### For Clinical Translation
+### Before Any Candidate Is Assessed
 1. **Experimental Validation:** In vitro testing of top candidates
 2. **Safety Assessment:** Comprehensive off-target analysis
 3. **Efficiency Testing:** Functional validation in cell lines
@@ -153,9 +157,9 @@ This successful experiment opens the door for:
 
 ## Final Status
 
-**🎉 EXPERIMENT STATUS: COMPLETED SUCCESSFULLY**
+**Simulation status: completed (random scores, not a validation)**
 
-The GFL Genesis project represents a landmark achievement in computational biology, demonstrating the first successful application of a multi-omic reasoning platform to real-world scientific discovery. GeneForge v2.0 has proven its readiness for production deployment and scientific community adoption.
+The GFL Genesis project is an illustrative simulation of a multi-omic discovery workflow. It demonstrates the workflow language, not scientific results.
 
 ---
 

@@ -1,0 +1,22 @@
+# gitleaks configuration for GeneForgeLang.
+# Upstream default rules plus ONE allowlist with two narrow parts (a finding is allowed if either matches):
+#   - paths: the directory reserved for fake-secret test fixtures;
+#   - regexes: exact, fully anchored PUBLIC identifiers that a default rule misreads as a secret.
+#     Each entry must be a literal public value (never a pattern) with a comment naming the
+#     rule, the file and why the value is public.
+# Do not add stopwords, commits or per-rule allowlists. Widening this file is a security-sensitive
+# change: CI loads it from the PR base commit, so a PR cannot relax its own scan.
+
+title = "GeneForgeLang gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Fake secrets in test fixtures; exact public identifiers misread as secrets"
+paths = ['''(^|/)tests/fixtures/secrets/''']
+regexes = [
+  # generic-api-key on `tokenizer_name="nferruz/ProtGPT2"` (src/geneforgelang/models/advanced_models.py):
+  # a public Hugging Face model id (https://huggingface.co/nferruz/ProtGPT2).
+  '''^nferruz/ProtGPT2$''',
+]
