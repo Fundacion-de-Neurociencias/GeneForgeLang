@@ -1,0 +1,9 @@
+governance-auditor, range autodev/integration...HEAD (head 66dbd35), 2026-10-19, verify round 4
+BLOCKING: none.
+G3 secrets/isolation: PASS. No keys, tokens or connection strings in product diff, workflow, .gitleaks.toml, ADR or secret-rotation.md. The removed secret file was not opened.
+  ADVISORY: older evidence logs (sprint3/02-tests.log, 05a-precommit-hook-windows-longpath-failure.log, verify2/precommit-item5-windows.log) hold local absolute paths; no keys; .autodev/ stays out of the PR.
+  ADVISORY: docker-compose postgres dev password untouched, out of scope per contract, recorded in the rotation list.
+G1.1 mocks in verification: PASS. No mock/patch/stub in tests/security; tests read git and real config files.
+G2.2 scope: PASS. git diff of src/ is empty; every product file is in the contract scope.
+  ADVISORY: .gitleaks.toml adds regexes = ['^nferruz/ProtGPT2$'] under the contract amendment; evaluator to accept or reject explicitly.
+G5.1 claims without evidence: PASS.

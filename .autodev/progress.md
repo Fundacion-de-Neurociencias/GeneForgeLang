@@ -82,3 +82,9 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Known limitation: the red baseline (lesson 19) is still there, so the Stop gate may block this session again. The fix is the proposed baseline feature, outside F001's scope.
 - Next: `/autodev:verify F001`.
 - Stop gate (this session): blocked by the same 2 baseline ids. No in-scope fix: the root-cause fix `3e9f9ec` was rejected as out of scope (sensitive `core/**`, files on María's in-flight branch), and weakening the tests is forbidden. Session ended under "When stuck". Owner decision: add the baseline-fix feature first (`next-steps.md`, "Needs owner").
+
+## 2026-10-19: verify, F001 - PASS (round 4)
+- Fresh evaluator session at 66dbd35. Evidence: `evidence/F001/verify4/`, verdict `evidence/F001/verdict.json`.
+- Re-ran all checks (none carried forward): gitleaks over the HEAD export and 164e7df..HEAD clean; allowlist behaves in dir and git modes; pre-commit hook `gitleaks` blocks a fake AWS key and passes a clean change; the `secret-scan.yml` scripts give the expected result in all 7 WSL scenarios; suite 873 passed, 2 failed (the allowed baseline ids); ruff count unchanged; language check clean.
+- Governance audit: 0 blocking, 3 advisory. Contract amendment (allowlist regex `^nferruz/ProtGPT2$`) accepted.
+- Acceptance item 7 (hosted secret-scan run) is OWNER_GATE: push a PR branch from `origin/main` with `e793288 2cec236 11b9118`, PR text in `contracts/F001-pr.md`.

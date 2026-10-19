@@ -1,0 +1,24 @@
+### item 5 (Windows, default PRE_COMMIT_HOME, pre-commit 4.3.0), fresh clone at 66dbd35; system go: none
+-- positive control: clean staged change
+Detect hardcoded secrets.................................................Passed
+exit=0 (expect 0)
+-- fake AWS key staged
+Detect hardcoded secrets.................................................Failed
+- hook id: gitleaks
+- exit code: 1
+
+○
+    │╲
+    │ ○
+    ○ ░
+    ░    gitleaks
+
+Finding:     aws_access_key_id = [1;3;mREDACTED[0m
+RuleID:      aws-access-token
+File:        src/tmp/leak.txt
+
+[90m10:56AM[0m [32mINF[0m [1m1 commits scanned.[0m
+[90m10:56AM[0m [32mINF[0m [1mscanned ~41 bytes (41 bytes) in 66.5ms[0m
+[90m10:56AM[0m [33mWRN[0m [1mleaks found: 1[0m
+
+exit=1 (expect 1)

@@ -1,0 +1,22 @@
+0.17s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_performance_caching
+0.15s call     tests/unit/test_performance.py::TestIntelligentCache::test_ttl_eviction
+0.15s call     tests/unit/test_performance.py::TestIntelligentCache::test_cache_cleanup
+0.15s call     tests/unit/test_performance.py::TestPerformanceOptimizer::test_cache_cleanup
+0.14s call     tests/security/test_repository_hygiene.py::test_no_code_executing_deserialization
+0.12s call     tests/unit/test_parser.py::TestParsingPerformance::test_parse_large_parameter_set
+0.08s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_api_integration
+0.08s setup    tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_suggested_fixes
+[36m[1m=========================== short test summary info ===========================[0m
+[31mFAILED[0m tests/unit/ir/test_external_connectors.py::[1mTestOpenMedConnector::test_find_similar_entities[0m - assert False
+[31mFAILED[0m tests/unit/test_performance.py::[1mTestIntelligentCache::test_lru_eviction[0m - AssertionError: assert None == 100
+[31m============ [31m[1m2 failed[0m, [32m873 passed[0m, [33m22 skipped[0m, [33m5 xfailed[0m[31m in 6.26s[0m[31m =============[0m
+pytest_exit=1
+--- ruff src tests
+  |
+
+Found 1 error.
+[*] 1 fixable with `--fix`.
+--- ruff tests/security
+All checks passed!
+--- language
+0 segment(s) not in 'en'
