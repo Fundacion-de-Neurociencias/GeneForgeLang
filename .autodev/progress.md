@@ -98,3 +98,4 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Invoked again after the round-4 PASS (5893f94). Only `.autodev/progress.md` changed since then; no product change.
 - Hygiene tests re-run: 16 passed. Full suite, gitleaks and governance audit not re-run (nothing to audit). Evidence: `evidence/F001/verify5/reconfirm.txt`.
 - Item 7 is still OWNER_GATE (hosted secret-scan run on the published PR). Next feature: F002.
+- Stop gate (this session): blocked by the same 2 baseline failures (`test_lru_eviction`, `test_find_similar_entities`). Not fixed: the evaluator does not change code, both files are out of F001 scope (sensitive `core/**`, on María's in-flight branch), and weakening tests is forbidden. Ended under "When stuck"; owner decision still pending in `next-steps.md`.
