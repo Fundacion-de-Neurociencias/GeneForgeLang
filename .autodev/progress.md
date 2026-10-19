@@ -165,3 +165,7 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Hygiene tests re-run: 16 passed. Evidence: `evidence/F001/verify11/reconfirm.txt`. Verdict file unchanged.
 - Loop note (repeated): the runner keeps re-invoking F001. It should target F002; the baseline-test decision is in `next-steps.md`, "Needs owner".
 - Stop gate blocked this verify session too: the same 2 baseline failures (`test_find_similar_entities`, `test_lru_eviction`), out of F001 scope. The evaluator does not change product code; the fix stays the proposed baseline feature in `next-steps.md`, "Needs owner".
+
+## 2026-10-19: sprint, F001 - no-op (eighth time, already PASS)
+- `/autodev:sprint F001` invoked again at ba7952e. `features.json` shows `passes: true`; no build work, no code change.
+- Runner should target F002. The 2 baseline test failures (`test_lru_eviction`, `test_find_similar_entities`) are out of F001 scope; owner decision pending in `next-steps.md`, "Needs owner".
