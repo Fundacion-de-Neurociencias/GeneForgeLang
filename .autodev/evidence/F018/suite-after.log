@@ -1,0 +1,2042 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.15, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\usuario\.autodev\workspaces\geneforgelang
+configfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)
+plugins: anyio-4.15.1, platformdirs-4.13.5, asyncio-1.4.0, cov-7.1.0, mock-3.17.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 898 items
+
+tests\bench\test_corpus.py ....                                          [  0%]
+tests\governance\test_behavioral_soundness.py .....                      [  1%]
+tests\governance\test_corpus_soundness.py .............................. [  4%]
+........................................................................ [ 12%]
+........................................................................ [ 20%]
+........................................................................ [ 28%]
+........................................................................ [ 36%]
+........................................................................ [ 44%]
+..........                                                               [ 45%]
+tests\integration\test_end_to_end.py ................                    [ 47%]
+tests\test_advanced_validation.py .                                      [ 47%]
+tests\test_api.py ..                                                     [ 47%]
+tests\test_basic_functionality.py ....                                   [ 48%]
+tests\test_basic_plugin_functionality.py .                               [ 48%]
+tests\test_complete_workflow.py .                                        [ 48%]
+tests\test_design_file.py .                                              [ 48%]
+tests\test_design_implementation.py ....                                 [ 48%]
+tests\test_design_schema.py .                                            [ 48%]
+tests\test_enhanced_inference_engine.py ssssssssssssssssssss             [ 51%]
+tests\test_enhanced_inference_standalone.py ..                           [ 51%]
+tests\test_example_optimize.py .                                         [ 51%]
+tests\test_examples_roundtrip.py ss.                                     [ 51%]
+tests\test_io_contracts.py ..                                            [ 52%]
+tests\test_new_features.py ........................                      [ 54%]
+tests\test_optimize_implementation.py ......                             [ 55%]
+tests\test_platform.py ...                                               [ 55%]
+tests\test_plugin_interfaces.py ..............................           [ 59%]
+tests\test_schema_registry.py ...                                        [ 59%]
+tests\test_workflow.py .                                                 [ 59%]
+tests\unit\ir\test_executor.py .....                                     [ 60%]
+tests\unit\ir\test_external_connectors.py .............................. [ 63%]
+.....                                                                    [ 64%]
+tests\unit\ir\test_fase4.py .........................                    [ 66%]
+tests\unit\ir\test_graph_executor.py ....                                [ 67%]
+tests\unit\ir\test_instruction.py ...........                            [ 68%]
+tests\unit\ir\test_knowledge_grounding.py ......                         [ 69%]
+tests\unit\ir\test_parser_ir.py .......                                  [ 69%]
+tests\unit\ir\test_reasoning_loop.py ...                                 [ 70%]
+tests\unit\ir\test_state.py .....                                        [ 70%]
+tests\unit\ir\test_state_evaluator.py .....                              [ 71%]
+tests\unit\ir\test_state_propagation.py ....                             [ 71%]
+tests\unit\test_design_block.py ..................                       [ 73%]
+tests\unit\test_enhanced_cli.py .....................                    [ 76%]
+tests\unit\test_enhanced_plugins.py ........                             [ 77%]
+tests\unit\test_error_handling.py ..........................             [ 79%]
+tests\unit\test_grammar_parser.py ..............xxxx.......x             [ 82%]
+tests\unit\test_optimize_block.py ...................                    [ 84%]
+tests\unit\test_parser.py ...................                            [ 87%]
+tests\unit\test_performance.py ........................                  [ 89%]
+tests\unit\test_symbolic_reasoning.py .........................          [ 92%]
+tests\unit\test_types.py ..................................              [ 96%]
+tests\unit\test_validator.py .................................           [100%]
+
+=================================== PASSES ====================================
+________ test_parse_corpus[tests\\bench\\corpus\\22q11_high_level.gfl] ________
+------------------------------ Captured log call ------------------------------
+\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:244 Illegal character '\ufeff' at line 1\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '(' of type 'LPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:244 Illegal character ''' at line 2\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '.' of type 'DOT'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'
+_________ test_parse_corpus[tests\\bench\\corpus\\22q11_iPSC_ASO.gfl] _________
+------------------------------ Captured log call ------------------------------
+\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:244 Illegal character '\ufeff' at line 28\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '(' of type 'LPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:244 Illegal character ''' at line 29\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '.' of type 'DOT'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '.' of type 'DOT'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'
+______ test_parse_corpus[tests\\bench\\corpus\\22q11_miRNA_pathway.gfl] _______
+------------------------------ Captured log call ------------------------------
+\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:244 Illegal character '\ufeff' at line 56\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '(' of type 'LPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '.' of type 'DOT'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '.' of type 'DOT'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '.' of type 'DOT'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'
+________ test_parse_corpus[tests\\bench\\corpus\\22q11_mouse_ASO.gfl] _________
+------------------------------ Captured log call ------------------------------
+\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:244 Illegal character '\ufeff' at line 76\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '(' of type 'LPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:244 Illegal character ''' at line 77\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:244 Illegal character '\xb5' at line 80\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '/' of type 'DIVIDE'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:244 Illegal character '\u2013' at line 81\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '_weeks' of type 'IDENTIFIER'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ',' of type 'COMMA'\n\x1b[1m\x1b[31mERROR   \x1b[0m geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token ')' of type 'RPAREN'
+_____________ TestBasicWorkflows.test_simple_experiment_workflow ______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+__________________ TestBasicWorkflows.test_analysis_workflow __________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['analyze']
+Collected entity registry: {}
+________________ TestBasicWorkflows.test_multi_block_workflow _________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment', 'analyze', 'simulate', 'metadata']
+Collected entity registry: {}
+_________________ TestErrorHandling.test_parse_error_handling _________________
+------------------------------ Captured log call ------------------------------
+ERROR    geneforgelang.core.parser:parser.py:47 Error parsing GFL YAML: mapping values are not allowed here
+  in "<unicode string>", line 5, column 32:
+                invalid_indentation: value
+                                   ^
+______________ TestErrorHandling.test_validation_error_handling _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+_______________ TestErrorHandling.test_inference_error_handling _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+___________ TestRealWorldScenarios.test_crispr_knockout_experiment ____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment', 'analyze', 'metadata']
+Collected entity registry: {}
+__________ TestRealWorldScenarios.test_rnaseq_differential_analysis ___________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment', 'analyze', 'metadata']
+Collected entity registry: {}
+_______________ TestRealWorldScenarios.test_simulation_scenario _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['simulate', 'experiment', 'analyze', 'metadata']
+Collected entity registry: {}
+_________ TestComponentIntegration.test_parser_validator_integration __________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+AST keys: ['analyze']
+Collected entity registry: {}
+AST keys: ['simulate']
+Collected entity registry: {}
+___________ TestComponentIntegration.test_full_pipeline_integration ___________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment', 'analyze']
+Collected entity registry: {}
+__________ TestPerformanceIntegration.test_large_experiment_workflow __________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+__________________ TestExampleFiles.test_parse_all_examples ___________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design', 'optimize']
+Collected entity registry: {}
+____________________________ test_advanced_syntax _____________________________
+---------------------------- Captured stdout call -----------------------------
+Testing advanced GFL syntax validation...
+Parsed AST successfully
+AST keys: ['optimize_active_learning', 'design_inverse', 'refine_data', 'guided_discovery']
+Collected entity registry: {}
+Validation result: Valid
+All validations passed!
+____________________________ test_workflow_example ____________________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design', 'optimize']
+Collected entity registry: {}
+_______________________ test_basic_plugin_functionality _______________________
+---------------------------- Captured stdout call -----------------------------
+\U0001f9ea Testing Basic Plugin Functionality\n==================================================\n\n1. Testing manual plugin registration...\n\n2. Testing API information...\n\u2713 API version: 0.1.0\n\u2713 Workflow execution: True\n\n3. Testing design block execution...\n\u2713 Parsed design GFL successfully: {'metadata': {'experiment_id': 'BASIC_DESIGN_001'}, 'design': {'entity': 'ProteinSequence', 'model': 'ProteinVAEGenerator', 'objective': {'maximize': 'stability'}, 'constraints': ['length(120, 150)'], 'count': 2, 'output': 'designed_proteins'}}\nAST keys: ['metadata', 'design']\nCollected entity registry: {}\n\u2713 Validation passed\n{'entity': 'ProteinSequence', 'model': 'ProteinVAEGenerator', 'objective': {'maximize': 'stability'}, 'constraints': ['length(120, 150)'], 'count': 2, 'output': 'designed_proteins'}\n\u2713 Design block executed successfully\n\u2713 Generated 2 candidates\n  - First candidate: SDYIINGHFAWINSNLVKEQTTALESRDAA...\n  - Properties: ['stability', 'binding_affinity', 'solubility', 'aggregation_propensity']\n\n\U0001f389 Basic Plugin Functionality Tests Passed!\n\u2713 Manual plugin registration works\n\u2713 Design block execution works\n\u2713 Parameter injection works
+___________________________ test_complete_workflow ____________________________
+---------------------------- Captured stdout call -----------------------------
+Testing complete workflow execution...
+Error during workflow test: module 'geneforgelang.core.api' has no attribute 'VERSION'
+---------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "C:\Users\usuario\.autodev\workspaces\geneforgelang\tests\test_complete_workflow.py", line 20, in test_complete_workflow
+    print(f"GFL version: {api.VERSION}")
+                          ^^^^^^^^^^^
+AttributeError: module 'geneforgelang.core.api' has no attribute 'VERSION'
+_____________________________ test_real_gfl_file ______________________________
+---------------------------- Captured stdout call -----------------------------
+Testing real GFL file with design block...\nGFL content (1300 characters):\n----------------------------------------\n# GeneForgeLang Design Block Example\n# Protein design for COVID-19 therapeutics\n\nmetadata:\n  experiment_id: COVID_PROT_DESIGN_001\n  researcher: Dr. Jane Smith\n  project: covid19_therapeutics\n  description: Design high-affinity ACE2 binding proteins\n  date: "2024-01-15"\n\ndesign:\n  # Define what we're designing\n  entity: ProteinSequence\n\n  # Specify the generative model plugin\n  model: ProteinVAEGenerator\n\n  # Define the optimization objective\n  objective:\n    maximize: binding_affinity\n    target: ACE2_receptor\n\n  # Add design constraints\n  constraints:\n    - length(120, 150)\n    - has_motif("E_box")\n    - synthesizability > 0.7\n    - stability > 0.6\n    - no_aggregation_prone_regions\n\n  # Number of candidates to generate\n  count: 25\n\n  # Output variable for downstream analysis\n  output: designed_candidates\n\n# Analyze the generated candidates\nanalyze:\n  strategy: functional\n  data: designed_candidates\n  thresholds:\n    binding_score: 0.8\n    stability_score: 0.7\n    toxicity_score: 0.2\n  filters:\n    - remove_low_activity\n    - remove_toxic\n  operations:\n    - type: sort\n      params:\n        by: binding_affinity\n        order: descending\n    - type: filter\n      params:\n        top_n: 10\n    - type: cluster\n      params:\n        method: sequence_similarity\n        threshold: 0.8\n\n----------------------------------------\n\n1. Parsing GFL file...\n\u2713 Successfully parsed GFL file\n\n2. Checking AST structure...\n\u2713 Found metadata block\n\u2713 Found design block\n\u2713 Found analyze block\n\n3. Validating design block structure...\n\u2713 Found design.entity: ProteinSequence\n\u2713 Found design.model: ProteinVAEGenerator\n\u2713 Found design.objective: {'maximize': 'binding_affinity', 'target': 'ACE2_receptor'}\n\u2713 Found design.constraints: ['length(120, 150)', 'has_motif("E_box")', 'synthesizability > 0.7', 'stability > 0.6', 'no_aggregation_prone_regions']\n\u2713 Found design.count: 25\n\u2713 Found design.output: designed_candidates\n\n4. Running semantic validation...\nAST keys: ['metadata', 'design', 'analyze']\nCollected entity registry: {}\n\u2713 No validation errors\n\n\U0001f389 All tests passed! Design block implementation works correctly with GFL files.
+_________________________ test_protein_design_example _________________________
+---------------------------- Captured stdout call -----------------------------
+=== Testing Protein Design Example ===\nParsing GFL...\n\u2713 Successfully parsed GFL\n\u2713 All expected blocks present\n\u2713 Design block structure is correct\nValidating workflow...\nAST keys: ['metadata', 'design', 'analyze']\nCollected entity registry: {}\n\u2713 Workflow validation passed\nRunning inference simulation...\n\u2713 Inference completed successfully
+___________________________ test_dna_design_example ___________________________
+---------------------------- Captured stdout call -----------------------------
+\n=== Testing DNA Design Example ===\n\u2713 Successfully parsed DNA design GFL\nAST keys: ['design', 'analyze']\nCollected entity registry: {}\n\u2713 DNA design validation passed
+_____________________ test_small_molecule_design_example ______________________
+---------------------------- Captured stdout call -----------------------------
+\n=== Testing Small Molecule Design Example ===\n\u2713 Successfully parsed small molecule design GFL\n\u2713 Complex workflow structure is correct\nAST keys: ['metadata', 'design', 'analyze']\nCollected entity registry: {}\n\u2713 Small molecule design validation passed
+______________________ test_multi_objective_design_error ______________________
+---------------------------- Captured stdout call -----------------------------
+\n=== Testing Multi-Objective Error Detection ===\nAST keys: ['design']\nCollected entity registry: {}\n\u2713 Correctly detected conflicting objectives
+________________________ test_design_schema_validation ________________________
+---------------------------- Captured stdout call -----------------------------
+Testing design block JSON schema validation...\n\n1. Testing valid design block...\n\u2713 Valid design block passes schema validation\n\n2. Testing invalid entity...\n\u2713 Invalid entity properly flagged\n\n3. Testing missing required field...\n\u2713 Missing count field properly detected\n\n4. Testing conflicting objectives...\n\u2713 Conflicting objectives properly detected\n\n\U0001f389 All schema validation tests passed!
+___________________________ test_enhanced_inference ___________________________
+---------------------------- Captured stdout call -----------------------------
+Testing Enhanced Inference Engine\n==================================================\n1. Testing InferenceResult creation...\n\u2713 InferenceResult works correctly\n\n2. Testing ModelConfig security...\nWarning: trust_remote_code=True is a security risk. Setting to False.\n\u2713 ModelConfig security override works\n\n3. Testing HeuristicModel...\n\u2713 HeuristicModel prediction: edited (confidence: 85.00%)\n  Explanation: Detected gene_editing based on keyword: crispr\n\n4. Testing EnhancedInferenceEngine...\nRegistered model: heuristic\n\u2713 Available models: ['heuristic']\n\u2713 Engine prediction: edited (confidence: 85.00%)\n  Explanation: Detected gene_editing based on keyword: crispr\n\n5. Testing multiple samples...\n\u2713 CRISPR Experiment: edited (expected: edited)\n\u2713 RNA-seq Analysis: expression_change (expected: expression_change)\n\u2713 Unknown Experiment: unknown (expected: unknown)\n\n6. Testing error handling...\n\u2713 Error handling works: Model 'nonexistent_model' not found\n\nAll tests completed successfully!\nEnhanced Inference Engine is working correctly.
+______________________________ test_performance _______________________________
+---------------------------- Captured stdout call -----------------------------
+
+Performance Testing
+==============================
+Registered model: heuristic
+Ran 1000 predictions in 0.0012 seconds
+Average time per prediction: 0.00 ms
+Predictions per second: 852588
+_________________________ test_example_optimize_file __________________________
+---------------------------- Captured stdout call -----------------------------
+Testing CRISPR optimization example...\nGFL content (1488 characters):\n----------------------------------------\n# GeneForgeLang Optimize Block Example\n# Intelligent experimental loop for parameter optimization\n\nmetadata:\n  experiment_id: CRISPR_OPTIM_001\n  researcher: Dr. Mar\xc3\xada Garc\xc3\xada\n  project: crispr_parameter_optimization\n  description: AI-guided optimization of CRISPR-Cas9 parameters for maximum editing efficiency\n  date: "2024-01-15"\n\noptimize:\n  # Define parameter search space\n  search_space:\n    guide_concentration: range(10, 100)     # nM concentration range\n    temperature: range(25, 42)              # \xc2\xb0C temperature range\n    duration: choice([6, 12, 24, 48])       # hours incubation time\n    cas9_ratio: range(0.5, 2.0)             # Cas9:gRNA molar ratio\n\n  # AI optimization strategy\n  strategy:\n    name: ActiveLearning\n    uncertainty_metric: entropy\n    initial_samples: 5\n    batch_size: 3\n    surrogate_model: gaussian_process\n\n  # Optimization objective\n  objective:\n    maximize: editing_efficiency\n\n  # Budget constraints\n  budget:\n    max_experiments: 75\n    max_time: 72h\n    convergence_threshold: 0.01\n\n  # Experiment executed in each optimization iteration\n  run:\n    experiment:\n      tool: CRISPR_cas9\n      type: gene_editing\n      strategy: knockout\n      params:\n        target_gene: TP53\n        guide_rna: GGGCCGGGCGGGCTCCCAGA\n        guide_concentration: ${guide_concentration}\n        incubation_temp: ${temperature}\n        duration: ${duration}h\n        cas9_ratio: ${cas9_ratio}\n        vector: pX458\n        cell_line: HEK293T\n        replicates: 3\n\n----------------------------------------\n\n1. Parsing GFL file...\n\u2713 Successfully parsed GFL file\n\n2. Checking AST structure...\n\u2713 Found metadata block\n\u2713 Found optimize block\n\n3. Validating optimize block structure...\n\u2713 Found optimize.search_space\n\u2713 Found optimize.strategy\n\u2713 Found optimize.objective\n\u2713 Found optimize.budget\n\u2713 Found optimize.run\n\u2713 Search space has 4 parameters:\n   - guide_concentration: range(10, 100)\n   - temperature: range(25, 42)\n   - duration: choice([6, 12, 24, 48])\n   - cas9_ratio: range(0.5, 2.0)\n\u2713 Found 4 parameter injections:\n   - ${guide_concentration}\n   - ${temperature}\n   - ${duration}h\n   - ${cas9_ratio}\n\n4. Running semantic validation...\nAST keys: ['metadata', 'optimize']\nCollected entity registry: {}\n\u2713 No validation errors\n\n\U0001f389 CRISPR optimization example works perfectly!
+______________________________ test_io_contracts ______________________________
+---------------------------- Captured stdout call -----------------------------
+Testing IO Contracts validation...
+Parsed AST successfully
+AST keys: ['experiment', 'analyze', 'experiment_incompatible', 'analyze_incompatible']
+Collected entity registry: {}
+Validation result: Valid
+__________________________ test_simple_io_contracts ___________________________
+---------------------------- Captured stdout call -----------------------------
+
+Testing simple IO Contracts validation...
+AST keys: ['experiment', 'analyze']
+Collected entity registry: {}
+Simple validation result: Valid
+____ TestNewFeaturesRegression.test_valid_gfl_script_with_all_new_features ____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['metadata', 'design', 'analyze', 'optimize']
+Collected entity registry: {}
+_____ TestDesignBlockValidation.test_design_block_missing_objective_field _____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+______ TestDesignBlockValidation.test_design_block_missing_entity_field _______
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+_______ TestDesignBlockValidation.test_design_block_missing_model_field _______
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+_____ TestDesignBlockValidation.test_design_block_invalid_count_negative ______
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+_______ TestDesignBlockValidation.test_design_block_invalid_count_zero ________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+_____ TestDesignBlockValidation.test_design_block_conflicting_objectives ______
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+____ TestDesignBlockValidation.test_design_block_invalid_output_identifier ____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+____ TestOptimizeBlockValidation.test_optimize_block_missing_search_space _____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+______ TestOptimizeBlockValidation.test_optimize_block_missing_run_block ______
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+_ TestOptimizeBlockValidation.test_optimize_block_invalid_search_space_syntax _
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+_____ TestOptimizeBlockValidation.test_optimize_block_empty_search_space ______
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+____ TestOptimizeBlockValidation.test_optimize_block_missing_strategy_name ____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+___ TestOptimizeBlockValidation.test_optimize_block_conflicting_objectives ____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+________ TestOptimizeBlockValidation.test_optimize_block_empty_budget _________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+____ TestOptimizeBlockValidation.test_optimize_block_invalid_budget_values ____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+____ TestOptimizeBlockValidation.test_optimize_block_invalid_range_syntax _____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+_____ TestOptimizeBlockValidation.test_optimize_block_empty_choice_syntax _____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+___ TestParameterInjectionRegression.test_parameter_injection_basic_syntax ____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+_ TestParameterInjectionRegression.test_parameter_injection_validation_skips_injected_params _
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+__________ TestCombinedFeatureWorkflows.test_design_feeding_optimize __________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design', 'optimize']
+Collected entity registry: {}
+_____ TestCombinedFeatureWorkflows.test_multiple_optimize_blocks_invalid ______
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+______________________ test_active_learning_optimization ______________________
+---------------------------- Captured stdout call -----------------------------
+=== Testing Active Learning Optimization ===\nParsing GFL...\n\u2713 Successfully parsed GFL\n\u2713 All expected blocks present\n\u2713 Search space structure is correct\n\u2713 Strategy configuration is correct\n\u2713 Objective configuration is correct\n\u2713 Budget configuration is correct\n\u2713 Nested experiment structure is correct\nValidating workflow...\nAST keys: ['metadata', 'optimize']\nCollected entity registry: {}\n\u2713 Workflow validation passed
+_________________________ test_bayesian_optimization __________________________
+---------------------------- Captured stdout call -----------------------------
+\\n=== Testing Bayesian Optimization ===\n\u2713 Successfully parsed Bayesian optimization GFL\nAST keys: ['optimize']\nCollected entity registry: {}\n\u2713 Correctly detected conflicting objectives
+_____________________ test_genetic_algorithm_optimization _____________________
+---------------------------- Captured stdout call -----------------------------
+\\n=== Testing Genetic Algorithm Optimization ===\n\u2713 Successfully parsed genetic algorithm GFL\n\u2713 Complex genetic algorithm configuration is correct\nAST keys: ['metadata', 'optimize']\nCollected entity registry: {}\n\u2713 Genetic algorithm validation passed
+______________________ test_optimize_with_analyze_block _______________________
+---------------------------- Captured stdout call -----------------------------
+\\n=== Testing Optimization with Analysis ===\n\u2713 Successfully parsed optimization with analysis\n\u2713 Analysis block correctly nested in run\nAST keys: ['optimize']\nCollected entity registry: {}\n\u2713 Optimize with analyze validation passed
+_____________________ test_parameter_injection_validation _____________________
+---------------------------- Captured stdout call -----------------------------
+\\n=== Testing Parameter Injection ===\n\u2713 Successfully parsed parameter injection syntax\n\u2713 Parameter injection syntax is correct\nAST keys: ['optimize']\nCollected entity registry: {}\n\u2713 Parameter injection validation passed
+________________________ test_invalid_optimize_blocks _________________________
+---------------------------- Captured stdout call -----------------------------
+\\n=== Testing Invalid Optimize Block Detection ===\nAST keys: ['optimize']\nCollected entity registry: {}\n\u2713 Configuration 1: Correctly detected validation errors\nAST keys: ['optimize']\nCollected entity registry: {}\n\u2713 Configuration 2: Correctly detected validation errors\nAST keys: ['optimize']\nCollected entity registry: {}\n\u2713 Configuration 3: Correctly detected validation errors\nAST keys: ['optimize']\nCollected entity registry: {}\n\u2713 Configuration 4: Correctly detected validation errors\nAST keys: ['optimize']\nCollected entity registry: {}\n\u2713 Configuration 5: Correctly detected validation errors\nAST keys: ['optimize']\nCollected entity registry: {}\n\u2713 Configuration 6: Correctly detected validation errors
+_______________________________ test_basic_api ________________________________
+---------------------------- Captured stdout call -----------------------------
+Testing basic GFL API...\n\u2713 API Version: 0.1.0\n\u2713 Available models: ['heuristic', 'enhanced_heuristic', 'legacy']\n\u2713 Parsing successful: CRISPR_cas9\n\u2713 Validation: Valid
+___________________________ test_enhanced_inference ___________________________
+---------------------------- Captured stdout call -----------------------------
+\nTesting enhanced inference...\n\u2713 Inference successful: edited (confidence: 85.00%)\n\u2717 Enhanced inference test failed: Expected confidence to be greater than 0.5\nassert 0.85 == 85.0\n +  where 0.85 = InferenceResult(prediction='edited', confidence=0.85, explanation='Gene editing detected based on CRISPR/Cas keywords ...etadata={'model_type': 'heuristic', 'rule_applied': 'gene_editing', 'matched_keyword': 'crispr'}, processing_time=None).confidence
+_______________________________ test_cli_tools ________________________________
+---------------------------- Captured stdout call -----------------------------
+\nTesting CLI tools...\n\u2717 CLI tools test failed: gfl CLI failed: Enhanced CLI not available: No module named 'src'\n  Falling back to basic CLI...\n  CLI execution failed: cannot import name 'cli' from 'geneforgelang.cli' (C:\\Users\\usuario\\.autodev\\workspaces\\geneforgelang\\src\\geneforgelang\\cli\\__init__.py)\n  \nassert 1 == 0\n +  where 1 = CompletedProcess(args=['gfl', '--help'], returncode=1, stdout='', stderr="Enhanced CLI not available: No module named ...'geneforgelang.cli' (C:\\\\Users\\\\usuario\\\\.autodev\\\\workspaces\\\\geneforgelang\\\\src\\\\geneforgelang\\\\cli\\\\__init__.py)\\n").returncode
+_____________________________ test_schema_loader ______________________________
+---------------------------- Captured stdout call -----------------------------
+Testing SchemaLoader...
+_______________________ test_schema_registry_validation _______________________
+---------------------------- Captured stdout call -----------------------------
+\nTesting schema registry validation...\n\u2713 Parsed AST successfully\nAST keys: ['import_schemas', 'experiment', 'analyze', 'experiment_invalid', 'analyze_invalid']\nCollected entity registry: {}\nValidation result: Invalid\nFound 2 schema-related errors:\n  - Schema file not found: test_custom_types.yml\n  - Unknown top-level block 'import_schemas'
+__________________________ test_simple_schema_usage ___________________________
+---------------------------- Captured stdout call -----------------------------
+
+Testing simple schema usage...
+AST keys: ['import_schemas', 'experiment']
+Collected entity registry: {}
+Simple validation result: Invalid
+________________________________ test_workflow ________________________________
+---------------------------- Captured stdout call -----------------------------
+Testing workflow execution...
+Plugins registered successfully
+Execution engine imported successfully
+Validating execution requirements...
+Error during workflow test: validate_execution_requirements() missing 1 required positional argument: 'registry'
+---------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "C:\Users\usuario\.autodev\workspaces\geneforgelang\tests\test_workflow.py", line 41, in test_workflow
+    errors = validate_execution_requirements(test_ast)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: validate_execution_requirements() missing 1 required positional argument: 'registry'
+_________ TestRetrievalService.test_retrieve_for_objective_no_target __________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.external.retrieval_service:retrieval_service.py:104 Could not determine target entity for: Unknown gene knockout
+____________________ TestEmbeddingCache.test_cache_put_get ____________________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+_____________ TestEmbeddingCache.test_cache_embedding_operations ______________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+__________________ TestEmbeddingCache.test_cache_literature ___________________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+_____________________ TestEmbeddingCache.test_cache_stats _____________________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+_________ TestAsyncRetrievalService.test_async_retrieve_for_objective _________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+____________ TestAsyncRetrievalService.test_async_entity_knowledge ____________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+___________ TestAsyncRetrievalService.test_async_literature_search ____________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+___________ TestAsyncRetrievalService.test_concurrent_multi_source ____________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+WARNING  geneforgelang.ir.fase4.cache_layer:cache_layer.py:76 ChromaDB not available, using memory-only cache
+_________________ TestFeedbackStore.test_suggest_improvements _________________
+------------------------------ Captured log call ------------------------------
+ERROR    geneforgelang.ir.fase4.feedback_loop:feedback_loop.py:102 Failed to record feedback: [Errno 2] No such file or directory: '\\dev\\null'
+_____________________ TestFeedbackStore.test_entity_stats _____________________
+------------------------------ Captured log call ------------------------------
+ERROR    geneforgelang.ir.fase4.feedback_loop:feedback_loop.py:102 Failed to record feedback: [Errno 2] No such file or directory: '\\dev\\null'
+__________________ TestRAGBridge.test_query_literature_mock ___________________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.rag_bridge:rag_bridge.py:110 ChromaDB not available: No module named 'chromadb'
+__________________ TestRAGBridge.test_enrich_state_with_rag ___________________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.rag_bridge:rag_bridge.py:110 ChromaDB not available: No module named 'chromadb'
+____________________ TestRAGBridge.test_validate_objective ____________________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.rag_bridge:rag_bridge.py:120 RAG plugin not available, returning mock validation
+______________________ TestRAGBridge.test_get_rag_stats _______________________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.rag_bridge:rag_bridge.py:110 ChromaDB not available: No module named 'chromadb'
+_______________ TestRAGIntegration.test_retrieve_comprehensive ________________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.ir.fase4.rag_bridge:rag_bridge.py:120 RAG plugin not available, returning mock validation
+WARNING  geneforgelang.ir.fase4.rag_bridge:rag_bridge.py:110 ChromaDB not available: No module named 'chromadb'
+__________ TestDesignBlockValidation.test_valid_design_block_passes ___________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+___________ TestDesignBlockValidation.test_missing_required_fields ____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+AST keys: ['design']
+Collected entity registry: {}
+_____________ TestDesignBlockValidation.test_invalid_entity_type ______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+______________ TestDesignBlockValidation.test_invalid_model_type ______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+_____________ TestDesignBlockValidation.test_objective_validation _____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+_______________ TestDesignBlockValidation.test_count_validation _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+______________ TestDesignBlockValidation.test_output_validation _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+AST keys: ['design']
+Collected entity registry: {}
+AST keys: ['design']
+Collected entity registry: {}
+AST keys: ['design']
+Collected entity registry: {}
+____________ TestDesignBlockValidation.test_constraints_validation ____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design']
+Collected entity registry: {}
+AST keys: ['design']
+Collected entity registry: {}
+________ TestDesignBlockIntegration.test_design_with_analyze_workflow _________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['design', 'analyze']
+Collected entity registry: {}
+_________ TestDesignBlockIntegration.test_design_with_multiple_blocks _________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['metadata', 'design', 'analyze']
+Collected entity registry: {}
+____________________ TestOutputFormatter.test_basic_output ____________________
+---------------------------- Captured stdout call -----------------------------
+Hello, World!\n\u2713 Success message\n\u26a0 Warning message
+---------------------------- Captured stderr call -----------------------------
+Error: Error message
+____________________ TestOutputFormatter.test_json_output _____________________
+---------------------------- Captured stdout call -----------------------------
+=== Test Data ===
+{
+  "key": "value",
+  "number": 42
+}
+____________________ TestOutputFormatter.test_table_output ____________________
+---------------------------- Captured stdout call -----------------------------
+=== Test Table ===
+name  | value
+------|------
+test1 | 100  
+test2 | 200  
+__________________ TestCLIUtilities.test_process_file_batch ___________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+______________________ TestEnhancedCLI.test_info_command ______________________
+---------------------------- Captured stdout call -----------------------------
+GeneForgeLang System Information\n==============================\nVersion: 0.2.0\nAPI Version: 2.0.0\nPython: 3.11.15 (main, Jun  2 2026, 22:29:49) [MSC v.1944 64 bit (AMD64)]\nPlatform: win32\n\nFeatures:\n  \u2713 rich_output\n  \u2713 plugins\n  \u2713 enhanced_schema
+_____________________ TestEnhancedCLI.test_config_command _____________________
+---------------------------- Captured stdout call -----------------------------
+\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 GFL Configuration \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502    1 {                                                                      \u2502\n\u2502    2   "output_format": "plain",                                            \u2502\n\u2502    3   "use_grammar_parser": false,                                         \u2502\n\u2502    4   "auto_validate": true,                                               \u2502\n\u2502    5   "show_performance": false,                                           \u2502\n\u2502    6   "log_level": "WARNING",                                              \u2502\n\u2502    7   "editor": "code",                                                    \u2502\n\u2502    8   "plugin_paths": [],                                                  \u2502\n\u2502    9   "color": true,                                                       \u2502\n\u2502   10   "test_key": "test_value"                                             \u2502\n\u2502   11 }                                                                      \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n\u2713 Set test_key = test_value
+______________ TestEnhancedCLI.test_parse_command_with_temp_file ______________
+---------------------------- Captured stdout call -----------------------------
+   Parsing     ----------------------------------------                   100% \n   1 [                                                                         \n   2   {                                                                       \n   3     "file": "C:\\\\Users\\\\usuario\\\\AppData\\\\Local\\\\Temp\\\\tmpwgh68jnd.gfl",  \n   4     "ast": {                                                              \n   5       "experiment": {                                                     \n   6         "tool": "CRISPR_cas9",                                            \n   7         "type": "gene_editing",                                           \n   8         "params": {                                                       \n   9           "target_gene": "TP53"                                           \n  10         }                                                                 \n  11       }                                                                   \n  12     },                                                                    \n  13     "size": 98,                                                           \n  14     "valid": true                                                         \n  15   }                                                                       \n  16 ]                                                                         \n\u2713 Successfully parsed 1 files
+____________ TestEnhancedCLI.test_validate_command_with_temp_file _____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']\nCollected entity registry: {}\n   Validating     ----------------------------------------                100% \n\u2713 \u2713 C:\\Users\\usuario\\AppData\\Local\\Temp\\tmpxkxkiduf.gfl\n\u2713 All files passed validation
+_________________ TestEnhancedCLI.test_invalid_file_handling __________________
+---------------------------- Captured stdout call -----------------------------
+Error: Failed to parse C:\Users\usuario\AppData\Local\Temp\tmperh_hx6p.gfl: 
+while parsing a flow node
+expected the node content, but found '<stream end>'
+  in "<unicode string>", line 1, column 29:
+    invalid gfl syntax here: {{{
+                                ^
+   Parsing     ----------------------------------------                   100% 
+  1 [                                                                          
+  2   {                                                                        
+  3     "file": "C:\\Users\\usuario\\AppData\\Local\\Temp\\tmperh_hx6p.gfl",   
+  4     "error": "while parsing a flow node\nexpected the node content, but fou
+  5     "valid": false                                                         
+  6   }                                                                        
+  7 ]                                                                          
+Error: 1 files failed to parse
+------------------------------ Captured log call ------------------------------
+ERROR    geneforgelang.core.parser:parser.py:47 Error parsing GFL YAML: while parsing a flow node
+expected the node content, but found '<stream end>'
+  in "<unicode string>", line 1, column 29:
+    invalid gfl syntax here: {{{
+                                ^
+__________________ TestEnhancedCLI.test_batch_command_setup ___________________
+---------------------------- Captured stdout call -----------------------------
+Processing 2 files with action: parse\n   Processing     ----------------------------------------                100% \n   1 [                                                                         \n   2   {                                                                       \n   3     "file": "C:\\\\Users\\\\usuario\\\\AppData\\\\Local\\\\Temp\\\\tmpwwild6it\\\\test1.\n   4     "result": {                                                           \n   5       "experiment": {                                                     \n   6         "tool": "CRISPR_cas9"                                             \n   7       }                                                                   \n   8     },                                                                    \n   9     "success": true,                                                      \n  10     "duration": 0.0009179115295410156                                     \n  11   },                                                                      \n  12   {                                                                       \n  13     "file": "C:\\\\Users\\\\usuario\\\\AppData\\\\Local\\\\Temp\\\\tmpwwild6it\\\\test2.\n  14     "result": {                                                           \n  15       "analyze": {                                                        \n  16         "strategy": "differential"                                        \n  17       }                                                                   \n  18     },                                                                    \n  19     "success": true,                                                      \n  20     "duration": 0.0009996891021728516                                     \n  21   }                                                                       \n  22 ]                                                                         \n\u2713 Successfully processed 2 files
+____________ TestEnhancedCLI.test_plugins_command_without_plugins _____________
+---------------------------- Captured stdout call -----------------------------
+                       Available Plugins                       \n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502 name           \u2502 version \u2502 state  \u2502 priority \u2502 dependencies \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 mock_generator \u2502 1.0.0   \u2502 loaded \u2502 50       \u2502 0            \u2502\n\u2502 mock_optimizer \u2502 1.0.0   \u2502 loaded \u2502 50       \u2502 0            \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
+__________________ TestEnhancedCLI.test_performance_command ___________________
+---------------------------- Captured stdout call -----------------------------
+\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 Performance Statistics \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502    1 {                                                                      \u2502\n\u2502    2   "cache_statistics": {                                                \u2502\n\u2502    3     "ast_parse": {                                                     \u2502\n\u2502    4       "hits": 257,                                                     \u2502\n\u2502    5       "misses": 556,                                                   \u2502\n\u2502    6       "hit_rate": 0.3161131611316113,                                  \u2502\n\u2502    7       "size": 276                                                      \u2502\n\u2502    8     },                                                                 \u2502\n\u2502    9     "schema_validation": {                                             \u2502\n\u2502   10       "hits": 63,                                                      \u2502\n\u2502   11       "misses": 150,                                                   \u2502\n\u2502   12       "hit_rate": 0.29577464788732394,                                 \u2502\n\u2502   13       "size": 75                                                       \u2502\n\u2502   14     },                                                                 \u2502\n\u2502   15     "plugin_discovery": {                                              \u2502\n\u2502   16       "hits": 0,                                                       \u2502\n\u2502   17       "misses": 0,                                                     \u2502\n\u2502   18       "hit_rate": 0.0,                                                 \u2502\n\u2502   19       "size": 0                                                        \u2502\n\u2502   20     },                                                                 \u2502\n\u2502   21     "file_content": {                                                  \u2502\n\u2502   22       "hits": 0,                                                       \u2502\n\u2502   23       "misses": 0,                                                     \u2502\n\u2502   24       "hit_rate": 0.0,                                                 \u2502\n\u2502   25       "size": 0                                                        \u2502\n\u2502   26     },                                                                 \u2502\n\u2502   27     "inference_results": {                                             \u2502\n\u2502   28       "hits": 0,                                                       \u2502\n\u2502   29       "misses": 0,                                                     \u2502\n\u2502   30       "hit_rate": 0.0,                                                 \u2502\n\u2502   31       "size": 0                                                        \u2502\n\u2502   32     },                                                                 \u2502\n\u2502   33     "grammar_parse": {                                                 \u2502\n\u2502   34       "hits": 0,                                                       \u2502\n\u2502   35       "misses": 10,                                                    \u2502\n\u2502   36       "hit_rate": 0.0,                                                 \u2502\n\u2502   37       "size": 5                                                        \u2502\n\u2502   38     }                                                                  \u2502\n\u2502   39   },                                                                   \u2502\n\u2502   40   "performance_statistics": {                                          \u2502\n\u2502   41     "grammar_parse": {                                                 \u2502\n\u2502   42       "count": 5,                                                      \u2502\n\u2502   43       "min": 0.0006252000021049753,                                    \u2502\n\u2502   44       "max": 0.0017978000032599084,                                    \u2502\n\u2502   45       "avg": 0.0012883000017609447,                                    \u2502\n\u2502   46       "total": 0.006441500008804724                                    \u2502\n\u2502   47     },                                                                 \u2502\n\u2502   48     "gfl_parse": {                                                     \u2502\n\u2502   49       "count": 278,                                                    \u2502\n\u2502   50       "min": 8.019999950192869e-05,                                    \u2502\n\u2502   51       "max": 0.005477699996845331,                                     \u2502\n\u2502   52       "avg": 0.0008175399280785543,                                    \u2502\n\u2502   53       "total": 0.2272761000058381                                      \u2502\n\u2502   54     },                                                                 \u2502\n\u2502   55     "api_parse": {                                                     \u2502\n\u2502   56       "count": 127,                                                    \u2502\n\u2502   57       "min": 3.9000005926936865e-06,                                   \u2502\n\u2502   58       "max": 0.005750099997385405,                                     \u2502\n\u2502   59       "avg": 0.0006355149609561071,                                    \u2502\n\u2502   60       "total": 0.0807104000414256                                      \u2502\n\u2502   61     },                                                                 \u2502\n\u2502   62     "api_validate": {                                                  \u2502\n\u2502   63       "count": 75,                                                     \u2502\n\u2502   64       "min": 1.9599996448960155e-05,                                   \u2502\n\u2502   65       "max": 0.0005186000053072348,                                    \u2502\n\u2502   66       "avg": 0.00011270000065754478,                                   \u2502\n\u2502   67       "total": 0.008452500049315859                                    \u2502\n\u2502   68     },                                                                 \u2502\n\u2502   69     "api_infer": {                                                     \u2502\n\u2502   70       "count": 64,                                                     \u2502\n\u2502   71       "min": 1.5400000847876072e-05,                                   \u2502\n\u2502   72       "max": 8.009999874047935e-05,                                    \u2502\n\u2502   73       "avg": 2.8043750489814556e-05,                                   \u2502\n\u2502   74       "total": 0.0017948000313481316                                   \u2502\n\u2502   75     },                                                                 \u2502\n\u2502   76     "api_execute": {                                                   \u2502\n\u2502   77       "count": 2,                                                      \u2502\n\u2502   78       "min": 1.6599995433352888e-05,                                   \u2502\n\u2502   79       "max": 0.00012579999747686088,                                   \u2502\n\u2502   80       "avg": 7.119999645510688e-05,                                    \u2502\n\u2502   81       "total": 0.00014239999291021377                                  \u2502\n\u2502   82     },                                                                 \u2502\n\u2502   83     "heuristic_inference": {                                           \u2502\n\u2502   84       "count": 1,                                                      \u2502\n\u2502   85       "min": 8.999995770864189e-06,                                    \u2502\n\u2502   86       "max": 8.999995770864189e-06,                                    \u2502\n\u2502   87       "avg": 8.999995770864189e-06,                                    \u2502\n\u2502   88       "total": 8.999995770864189e-06                                   \u2502\n\u2502   89     }                                                                  \u2502\n\u2502   90   }                                                                    \u2502\n\u2502   91 }                                                                      \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
+__________________ TestCLIIntegration.test_main_entry_point ___________________
+---------------------------- Captured stdout call -----------------------------
+usage: gfl [-h] [--version] [--verbose] [--quiet] [--config CONFIG]
+           [--no-color]
+           {parse,validate,infer,plugins,config,batch,info,perf} ...
+
+GeneForgeLang CLI - A comprehensive tool for genomic workflow specification
+
+positional arguments:
+  {parse,validate,infer,plugins,config,batch,info,perf}
+                        Available commands
+    parse               Parse GFL files
+    validate            Validate GFL files
+    infer               Run inference on GFL files
+    plugins             Manage plugins
+    config              Manage configuration
+    batch               Batch processing
+    info                Show system information
+    perf                Performance monitoring
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --verbose, -v         Increase verbosity (use multiple times)
+  --quiet, -q           Suppress non-essential output
+  --config CONFIG       Configuration file path
+  --no-color            Disable colored output
+
+Examples:
+  gfl parse experiment.gfl --format json
+  gfl validate *.gfl --recursive
+  gfl infer workflow.gfl --model advanced
+  gfl plugins list
+  gfl config set editor vim
+  gfl batch process --input-dir ./workflows
+
+For more information, visit: https://github.com/geneforgelang/geneforgelang
+            
+___________________ TestCLIIntegration.test_version_command ___________________
+---------------------------- Captured stdout call -----------------------------
+GeneForgeLang 0.2.0 (API 2.0.0)
+_____________________ TestCLIIntegration.test_no_command ______________________
+---------------------------- Captured stdout call -----------------------------
+usage: gfl [-h] [--version] [--verbose] [--quiet] [--config CONFIG]
+           [--no-color]
+           {parse,validate,infer,plugins,config,batch,info,perf} ...
+
+GeneForgeLang CLI - A comprehensive tool for genomic workflow specification
+
+positional arguments:
+  {parse,validate,infer,plugins,config,batch,info,perf}
+                        Available commands
+    parse               Parse GFL files
+    validate            Validate GFL files
+    infer               Run inference on GFL files
+    plugins             Manage plugins
+    config              Manage configuration
+    batch               Batch processing
+    info                Show system information
+    perf                Performance monitoring
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --verbose, -v         Increase verbosity (use multiple times)
+  --quiet, -q           Suppress non-essential output
+  --config CONFIG       Configuration file path
+  --no-color            Disable colored output
+
+Examples:
+  gfl parse experiment.gfl --format json
+  gfl validate *.gfl --recursive
+  gfl infer workflow.gfl --model advanced
+  gfl plugins list
+  gfl config set editor vim
+  gfl batch process --input-dir ./workflows
+
+For more information, visit: https://github.com/geneforgelang/geneforgelang
+            
+___________________ TestCLIIntegration.test_invalid_command ___________________
+---------------------------- Captured stderr call -----------------------------
+usage: gfl [-h] [--version] [--verbose] [--quiet] [--config CONFIG]
+           [--no-color]
+           {parse,validate,infer,plugins,config,batch,info,perf} ...
+gfl: error: argument command: invalid choice: 'invalid_command' (choose from 'parse', 'validate', 'infer', 'plugins', 'config', 'batch', 'info', 'perf')
+________________ TestCLIWorkflows.test_parse_validate_workflow ________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['metadata', 'experiment', 'analyze']\nCollected entity registry: {}\n   Parsing     ----------------------------------------                   100% \n   1 [                                                                         \n   2   {                                                                       \n   3     "file": "C:\\\\Users\\\\usuario\\\\AppData\\\\Local\\\\Temp\\\\tmpeklk90rr.gfl",  \n   4     "ast": {                                                              \n   5       "metadata": {                                                       \n   6         "experiment_id": "EXP001"                                         \n   7       },                                                                  \n   8       "experiment": {                                                     \n   9         "tool": "CRISPR_cas9",                                            \n  10         "type": "gene_editing",                                           \n  11         "params": {                                                       \n  12           "target_gene": "TP53"                                           \n  13         }                                                                 \n  14       },                                                                  \n  15       "analyze": {                                                        \n  16         "strategy": "differential",                                       \n  17         "data": "experiment_output"                                       \n  18       }                                                                   \n  19     },                                                                    \n  20     "size": 194,                                                          \n  21     "valid": true                                                         \n  22   }                                                                       \n  23 ]                                                                         \n\u2713 Successfully parsed 1 files
+_______________ TestCLIWorkflows.test_batch_processing_workflow _______________
+---------------------------- Captured stdout call -----------------------------
+Processing 3 files with action: validate\nAST keys: ['experiment']\nCollected entity registry: {}\nAST keys: ['experiment']\nCollected entity registry: {}\nAST keys: ['experiment']\nCollected entity registry: {}\n   Processing     ----------------------------------------                100% \n   1 [                                                                         \n   2   {                                                                       \n   3     "file": "C:\\\\Users\\\\usuario\\\\AppData\\\\Local\\\\Temp\\\\tmpvg_w3f99\\\\test0.\n   4     "errors": [],                                                         \n   5     "success": true,                                                      \n   6     "duration": 0.0010139942169189453                                     \n   7   },                                                                      \n   8   {                                                                       \n   9     "file": "C:\\\\Users\\\\usuario\\\\AppData\\\\Local\\\\Temp\\\\tmpvg_w3f99\\\\test1.\n  10     "errors": [],                                                         \n  11     "success": true,                                                      \n  12     "duration": 0.0010631084442138672                                     \n  13   },                                                                      \n  14   {                                                                       \n  15     "file": "C:\\\\Users\\\\usuario\\\\AppData\\\\Local\\\\Temp\\\\tmpvg_w3f99\\\\test2.\n  16     "errors": [],                                                         \n  17     "success": true,                                                      \n  18     "duration": 0.0009171962738037109                                     \n  19   }                                                                       \n  20 ]                                                                         \n\u2713 Successfully processed 3 files
+_______________ TestPluginErrorHandling.test_plugin_load_error ________________
+------------------------------ Captured log call ------------------------------
+ERROR    geneforgelang.plugins.plugin_registry:plugin_registry.py:403 Failed to load plugin failing: Intentional failure
+_______ TestPluginErrorHandling.test_plugin_processing_error_continues ________
+------------------------------ Captured log call ------------------------------
+ERROR    geneforgelang.plugins.plugin_registry:plugin_registry.py:747 Plugin failing processing failed: Processing failed
+________________ TestAdvancedGFLParser.test_simple_experiment _________________
+---------------------------- Captured stderr setup ----------------------------
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+________________ TestAdvancedGFLParser.test_analyze_statement _________________
+---------------------------- Captured stderr setup ----------------------------
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+________________ TestAdvancedGFLParser.test_simulate_statement ________________
+---------------------------- Captured stderr setup ----------------------------
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+_________________ TestAdvancedGFLParser.test_branch_statement _________________
+---------------------------- Captured stderr setup ----------------------------
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+________________ TestAdvancedGFLParser.test_metadata_statement ________________
+---------------------------- Captured stderr setup ----------------------------
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+_______________ TestAdvancedGFLParser.test_multiple_statements ________________
+---------------------------- Captured stderr setup ----------------------------
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+______________ TestAdvancedGFLParser.test_syntax_error_handling _______________
+---------------------------- Captured stderr setup ----------------------------
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+------------------------------ Captured log call ------------------------------
+ERROR    geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected end of input
+ERROR    geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token 'syntax' of type 'IDENTIFIER'
+ERROR    geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token '{' of type 'LBRACE'
+ERROR    geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token 'if' of type 'IF'
+_________________ TestAdvancedGFLParser.test_error_locations __________________
+---------------------------- Captured stderr setup ----------------------------
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+------------------------------ Captured log call ------------------------------
+ERROR    geneforgelang.utils.grammar_parser:grammar_parser.py:618 Syntax error: Unexpected token 'invalid_token_here' of type 'IDENTIFIER'
+_________________ TestAdvancedGFLParser.test_suggested_fixes __________________
+---------------------------- Captured stderr setup ----------------------------
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+________ TestGrammarParserIntegration.test_parse_gfl_grammar_function _________
+---------------------------- Captured stderr call -----------------------------
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+______________ TestGrammarParserIntegration.test_api_integration ______________
+---------------------------- Captured stderr call -----------------------------
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+____________ TestGrammarParserIntegration.test_performance_caching ____________
+---------------------------- Captured stderr call -----------------------------
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+WARNING: Token 'ARROW' defined, but not used
+WARNING: Token 'ASSIGN' defined, but not used
+WARNING: Token 'DOT' defined, but not used
+WARNING: Token 'PIPE' defined, but not used
+WARNING: Token 'SEMICOLON' defined, but not used
+WARNING: Token 'THEN' defined, but not used
+WARNING: There are 6 unused tokens
+________ TestOptimizeBlockValidation.test_valid_optimize_block_passes _________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+__________ TestOptimizeBlockValidation.test_missing_required_fields ___________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+__________ TestOptimizeBlockValidation.test_search_space_validation ___________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+__________ TestOptimizeBlockValidation.test_range_syntax_validation ___________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+__________ TestOptimizeBlockValidation.test_choice_syntax_validation __________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+____________ TestOptimizeBlockValidation.test_strategy_validation _____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+____________ TestOptimizeBlockValidation.test_objective_validation ____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+_____________ TestOptimizeBlockValidation.test_budget_validation ______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+____________ TestOptimizeBlockValidation.test_run_block_validation ____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+AST keys: ['optimize']
+Collected entity registry: {}
+______ TestOptimizeBlockIntegration.test_optimize_with_metadata_workflow ______
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['metadata', 'optimize']
+Collected entity registry: {}
+_________ TestOptimizeBlockIntegration.test_complex_optimize_workflow _________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+_________ TestParameterInjectionSyntax.test_valid_parameter_injection _________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['optimize']
+Collected entity registry: {}
+_______________ TestBasicParsing.test_parse_complex_experiment ________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+_________________ TestBasicParsing.test_parse_multiple_blocks _________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment', 'analyze', 'simulate', 'metadata']
+Collected entity registry: {}
+_______________ TestParsingEdgeCases.test_parse_empty_document ________________
+------------------------------ Captured log call ------------------------------
+ERROR    geneforgelang.core.parser:parser.py:51 Unexpected error during GFL parsing: Empty document is not valid GFL
+_______________ TestParsingEdgeCases.test_parse_whitespace_only _______________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.core.parser:parser.py:42 GFL parsing resulted in None (empty document?)
+________________ TestParsingEdgeCases.test_parse_comments_only ________________
+------------------------------ Captured log call ------------------------------
+WARNING  geneforgelang.core.parser:parser.py:42 GFL parsing resulted in None (empty document?)
+____________ TestParsingEdgeCases.test_parse_with_yaml_references _____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['defaults', 'experiment']
+Collected entity registry: {}
+___________ TestParsingEdgeCases.test_parse_with_multiline_strings ____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+_______________ TestParsingEdgeCases.test_parse_unicode_content _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+_________________ TestParsingErrors.test_invalid_yaml_syntax __________________
+------------------------------ Captured log call ------------------------------
+ERROR    geneforgelang.core.parser:parser.py:47 Error parsing GFL YAML: mapping values are not allowed here
+  in "<unicode string>", line 5, column 32:
+                invalid_indentation: value
+                                   ^
+____________________ TestParsingErrors.test_malformed_list ____________________
+------------------------------ Captured log call ------------------------------
+ERROR    geneforgelang.core.parser:parser.py:47 Error parsing GFL YAML: while scanning a simple key
+  in "<unicode string>", line 7, column 13:
+                invalid_item
+                ^
+could not find expected ':'
+  in "<unicode string>", line 8, column 9:
+            
+            ^
+____________ TestParsingPerformance.test_parse_large_parameter_set ____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+__________ TestParsingPerformance.test_parse_deeply_nested_structure __________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['analyze']
+Collected entity registry: {}
+___________ TestParsingIntegration.test_parse_and_validate_workflow ___________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment', 'analyze']
+Collected entity registry: {}
+_______________ TestLazyLoader.test_lazy_loader_error_handling ________________
+------------------------------ Captured log call ------------------------------
+ERROR    geneforgelang.core.performance:performance.py:344 Lazy loading failed for lazy_1684059900880: Operation failed
+_______________ TestRulesBlockValidation.test_valid_rules_block _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['rules']
+Collected entity registry: {}
+_________ TestRulesBlockValidation.test_invalid_rules_block_not_list __________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['rules']
+Collected entity registry: {}
+__________ TestRulesBlockValidation.test_invalid_rule_missing_fields __________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['rules']
+Collected entity registry: {}
+__________ TestHypothesisBlockValidation.test_valid_hypothesis_block __________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['hypothesis']
+Collected entity registry: {}
+____ TestHypothesisBlockValidation.test_invalid_hypothesis_block_not_dict _____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['hypothesis']
+Collected entity registry: {}
+____ TestHypothesisBlockValidation.test_invalid_hypothesis_missing_fields _____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['hypothesis']
+Collected entity registry: {}
+______ TestHypothesisBlockValidation.test_invalid_hypothesis_field_types ______
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['hypothesis']
+Collected entity registry: {}
+____________ TestTimelineBlockValidation.test_valid_timeline_block ____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['timeline']
+Collected entity registry: {}
+______ TestTimelineBlockValidation.test_invalid_timeline_block_not_dict _______
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['timeline']
+Collected entity registry: {}
+______ TestTimelineBlockValidation.test_invalid_timeline_missing_events _______
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['timeline']
+Collected entity registry: {}
+______ TestTimelineBlockValidation.test_invalid_timeline_events_not_list ______
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['timeline']
+Collected entity registry: {}
+___ TestTimelineBlockValidation.test_invalid_timeline_event_missing_fields ____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['timeline']
+Collected entity registry: {}
+_____ TestTimelineBlockValidation.test_invalid_timeline_event_field_types _____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['timeline']
+Collected entity registry: {}
+__________ TestEntityDefinitionValidation.test_valid_pathways_block ___________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['pathways']
+Found pathways in AST
+Collected entity registry: {'pathways': {'UreaCycle': {'description': 'Urea cycle metabolic pathway', 'genes': ['ASS1', 'ASL', 'ARG1'], 'enzymes': ['ASS', 'ASL', 'ARG'], 'reactions': [{'substrate': 'ornithine', 'product': 'citrulline'}]}, 'Glycolysis': {'description': 'Glycolysis pathway', 'genes': ['HK1', 'PGK1', 'PKM'], 'enzymes': ['Hexokinase', 'Phosphoglycerate kinase', 'Pyruvate kinase']}}}
+__________ TestEntityDefinitionValidation.test_valid_complexes_block __________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['complexes']
+Found complexes in AST
+Collected entity registry: {'complexes': {'RNA_POLYMERASE_II': {'description': 'RNA polymerase II complex', 'subunits': ['POLR2A', 'POLR2B', 'POLR2C', 'POLR2D', 'POLR2E'], 'function': 'transcription'}, 'RIBOSOME_80S': {'description': '80S ribosome complex', 'subunits': ['RPSA', 'RPSB', 'RPLA', 'RPLB'], 'function': 'translation'}}}
+________ TestEntityDefinitionValidation.test_invalid_pathways_not_dict ________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['pathways']
+Found pathways in AST
+Collected entity registry: {}
+_______ TestEntityDefinitionValidation.test_invalid_complexes_not_dict ________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['complexes']
+Found complexes in AST
+Collected entity registry: {}
+_ TestHypothesisReferenceValidation.test_valid_experiment_with_hypothesis_reference _
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['hypothesis', 'experiment']
+Collected entity registry: {}
+_ TestHypothesisReferenceValidation.test_valid_analysis_with_hypothesis_reference _
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['hypothesis', 'analyze']
+Collected entity registry: {}
+_ TestHypothesisReferenceValidation.test_invalid_hypothesis_reference_undefined _
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+_ TestHypothesisReferenceValidation.test_invalid_hypothesis_reference_wrong_type _
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+____ TestEntityReferenceValidation.test_valid_pathway_reference_in_params _____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['pathways', 'experiment']
+Found pathways in AST
+Collected entity registry: {'pathways': {'UreaCycle': {'description': 'Urea cycle metabolic pathway', 'genes': ['ASS1', 'ASL', 'ARG1']}}}
+Entity registry: {'pathways': {'UreaCycle': {'description': 'Urea cycle metabolic pathway', 'genes': ['ASS1', 'ASL', 'ARG1']}}}
+Looking for entity type: pathway
+Looking for entity name: UreaCycle
+Registry key: pathways
+Found registry key: pathways
+Available entities: ['UreaCycle']
+Found entity: UreaCycle
+____ TestEntityReferenceValidation.test_valid_complex_reference_in_params _____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['complexes', 'experiment']
+Found complexes in AST
+Collected entity registry: {'complexes': {'RNA_POLYMERASE_II': {'description': 'RNA polymerase II complex', 'subunits': ['POLR2A', 'POLR2B']}}}
+Entity registry: {'complexes': {'RNA_POLYMERASE_II': {'description': 'RNA polymerase II complex', 'subunits': ['POLR2A', 'POLR2B']}}}
+Looking for entity type: complex
+Looking for entity name: RNA_POLYMERASE_II
+Registry key: complexes
+Found registry key: complexes
+Available entities: ['RNA_POLYMERASE_II']
+Found entity: RNA_POLYMERASE_II
+____ TestEntityReferenceValidation.test_invalid_entity_reference_undefined ____
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+Entity registry: {}
+Looking for entity type: pathway
+Looking for entity name: UndefinedPathway
+Registry key: pathways
+__ TestEntityReferenceValidation.test_invalid_entity_reference_wrong_format ___
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+______________ TestBasicValidation.test_validate_valid_analysis _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['analyze']
+Collected entity registry: {}
+_____________ TestBasicValidation.test_validate_valid_simulation ______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['simulate', 'metadata']
+Collected entity registry: {}
+________________ TestBasicValidation.test_validate_complex_ast ________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment', 'analyze', 'simulate', 'metadata']
+Collected entity registry: {}
+_________________ TestBasicValidation.test_validate_empty_ast _________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: []
+Collected entity registry: {}
+_______________ TestExperimentValidation.test_invalid_tool_name _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+______________ TestExperimentValidation.test_missing_type_field _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+______________ TestExperimentValidation.test_invalid_type_value _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+_____________ TestExperimentValidation.test_missing_params_field ______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+_________________ TestExperimentValidation.test_empty_params __________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+_____________ TestExperimentValidation.test_valid_parameter_types _____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+_____________ TestAnalysisValidation.test_missing_strategy_field ______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['analyze']
+Collected entity registry: {}
+________________ TestAnalysisValidation.test_unknown_strategy _________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['analyze']
+Collected entity registry: {}
+________________ TestAnalysisValidation.test_valid_strategies _________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['analyze']
+Collected entity registry: {}
+AST keys: ['analyze']
+Collected entity registry: {}
+AST keys: ['analyze']
+Collected entity registry: {}
+AST keys: ['analyze']
+Collected entity registry: {}
+_________________ TestAnalysisValidation.test_optional_fields _________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['analyze']
+Collected entity registry: {}
+_____________ TestAnalysisValidation.test_invalid_threshold_types _____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['analyze']
+Collected entity registry: {}
+______________ TestAnalysisValidation.test_invalid_filter_types _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['analyze']
+Collected entity registry: {}
+___________________ TestBranchValidation.test_simple_branch ___________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['branch']
+Collected entity registry: {}
+_________________ TestBranchValidation.test_branch_with_else __________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['branch']
+Collected entity registry: {}
+_________________ TestPluginValidation.test_plugin_invocation _________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment', 'invoke']
+Collected entity registry: {}
+________________ TestPluginValidation.test_missing_plugin_name ________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['invoke']
+Collected entity registry: {}
+__________________ TestPluginValidation.test_unknown_plugin ___________________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['invoke']
+Collected entity registry: {}
+_______________ TestSymbolValidation.test_variable_redefinition _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment', 'invoke']
+Collected entity registry: {}
+___________ TestSymbolValidation.test_undefined_variable_reference ____________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['analyze']
+Collected entity registry: {}
+______________ TestValidationErrorMessages.test_multiple_errors _______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment', 'analyze']
+Collected entity registry: {}
+______________ TestValidationPerformance.test_validate_large_ast ______________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['experiment']
+Collected entity registry: {}
+__________ TestValidationPerformance.test_validate_deeply_nested_ast __________
+---------------------------- Captured stdout call -----------------------------
+AST keys: ['analyze']
+Collected entity registry: {}
+============================ slowest 10 durations =============================
+0.43s call     tests/test_platform.py::test_cli_tools
+0.15s call     tests/unit/test_performance.py::TestIntelligentCache::test_cache_cleanup
+0.15s call     tests/unit/test_performance.py::TestIntelligentCache::test_ttl_eviction
+0.15s call     tests/unit/test_performance.py::TestPerformanceOptimizer::test_cache_cleanup
+0.09s call     tests/unit/test_parser.py::TestParsingPerformance::test_parse_large_parameter_set
+0.07s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_api_integration
+0.06s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_performance_caching
+0.03s setup    tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_error_locations
+0.03s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_parse_gfl_grammar_function
+0.03s setup    tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_suggested_fixes
+=========================== short test summary info ===========================
+PASSED tests/bench/test_corpus.py::test_parse_corpus[tests\\bench\\corpus\\22q11_high_level.gfl]
+PASSED tests/bench/test_corpus.py::test_parse_corpus[tests\\bench\\corpus\\22q11_iPSC_ASO.gfl]
+PASSED tests/bench/test_corpus.py::test_parse_corpus[tests\\bench\\corpus\\22q11_miRNA_pathway.gfl]
+PASSED tests/bench/test_corpus.py::test_parse_corpus[tests\\bench\\corpus\\22q11_mouse_ASO.gfl]
+PASSED tests/governance/test_behavioral_soundness.py::test_projection_determinism
+PASSED tests/governance/test_behavioral_soundness.py::test_canonicalization_idempotence
+PASSED tests/governance/test_behavioral_soundness.py::test_equivalence_class_collapse
+PASSED tests/governance/test_behavioral_soundness.py::test_noise_resistance
+PASSED tests/governance/test_behavioral_soundness.py::test_signal_sensitivity
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42250351.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42250440.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42250474.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42250479.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42250492.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42250678.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42250721.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42250748.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42250783.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42250835.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42250854.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251063.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251160.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251303.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251382.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251444.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251492.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251493.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251494.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251495.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251497.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251690.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251712.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251810.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251830.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251840.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251942.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42251969.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252040.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252078.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252207.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252271.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252273.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252274.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252276.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252335.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252350.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252466.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252490.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252493.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252507.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252508.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252510.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252511.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252512.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252551.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252587.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252710.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42252813.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[pmid_42253015.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_1.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_10.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_100.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_101.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_102.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_103.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_104.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_105.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_106.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_107.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_108.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_109.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_11.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_110.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_111.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_112.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_113.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_114.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_115.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_116.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_117.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_118.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_119.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_12.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_120.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_121.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_122.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_123.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_124.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_125.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_126.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_127.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_128.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_129.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_13.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_130.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_131.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_132.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_133.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_134.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_135.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_136.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_137.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_138.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_139.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_14.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_140.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_141.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_142.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_143.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_144.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_145.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_146.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_147.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_148.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_149.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_15.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_150.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_16.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_17.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_18.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_19.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_2.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_20.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_21.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_22.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_23.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_24.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_25.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_26.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_27.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_28.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_29.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_3.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_30.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_31.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_32.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_33.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_34.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_35.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_36.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_37.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_38.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_39.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_4.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_40.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_41.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_42.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_43.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_44.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_45.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_46.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_47.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_48.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_49.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_5.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_50.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_51.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_52.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_53.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_54.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_55.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_56.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_57.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_58.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_59.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_6.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_60.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_61.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_62.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_63.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_64.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_65.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_66.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_67.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_68.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_69.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_7.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_70.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_71.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_72.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_73.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_74.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_75.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_76.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_77.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_78.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_79.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_8.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_80.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_81.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_82.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_83.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_84.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_85.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_86.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_87.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_88.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_89.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_9.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_90.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_91.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_92.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_93.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_94.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_95.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_96.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_97.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_98.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_determinism_and_idempotence[synth_99.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42250351.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42250440.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42250474.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42250479.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42250492.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42250678.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42250721.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42250748.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42250783.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42250835.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42250854.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251063.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251160.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251303.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251382.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251444.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251492.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251493.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251494.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251495.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251497.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251690.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251712.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251810.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251830.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251840.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251942.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42251969.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252040.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252078.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252207.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252271.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252273.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252274.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252276.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252335.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252350.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252466.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252490.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252493.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252507.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252508.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252510.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252511.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252512.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252551.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252587.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252710.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42252813.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42253015.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_1.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_10.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_100.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_101.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_102.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_103.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_104.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_105.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_106.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_107.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_108.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_109.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_11.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_110.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_111.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_112.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_113.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_114.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_115.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_116.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_117.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_118.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_119.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_12.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_120.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_121.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_122.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_123.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_124.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_125.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_126.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_127.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_128.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_129.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_13.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_130.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_131.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_132.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_133.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_134.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_135.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_136.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_137.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_138.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_139.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_14.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_140.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_141.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_142.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_143.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_144.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_145.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_146.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_147.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_148.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_149.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_15.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_150.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_16.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_17.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_18.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_19.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_2.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_20.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_21.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_22.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_23.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_24.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_25.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_26.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_27.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_28.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_29.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_3.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_30.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_31.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_32.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_33.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_34.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_35.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_36.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_37.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_38.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_39.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_4.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_40.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_41.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_42.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_43.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_44.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_45.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_46.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_47.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_48.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_49.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_5.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_50.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_51.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_52.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_53.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_54.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_55.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_56.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_57.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_58.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_59.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_6.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_60.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_61.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_62.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_63.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_64.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_65.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_66.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_67.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_68.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_69.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_7.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_70.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_71.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_72.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_73.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_74.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_75.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_76.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_77.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_78.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_79.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_8.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_80.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_81.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_82.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_83.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_84.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_85.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_86.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_87.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_88.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_89.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_9.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_90.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_91.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_92.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_93.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_94.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_95.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_96.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_97.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_98.gfl]
+PASSED tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[synth_99.gfl]
+PASSED tests/integration/test_end_to_end.py::TestBasicWorkflows::test_simple_experiment_workflow
+PASSED tests/integration/test_end_to_end.py::TestBasicWorkflows::test_analysis_workflow
+PASSED tests/integration/test_end_to_end.py::TestBasicWorkflows::test_multi_block_workflow
+PASSED tests/integration/test_end_to_end.py::TestErrorHandling::test_parse_error_handling
+PASSED tests/integration/test_end_to_end.py::TestErrorHandling::test_validation_error_handling
+PASSED tests/integration/test_end_to_end.py::TestErrorHandling::test_inference_error_handling
+PASSED tests/integration/test_end_to_end.py::TestRealWorldScenarios::test_crispr_knockout_experiment
+PASSED tests/integration/test_end_to_end.py::TestRealWorldScenarios::test_rnaseq_differential_analysis
+PASSED tests/integration/test_end_to_end.py::TestRealWorldScenarios::test_simulation_scenario
+PASSED tests/integration/test_end_to_end.py::TestComponentIntegration::test_parser_validator_integration
+PASSED tests/integration/test_end_to_end.py::TestComponentIntegration::test_validator_inference_integration
+PASSED tests/integration/test_end_to_end.py::TestComponentIntegration::test_full_pipeline_integration
+PASSED tests/integration/test_end_to_end.py::TestPerformanceIntegration::test_large_experiment_workflow
+PASSED tests/integration/test_end_to_end.py::TestPerformanceIntegration::test_multiple_workflows_performance
+PASSED tests/integration/test_end_to_end.py::TestExampleFiles::test_parse_all_examples
+PASSED tests/integration/test_end_to_end.py::TestExampleFiles::test_roundtrip_examples
+PASSED tests/test_advanced_validation.py::test_advanced_syntax
+PASSED tests/test_api.py::test_parse_and_validate_minimal
+PASSED tests/test_api.py::test_infer_with_dummy_model
+PASSED tests/test_basic_functionality.py::test_package_import
+PASSED tests/test_basic_functionality.py::test_basic_parse
+PASSED tests/test_basic_functionality.py::test_basic_validation
+PASSED tests/test_basic_functionality.py::test_workflow_example
+PASSED tests/test_basic_plugin_functionality.py::test_basic_plugin_functionality
+PASSED tests/test_complete_workflow.py::test_complete_workflow
+PASSED tests/test_design_file.py::test_real_gfl_file
+PASSED tests/test_design_implementation.py::test_protein_design_example
+PASSED tests/test_design_implementation.py::test_dna_design_example
+PASSED tests/test_design_implementation.py::test_small_molecule_design_example
+PASSED tests/test_design_implementation.py::test_multi_objective_design_error
+PASSED tests/test_design_schema.py::test_design_schema_validation
+PASSED tests/test_enhanced_inference_standalone.py::test_enhanced_inference
+PASSED tests/test_enhanced_inference_standalone.py::test_performance
+PASSED tests/test_example_optimize.py::test_example_optimize_file
+PASSED tests/test_examples_roundtrip.py::test_smoke_all_examples_parse
+PASSED tests/test_io_contracts.py::test_io_contracts
+PASSED tests/test_io_contracts.py::test_simple_io_contracts
+PASSED tests/test_new_features.py::TestNewFeaturesRegression::test_valid_gfl_script_with_all_new_features
+PASSED tests/test_new_features.py::TestDesignBlockValidation::test_design_block_missing_objective_field
+PASSED tests/test_new_features.py::TestDesignBlockValidation::test_design_block_missing_entity_field
+PASSED tests/test_new_features.py::TestDesignBlockValidation::test_design_block_missing_model_field
+PASSED tests/test_new_features.py::TestDesignBlockValidation::test_design_block_invalid_count_negative
+PASSED tests/test_new_features.py::TestDesignBlockValidation::test_design_block_invalid_count_zero
+PASSED tests/test_new_features.py::TestDesignBlockValidation::test_design_block_conflicting_objectives
+PASSED tests/test_new_features.py::TestDesignBlockValidation::test_design_block_invalid_output_identifier
+PASSED tests/test_new_features.py::TestOptimizeBlockValidation::test_optimize_block_missing_search_space
+PASSED tests/test_new_features.py::TestOptimizeBlockValidation::test_optimize_block_missing_run_block
+PASSED tests/test_new_features.py::TestOptimizeBlockValidation::test_optimize_block_undefined_parameter_injection
+PASSED tests/test_new_features.py::TestOptimizeBlockValidation::test_optimize_block_invalid_search_space_syntax
+PASSED tests/test_new_features.py::TestOptimizeBlockValidation::test_optimize_block_empty_search_space
+PASSED tests/test_new_features.py::TestOptimizeBlockValidation::test_optimize_block_missing_strategy_name
+PASSED tests/test_new_features.py::TestOptimizeBlockValidation::test_optimize_block_conflicting_objectives
+PASSED tests/test_new_features.py::TestOptimizeBlockValidation::test_optimize_block_empty_budget
+PASSED tests/test_new_features.py::TestOptimizeBlockValidation::test_optimize_block_invalid_budget_values
+PASSED tests/test_new_features.py::TestOptimizeBlockValidation::test_optimize_block_invalid_range_syntax
+PASSED tests/test_new_features.py::TestOptimizeBlockValidation::test_optimize_block_empty_choice_syntax
+PASSED tests/test_new_features.py::TestParameterInjectionRegression::test_parameter_injection_basic_syntax
+PASSED tests/test_new_features.py::TestParameterInjectionRegression::test_parameter_injection_mixed_with_static_values
+PASSED tests/test_new_features.py::TestParameterInjectionRegression::test_parameter_injection_validation_skips_injected_params
+PASSED tests/test_new_features.py::TestCombinedFeatureWorkflows::test_design_feeding_optimize
+PASSED tests/test_new_features.py::TestCombinedFeatureWorkflows::test_multiple_optimize_blocks_invalid
+PASSED tests/test_optimize_implementation.py::test_active_learning_optimization
+PASSED tests/test_optimize_implementation.py::test_bayesian_optimization
+PASSED tests/test_optimize_implementation.py::test_genetic_algorithm_optimization
+PASSED tests/test_optimize_implementation.py::test_optimize_with_analyze_block
+PASSED tests/test_optimize_implementation.py::test_parameter_injection_validation
+PASSED tests/test_optimize_implementation.py::test_invalid_optimize_blocks
+PASSED tests/test_platform.py::test_basic_api
+PASSED tests/test_platform.py::test_enhanced_inference
+PASSED tests/test_platform.py::test_cli_tools
+PASSED tests/test_plugin_interfaces.py::TestDesignCandidate::test_design_candidate_creation
+PASSED tests/test_plugin_interfaces.py::TestDesignCandidate::test_design_candidate_with_metadata
+PASSED tests/test_plugin_interfaces.py::TestExperimentResult::test_experiment_result_success
+PASSED tests/test_plugin_interfaces.py::TestExperimentResult::test_experiment_result_failure
+PASSED tests/test_plugin_interfaces.py::TestOptimizationStep::test_optimization_step_basic
+PASSED tests/test_plugin_interfaces.py::TestOptimizationStep::test_optimization_step_with_metrics
+PASSED tests/test_plugin_interfaces.py::TestGeneratorPlugin::test_generator_plugin_instantiation
+PASSED tests/test_plugin_interfaces.py::TestGeneratorPlugin::test_generator_plugin_generate
+PASSED tests/test_plugin_interfaces.py::TestGeneratorPlugin::test_generator_plugin_validation_methods
+PASSED tests/test_plugin_interfaces.py::TestGeneratorPlugin::test_generator_plugin_time_estimation
+PASSED tests/test_plugin_interfaces.py::TestGeneratorPlugin::test_generator_plugin_constraints_support
+PASSED tests/test_plugin_interfaces.py::TestOptimizerPlugin::test_optimizer_plugin_instantiation
+PASSED tests/test_plugin_interfaces.py::TestOptimizerPlugin::test_optimizer_plugin_setup
+PASSED tests/test_plugin_interfaces.py::TestOptimizerPlugin::test_optimizer_plugin_suggestion
+PASSED tests/test_plugin_interfaces.py::TestOptimizerPlugin::test_optimizer_plugin_should_stop
+PASSED tests/test_plugin_interfaces.py::TestOptimizerPlugin::test_optimizer_plugin_state_management
+PASSED tests/test_plugin_interfaces.py::TestOptimizerPlugin::test_optimizer_plugin_time_estimation
+PASSED tests/test_plugin_interfaces.py::TestSequenceGeneratorPlugin::test_sequence_generator_constraints
+PASSED tests/test_plugin_interfaces.py::TestSequenceGeneratorPlugin::test_sequence_generator_supported_constraints
+PASSED tests/test_plugin_interfaces.py::TestMoleculeGeneratorPlugin::test_molecule_generator_constraints
+PASSED tests/test_plugin_interfaces.py::TestMoleculeGeneratorPlugin::test_molecule_generator_supported_constraints
+PASSED tests/test_plugin_interfaces.py::TestBayesianOptimizerPlugin::test_bayesian_optimizer_strategies
+PASSED tests/test_plugin_interfaces.py::TestBayesianOptimizerPlugin::test_bayesian_optimizer_search_space_validation
+PASSED tests/test_plugin_interfaces.py::TestExampleImplementations::test_protein_vae_generator
+PASSED tests/test_plugin_interfaces.py::TestExampleImplementations::test_molecule_transformer_generator
+PASSED tests/test_plugin_interfaces.py::TestExampleImplementations::test_bayesian_optimizer_implementation
+PASSED tests/test_plugin_interfaces.py::TestPluginRegistration::test_register_generator_plugin_valid
+PASSED tests/test_plugin_interfaces.py::TestPluginRegistration::test_register_generator_plugin_invalid
+PASSED tests/test_plugin_interfaces.py::TestPluginRegistration::test_register_optimizer_plugin_valid
+PASSED tests/test_plugin_interfaces.py::TestPluginRegistration::test_get_available_plugins
+PASSED tests/test_schema_registry.py::test_schema_loader
+PASSED tests/test_schema_registry.py::test_schema_registry_validation
+PASSED tests/test_schema_registry.py::test_simple_schema_usage
+PASSED tests/test_workflow.py::test_workflow
+PASSED tests/unit/ir/test_executor.py::test_apply_single_instruction
+PASSED tests/unit/ir/test_executor.py::test_executor_trace
+PASSED tests/unit/ir/test_executor.py::test_executor_failure_halts
+PASSED tests/unit/ir/test_executor.py::test_executor_with_constraints
+PASSED tests/unit/ir/test_executor.py::test_empty_strategy
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_get_embedding_returns_vector
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_get_embedding_deterministic_mock
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_find_similar_entities
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_find_similar_entities_returns_known_genes_in_unit_range
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[1e-08]
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[0.001]
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[0.1]
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[0.2]
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[0.3]
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[1.0]
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[7.0]
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[1000.0]
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[1000000.0]
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_random_vectors_within_bounds
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_extract_entities_from_text
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_privacy_filter_applied
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_deidentify_clinical_note
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_search_literature
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_get_entity_knowledge
+PASSED tests/unit/ir/test_external_connectors.py::TestHuggingScienceConnector::test_reason_about_hypothesis
+PASSED tests/unit/ir/test_external_connectors.py::TestHuggingScienceConnector::test_reason_about_kras
+PASSED tests/unit/ir/test_external_connectors.py::TestHuggingScienceConnector::test_synthesize_evidence
+PASSED tests/unit/ir/test_external_connectors.py::TestHuggingScienceConnector::test_answer_question
+PASSED tests/unit/ir/test_external_connectors.py::TestHuggingScienceConnector::test_batch_reason
+PASSED tests/unit/ir/test_external_connectors.py::TestRetrievalService::test_retrieve_for_objective
+PASSED tests/unit/ir/test_external_connectors.py::TestRetrievalService::test_retrieve_for_objective_no_target
+PASSED tests/unit/ir/test_external_connectors.py::TestRetrievalService::test_retrieve_for_state
+PASSED tests/unit/ir/test_external_connectors.py::TestRetrievalService::test_retrieve_for_state_disabled
+PASSED tests/unit/ir/test_external_connectors.py::TestRetrievalService::test_reason_about_edit
+PASSED tests/unit/ir/test_external_connectors.py::TestKnowledgeBaseWithRetrieval::test_knowledge_base_with_external_disabled
+PASSED tests/unit/ir/test_external_connectors.py::TestKnowledgeBaseWithRetrieval::test_knowledge_base_with_external_enabled
+PASSED tests/unit/ir/test_external_connectors.py::TestKnowledgeBaseWithRetrieval::test_retrieve_for_objective_via_kb
+PASSED tests/unit/ir/test_external_connectors.py::TestKnowledgeBaseWithRetrieval::test_retrieve_for_objective_disabled
+PASSED tests/unit/ir/test_external_connectors.py::TestKnowledgeBaseWithRetrieval::test_enrich_with_retrieval
+PASSED tests/unit/ir/test_external_connectors.py::TestKnowledgeBaseWithRetrieval::test_get_retrieval_service
+PASSED tests/unit/ir/test_fase4.py::TestEmbeddingCache::test_cache_init
+PASSED tests/unit/ir/test_fase4.py::TestEmbeddingCache::test_cache_put_get
+PASSED tests/unit/ir/test_fase4.py::TestEmbeddingCache::test_cache_embedding_operations
+PASSED tests/unit/ir/test_fase4.py::TestEmbeddingCache::test_cache_literature
+PASSED tests/unit/ir/test_fase4.py::TestEmbeddingCache::test_cache_stats
+PASSED tests/unit/ir/test_fase4.py::TestAsyncRetrievalService::test_async_retrieve_for_objective
+PASSED tests/unit/ir/test_fase4.py::TestAsyncRetrievalService::test_async_entity_knowledge
+PASSED tests/unit/ir/test_fase4.py::TestAsyncRetrievalService::test_async_literature_search
+PASSED tests/unit/ir/test_fase4.py::TestAsyncRetrievalService::test_concurrent_multi_source
+PASSED tests/unit/ir/test_fase4.py::TestFeedbackStore::test_record_feedback
+PASSED tests/unit/ir/test_fase4.py::TestFeedbackStore::test_get_stats
+PASSED tests/unit/ir/test_fase4.py::TestFeedbackStore::test_suggest_improvements
+PASSED tests/unit/ir/test_fase4.py::TestFeedbackStore::test_entity_stats
+PASSED tests/unit/ir/test_fase4.py::TestMultiHopReasoner::test_reason_across_path
+PASSED tests/unit/ir/test_fase4.py::TestMultiHopReasoner::test_find_paths
+PASSED tests/unit/ir/test_fase4.py::TestMultiHopReasoner::test_explain_relationship
+PASSED tests/unit/ir/test_fase4.py::TestMultiHopReasoner::test_hop_result_chain
+PASSED tests/unit/ir/test_fase4.py::TestMultiHopReasoner::test_multi_hop_path_explanation
+PASSED tests/unit/ir/test_fase4.py::TestRAGBridge::test_bridge_init
+PASSED tests/unit/ir/test_fase4.py::TestRAGBridge::test_query_literature_mock
+PASSED tests/unit/ir/test_fase4.py::TestRAGBridge::test_enrich_state_with_rag
+PASSED tests/unit/ir/test_fase4.py::TestRAGBridge::test_validate_objective
+PASSED tests/unit/ir/test_fase4.py::TestRAGBridge::test_get_rag_stats
+PASSED tests/unit/ir/test_fase4.py::TestRAGIntegration::test_retrieve_comprehensive
+PASSED tests/unit/ir/test_fase4.py::TestRAGIntegration::test_combine_confidences
+PASSED tests/unit/ir/test_graph_executor.py::test_graph_executor_unconditional
+PASSED tests/unit/ir/test_graph_executor.py::test_graph_executor_conditional_true
+PASSED tests/unit/ir/test_graph_executor.py::test_graph_executor_conditional_false
+PASSED tests/unit/ir/test_graph_executor.py::test_graph_executor_branching
+PASSED tests/unit/ir/test_instruction.py::test_substitute_success
+PASSED tests/unit/ir/test_instruction.py::test_substitute_reference_mismatch
+PASSED tests/unit/ir/test_instruction.py::test_substitute_entity_not_found
+PASSED tests/unit/ir/test_instruction.py::test_insert_success
+PASSED tests/unit/ir/test_instruction.py::test_delete_success
+PASSED tests/unit/ir/test_instruction.py::test_invert_success
+PASSED tests/unit/ir/test_instruction.py::test_invert_full_segment
+PASSED tests/unit/ir/test_instruction.py::test_invalid_sequence_raises
+PASSED tests/unit/ir/test_instruction.py::test_substitute_bounds_check
+PASSED tests/unit/ir/test_instruction.py::test_delete_bounds_check
+PASSED tests/unit/ir/test_instruction.py::test_to_dict_roundtrip_substitute
+PASSED tests/unit/ir/test_knowledge_grounding.py::test_query_known_entity
+PASSED tests/unit/ir/test_knowledge_grounding.py::test_query_unknown_entity
+PASSED tests/unit/ir/test_knowledge_grounding.py::test_enrich_state
+PASSED tests/unit/ir/test_knowledge_grounding.py::test_suggest_constraints
+PASSED tests/unit/ir/test_knowledge_grounding.py::test_is_viable_edit_knockout_essential
+PASSED tests/unit/ir/test_knowledge_grounding.py::test_is_viable_edit_non_essential
+PASSED tests/unit/ir/test_parser_ir.py::test_parse_entities
+PASSED tests/unit/ir/test_parser_ir.py::test_parse_relation
+PASSED tests/unit/ir/test_parser_ir.py::test_parse_substitute
+PASSED tests/unit/ir/test_parser_ir.py::test_parse_insert_delete_invert
+PASSED tests/unit/ir/test_parser_ir.py::test_parse_error_unknown_command
+PASSED tests/unit/ir/test_parser_ir.py::test_parse_error_bad_entity
+PASSED tests/unit/ir/test_parser_ir.py::test_parse_comments_and_blanks_ignored
+PASSED tests/unit/ir/test_reasoning_loop.py::test_reasoning_loop_converges
+PASSED tests/unit/ir/test_reasoning_loop.py::test_reasoning_loop_improves_score
+PASSED tests/unit/ir/test_reasoning_loop.py::test_reasoning_loop_records_attempts
+PASSED tests/unit/ir/test_state.py::test_entity_creation
+PASSED tests/unit/ir/test_state.py::test_state_fork_immutability
+PASSED tests/unit/ir/test_state.py::test_state_add_remove_entity
+PASSED tests/unit/ir/test_state.py::test_state_remove_entity_cleans_relations
+PASSED tests/unit/ir/test_state.py::test_state_equality
+PASSED tests/unit/ir/test_state_evaluator.py::test_evaluate_knockout_low_damage
+PASSED tests/unit/ir/test_state_evaluator.py::test_evaluate_knockout_with_mutation
+PASSED tests/unit/ir/test_state_evaluator.py::test_evaluate_knockout_with_downstream_loss
+PASSED tests/unit/ir/test_state_evaluator.py::test_evaluate_generic_change
+PASSED tests/unit/ir/test_state_evaluator.py::test_evaluate_no_target
+PASSED tests/unit/ir/test_state_propagation.py::test_substitute_propagates_to_transcript_and_protein
+PASSED tests/unit/ir/test_state_propagation.py::test_propagate_regulatory_loss
+PASSED tests/unit/ir/test_state_propagation.py::test_break_relation_prevents_propagation
+PASSED tests/unit/ir/test_state_propagation.py::test_downstream_entities
+PASSED tests/unit/test_design_block.py::TestDesignBlockParsing::test_parse_minimal_design
+PASSED tests/unit/test_design_block.py::TestDesignBlockParsing::test_parse_design_with_constraints
+PASSED tests/unit/test_design_block.py::TestDesignBlockParsing::test_parse_design_with_maximize_objective
+PASSED tests/unit/test_design_block.py::TestDesignBlockParsing::test_parse_design_with_minimize_objective
+PASSED tests/unit/test_design_block.py::TestDesignBlockValidation::test_valid_design_block_passes
+PASSED tests/unit/test_design_block.py::TestDesignBlockValidation::test_missing_required_fields
+PASSED tests/unit/test_design_block.py::TestDesignBlockValidation::test_invalid_entity_type
+PASSED tests/unit/test_design_block.py::TestDesignBlockValidation::test_invalid_model_type
+PASSED tests/unit/test_design_block.py::TestDesignBlockValidation::test_objective_validation
+PASSED tests/unit/test_design_block.py::TestDesignBlockValidation::test_count_validation
+PASSED tests/unit/test_design_block.py::TestDesignBlockValidation::test_output_validation
+PASSED tests/unit/test_design_block.py::TestDesignBlockValidation::test_constraints_validation
+PASSED tests/unit/test_design_block.py::TestDesignTypeDefinitions::test_design_type_creation
+PASSED tests/unit/test_design_block.py::TestDesignTypeDefinitions::test_design_with_constraints
+PASSED tests/unit/test_design_block.py::TestDesignTypeDefinitions::test_design_to_dict
+PASSED tests/unit/test_design_block.py::TestDesignTypeDefinitions::test_design_to_dict_with_constraints
+PASSED tests/unit/test_design_block.py::TestDesignBlockIntegration::test_design_with_analyze_workflow
+PASSED tests/unit/test_design_block.py::TestDesignBlockIntegration::test_design_with_multiple_blocks
+PASSED tests/unit/test_enhanced_cli.py::TestOutputFormatter::test_basic_output
+PASSED tests/unit/test_enhanced_cli.py::TestOutputFormatter::test_json_output
+PASSED tests/unit/test_enhanced_cli.py::TestOutputFormatter::test_table_output
+PASSED tests/unit/test_enhanced_cli.py::TestCLIUtilities::test_collect_files
+PASSED tests/unit/test_enhanced_cli.py::TestCLIUtilities::test_process_file_batch
+PASSED tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_cli_initialization
+PASSED tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_parser_creation
+PASSED tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_info_command
+PASSED tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_config_command
+PASSED tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_parse_command_with_temp_file
+PASSED tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_validate_command_with_temp_file
+PASSED tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_invalid_file_handling
+PASSED tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_batch_command_setup
+PASSED tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_plugins_command_without_plugins
+PASSED tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_performance_command
+PASSED tests/unit/test_enhanced_cli.py::TestCLIIntegration::test_main_entry_point
+PASSED tests/unit/test_enhanced_cli.py::TestCLIIntegration::test_version_command
+PASSED tests/unit/test_enhanced_cli.py::TestCLIIntegration::test_no_command
+PASSED tests/unit/test_enhanced_cli.py::TestCLIIntegration::test_invalid_command
+PASSED tests/unit/test_enhanced_cli.py::TestCLIWorkflows::test_parse_validate_workflow
+PASSED tests/unit/test_enhanced_cli.py::TestCLIWorkflows::test_batch_processing_workflow
+PASSED tests/unit/test_enhanced_plugins.py::TestEnhancedRegistry::test_register_plugin_with_priority
+PASSED tests/unit/test_enhanced_plugins.py::TestEnhancedRegistry::test_plugin_dependency_ordering
+PASSED tests/unit/test_enhanced_plugins.py::TestEnhancedRegistry::test_lifecycle_hooks
+PASSED tests/unit/test_enhanced_plugins.py::TestEnhancedRegistry::test_process_with_plugins
+PASSED tests/unit/test_enhanced_plugins.py::TestEnhancedRegistry::test_validate_plugin_dependencies
+PASSED tests/unit/test_enhanced_plugins.py::TestEnhancedRegistry::test_get_plugins_by_state
+PASSED tests/unit/test_enhanced_plugins.py::TestPluginErrorHandling::test_plugin_load_error
+PASSED tests/unit/test_enhanced_plugins.py::TestPluginErrorHandling::test_plugin_processing_error_continues
+PASSED tests/unit/test_error_handling.py::TestSourceLocation::test_create_basic_location
+PASSED tests/unit/test_error_handling.py::TestSourceLocation::test_create_location_with_file
+PASSED tests/unit/test_error_handling.py::TestSourceLocation::test_location_string_representation
+PASSED tests/unit/test_error_handling.py::TestSourceLocation::test_unknown_location
+PASSED tests/unit/test_error_handling.py::TestErrorFix::test_create_simple_fix
+PASSED tests/unit/test_error_handling.py::TestErrorFix::test_create_fix_with_replacement
+PASSED tests/unit/test_error_handling.py::TestErrorFix::test_fix_string_representation
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationError::test_create_basic_error
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationError::test_create_error_with_location
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationError::test_add_fix_to_error
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationError::test_add_context_to_error
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationError::test_error_string_representation
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationError::test_error_to_dict
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationResult::test_create_empty_result
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationResult::test_add_error_to_result
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationResult::test_error_categorization
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationResult::test_get_errors_by_category
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationResult::test_get_statistics
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationResult::test_legacy_format_conversion
+PASSED tests/unit/test_error_handling.py::TestEnhancedValidationResult::test_result_string_representation
+PASSED tests/unit/test_error_handling.py::TestErrorCreationHelpers::test_create_syntax_error
+PASSED tests/unit/test_error_handling.py::TestErrorCreationHelpers::test_create_semantic_error
+PASSED tests/unit/test_error_handling.py::TestErrorCreationHelpers::test_create_warning
+PASSED tests/unit/test_error_handling.py::TestErrorCodes::test_error_code_format
+PASSED tests/unit/test_error_handling.py::TestErrorCodes::test_error_code_uniqueness
+PASSED tests/unit/test_error_handling.py::TestErrorHandlingIntegration::test_enhanced_error_in_validation_flow
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLLexer::test_basic_tokens
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLLexer::test_reserved_words
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLLexer::test_boolean_values
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLLexer::test_numbers
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLLexer::test_strings
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLLexer::test_operators
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLLexer::test_delimiters
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLLexer::test_comments
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLLexer::test_identifiers
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_simple_experiment
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_analyze_statement
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_simulate_statement
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_branch_statement
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_metadata_statement
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_multiple_statements
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_syntax_error_handling
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_error_locations
+PASSED tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_suggested_fixes
+PASSED tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_parse_gfl_grammar_function
+PASSED tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_api_integration
+PASSED tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_performance_caching
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockParsing::test_parse_basic_optimize_block
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockParsing::test_parse_optimize_with_minimize_objective
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockParsing::test_parse_optimize_with_multiple_budget_constraints
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockParsing::test_parse_optimize_with_analyze_run_block
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockValidation::test_valid_optimize_block_passes
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockValidation::test_missing_required_fields
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockValidation::test_search_space_validation
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockValidation::test_range_syntax_validation
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockValidation::test_choice_syntax_validation
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockValidation::test_strategy_validation
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockValidation::test_objective_validation
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockValidation::test_budget_validation
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockValidation::test_run_block_validation
+PASSED tests/unit/test_optimize_block.py::TestOptimizeTypeDefinitions::test_optimize_type_creation
+PASSED tests/unit/test_optimize_block.py::TestOptimizeTypeDefinitions::test_optimize_to_dict
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockIntegration::test_optimize_with_metadata_workflow
+PASSED tests/unit/test_optimize_block.py::TestOptimizeBlockIntegration::test_complex_optimize_workflow
+PASSED tests/unit/test_optimize_block.py::TestParameterInjectionSyntax::test_valid_parameter_injection
+PASSED tests/unit/test_optimize_block.py::TestParameterInjectionSyntax::test_parameter_reference_validation
+PASSED tests/unit/test_parser.py::TestBasicParsing::test_parse_minimal_experiment
+PASSED tests/unit/test_parser.py::TestBasicParsing::test_parse_minimal_analysis
+PASSED tests/unit/test_parser.py::TestBasicParsing::test_parse_simulation_block
+PASSED tests/unit/test_parser.py::TestBasicParsing::test_parse_complex_experiment
+PASSED tests/unit/test_parser.py::TestBasicParsing::test_parse_multiple_blocks
+PASSED tests/unit/test_parser.py::TestParsingEdgeCases::test_parse_empty_document
+PASSED tests/unit/test_parser.py::TestParsingEdgeCases::test_parse_whitespace_only
+PASSED tests/unit/test_parser.py::TestParsingEdgeCases::test_parse_comments_only
+PASSED tests/unit/test_parser.py::TestParsingEdgeCases::test_parse_with_yaml_references
+PASSED tests/unit/test_parser.py::TestParsingEdgeCases::test_parse_with_multiline_strings
+PASSED tests/unit/test_parser.py::TestParsingEdgeCases::test_parse_unicode_content
+PASSED tests/unit/test_parser.py::TestParsingErrors::test_invalid_yaml_syntax
+PASSED tests/unit/test_parser.py::TestParsingErrors::test_duplicate_keys
+PASSED tests/unit/test_parser.py::TestParsingErrors::test_malformed_list
+PASSED tests/unit/test_parser.py::TestParsingErrors::test_unquoted_special_characters
+PASSED tests/unit/test_parser.py::TestParsingPerformance::test_parse_large_parameter_set
+PASSED tests/unit/test_parser.py::TestParsingPerformance::test_parse_deeply_nested_structure
+PASSED tests/unit/test_parser.py::TestParsingIntegration::test_parse_and_validate_workflow
+PASSED tests/unit/test_parser.py::TestParsingIntegration::test_parse_all_example_files
+PASSED tests/unit/test_performance.py::TestIntelligentCache::test_basic_cache_operations
+PASSED tests/unit/test_performance.py::TestIntelligentCache::test_lru_eviction
+PASSED tests/unit/test_performance.py::TestIntelligentCache::test_lru_eviction_independent_of_clock_resolution
+PASSED tests/unit/test_performance.py::TestIntelligentCache::test_ttl_eviction
+PASSED tests/unit/test_performance.py::TestIntelligentCache::test_cache_stats
+PASSED tests/unit/test_performance.py::TestIntelligentCache::test_thread_safety
+PASSED tests/unit/test_performance.py::TestIntelligentCache::test_cache_cleanup
+PASSED tests/unit/test_performance.py::TestLazyLoader::test_basic_lazy_loading
+PASSED tests/unit/test_performance.py::TestLazyLoader::test_lazy_loader_error_handling
+PASSED tests/unit/test_performance.py::TestLazyLoader::test_lazy_loader_reset
+PASSED tests/unit/test_performance.py::TestCachedDecorator::test_cached_function
+PASSED tests/unit/test_performance.py::TestCachedDecorator::test_cached_function_with_optimizer_disabled
+PASSED tests/unit/test_performance.py::TestCachedDecorator::test_lazy_property_decorator
+PASSED tests/unit/test_performance.py::TestPerformanceMonitor::test_basic_monitoring
+PASSED tests/unit/test_performance.py::TestPerformanceMonitor::test_multiple_operations
+PASSED tests/unit/test_performance.py::TestPerformanceMonitor::test_monitor_disabled
+PASSED tests/unit/test_performance.py::TestPerformanceMonitor::test_global_monitor
+PASSED tests/unit/test_performance.py::TestPerformanceOptimizer::test_optimizer_cache_management
+PASSED tests/unit/test_performance.py::TestPerformanceOptimizer::test_cache_cleanup
+PASSED tests/unit/test_performance.py::TestPerformanceOptimizer::test_cache_stats_collection
+PASSED tests/unit/test_performance.py::TestPerformanceOptimizer::test_lazy_loader_creation
+PASSED tests/unit/test_performance.py::TestIntegrationScenarios::test_api_performance_integration
+PASSED tests/unit/test_performance.py::TestIntegrationScenarios::test_concurrent_cache_access
+PASSED tests/unit/test_performance.py::TestIntegrationScenarios::test_memory_efficiency
+PASSED tests/unit/test_symbolic_reasoning.py::TestRulesBlockValidation::test_valid_rules_block
+PASSED tests/unit/test_symbolic_reasoning.py::TestRulesBlockValidation::test_invalid_rules_block_not_list
+PASSED tests/unit/test_symbolic_reasoning.py::TestRulesBlockValidation::test_invalid_rule_missing_fields
+PASSED tests/unit/test_symbolic_reasoning.py::TestHypothesisBlockValidation::test_valid_hypothesis_block
+PASSED tests/unit/test_symbolic_reasoning.py::TestHypothesisBlockValidation::test_invalid_hypothesis_block_not_dict
+PASSED tests/unit/test_symbolic_reasoning.py::TestHypothesisBlockValidation::test_invalid_hypothesis_missing_fields
+PASSED tests/unit/test_symbolic_reasoning.py::TestHypothesisBlockValidation::test_invalid_hypothesis_field_types
+PASSED tests/unit/test_symbolic_reasoning.py::TestTimelineBlockValidation::test_valid_timeline_block
+PASSED tests/unit/test_symbolic_reasoning.py::TestTimelineBlockValidation::test_invalid_timeline_block_not_dict
+PASSED tests/unit/test_symbolic_reasoning.py::TestTimelineBlockValidation::test_invalid_timeline_missing_events
+PASSED tests/unit/test_symbolic_reasoning.py::TestTimelineBlockValidation::test_invalid_timeline_events_not_list
+PASSED tests/unit/test_symbolic_reasoning.py::TestTimelineBlockValidation::test_invalid_timeline_event_missing_fields
+PASSED tests/unit/test_symbolic_reasoning.py::TestTimelineBlockValidation::test_invalid_timeline_event_field_types
+PASSED tests/unit/test_symbolic_reasoning.py::TestEntityDefinitionValidation::test_valid_pathways_block
+PASSED tests/unit/test_symbolic_reasoning.py::TestEntityDefinitionValidation::test_valid_complexes_block
+PASSED tests/unit/test_symbolic_reasoning.py::TestEntityDefinitionValidation::test_invalid_pathways_not_dict
+PASSED tests/unit/test_symbolic_reasoning.py::TestEntityDefinitionValidation::test_invalid_complexes_not_dict
+PASSED tests/unit/test_symbolic_reasoning.py::TestHypothesisReferenceValidation::test_valid_experiment_with_hypothesis_reference
+PASSED tests/unit/test_symbolic_reasoning.py::TestHypothesisReferenceValidation::test_valid_analysis_with_hypothesis_reference
+PASSED tests/unit/test_symbolic_reasoning.py::TestHypothesisReferenceValidation::test_invalid_hypothesis_reference_undefined
+PASSED tests/unit/test_symbolic_reasoning.py::TestHypothesisReferenceValidation::test_invalid_hypothesis_reference_wrong_type
+PASSED tests/unit/test_symbolic_reasoning.py::TestEntityReferenceValidation::test_valid_pathway_reference_in_params
+PASSED tests/unit/test_symbolic_reasoning.py::TestEntityReferenceValidation::test_valid_complex_reference_in_params
+PASSED tests/unit/test_symbolic_reasoning.py::TestEntityReferenceValidation::test_invalid_entity_reference_undefined
+PASSED tests/unit/test_symbolic_reasoning.py::TestEntityReferenceValidation::test_invalid_entity_reference_wrong_format
+PASSED tests/unit/test_types.py::TestExperimentParams::test_create_empty_params
+PASSED tests/unit/test_types.py::TestExperimentParams::test_create_params_with_values
+PASSED tests/unit/test_types.py::TestExperimentParams::test_params_extra_dict
+PASSED tests/unit/test_types.py::TestExperimentParams::test_params_to_dict
+PASSED tests/unit/test_types.py::TestExperimentParams::test_params_to_dict_excludes_none
+PASSED tests/unit/test_types.py::TestExperiment::test_create_minimal_experiment
+PASSED tests/unit/test_types.py::TestExperiment::test_create_experiment_with_params
+PASSED tests/unit/test_types.py::TestExperiment::test_experiment_to_dict
+PASSED tests/unit/test_types.py::TestExperiment::test_experiment_to_dict_no_strategy
+PASSED tests/unit/test_types.py::TestAnalysis::test_create_minimal_analysis
+PASSED tests/unit/test_types.py::TestAnalysis::test_create_analysis_with_all_fields
+PASSED tests/unit/test_types.py::TestAnalysis::test_analysis_to_dict
+PASSED tests/unit/test_types.py::TestAnalysis::test_analysis_to_dict_excludes_empty
+PASSED tests/unit/test_types.py::TestGFLAST::test_create_empty_ast
+PASSED tests/unit/test_types.py::TestGFLAST::test_create_ast_with_experiment
+PASSED tests/unit/test_types.py::TestGFLAST::test_create_ast_with_all_fields
+PASSED tests/unit/test_types.py::TestGFLAST::test_ast_to_dict
+PASSED tests/unit/test_types.py::TestGFLAST::test_ast_from_dict_minimal
+PASSED tests/unit/test_types.py::TestGFLAST::test_ast_from_dict_complete
+PASSED tests/unit/test_types.py::TestGFLAST::test_ast_roundtrip_conversion
+PASSED tests/unit/test_types.py::TestValidationTypes::test_validation_error_creation
+PASSED tests/unit/test_types.py::TestValidationTypes::test_validation_error_string_representation
+PASSED tests/unit/test_types.py::TestValidationTypes::test_validation_error_minimal
+PASSED tests/unit/test_types.py::TestValidationTypes::test_validation_result_creation
+PASSED tests/unit/test_types.py::TestValidationTypes::test_validation_result_is_valid
+PASSED tests/unit/test_types.py::TestValidationTypes::test_validation_result_all_messages
+PASSED tests/unit/test_types.py::TestValidationTypes::test_validation_result_to_string_list
+PASSED tests/unit/test_types.py::TestInferenceResult::test_create_inference_result
+PASSED tests/unit/test_types.py::TestInferenceResult::test_inference_result_to_dict
+PASSED tests/unit/test_types.py::TestEnums::test_experiment_type_enum
+PASSED tests/unit/test_types.py::TestEnums::test_analysis_strategy_enum
+PASSED tests/unit/test_types.py::TestEnums::test_enum_string_behavior
+PASSED tests/unit/test_types.py::TestTypesPerformance::test_large_ast_creation_performance
+PASSED tests/unit/test_types.py::TestTypesPerformance::test_large_ast_to_dict_performance
+PASSED tests/unit/test_validator.py::TestBasicValidation::test_validate_valid_experiment
+PASSED tests/unit/test_validator.py::TestBasicValidation::test_validate_valid_analysis
+PASSED tests/unit/test_validator.py::TestBasicValidation::test_validate_valid_simulation
+PASSED tests/unit/test_validator.py::TestBasicValidation::test_validate_complex_ast
+PASSED tests/unit/test_validator.py::TestBasicValidation::test_validate_empty_ast
+PASSED tests/unit/test_validator.py::TestBasicValidation::test_validate_none_ast
+PASSED tests/unit/test_validator.py::TestExperimentValidation::test_missing_tool_field
+PASSED tests/unit/test_validator.py::TestExperimentValidation::test_invalid_tool_name
+PASSED tests/unit/test_validator.py::TestExperimentValidation::test_missing_type_field
+PASSED tests/unit/test_validator.py::TestExperimentValidation::test_invalid_type_value
+PASSED tests/unit/test_validator.py::TestExperimentValidation::test_missing_params_field
+PASSED tests/unit/test_validator.py::TestExperimentValidation::test_empty_params
+PASSED tests/unit/test_validator.py::TestExperimentValidation::test_valid_parameter_types
+PASSED tests/unit/test_validator.py::TestAnalysisValidation::test_missing_strategy_field
+PASSED tests/unit/test_validator.py::TestAnalysisValidation::test_unknown_strategy
+PASSED tests/unit/test_validator.py::TestAnalysisValidation::test_valid_strategies
+PASSED tests/unit/test_validator.py::TestAnalysisValidation::test_optional_fields
+PASSED tests/unit/test_validator.py::TestAnalysisValidation::test_invalid_threshold_types
+PASSED tests/unit/test_validator.py::TestAnalysisValidation::test_invalid_filter_types
+PASSED tests/unit/test_validator.py::TestBranchValidation::test_simple_branch
+PASSED tests/unit/test_validator.py::TestBranchValidation::test_branch_with_else
+PASSED tests/unit/test_validator.py::TestPluginValidation::test_plugin_invocation
+PASSED tests/unit/test_validator.py::TestPluginValidation::test_missing_plugin_name
+PASSED tests/unit/test_validator.py::TestPluginValidation::test_unknown_plugin
+PASSED tests/unit/test_validator.py::TestSymbolValidation::test_variable_redefinition
+PASSED tests/unit/test_validator.py::TestSymbolValidation::test_undefined_variable_reference
+PASSED tests/unit/test_validator.py::TestValidationErrorMessages::test_error_message_format
+PASSED tests/unit/test_validator.py::TestValidationErrorMessages::test_multiple_errors
+PASSED tests/unit/test_validator.py::TestValidatorDirectUsage::test_validator_initialization
+PASSED tests/unit/test_validator.py::TestValidatorDirectUsage::test_validator_visit_methods
+PASSED tests/unit/test_validator.py::TestValidatorDirectUsage::test_validator_symbol_table
+PASSED tests/unit/test_validator.py::TestValidationPerformance::test_validate_large_ast
+PASSED tests/unit/test_validator.py::TestValidationPerformance::test_validate_deeply_nested_ast
+SKIPPED [1] tests\test_enhanced_inference_engine.py:38: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:53: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:77: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:89: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:105: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:151: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:117: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:135: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:172: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:192: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:228: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:209: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:317: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:250: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:346: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:335: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:298: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:260: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:280: Enhanced inference engine not available
+SKIPPED [1] tests\test_enhanced_inference_engine.py:365: Legacy inference engine not available
+SKIPPED [1] tests\test_examples_roundtrip.py:19: Test file does not exist: examples\syntax\example_valid_semantics.gfl
+SKIPPED [1] tests\test_examples_roundtrip.py:19: Test file does not exist: examples\syntax\example_invalid_semantics.gfl
+XFAIL tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_assignment_statement - Assignment statements not yet supported by parser grammar
+XFAIL tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_expressions - Complex expressions in assignments not yet fully supported by parser grammar
+XFAIL tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_object_literals - Object literals in assignments not yet supported by parser grammar
+XFAIL tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_array_literals - Array literals in assignments not yet supported by parser grammar
+XFAIL tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_complex_gfl_example - Complex nested structures (arrays and objects in values) not yet fully supported by parser grammar
+================= 871 passed, 22 skipped, 5 xfailed in 4.25s ==================
+exit=0

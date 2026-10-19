@@ -1,0 +1,15 @@
+## git diff --numstat cf67007...HEAD -- tests/
+29	5	tests/unit/ir/test_external_connectors.py
+26	0	tests/unit/test_performance.py
+## removed lines in tests/
+-import os
+-    @pytest.mark.skipif(
+-        os.getenv("CI") == "true",
+-        reason="Requiere acceso a red externa"
+-    )
+## config/conftest unchanged (exit 0 = unchanged)
+exit=0
+## added skip/xfail/deselect lines
+(end)
+## integration
+autodev/integration tip: cf67007; ancestor of HEAD: yes -> merge is a fast-forward, tree identical to HEAD
