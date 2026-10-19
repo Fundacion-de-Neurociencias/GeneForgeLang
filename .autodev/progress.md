@@ -74,3 +74,4 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Suite: 873 passed, 2 failed (the 2 allowed baseline ids). Ruff is unchanged from base. Language check is clean. Governance audit: no blocking findings.
 - Blocking: contract item 6. GitHub has no `secret-scan.yml` workflow (404), and no owner decision is recorded.
 - Feedback: `contracts/F001-feedback-3.md`. Do not loop again until the owner decides.
+- Stop gate (verify session, twice): blocked by the same 2 baseline ids. As the evaluator this session may not change code (`evaluator.md`), and the in-scope options are forbidden (weakening tests) or already rejected (`3e9f9ec`, out of scope). Session ended under "When stuck". Proposal for the owner: let the Stop gate honour baseline failures that a contract explicitly allows (F001 item 13), or add the baseline-fix feature to the backlog first.
