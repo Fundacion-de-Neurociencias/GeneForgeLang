@@ -3,7 +3,7 @@
   "features": [
     {
       "id": "F001",
-      "priority": 1,
+      "priority": 2,
       "category": "audit:D4-security",
       "description": "Remove tracked secrets and unsafe artifacts from the tree, and add a secret-scanning guard (gitleaks) in pre-commit and CI, with an owner rotation list that names services only.",
       "steps": [
@@ -30,7 +30,7 @@
     },
     {
       "id": "F002",
-      "priority": 2,
+      "priority": 3,
       "category": "audit:D7-claims",
       "description": "Correct every public claim without evidence (spec/claims-inventory.md): remove it or relabel it as 'illustrative simulation', add not-for-clinical-use and not-legal-advice notices, and add a CI check that stops such claims from returning.",
       "steps": [
@@ -57,7 +57,7 @@
     },
     {
       "id": "F003",
-      "priority": 3,
+      "priority": 4,
       "category": "audit:D8-ci",
       "description": "Make CI a real merge gate on main: one lint configuration, one workflow that installs, lints, tests and scans on every PR, and a branch-protection request for main that the owner applies.",
       "steps": [
@@ -82,7 +82,7 @@
     },
     {
       "id": "F004",
-      "priority": 4,
+      "priority": 5,
       "category": "audit:D7-scientific-validity",
       "description": "Introduce a provenance contract that marks simulated output at the type level, and use it to label and disconnect every simulated component on main from decisions and public text.",
       "steps": [
@@ -104,7 +104,7 @@
     },
     {
       "id": "F005",
-      "priority": 5,
+      "priority": 6,
       "category": "integration",
       "description": "Reconcile main's 31 commits with the stacked chain into one reviewable reconciliation branch, resolving the three known conflicts and the CONTRIBUTING case collision, so later slices apply cleanly.",
       "steps": [
@@ -126,7 +126,7 @@
     },
     {
       "id": "F006",
-      "priority": 6,
+      "priority": 7,
       "category": "audit:D3-correctness",
       "description": "Make the conformance runner run the real validator and compare its result to each case's expected outcome, so a wrong result fails CI.",
       "steps": [
@@ -146,7 +146,7 @@
     },
     {
       "id": "F007",
-      "priority": 7,
+      "priority": 8,
       "category": "integration",
       "description": "Integrate chain slice 1 (core language, contract dataclasses in core/gftypes.py, parser and validator changes) into main as one reviewable PR.",
       "acceptance": [
@@ -162,7 +162,7 @@
     },
     {
       "id": "F008",
-      "priority": 8,
+      "priority": 9,
       "category": "integration",
       "description": "Integrate chain slice 2 (in-tree plugins and the gfl-plugin-* packages: alphagenome, bgc, causal-evidence, clawbio, depmap, jev, rfo, biodecision) with their simulated components labelled.",
       "acceptance": [
@@ -178,7 +178,7 @@
     },
     {
       "id": "F009",
-      "priority": 9,
+      "priority": 10,
       "category": "integration",
       "description": "Integrate the remaining chain slices (governance modules, docs and ADRs, examples, tooling) until the chain tip is fully on main, then close or supersede the 15 open PRs.",
       "acceptance": [
@@ -194,7 +194,7 @@
     },
     {
       "id": "F010",
-      "priority": 10,
+      "priority": 11,
       "category": "api",
       "description": "Restore the documented public API: a small, typed facade (geneforgelang.parse/validate and the geneforgelang.api, .types, .contracts modules) over core, with import tests and an API snapshot that enforce semver.",
       "steps": [
@@ -217,7 +217,7 @@
     },
     {
       "id": "F011",
-      "priority": 11,
+      "priority": 12,
       "category": "release",
       "description": "Unify the version and package metadata: one version source, consistent across pyproject, __init__, get_api_info, README, CITATION.cff, CHANGELOG and git tags, with PEP 621 metadata that passes PyPA checks.",
       "acceptance": [
@@ -232,7 +232,7 @@
     },
     {
       "id": "F012",
-      "priority": 12,
+      "priority": 13,
       "category": "release",
       "description": "Publish readiness: a release workflow that builds, tests the built wheel in a clean environment, produces provenance, and publishes to TestPyPI and then PyPI only after owner approval.",
       "acceptance": [
@@ -246,7 +246,7 @@
     },
     {
       "id": "F013",
-      "priority": 13,
+      "priority": 14,
       "category": "plugins",
       "description": "Unify the plugin entry-point group and the plugin interface so in-repo and external plugins are discovered, and remove imports of the deleted gfl module.",
       "acceptance": [
@@ -261,7 +261,7 @@
     },
     {
       "id": "F014",
-      "priority": 14,
+      "priority": 15,
       "category": "integration:D18",
       "description": "Add a GeneForge consumer contract test: the names and behaviours GeneForge relies on (today geneforgelang.core.gftypes contracts used by its tests) are pinned in GFL's CI against the public API.",
       "acceptance": [
@@ -275,7 +275,7 @@
     },
     {
       "id": "F015",
-      "priority": 15,
+      "priority": 16,
       "category": "audit:D14-cli",
       "description": "Make the CLI cross-platform: explicit UTF-8 I/O, no crash on Windows cp1252 consoles, documented exit codes, and CLI tests on Windows, macOS and Linux.",
       "acceptance": [
@@ -289,7 +289,7 @@
     },
     {
       "id": "F016",
-      "priority": 16,
+      "priority": 17,
       "category": "audit:D4-security",
       "description": "Resolve the two FastAPI apps (src/geneforgelang/web/server.py, api/gfl_service.py): remove them from the library, or keep them as an optional extra that is secure by default (local bind, explicit CORS allowlist, authentication, rate limits).",
       "acceptance": [
@@ -303,7 +303,7 @@
     },
     {
       "id": "F017",
-      "priority": 17,
+      "priority": 18,
       "category": "docs",
       "description": "Bring all documentation, code comments, docstrings and CI step names into English (owner directive 2026-10-19), with skill `translate`: faithful translation plus independent review.",
       "steps": [
@@ -319,6 +319,19 @@
       ],
       "passes": false,
       "notes": "Baseline 124 segments across 60 files. Measured on the chain tip (main has fewer). Public repo: translated public text also passes writing_check --public."
+    },
+    {
+      "id": "F018",
+      "priority": 1,
+      "category": "baseline",
+      "description": "Restore a truthful green test suite on the integration branch: fix the root cause of every failure that exists before any feature work, so the Stop gate measures features, not inherited breakage.",
+      "acceptance": [
+        "`commands.test` exits 0 on the integration branch (evidence: full output saved).",
+        "Every previously failing test is fixed at its root cause in product or test code; none is skipped, deleted, marked xfail or weakened (evidence: per-test root cause in the contract).",
+        "Failing at start: tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_find_similar_entities, tests/unit/test_performance.py::TestIntelligentCache::test_lru_eviction."
+      ],
+      "passes": false,
+      "notes": "Inserted by the runner on 2026-10-19: the baseline suite was red before building."
     }
   ]
 }
