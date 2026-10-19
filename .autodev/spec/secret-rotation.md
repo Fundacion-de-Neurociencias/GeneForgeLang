@@ -1,28 +1,17 @@
 # Secret rotation list (F001)
 
-For the owner. This list names services and owners only. It holds no values. No agent opened the secret file; the services below come from the variable names that the code and the dev-container configuration read.
+For the owner. This list names variables and services only, never values. No agent opened the secret file. The owner checked it on 2026-10-19 and reported its variable names. This list replaces the earlier version, which inferred a Google API key from the code: the file never held one.
 
-The file .devcontainer/.env was tracked in this public repository from September 2025 (onboarding audit) until F001. Removing it from the tree does not remove it from git history or from any clone or fork made since. Treat every credential it held as public.
+`.devcontainer/.env` was tracked in this public repository from September 2025 until F001. Anyone may have copied it since then.
 
-## Order of work
+## Variables in the file (reported by the owner, 2026-10-19)
+`PYTHONPATH`, `PYTHONUNBUFFERED`, `GFL_ENV`, `GFL_DEBUG`, `GFL_LOG_LEVEL`, `DATABASE_URL`, `API_HOST`, `API_PORT`, `WEB_HOST`, `WEB_PORT`, `SECRET_KEY`.
 
-1. The owner opens the file locally and lists every credential in it, including any the code does not read.
-2. Each credential is rotated by the person who controls the account (table below).
-3. Only after rotation, the owner decides on the history purge (separate decision in next-steps.md). A purge without rotation gives no protection, because the old values are already public.
-
-## Services
-
-### Google API key for Gemini (variable GOOGLE_API_KEY)
-- **Service** - Google AI Studio or Google Cloud project that issued the key (Generative Language API), used by the GFL translator apps.
-- **What rotating means** - create a new key in the same project, put it in each local copy of the env file and in any deployment that uses it, then delete the old key. Also check the project's API usage and billing reports for calls since September 2025 that the team did not make, and restrict the new key to the Generative Language API.
-- **Who** - the Google account or project owner who created the key (the owner to confirm; probably the Fundación de Neurociencias Google Cloud administrator).
-
-### Any other credential found in the file
-- **Service** - each service named by a variable in the file that the code does not read (for example database, cloud storage, model hub or CI tokens).
-- **What rotating means** - revoke the old credential at the service, issue a new one, store it outside git, and review the service's access log since September 2025.
-- **Who** - the account holder for that service; the owner assigns one person per credential and records the date of rotation.
-
-## Not affected
-
-- PYTHONPATH and GFL_ENV are configuration values, not credentials.
-- The PostgreSQL password in the dev-container compose file is a local test-container default. It is not a production credential, but it should not be reused anywhere else.
+## Assessment
+- **No third-party credential.** The file holds no Google, cloud, model-hub, CI or payment key, so no external account needs rotation.
+- **`SECRET_KEY` and `DATABASE_URL`** belong to the local dev container. The database URL points at the compose test database. They protect nothing outside a developer's machine, *provided the same values are not used anywhere else*.
+- **Action:**
+  - Treat both values as public, and never reuse them in any deployed service.
+  - Any future deployment generates its own values from a secret store.
+  - `.devcontainer/.env.example` lists the names only.
+- **History purge:** not recommended. It needs a force-push to a public repository with forks, and it protects nothing, because the values are dev-only and already public.
