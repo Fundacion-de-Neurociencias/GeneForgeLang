@@ -5,7 +5,7 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 
 ## Now
 - Owner reviews and approves the onboarding plan (roadmap Phase 0-3, features F001-F016).
-- F001: built on `autodev/F001` (2026-10-19). Verify FAIL 2 passes every reproducible item; the only blocker is contract item 6 (hosted `secret-scan.yml` run or owner acceptance of the local evidence). No code change is pending. See "Needs owner".
+- F001: built on `autodev/F001` (2026-10-19). Every reproducible item passed in verify 3. The hosted `secret-scan.yml` run is now an owner gate that does not block the feature (contract amendment, 2026-10-19). Next: `/autodev:verify F001`.
 - F002: correct public claims (README, manuscript, whitepaper, CHANGELOG, SECURITY, CITATION) with not-for-clinical-use / not-legal-advice notices; PR for the owner to approve.
 
 ## Next
@@ -23,7 +23,8 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 - Phase 3: specification and conformance work backed by real code.
 
 ## Needs owner
-- **F001 hosted CI gate, contract item 6 (decide now).** Choose one: (a) approve pushing a PR branch cut from `origin/main` with `e793288 2cec236 11b9118` (draft in `contracts/F001-pr.md`) so a hosted `secret-scan.yml` run exists; or (b) record here that you accept the local evidence (`evidence/F001/verify2/`). Then run `/autodev:verify F001`. Recommendation: (a), because the hosted run also proves the workflow itself. The 2 red baseline tests do not block F001 (item 13 allows them); their fix stays the separate proposed feature under "Next".
+- **F001 hosted CI run (owner gate, does not block verification).** Approve publishing a PR branch cut from `origin/main` with `e793288 2cec236 11b9118` (draft in `contracts/F001-pr.md`), so the hosted `secret-scan.yml` run exists and proves the workflow itself.
+- **Red baseline (lesson 19).** The 2 baseline failures below still make the Stop gate block every session. Recommendation: add the baseline-fix feature (under "Next") at the top of the backlog, coordinated with María. The 2 red baseline tests do not block F001 (item 13 allows them); their fix stays the separate proposed feature under "Next".
 - **Guard requests 20261019-054021-32d1c2 and 20261019-054350-fb3e87.** Reject both: the first is a cleanup of a throwaway clone that is not needed; the second is a false positive on text inside a JSON file.
 - **Key rotation (now).** F001 listed the services in `spec/secret-rotation.md` (Google API key for Gemini, plus anything else in the file). The owner or the account managers rotate every credential in the file. Agents never read the file.
 - **History purge (separate decision, never run by an agent).** Removing `.devcontainer/.env` (and the deleted `.pkl`) from the public history needs `git filter-repo` plus a force-push to `main` and every branch that contains it, and every collaborator must re-clone. Recommended only after rotation, because the old values are already public and may be in forks. Decide: purge / do not purge.

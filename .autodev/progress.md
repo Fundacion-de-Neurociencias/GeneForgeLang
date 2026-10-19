@@ -75,3 +75,9 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Blocking: contract item 6. GitHub has no `secret-scan.yml` workflow (404), and no owner decision is recorded.
 - Feedback: `contracts/F001-feedback-3.md`. Do not loop again until the owner decides.
 - Stop gate (verify session, twice): blocked by the same 2 baseline ids. As the evaluator this session may not change code (`evaluator.md`), and the in-scope options are forbidden (weakening tests) or already rejected (`3e9f9ec`, out of scope). Session ended under "When stuck". Proposal for the owner: let the Stop gate honour baseline failures that a contract explicitly allows (F001 item 13), or add the baseline-fix feature to the backlog first.
+
+## 2026-10-19: build, F001 - contract aligned with owner-gate acceptance
+- No code change. Commit 3709093 turned the hosted secret-scan run into "Owner gate: ..." (lesson 20). Contract item 6 and a new amendment section now match it; `next-steps.md` no longer lists F001 as blocked.
+- Suite on 7904bc1 with the project command (`.venv`): 873 passed, 2 failed (the 2 baseline ids item 13 allows), 22 skipped, 5 xfailed.
+- Known limitation: the red baseline (lesson 19) is still there, so the Stop gate may block this session again. The fix is the proposed baseline feature, outside F001's scope.
+- Next: `/autodev:verify F001`.
