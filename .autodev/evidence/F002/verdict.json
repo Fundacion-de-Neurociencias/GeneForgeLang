@@ -1,39 +1,112 @@
 {
   "feature": "F002",
-  "verdict": "FAIL",
-  "commit": "17fd3e5bca8bedc42a32709bab0a96dc4c115855",
+  "verdict": "PASS",
+  "commit": "4d6acff566a1a7f845a81338a1aa991a065e31ff",
+  "attempt": 2,
   "acceptance": [
-    {"item": "Every row of spec/claims-inventory.md has status 'fixed' with the PR diff hunk", "result": "PARTIAL", "evidence": "C1-C5, C7-C10, C14 fixed with hunks; C6, C11-C13 'prevented'; C15-C20 'open'. Deviation recorded in contracts/F002.md D10, still awaiting owner/planner confirmation."},
-    {"item": "tests/docs/test_public_claims.py passes on head and fails on origin/main", "result": "PASS", "evidence": "checks.txt (93 passed on head); verify-d8-origin-main.log (28 failed across 10 test families incl. README denylist, notice, fence tags)"},
-    {"item": "Every fenced GFL block in README.md/whitepaper.md parses or is labelled proposed", "result": "PASS", "evidence": "Independent parse/validate of every README gfl block and python triple-quoted GFL: dict, errors []. Whitepaper has no fences; notation lines labelled 'proposed, not implemented' (test_whitepaper_labels_proposed_notation)."},
-    {"item": "Notice text identical in README.md and docs/index.md", "result": "PASS", "evidence": "test_intended_use_notice_present passes on head, fails on origin/main"},
-    {"item": "CITATION.cff validates and has no unresolvable DOI", "result": "PASS", "evidence": "verify-d6-greps.log: cffconvert valid (schema 1.2.0); 10.5281/zenodo.15493559 -> 302; bioRxiv DOI only in the test denylist"},
-    {"item": "Owner approves the PR before merge", "result": "N/A", "evidence": "Not satisfiable in verify; nothing merged or pushed to main (origin/main still 630059c)."}
+    {
+      "item": "Every row of spec/claims-inventory.md has status 'fixed' with the PR diff hunk",
+      "result": "PASS (with recorded deviation)",
+      "evidence": "C1-C5, C7-C10, C14, C21, C22 fixed with hunks; C6, C11-C13 prevented by the guard; C15-C20 open and owned by F004/F006/F008/F009/F011. Deviation D10 in contracts/F002.md; must be confirmed by the owner at the PR gate (D11)."
+    },
+    {
+      "item": "tests/docs/test_public_claims.py passes on head and fails on origin/main",
+      "result": "PASS",
+      "evidence": "verify2-checks.txt: 94 passed on head; verify2-guard-on-origin_main.log: 29 failed across 11 test families (README denylist, notice, fence tags, ...)"
+    },
+    {
+      "item": "Every fenced GFL block in README.md/whitepaper.md parses or is labelled proposed",
+      "result": "PASS",
+      "evidence": "test_readme_fence_is_tagged / test_readme_python_block_is_honest / test_whitepaper_labels_proposed_notation pass on head (verify2-checks.txt); whitepaper has no fences"
+    },
+    {
+      "item": "Notice text identical in README.md and docs/index.md",
+      "result": "PASS",
+      "evidence": "test_intended_use_notice_present passes on head, fails 2x on origin/main"
+    },
+    {
+      "item": "CITATION.cff validates and has no unresolvable DOI",
+      "result": "PASS",
+      "evidence": "verify2-realchannel.log: cffconvert valid (schema 1.2.0); doi.org/10.5281/zenodo.15493559 -> 302; bioRxiv DOI absent outside .autodev and tests/docs"
+    },
+    {
+      "item": "Owner approves the PR before merge",
+      "result": "N/A",
+      "evidence": "Not satisfiable in verify; origin/main still 630059c, nothing merged or pushed"
+    }
   ],
   "rubric": [
-    {"check": "Deterministic checks (lint, tests)", "result": "PASS", "evidence": "checks.txt: ruff 'All checks passed!'; 952 passed, 22 skipped, 5 xfailed"},
-    {"check": "D5 script unchanged in behaviour", "result": "PASS", "evidence": "verify-d5.log: AST equal; smoke exit 0 in temp dir (ephemeral env with matplotlib, PYTHONIOENCODING=utf-8); results/ porcelain empty"},
-    {"check": "G1.1 no mocks in verification", "result": "PASS", "evidence": "governance auditor: test uses real parse/validate, no mock/patch"},
-    {"check": "G2.2 scope", "result": "PASS", "evidence": "governance auditor: all changed files inside contract scope; src/ changes are the declared baseline fix 0a7a97b"},
-    {"check": "G3 secrets / data isolation", "result": "PASS", "evidence": "governance auditor: no secrets, no patient data"},
-    {"check": "G3 publication of .autodev/ state", "result": "NON-BLOCKING (release gate)", "evidence": "governance auditor: .autodev/ is tracked on autodev/integration and in this range although project.toml sets publish_autodev_state=false; blocking only for a PR to public main"},
-    {"check": "G8.2 public claims", "result": "FAIL", "evidence": "README 'Plugin System' block imports BasePlugin and register_plugin from geneforgelang.plugins; neither exists there (BaseGFLPlugin in plugins/base.py; register_plugin only in plugins/plugin_registry.py) and the block has no 'does not run yet' marker. README Support links https://geneforgelang.readthedocs.io (404, 'Comprehensive guides') and .../discussions (404, 'Community support')."},
-    {"check": "G9.1 quality bar QB-8", "result": "FAIL", "evidence": "same as G8.2: public text keeps claims without evidence"},
-    {"check": "G10.1 language", "result": "PASS", "evidence": "verify-language.log: 0 segments not in 'en'"},
-    {"check": "G5.1 unearned success", "result": "PASS", "evidence": "commit messages and progress cite logs; Zenodo DOI marked pending owner confirmation (A2)"}
+    {
+      "check": "Deterministic checks (tests, lint)",
+      "result": "PASS",
+      "evidence": "verify2-checks.txt: 953 passed, 22 skipped, 5 xfailed; ruff check clean; ruff format clean on tests/docs"
+    },
+    {
+      "check": "G8.2/QB-8 README claims (feedback 1 items 1-2)",
+      "result": "PASS",
+      "evidence": "verify2-realchannel.log: README plugin block run with python -I from an empty dir, exit 0; register_plugin caveat confirmed (ModuleNotFoundError: No module named 'src'); all README external links 200"
+    },
+    {
+      "check": "Guard bites on prior attempt (D14)",
+      "result": "PASS",
+      "evidence": "verify2-guard-on-17fd3e5.log: exactly 4 failures (unsupported links, plugin block runs, 2 simulation reports)"
+    },
+    {
+      "check": "G10 language",
+      "result": "PASS",
+      "evidence": "verify2-language.log: 0 segments not in 'en'"
+    },
+    {
+      "check": "G1.1 no mocks in verification",
+      "result": "PASS",
+      "evidence": "governance auditor: guard uses the real parser/validator and a real subprocess"
+    },
+    {
+      "check": "G3 secrets / patient data",
+      "result": "PASS",
+      "evidence": "governance auditor: none in the diff"
+    },
+    {
+      "check": "G2.2 scope",
+      "result": "PASS (non-blocking note)",
+      "evidence": "src/ changes are the declared baseline fix 0a7a97b (identical hunks from feature/PDN_feature-GFP)"
+    },
+    {
+      "check": "Release gate: .autodev/ in a public PR",
+      "result": "N/A for verify; BLOCKING for release",
+      "evidence": "governance auditor finding 1; publish_autodev_state = false"
+    }
   ],
   "feedback": [
-    "README.md 'Plugin System' block: mark it '<!-- does not run yet: F010 -->' and say so in text, or rewrite it against the real API and prove it runs; widen test_readme_python_block_is_honest to any python block importing from geneforgelang whose names are not importable.",
-    "README.md Support section: remove the readthedocs and Discussions links (both 404) or point to existing pages (docs/index.md, Issues).",
-    "Non-blocking: Manuscript abstract (examples/real_project/Manuscript_GeneForge_v2_Beta.md:14) still says 'revolutionary' and 'two comprehensive real-world applications executed on the GeneForge WebApp', which its own banner calls unsupported.",
-    "Non-blocking: get planner/owner confirmation of the D10 deviation so acceptance item 1 can be judged as written.",
-    "Release gate (not this feature): no PR to public main may contain .autodev/ (publish_autodev_state=false)."
+    "Non-blocking: examples/real_project/Manuscript_GeneForge_v2_Beta.md still says 'The successful discovery of high-quality gRNA candidates' (Discussion) and 'The comprehensive validation framework ensures reliable execution in production environments' (Conclusions). The banner covers them, but rewording would remove the contradiction. Candidate for F009.",
+    "Release gate: exclude .autodev/ from the PR to public main.",
+    "Owner: confirm the Zenodo DOI (A2) and the D10 deviation from acceptance item 1 when approving the PR.",
+    "F009: docs/dev/reports/TICKET_SUMMARY_GF-163.1.md contains local file:///C:/Users/usuario paths."
   ],
   "claims": [
-    {"claim": "Lint clean and full suite green at 17fd3e5", "class": "OBSERVED (checks.txt)"},
-    {"claim": "Claims guard fails on origin/main in 10 test families and passes on head", "class": "OBSERVED (verify-d8-origin-main.log, checks.txt)"},
-    {"claim": "README plugin example raises ImportError", "class": "INFERRED (hasattr on geneforgelang.plugins for BasePlugin and register_plugin both False; block not executed)"},
-    {"claim": "readthedocs and Discussions URLs are dead", "class": "OBSERVED (curl -L returned 404 on 2026-10-19)"},
-    {"claim": "Zenodo record is this project's whitepaper", "class": "ASSUMED pending owner confirmation (A2); DOI resolution OBSERVED (302)"}
+    {
+      "claim": "Full suite and lint green at HEAD",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "README plugin example runs for a reader with the installed package",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "Guard fails on origin/main and on 17fd3e5, passes on HEAD",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "CITATION.cff valid and its DOI resolves",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "Zenodo record 15493559 is this project's whitepaper",
+      "class": "INFERRED (title/creator match; owner confirmation pending)"
+    },
+    {
+      "claim": "Nothing merged to main",
+      "class": "OBSERVED (origin/main = 630059c)"
+    }
   ]
 }

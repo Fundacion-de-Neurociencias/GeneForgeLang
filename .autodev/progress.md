@@ -33,3 +33,9 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Inventory: C21 (plugin example) and C22 (support links) added as fixed. Contract: D11-D14 added under "Attempt 2".
 - Still needs owner: Zenodo DOI (A2), D10 deviation from acceptance item 1, PR approval. Release gate: `.autodev/` must not reach public main.
 - Next: `/autodev:verify F002` in a separate session.
+
+## 2026-10-19: verify F002 - PASS (attempt 2)
+- Independent evaluator at 4d6acff. 953 passed, 22 skipped, 5 xfailed; ruff clean; claims guard 94 passed on head, 29 failed on origin/main, 4 failed on 17fd3e5 (exactly the feedback-1 items); language check 0 findings.
+- README plugin example runs with `python -I` from an empty dir (exit 0); the register_plugin caveat holds; all README external links answer 200; cffconvert valid; Zenodo DOI 302.
+- Governance auditor: nothing blocking for verify. Release gate: `.autodev/` must not reach public main.
+- Open for the owner at the PR: Zenodo DOI (A2), D10 deviation from acceptance item 1, PR approval. Non-blocking wording left in the bannered manuscript (F009).

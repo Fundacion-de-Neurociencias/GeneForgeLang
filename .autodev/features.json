@@ -50,7 +50,8 @@
         "CITATION.cff validates with cffconvert --validate and contains no DOI that fails to resolve (doi.org HEAD request logged).",
         "Owner approves the PR in chat before merge (owner decision 2)."
       ],
-      "passes": false,
+      "passes": true,
+      "evidence": ".autodev/evidence/F002/verdict.json",
       "notes": "No dependencies. The chain rewrites README and adds SECURITY.md and EVIDENCE_MATRIX.md, so F005 and each slice must keep the corrections; the CI claims test (F003 makes it required) is what prevents regressions. The ADNI/NACC content of EVIDENCE_MATRIX.md arrives with the chain and needs legal review before it lands (see Needs owner). Quality bar: QB-6, QB-8 (spec/quality-bar.md)."
     },
     {
