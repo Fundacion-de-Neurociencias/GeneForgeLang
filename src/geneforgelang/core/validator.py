@@ -153,7 +153,7 @@ class EnhancedSemanticValidator:
             error.add_context("available_blocks", list(main_blocks))
 
         # Check for unknown top-level keys
-        valid_top_level = main_blocks | {"metadata", "imports", "exports"}
+        valid_top_level = main_blocks | {"metadata", "imports", "exports", "output"}
         unknown_keys = set(ast.keys()) - valid_top_level
 
         for key in unknown_keys:
@@ -1318,6 +1318,7 @@ class EnhancedSemanticValidator:
             "analysis",
             "simulation",
             "validation",
+            "somatic_expansion_evaluation",
         }
 
         if exp_type not in valid_types:
@@ -1396,7 +1397,7 @@ class EnhancedSemanticValidator:
             "rosettafold3": ["analysis", "simulation", "validation"],
             "openmm": ["simulation", "analysis", "validation"],
             "runs_n_poses": ["analysis", "validation"],
-            "biodecision-4b": ["analysis", "validation", "simulation"],
+            "biodecision-4b": ["analysis", "validation", "simulation", "somatic_expansion_evaluation"],
             "pleiades": ["analysis", "validation", "simulation", "sequencing"],
             "pleiades-biodecision": ["analysis", "validation", "simulation"],
             "pleiades-7b": ["analysis", "validation", "simulation"],

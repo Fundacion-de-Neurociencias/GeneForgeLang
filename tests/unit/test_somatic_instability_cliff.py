@@ -155,3 +155,23 @@ def test_validator_catches_invalid_locus_format() -> None:
     result = validator.validate_ast(ast)
     assert result.is_valid is False
     assert any("Invalid genomic locus format" in e.message for e in result.errors)
+
+
+def test_examples_somatic_repeat_expansion_gate_validates() -> None:
+    """Test examples/somatic_repeat_expansion_gate.gfl passes EnhancedSemanticValidator cleanly."""
+    from pathlib import Path
+
+    import yaml
+
+    example_path = Path(__file__).resolve().parent.parent.parent / "examples" / "somatic_repeat_expansion_gate.gfl"
+    assert example_path.exists(), f"Example file {example_path} does not exist"
+
+    content = example_path.read_text(encoding="utf-8")
+    ast = yaml.safe_load(content)
+
+    validator = EnhancedSemanticValidator()
+    result = validator.validate_ast(ast)
+
+    assert result.is_valid is True, f"Validation failed: {[e.message for e in result.errors]}"
+    assert len(result.errors) == 0
+    assert len(result.warnings) == 0
