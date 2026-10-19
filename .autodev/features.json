@@ -24,7 +24,8 @@
         "PR body uses the sections What it does / Why / How to reproduce / Impact on results and lists the sensitive files touched."
       ],
       "passes": false,
-      "notes": "No dependencies. Agents never read .devcontainer/.env (guard forbidden_paths). Rotation is done by the owner or account managers. History purge is a separate owner gate. Lands on main before the chain; F005 must carry the deletion into the reconciled tree because the chain still tracks .devcontainer/.env. Quality bar: QB-7, QB-12 (spec/quality-bar.md)."
+      "notes": "No dependencies. Agents never read .devcontainer/.env (guard forbidden_paths). Rotation is done by the owner or account managers. History purge is a separate owner gate. Lands on main before the chain; F005 must carry the deletion into the reconciled tree because the chain still tracks .devcontainer/.env. Quality bar: QB-7, QB-12 (spec/quality-bar.md). | blocked by runner 2026-10-19: 3 failed verifications",
+      "blocked": true
     },
     {
       "id": "F002",
