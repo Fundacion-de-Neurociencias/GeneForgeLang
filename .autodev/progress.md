@@ -115,3 +115,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - `/autodev:sprint F001` invoked again at ada4676. No build work and no code change: F001 passed in verify round 4.
 - Stop gate: same 2 baseline failures (`test_lru_eviction`, `test_find_similar_entities`), out of F001 scope; reasons already recorded above.
 - Loop note: the runner must stop targeting F001. Next is F002, or the baseline-fix feature once the owner decides (`next-steps.md`, "Needs owner").
+
+## 2026-10-19: verify, F001 - PASS stands (re-confirmation)
+- Invoked again after the round-4 PASS (5893f94). Since then only `.autodev/` bookkeeping changed (progress.md, reconfirm notes); no product change.
+- Hygiene tests re-run: 16 passed. Full suite, gitleaks and governance audit not re-run (empty product diff). Evidence: `evidence/F001/verify7/reconfirm.txt`.
+- Next useful step is F002 or the owner decision on the 2 baseline failures (`next-steps.md`), not another F001 verify.
