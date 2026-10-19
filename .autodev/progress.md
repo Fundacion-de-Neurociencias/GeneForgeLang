@@ -89,3 +89,9 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Changed: `tests/docs/test_public_claims.py` - `_owned_xfail` now uses `pytest.mark.xfail(strict=True, raises=AssertionError)`; `_c17_no_unconditional_privacy_flag` returns no hit when the connector file is gone; new `test_owned_xfails_only_expect_assertion_errors`. Contract: D18.
 - Verified: `ruff check src tests` clean; full suite 969 passed, 22 skipped, 10 xfailed. Scratch-worktree runs in `.autodev/evidence/F002/attempt4-owned-guards.log`: evaluator case 4 now reports C17 `XPASS(strict)` FAILED instead of XFAIL; an unreadable C18 runner is FAILED; dropping `raises` fails the new meta-test.
 - Limitations / next: item 6 (owner approves the PR) and the Zenodo DOI (A2) remain owner gates. Advisory from verify 4: exclude `.autodev/` from the PR to public main. Next: `/autodev:verify F002`.
+
+## 2026-10-19: verify, F002 attempt 4 - PASS
+- Independent evaluator at 1b5242b. Verdict: `.autodev/evidence/F002/verdict.json`.
+- Green: ruff, full suite (969 passed, 22 skipped, 10 xfailed), guard on origin/main (29 failed), cffconvert, Zenodo DOI 302, language check 0, inventory 0 rows `open`, governance auditor 0 blocking.
+- Feedback 4 resolved: deleted connector -> C17 `XPASS(strict)` FAILED; undecodable C18 runner -> FAILED; meta-test bites without `raises` (`verify5-owned-guards.log`).
+- Owner gates: PR approval (exclude `.autodev/`) and the Zenodo DOI (A2). Advisories: C17 guard is path-based (F004); "v2.0" print literals in execute_genesis_real.py (F011).

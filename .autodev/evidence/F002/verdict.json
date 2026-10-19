@@ -1,38 +1,40 @@
 {
   "feature": "F002",
-  "verdict": "FAIL",
-  "commit": "5dcc4f3f3d7e36f34f62b7ee3ea03cbd8828d88a",
-  "attempt": 4,
-  "note": "Previous verdict kept as verdict-3.json.",
+  "verdict": "PASS",
+  "commit": "1b5242b56c9632ebbaff802d04e8598bf321524d",
+  "attempt": 5,
+  "note": "Previous verdicts kept as verdict-2.json, verdict-3.json and verdict-4.json.",
   "acceptance": [
-    {"item": "In-scope inventory rows fixed with hunk; later-feature rows prevented and naming the owner", "result": "FAIL", "class": "OBSERVED",
-     "evidence": "0 rows 'open'; C1-C5, C7-C10, C14, C21, C22 fixed with hunks; C6, C11-C20 prevented and name their feature. Injection runs in verify4-owned-guards.log: guards for C16, C20 (truth audit) fail on injection; C17 and C20 (PR description) fail (XPASS strict) when the claim is removed. But case 4: deleting openmed_connector.py raises FileNotFoundError inside the C17 guard and it is reported XFAIL, not an error and not XPASS. This breaks contract D16 ('xfail for the claim itself (not an error)')."},
+    {"item": "In-scope inventory rows fixed with hunk; later-feature rows prevented and naming the owner", "result": "PASS", "class": "OBSERVED",
+     "evidence": "grep -c '| open' claims-inventory.md = 0. verify5-owned-guards.log: HEAD owned guards 4 passed, 5 xfailed; case 4 (openmed_connector.py deleted) -> C17 XPASS(strict) FAILED; case 6 (C18 runner undecodable) -> FAILED with UnicodeDecodeError, not XFAIL; case 7 (raises removed) -> meta-test FAILED. Feedback 4 resolved."},
     {"item": "Claims test passes on head and fails on origin/main", "result": "PASS", "class": "OBSERVED",
-     "evidence": "HEAD: 97 passed, 5 xfailed (verify4-checks.txt). origin/main 630059c with tests/docs copied in: 29 failed across 13 test families, including README denylist, notice and fence tags (verify4-guard-on-origin_main.log)."},
+     "evidence": "HEAD: full suite green (verify5-checks.txt). origin/main 630059c with tests/docs copied: 29 failed, 66 passed, 5 xfailed, in 11 test functions incl. README denylist, notice and fence tags (verify5-guard-on-origin_main.log)."},
     {"item": "Fenced GFL blocks in README.md and whitepaper.md parse or are labelled proposed", "result": "PASS", "class": "OBSERVED",
-     "evidence": "test_readme_fence_is_tagged, the README parse/validate tests and test_whitepaper_labels_proposed_notation pass on HEAD and fail on origin/main."},
+     "evidence": "test_readme_fence_is_tagged, README parse/run tests and test_whitepaper_labels_proposed_notation pass on HEAD and fail on origin/main."},
     {"item": "Notice identical in README.md and docs/index.md", "result": "PASS", "class": "OBSERVED",
-     "evidence": "test_intended_use_notice_present: passes on HEAD, 2 failures on origin/main."},
+     "evidence": "test_intended_use_notice_present passes on HEAD, 2 failures on origin/main."},
     {"item": "CITATION.cff validates; every DOI resolves", "result": "PASS", "class": "OBSERVED",
-     "evidence": "verify4-realchannel.log: cffconvert valid against schema 1.2.0; doi.org/10.5281/zenodo.15493559 returns 302; git grep for 10.1101/2024.08.31 outside .autodev and tests is empty. Owner confirmation of the Zenodo DOI is still pending (A2)."},
+     "evidence": "cffconvert: valid against schema 1.2.0; doi.org/10.5281/zenodo.15493559 -> 302; 10.1101/2024.08.31 only in the test denylist. Zenodo DOI pending owner confirmation (A2)."},
     {"item": "Owner approves the PR in chat before merge", "result": "OWNER_GATE", "class": "OBSERVED",
-     "evidence": "Branch autodev/F002 is not on any remote and origin/main is still 630059c (verify4-realchannel.log)."}
+     "evidence": "No remote branch contains HEAD; origin/main still 630059c. Prepared artifact: branch autodev/F002 (exclude .autodev/ from the public PR)."}
   ],
   "rubric": [
-    {"check": "Deterministic checks (ruff, full pytest)", "result": "PASS", "evidence": "verify4-checks.txt: ruff clean; 968 passed, 22 skipped, 10 xfailed"},
-    {"check": "G10 language (language_check --diff autodev/integration)", "result": "PASS", "evidence": "0 segments outside 'en'"},
-    {"check": "Governance auditor (autodev/integration...HEAD)", "result": "PASS", "evidence": "BLOCKING 0. Advisories: .autodev/ is tracked on the branch, so exclude it from any PR to public main; Spanish prose in the local contracts/F002-review.md."},
-    {"check": "G1.1 no mocks in verification", "result": "PASS", "evidence": "Guards run the real parser, validator and an isolated interpreter (auditor)."},
-    {"check": "G9 quality bar: regression guard correctness", "result": "FAIL", "evidence": "The strict xfail markers have no raises=, so any exception counts as an expected failure (verify4-owned-guards.log case 4)."}
+    {"check": "Deterministic checks (ruff, full pytest)", "result": "PASS", "evidence": "verify5-checks.txt: ruff clean; 969 passed, 22 skipped, 10 xfailed, exit 0"},
+    {"check": "G10 language (language_check --diff autodev/integration)", "result": "PASS", "evidence": "verify5-language.log: 0 segments outside 'en'"},
+    {"check": "Governance auditor (autodev/integration...HEAD)", "result": "PASS", "evidence": "0 blocking. Advisories: exclude .autodev/ from the public PR; Spanish local review file; execute_genesis_real.py still prints 'GeneForge v2.0 Engine' literals (C15, F011)."},
+    {"check": "G1.1 no mocks in verification", "result": "PASS", "evidence": "Guards use the real parser, validator and an isolated interpreter (auditor)."},
+    {"check": "G9 quality bar: regression guard correctness", "result": "PASS", "evidence": "Strict xfails set raises=AssertionError; non-assertion errors surface (verify5-owned-guards.log)."},
+    {"check": "Scope (src/ untouched since baseline fix)", "result": "PASS", "evidence": "git diff 5dcc4f3..HEAD touches only tests/docs/test_public_claims.py and .autodev/"}
   ],
   "feedback": [
-    "tests/docs/test_public_claims.py:367 _owned_xfail: add raises=AssertionError to pytest.mark.xfail(strict=True, ...). Today a missing file or a parse error in a guard counts as XFAIL. Repro: in a scratch worktree, delete src/geneforgelang/ir/external/openmed_connector.py and run test_owned_claim_absent. Expected: an error, or C17 XPASS so that F004 must drop the marker. Observed: XFAIL with the reason 'C17 still present'. Add a meta-test, or at least a log, showing that a guard raising a non-assertion exception is reported as a failure.",
-    "Optional, same edit: in _c17_no_unconditional_privacy_flag, decide what a missing file means (no claim means [] or an explicit failure) and keep the guard armed if F004 moves the connector."
+    "Advisory: when opening the PR to public main, exclude .autodev/ (publish_autodev_state = false).",
+    "Advisory for F004: the C17 guard is path-based; if the connector is moved rather than deleted, the guard passes silently. Re-point it when F004 lands.",
+    "Advisory for F011: examples/real_project/execute_genesis_real.py print literals still say 'GeneForge v2.0 Engine'."
   ],
   "claims": [
     {"claim": "Full suite and lint green at HEAD", "class": "OBSERVED"},
-    {"claim": "Guard fails on origin/main in 13 families", "class": "OBSERVED"},
-    {"claim": "C17 guard is silently disarmed if the connector file is removed or moved", "class": "OBSERVED"},
-    {"claim": "Public docs unchanged since the attempt-2 verification, so the D5 AST and smoke evidence still holds", "class": "INFERRED"}
+    {"claim": "Guard fails on origin/main in 11 test functions (29 failures)", "class": "OBSERVED"},
+    {"claim": "Non-assertion exceptions in owned guards are no longer swallowed", "class": "OBSERVED"},
+    {"claim": "Public docs unchanged since attempt 4 verification, so D5 AST/smoke and D6 evidence still hold", "class": "INFERRED"}
   ]
 }
