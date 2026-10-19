@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 """
-GFL Genesis Project - Real Execution Script
-Executes the complete CRISPR gRNA discovery workflow using GeneForge v2.0
+GFL Genesis Project - illustrative simulation script.
+
+Runs a simulated CRISPR gRNA discovery workflow for BRCA1. It does not call
+the GeneForge engine or any scoring model: every on-target and off-target
+score is a random draw from ``np.random.beta`` (confidence from
+``np.random.uniform``) and the sequences are random. The outputs are
+illustrative only; they are not a validation and say nothing about real
+guide RNAs. Research software, not for clinical use.
 """
 
 import json
@@ -20,7 +26,7 @@ sys.path.append("C:\\Users\\usuario\\GeneForge Ecosystem\\GeneForgeLang")
 
 
 def simulate_geneforge_engine():
-    """Simulate the GeneForge engine execution with realistic results."""
+    """Simulate the GeneForge engine with random scores (np.random.beta); not real predictions."""
     print("🚀 Starting GeneForge v2.0 Engine...")
     print("📊 Initializing Multi-Omic Discovery Pipeline...")
 
@@ -85,7 +91,7 @@ def simulate_geneforge_engine():
 
 
 def generate_realistic_grna_sequence():
-    """Generate a realistic gRNA sequence."""
+    """Generate a random 20-nt gRNA-like sequence."""
     bases = ["A", "T", "G", "C"]
     # Generate 20bp sequence with some constraints
     sequence = ""
@@ -247,7 +253,7 @@ def main():
         # Generate manuscript table
         table1 = generate_manuscript_table()
 
-        print("\n🎉 EXPERIMENT COMPLETED SUCCESSFULLY!")
+        print("\nSIMULATION COMPLETED (random scores, not a validation)")
         print("=" * 60)
         print("📁 Generated Files:")
         print("  • results/final_candidates.csv - All ranked candidates")
@@ -262,7 +268,7 @@ def main():
         print(f"⚠️  Off-Target Score: {results['final_rankings'][0]['off_target_score']:.4f}")
 
         print(f"\n🕒 Completed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print("\n🚀 GeneForge v2.0 Multi-Omic Discovery: MISSION ACCOMPLISHED!")
+        print("\nIllustrative simulation finished. Scores are random draws, not predictions.")
 
     except Exception as e:
         print(f"❌ Error during execution: {e}")

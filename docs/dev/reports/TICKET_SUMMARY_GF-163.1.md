@@ -63,7 +63,7 @@ To use container execution:
 
 1. Install with container support:
    ```bash
-   pip install geneforgelang[containers]
+   pip install -e ".[containers]"  # from a source checkout; not yet on PyPI
    ```
 
 2. Plugins can specify container images in their `pyproject.toml`:

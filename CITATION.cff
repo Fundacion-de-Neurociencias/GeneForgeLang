@@ -28,13 +28,7 @@ keywords:
 license: MIT
 version: "1.0.0"
 date-released: "2024-08-31"
-preferred-citation:
-  type: article
-  title: "GeneForgeLang: A Domain-Specific Language for Reproducible Genomic Workflows with AI Integration"
-  authors:
-    - family-names: "Fundación de Neurociencias"
-      given-names: "Research Team"
-  year: 2024
-  journal: "bioRxiv"
-  doi: "10.1101/2024.08.31.geneforgelang"
-  url: "https://github.com/Fundacion-de-Neurociencias/GeneForgeLang"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.15493559"
+    description: "Whitepaper: GeneForgeLang (GFL), a symbolic language for rational bio-design (Zenodo, 2025)"

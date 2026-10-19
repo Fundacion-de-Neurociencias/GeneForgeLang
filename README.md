@@ -1,20 +1,18 @@
-# 🧬 GeneForgeLang v2.0 Beta
+# 🧬 GeneForgeLang
 
 > **The Symbolic Language for Biological Reasoning**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-2.0.0--beta-blue.svg)](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang)
-[![PyPI](https://img.shields.io/pypi/v/geneforgelang.svg)](https://pypi.org/project/geneforgelang/)
 
-## **GeneForge v2.0 Beta - Multi-Omic Reasoning Platform**
+> **Notice.** Research software. Not a medical device, not for clinical use, and not legal or regulatory advice.
 
-**Revolutionary computational biology platform** that integrates multi-omic data with spatial genomic reasoning for biological discovery and design.
+## What is GeneForgeLang?
 
-## What is GeneForgeLang v2.0?
+GeneForgeLang (GFL) is a domain-specific language for describing biological design workflows. A GFL document is YAML with typed blocks (`design`, `optimize`, `experiment`, `analyze`, ...). The Python library parses and validates these documents and offers a plugin system for tools that act on them.
 
-GeneForgeLang (GFL) v2.0 is a **next-generation domain-specific language** for computational biology that enables researchers to reason across multiple omics layers while maintaining spatial genomic context. Building upon our proven workflow capabilities, v2.0 introduces comprehensive multi-omic integration, spatial genomic reasoning, and guided discovery frameworks.
+**Status.** GFL is under active development and has no published release yet. The documented public API and the `gfl` command-line tool do not work from an installed package in this version (see [Quick Start](#quick-start)). The language features listed below describe the language design; check the [feature documentation](docs/index.md) for what the current parser accepts.
 
-## 🚀 **New in v2.0 - Multi-Omic Capabilities**
+## Language Capabilities
 
 ### **Multi-Omic Integration**
 
@@ -37,12 +35,9 @@ GeneForgeLang (GFL) v2.0 is a **next-generation domain-specific language** for c
 - **📋 Rule-Based Logic**: Complex biological constraint expression
 - **🎭 Simulation Framework**: What-if analysis and hypothesis testing
 
-### **Privacy-Preserving Bio-Skills**
+### **Local Execution**
 
-- **🧬 Local Bioinformatics**: High-precision analysis running 100% locally
-- **✅ Scientific Reproducibility**: Automatic generation of Reproducibility Packages (hashes, timestamps, versions)
-- **🧠 Clinical Neuro-Skills**: Specialized skills for PharmGx, Geriatric Risk, and NutriGx
-- **🛡️ Data Sovereignty**: Genome-scale analysis without cloud dependencies or LLM hallucinations
+- **🛡️ Data stays local**: the library parses and validates workflows on your machine; it sends no data to a cloud service.
 
 ## 🌐 Open-Source and Universal
 GeneForgeLang is an **open-source project** dedicated to the entire scientific community. While it serves as the foundation for the GeneForge platform, its design and evolution are governed by universal biological principles, not by any specific commercial or execution environment.
@@ -67,49 +62,30 @@ To ensure consistency across the ecosystem, GFL maintains a set of formal specif
 - **API Integration**: RESTful API for programmatic access
 - **Container Execution**: Reproducible execution using Docker containers
 
-## 🧪 **Scientific Validation - BRCA1 gRNA Discovery**
+## 🧪 Example: BRCA1 gRNA Discovery (Illustrative simulation)
 
-Our platform has been validated through a comprehensive experiment discovering optimal gRNA candidates for CRISPR gene editing:
-
-### **Results Summary**
-
-- **🏆 Best Candidate**: BRCA1_gRNA_4_02
-- **📈 Combined Score**: 89.7% efficiency
-- **🎯 On-Target**: 84.8% efficiency with only 3.0% off-target risk
-- **⚡ Discovery Time**: 24 seconds for 50 candidates across 5 cycles
-
-### **Scientific Impact**
-
-- **Clinical Relevance**: BRCA1 is critical for cancer research
-- **Safety Focus**: <30% off-target risk across all top candidates
-- **Efficiency**: >80% on-target activity for top 10 candidates
-- **Reproducibility**: Complete workflow documented and open-source
-
-**📄 [Read the full scientific manuscript](examples/gfl-genesis/Manuscript_GeneForge_v2_Beta.md)**
+The [GFL Genesis example](examples/real_project/README.md) shows how a guided-discovery workflow for CRISPR gRNA candidates against BRCA1 is written in GFL. Its execution script draws every on-target and off-target score from `np.random.beta`: the numbers in its outputs are random scores, not a validation, and say nothing about real guide efficiency or safety. The accompanying [draft manuscript](examples/real_project/Manuscript_GeneForge_v2_Beta.md) is labelled the same way.
 
 ## Quick Start
 
 ### Installation
 
-```
-# Basic installation
-pip install geneforgelang
+GeneForgeLang is not yet published on PyPI. Install it from source:
 
-# With web interface
-pip install geneforgelang[web]
+```bash
+git clone https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git
+cd GeneForgeLang
+pip install -e .
 
-# With CLI tools
-pip install geneforgelang[cli]
-
-# With container support
-pip install geneforgelang[containers]
-
-# Full installation
-pip install geneforgelang[all]
+# Optional extras: web, cli, ml, containers, staging, lsp, dev
+pip install -e ".[cli]"
 ```
 
 ### Basic Usage - Protein Design and Optimization
 
+This is the target Python API. The top-level import below does not work in this version; feature F010 adds it. The workflow text itself parses and validates with the current parser.
+
+<!-- does not run yet: F010 -->
 ```python
 from geneforgelang import parse, validate, execute
 
@@ -154,23 +130,14 @@ if not errors:
 
     # Execute workflow
     result = execute(ast)
-    #print(result)
-    print(f"Done!: {result['design']['count']} proteins generated")
-"""
-
-# Parse and validate
-ast = parse(workflow)
-errors = validate(ast)
-
-if not errors:
-    # Execute workflow
-    result = execute(ast)
-    print(f"Editing efficiency: {result['efficiency']:.2%}")
+    print(f"Done: {result['design']['count']} proteins generated")
 ```
 
 ### Command Line Interface
 
-```
+The `gfl` command does not start in this version (feature F015 tracks the fix). These are the intended commands:
+
+```bash
 # Parse a workflow
 gfl parse workflow.gfl
 
@@ -192,7 +159,7 @@ gfl -h
 
 ### CRISPR Gene Editing
 
-```
+```gfl
 experiment:
   tool: CRISPR_cas9
   type: gene_editing
@@ -215,33 +182,42 @@ validation:
 
 ### Protein Design
 
-```
+```gfl
 design:
   entity: ProteinSequence
+  model: ProteinVAEGenerator
   objective:
     maximize: stability
-    target: therapeutic_protein
   constraints:
-    - length: [50, 150]
-    - synthesizability: ">0.8"
+    - length(50, 150)
+    - synthesizability > 0.8
   count: 10
+  output: designed_proteins
 
 optimize:
   search_space:
-    temperature: [25, 42]
-    ph: [6.5, 8.0]
-  strategy: bayesian_optimization
+    temperature: "range(25, 42)"
+    ph: "range(6.5, 8.0)"
+  strategy:
+    name: BayesianOptimization
   objective:
     maximize: expression_level
   budget:
     max_experiments: 50
+  run:
+    experiment:
+      tool: protein_assay
+      type: expression_measurement
+      params:
+        temp: "${temperature}"
+        ph: "${ph}"
 ```
 
 ## Architecture
 
 GeneForgeLang follows a modular architecture:
 
-```
+```text
 src/geneforgelang/
 ├── core/           # Core language functionality
 │   ├── parser.py   # YAML/GFL parser
@@ -258,7 +234,7 @@ src/geneforgelang/
 
 GeneForgeLang supports custom plugins for extending functionality:
 
-```
+```python
 from geneforgelang.plugins import BasePlugin
 
 class CustomAnalysisPlugin(BasePlugin):
@@ -278,7 +254,7 @@ register_plugin(CustomAnalysisPlugin())
 
 Launch the web interface for interactive workflow development:
 
-```
+```bash
 gfl web --host 0.0.0.0 --port 8080
 ```
 
@@ -302,7 +278,7 @@ Features:
 
 ### Setup Development Environment
 
-```
+```bash
 # Clone repository
 git clone https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git
 cd GeneForgeLang
@@ -319,7 +295,7 @@ pytest
 
 ### Project Structure
 
-```
+```text
 GeneForgeLang/
 ├── src/geneforgelang/    # Source code
 ├── tests/                # Test suite
@@ -348,13 +324,13 @@ GeneForgeLang/
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [license](license) file for details.
 
 ## Citation
 
 If you use GeneForgeLang in your research, please cite:
 
-```
+```bibtex
 @software{geneforgelang2025,
   title={GeneForgeLang: A Professional DSL for Genomic Workflows},
   author={GeneForgeLang Development Team},
