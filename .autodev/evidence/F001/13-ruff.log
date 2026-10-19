@@ -1,9 +1,1 @@
-ruff at 164e7df:
-tests\unit\ir\test_external_connectors.py:3:1: I001 [*] Import block is un-sorted or un-formatted
-Found 1 error.
-ruff at HEAD:
-tests\unit\ir\test_external_connectors.py:3:1: I001 [*] Import block is un-sorted or un-formatted
-Found 1 error.
-ruff tests/security:
 All checks passed!
-exit=0

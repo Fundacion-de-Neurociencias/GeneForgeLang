@@ -31,3 +31,4 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
   - The autodev guard matches `.env` inside commit-message text; use `git commit -F`.
 - Owner: rotate the credentials (`spec/secret-rotation.md`), decide on the history purge, make `gitleaks` a required check, and add `.gitleaks.toml` and `.pre-commit-config.yaml` to `sensitive_paths` (all in next-steps.md).
 - Next: `/autodev:verify F001` in a separate session.
+- Addendum (same session, Stop gate): fixed both baseline failures at the root cause in commit `fix(core): deterministic LRU order and unit-interval similarity scores` (coordination with María's branch noted in the contract). Full suite: 878 passed, 22 skipped, 5 xfailed, 0 failed; `ruff check src tests`: all checks passed. This commit is a product commit and belongs in the PR (rebase note for María: `core/performance.py`, `ir/external/openmed_connector.py`).
