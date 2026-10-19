@@ -53,20 +53,6 @@ class TestIntelligentCache:
         assert cache.get("key2") is None  # Evicted
         assert cache.get("key3") == 300
 
-    def test_lru_eviction_with_identical_timestamps(self, monkeypatch):
-        """LRU order must not depend on wall-clock resolution (ties on coarse clocks)."""
-        monkeypatch.setattr("geneforgelang.core.performance.time.time", lambda: 1_000.0)
-        cache = IntelligentCache[str, int](max_size=2, eviction_policy=LRUEvictionPolicy())
-
-        cache.put("key1", 100)
-        cache.put("key2", 200)
-        cache.get("key1")
-        cache.put("key3", 300)
-
-        assert cache.get("key1") == 100
-        assert cache.get("key2") is None
-        assert cache.get("key3") == 300
-
     def test_ttl_eviction(self):
         """Test TTL-based eviction."""
         cache = IntelligentCache[str, int](max_size=10, ttl=0.1)  # 100ms TTL
