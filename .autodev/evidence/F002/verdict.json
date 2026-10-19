@@ -1,13 +1,13 @@
 {
   "feature": "F002",
-  "verdict": "PASS",
+  "verdict": "FAIL",
   "commit": "4d6acff566a1a7f845a81338a1aa991a065e31ff",
   "attempt": 2,
   "acceptance": [
     {
       "item": "Every row of spec/claims-inventory.md has status 'fixed' with the PR diff hunk",
-      "result": "PASS (with recorded deviation)",
-      "evidence": "C1-C5, C7-C10, C14, C21, C22 fixed with hunks; C6, C11-C13 prevented by the guard; C15-C20 open and owned by F004/F006/F008/F009/F011. Deviation D10 in contracts/F002.md; must be confirmed by the owner at the PR gate (D11)."
+      "result": "FAIL",
+      "evidence": "C1-C5, C7-C10, C14, C21, C22 fixed with hunks; C6, C11-C13 prevented by the guard; C15-C20 open and owned by F004/F006/F008/F009/F011. Deviation D10 in contracts/F002.md; must be confirmed by the owner at the PR gate (D11). Literal acceptance not met; needs the owner or planner to amend the acceptance item in features.json."
     },
     {
       "item": "tests/docs/test_public_claims.py passes on head and fails on origin/main",
@@ -31,8 +31,8 @@
     },
     {
       "item": "Owner approves the PR before merge",
-      "result": "N/A",
-      "evidence": "Not satisfiable in verify; origin/main still 630059c, nothing merged or pushed"
+      "result": "FAIL",
+      "evidence": "Pending: owner approval of the PR has not happened. Not satisfiable in verify; origin/main still 630059c, nothing merged or pushed"
     }
   ],
   "rubric": [
@@ -78,6 +78,8 @@
     }
   ],
   "feedback": [
+    "Blocking (owner/planner, not code): acceptance item 1 requires every inventory row 'fixed'; C6, C11-C13 are 'prevented' and C15-C20 'open' (owned by F004/F006/F008/F009/F011). Amend the acceptance item or deliver those rows.",
+    "Blocking (owner): acceptance item 6, owner approval of the PR in chat, has not happened.",
     "Non-blocking: examples/real_project/Manuscript_GeneForge_v2_Beta.md still says 'The successful discovery of high-quality gRNA candidates' (Discussion) and 'The comprehensive validation framework ensures reliable execution in production environments' (Conclusions). The banner covers them, but rewording would remove the contradiction. Candidate for F009.",
     "Release gate: exclude .autodev/ from the PR to public main.",
     "Owner: confirm the Zenodo DOI (A2) and the D10 deviation from acceptance item 1 when approving the PR.",
@@ -108,5 +110,6 @@
       "claim": "Nothing merged to main",
       "class": "OBSERVED (origin/main = 630059c)"
     }
-  ]
+  ],
+  "note": "All code-level checks pass (D1-D14, rubric). The FAIL is only the two acceptance items that need human decisions."
 }

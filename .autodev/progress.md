@@ -39,3 +39,4 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - README plugin example runs with `python -I` from an empty dir (exit 0); the register_plugin caveat holds; all README external links answer 200; cffconvert valid; Zenodo DOI 302.
 - Governance auditor: nothing blocking for verify. Release gate: `.autodev/` must not reach public main.
 - Open for the owner at the PR: Zenodo DOI (A2), D10 deviation from acceptance item 1, PR approval. Non-blocking wording left in the bannered manuscript (F009).
+- Correction (same day): the PASS above was wrong. Acceptance items 1 (literal "every row fixed") and 6 (owner approval) are not met, and the evaluator rule requires every item. Verdict changed to FAIL, `passes` back to false. Code needs no change; see contracts/F002-feedback-2.md (owner/planner decisions).
