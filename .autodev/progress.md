@@ -84,3 +84,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Green: ruff, full suite (968 passed, 22 skipped, 10 xfailed), tests/docs on HEAD (97 passed, 5 xfailed), guard on origin/main (29 failed in 13 families), cffconvert, Zenodo DOI 302, language check 0, governance auditor 0 blocking. Inventory: 0 rows `open`.
 - FAIL: the `_owned_xfail` strict xfails have no `raises=`. Deleting `openmed_connector.py` reports C17 as XFAIL instead of an error or an XPASS, which breaks D16. One-line fix. See `contracts/F002-feedback-4.md` and `evidence/F002/verify4-owned-guards.log`.
 - Owner gates: PR approval and the Zenodo DOI (A2).
+
+## 2026-10-19 - F002 attempt 4 (feedback 4)
+- Changed: `tests/docs/test_public_claims.py` - `_owned_xfail` now uses `pytest.mark.xfail(strict=True, raises=AssertionError)`; `_c17_no_unconditional_privacy_flag` returns no hit when the connector file is gone; new `test_owned_xfails_only_expect_assertion_errors`. Contract: D18.
+- Verified: `ruff check src tests` clean; full suite 969 passed, 22 skipped, 10 xfailed. Scratch-worktree runs in `.autodev/evidence/F002/attempt4-owned-guards.log`: evaluator case 4 now reports C17 `XPASS(strict)` FAILED instead of XFAIL; an unreadable C18 runner is FAILED; dropping `raises` fails the new meta-test.
+- Limitations / next: item 6 (owner approves the PR) and the Zenodo DOI (A2) remain owner gates. Advisory from verify 4: exclude `.autodev/` from the PR to public main. Next: `/autodev:verify F002`.

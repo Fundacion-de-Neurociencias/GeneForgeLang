@@ -450,3 +450,15 @@ OWNED_CLAIMS = [
 def test_owned_claim_absent(check) -> None:
     hits = check()
     assert not hits, f"Claim owned by a later feature is present: {hits}"
+
+
+def test_owned_xfails_only_expect_assertion_errors() -> None:
+    """A strict xfail without ``raises`` would swallow a FileNotFoundError or a
+    parse error as the expected failure and hide a broken guard."""
+    loose = [
+        param.id
+        for param in OWNED_CLAIMS
+        for mark in param.marks
+        if mark.name == "xfail" and mark.kwargs.get("raises") is not AssertionError
+    ]
+    assert not loose, f"owned-claim xfails must set raises=AssertionError: {loose}"
