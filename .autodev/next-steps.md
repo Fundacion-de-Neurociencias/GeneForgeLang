@@ -5,7 +5,7 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 
 ## Now
 - Owner reviews and approves the onboarding plan (roadmap Phase 0-3, features F001-F016).
-- F001: remove `.devcontainer/.env` and the `.pkl` from the tree; gitleaks in pre-commit and CI; rotation list by service name.
+- F001: built on `autodev/F001` (2026-10-19), waiting for `/autodev:verify F001`. Then the owner approves pushing a PR branch cut from `origin/main` with the product commits only (draft in `contracts/F001-pr.md`), so the hosted `gitleaks` run exists.
 - F002: correct public claims (README, manuscript, whitepaper, CHANGELOG, SECURITY, CITATION) with not-for-clinical-use / not-legal-advice notices; PR for the owner to approve.
 
 ## Next
@@ -21,8 +21,10 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 - Phase 3: specification and conformance work backed by real code.
 
 ## Needs owner
-- **Key rotation.** After F001 lists the services, the owner or the account managers rotate the keys. Agents never read the file.
-- **History purge.** Removing `.devcontainer/.env` from the public history needs a force-push. Separate approval; recommended only after rotation, because the old values are already public.
+- **Key rotation (now).** F001 listed the services in `spec/secret-rotation.md` (Google API key for Gemini, plus anything else in the file). The owner or the account managers rotate every credential in the file. Agents never read the file.
+- **History purge (separate decision, never run by an agent).** Removing `.devcontainer/.env` (and the deleted `.pkl`) from the public history needs `git filter-repo` plus a force-push to `main` and every branch that contains it, and every collaborator must re-clone. Recommended only after rotation, because the old values are already public and may be in forks. Decide: purge / do not purge.
+- **Required checks and sensitive paths (with F003).** Add the status-check context `gitleaks` (workflow `.github/workflows/secret-scan.yml`) as required on `main`. Add `.gitleaks.toml` and `.pre-commit-config.yaml` to `[collaboration] sensitive_paths` in project.toml (`.github/workflows/**` is already there).
+- **Pre-commit config (finding from F001).** The existing `poetry-check` hook clones the poetry repository, which fails on Windows without `core.longpaths` ("Filename too long"), and the project is not a Poetry project. F003 should drop it or fix it.
 - **María's branch (PDN, `feature/PDN_feature-GFP`).** Decide with María whether it lands before or after the chain. Recommendation: after slice 1, rebased by her with our help, because the chain is larger and already reconciled.
 - **EVIDENCE_MATRIX.md (ADNI/NACC variables).** Legal review before it enters the public repo. Recommendation: keep it out until the review is done.
 - **Patent and regulatory review.** A patent lawyer and a regulatory expert review the items in `spec/ecosystem.md` ("Expert review list"). Agents do not decide.
