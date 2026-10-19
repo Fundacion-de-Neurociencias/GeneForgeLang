@@ -12,12 +12,13 @@ from __future__ import annotations
 
 import functools
 import hashlib
+import itertools
 import logging
 import pickle
 import time
 import weakref
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from threading import Lock, RLock
 from typing import Any, Callable, Generic, TypeVar
 
@@ -56,15 +57,25 @@ class CacheStats:
         self.evictions = 0
 
 
+# Process-wide logical clock for cache recency. next() on itertools.count is atomic in CPython.
+_access_sequence = itertools.count()
+
+
 @dataclass
 class CacheEntry(Generic[V]):
-    """Cache entry with metadata."""
+    """Cache entry with metadata.
+
+    ``access_seq`` is a strictly increasing logical clock value, set on creation and on
+    every access; recency-based policies order by it. ``last_accessed`` stays a wall-clock
+    timestamp for reporting.
+    """
 
     value: V
     created_at: float
     last_accessed: float
     access_count: int = 1
     size: int = 0
+    access_seq: int = field(default_factory=lambda: next(_access_sequence))
 
     def is_expired(self, ttl: float | None) -> bool:
         """Check if entry has expired."""
@@ -76,6 +87,7 @@ class CacheEntry(Generic[V]):
         """Update access metadata."""
         self.last_accessed = time.time()
         self.access_count += 1
+        self.access_seq = next(_access_sequence)
 
 
 class CacheEvictionPolicy(ABC):
@@ -101,7 +113,9 @@ class LRUEvictionPolicy(CacheEvictionPolicy):
         """Select least recently used entry."""
         if not entries:
             return None
-        return min(entries.keys(), key=lambda k: entries[k].last_accessed)
+        # Order by the logical access sequence: wall-clock timestamps tie at coarse clock
+        # resolution (about 15 ms on Windows) and can move backwards.
+        return min(entries.keys(), key=lambda k: entries[k].access_seq)
 
 
 class TTLEvictionPolicy(CacheEvictionPolicy):

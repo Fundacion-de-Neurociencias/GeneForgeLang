@@ -1,7 +1,8 @@
 """Tests for external knowledge connectors (Fase 3)."""
 
-import pytest
 import os
+
+import pytest
 
 from geneforgelang.ir.external import (
     HuggingScienceConnector,
@@ -46,6 +47,22 @@ class TestOpenMedConnector:
         assert len(similar) > 0
         assert all(hasattr(s, "similarity") for s in similar)
         assert all(0 <= s.similarity <= 1 for s in similar)
+
+    def test_similarity_score_maps_cosine_to_unit_interval(self):
+        connector = OpenMedConnector()
+        v = [1.0, 2.0, 3.0]
+        opposite = [-x for x in v]
+        orthogonal = [3.0, 0.0, -1.0]
+
+        assert connector._cosine_to_score(connector._cosine_similarity(v, v)) == pytest.approx(1.0)
+        assert connector._cosine_to_score(connector._cosine_similarity(v, opposite)) == pytest.approx(0.0)
+        assert connector._cosine_to_score(connector._cosine_similarity(v, orthogonal)) == pytest.approx(0.5)
+        assert connector._cosine_to_score(1.0000000002) == 1.0
+
+    def test_similar_entities_sorted_by_score(self):
+        similar = OpenMedConnector().find_similar_entities("TP53", top_k=5)
+        scores = [s.similarity for s in similar]
+        assert scores == sorted(scores, reverse=True)
 
     def test_extract_entities_from_text(self):
         connector = OpenMedConnector(enable_privacy_filter=False)

@@ -128,8 +128,8 @@ class OpenMedConnector:
 
             other_emb = knowledge.get("embedding")
             if other_emb:
-                sim = self._cosine_similarity(query_emb, other_emb)
-                scores.append((other_id, sim))
+                cosine = self._cosine_similarity(query_emb, other_emb)
+                scores.append((other_id, self._cosine_to_score(cosine)))
 
         scores.sort(key=lambda x: x[1], reverse=True)
 
@@ -153,6 +153,15 @@ class OpenMedConnector:
         if norm_a == 0 or norm_b == 0:
             return 0.0
         return dot / (norm_a * norm_b)
+
+    @staticmethod
+    def _cosine_to_score(cosine: float) -> float:
+        """Map a cosine in [-1, 1] to a similarity score in [0, 1], preserving order.
+
+        Consumers use ``SimilarEntity.similarity`` as a confidence/relevance in [0, 1].
+        The clamp absorbs floating-point overshoot (e.g. 1.0000000002).
+        """
+        return min(1.0, max(0.0, (cosine + 1.0) / 2.0))
 
     # ------------------------------------------------------------------
     # Named Entity Recognition (NER)
