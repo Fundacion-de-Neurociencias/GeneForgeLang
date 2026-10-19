@@ -109,3 +109,4 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Invoked again at 268aaff. Since the round-4 PASS (5893f94) only autodev bookkeeping changed (`progress.md`, `verify5/reconfirm.txt`); no product change.
 - Hygiene tests re-run: 16 passed. Evidence: `evidence/F001/verify6/reconfirm.txt`. Verdict file unchanged.
 - Loop note: the runner should stop invoking sprint/verify on F001 and move to F002, or the owner should schedule the baseline-fix feature (`next-steps.md`, "Needs owner").
+- Stop gate (this session): blocked by the same 2 baseline failures (`test_lru_eviction`, `test_find_similar_entities`). Not fixed: the evaluator does not change code, both files are out of F001 scope (sensitive `core/**`, on María's in-flight branch), and weakening tests is forbidden. Ended under "When stuck"; owner decision still pending in `next-steps.md`.
