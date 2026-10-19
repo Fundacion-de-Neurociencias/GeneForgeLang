@@ -19,3 +19,9 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Needs owner: confirm the Zenodo DOI (A2); confirm the D10 deviation from acceptance item 1 (rows owned by other features); approve the PR (owner decision 2).
 - Findings for other features: the README Quick Start does not run (`from geneforgelang import parse` fails; `plugin_registry.py` imports `src.geneforgelang`; the `gfl` script fails) -> F010/F015. `docs/index.md` links to a missing `SECURITY_ADVISORY.md` and README links to readthedocs (C19) -> F009/F011. The example script needs matplotlib and pandas, which no extra declares. The README feature lists (multi-omic blocks, spatial predicates) were not checked against the parser -> F009/F010.
 - Next: `/autodev:verify F002` in a separate session.
+
+## 2026-10-19: verify F002 - FAIL (feedback 1)
+- Independent evaluator at 17fd3e5. Lint clean; 952 passed, 22 skipped, 5 xfailed; claims guard 93 passed on head, 28 failed on origin/main; cffconvert valid; Zenodo DOI 302; script AST unchanged, smoke run exit 0.
+- FAIL on G8.2/QB-8: README plugin example imports names that do not exist and is unmarked; README links readthedocs and Discussions, both 404.
+- Governance auditor: nothing blocking for a merge into autodev/integration; .autodev/ must not reach public main.
+- Next: F002 attempt 2 with contracts/F002-feedback-1.md.
