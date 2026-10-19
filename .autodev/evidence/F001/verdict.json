@@ -1,42 +1,30 @@
 {
- "feature": "F001",
- "verdict": "FAIL",
- "commit": "c4c1ffe37c050ddd8ac14595ef76f2ec3917e214",
- "attempt": 2,
- "supersedes": ".autodev/evidence/F001/verify/verdict-1.json",
- "summary": "Every reproducible Done-means item passes at c4c1ffe. FAIL only because contract item 6 says F001 is not passes:true until the hosted secret-scan.yml run exists or the owner accepts the local evidence; neither is recorded. No code change is needed.",
- "acceptance": [
-  {"item": "git ls-files lists no .env (except *.env.example) and no *.pkl/*.pickle/*.joblib", "result": "PASS", "evidence": "verify2/checks-tests.txt: every tests/security test passed (test_no_tracked_env_files, test_no_tracked_serialized_models)"},
-  {"item": "gitleaks on PR head reports zero findings; fake AWS key blocked by pre-commit hook and CI job", "result": "PARTIAL", "evidence": "verify2/gitleaks-items-2-4.log: HEAD export no leaks (exit 0); 164e7df..HEAD 13 commits no leaks; fixture not reported, same key elsewhere reported, non-allowlisted tokenizer_name reported, in dir and git modes. verify2/precommit-item5-windows.log: hook gitleaks Passed on a clean change and Failed with aws-access-token on a fake key (Windows, default PRE_COMMIT_HOME). CI script: verify/06b-first-pr-base-without-config.log and 06-ci-script-wsl.log (product files unchanged since 881f7d9). Hosted GitHub run: does not exist (contract item 6, owner gate)."},
-  {"item": "CI gitleaks step pinned by commit SHA; required check listed in F003 request", "result": "PASS", "evidence": "secret-scan.yml uses checkout@11bd719...; the literal linux SHA-256 9991e0b2...e29c equals upstream gitleaks_8.24.3_checksums.txt (downloaded and compared this session); test_secret_scan_workflow_pinned passed; verify2/rotation-and-next-steps.log (next-steps.md:29)"},
-  {"item": "secret-rotation.md names services and owners only; gitleaks finds nothing", "result": "PASS", "evidence": "verify2/rotation-and-next-steps.log: no leaks, no line matching [=:]\\s*\\S{8,}, 0 URLs"},
-  {"item": "ADR records pickle removal and no-pickle rule", "result": "PASS", "evidence": "docs/decisions/20261019-no-pickle-artifacts.md; governance audit"},
-  {"item": "PR body has the four sections and lists sensitive files", "result": "PASS", "evidence": "contracts/F001-pr.md: four sections, four sensitive files, counts 873/2/22/5 match 10-11-pr-rehearsal.log and verify2/checks-tests.txt; git diff 164e7df HEAD -- src is empty"}
- ],
- "rubric": [
-  {"check": "Deterministic checks (contract item 13)", "result": "PASS", "evidence": "verify2/checks-tests.txt: 873 passed, 2 failed (exactly the 2 baseline ids item 13 allows), 22 skipped, 5 xfailed. verify2/checks-ruff.txt: tests/security clean; src tests 1 error in tests/unit/ir/test_external_connectors.py, same as 164e7df (git diff 164e7df HEAD -- src tests/unit is empty). The suite is not fully green by design: item 13 and A5 tolerate the 2 pre-existing failures."},
-  {"check": "G2.2 scope", "result": "PASS", "evidence": "governance-auditor: net src diff empty; product commits e793288 2cec236 11b9118 touch only contract-scope files"},
-  {"check": "G3 secrets and isolation", "result": "PASS", "evidence": "governance-auditor; .devcontainer/.env never opened; HEAD and range scans clean"},
-  {"check": "G1.1 no mocks in verification", "result": "PASS", "evidence": "governance-auditor; real gitleaks binary and real git"},
-  {"check": "G5.1 claims with evidence", "result": "PASS", "evidence": "PR draft counts match the logs; the old verdict is archived as verify/verdict-1.json"},
-  {"check": "G10 language", "result": "PASS", "evidence": "verify2/language-check.txt: 0 segments not in en"},
-  {"check": "QB-12 conventional commits; .autodev out of the PR", "result": "PASS", "evidence": "governance-auditor"},
-  {"check": "Owner gate: hosted CI run or owner acceptance (contract item 6)", "result": "FAIL", "evidence": "No hosted run of secret-scan.yml; no owner acceptance in next-steps.md, progress.md or the inbox"}
- ],
- "feedback": [
-  "No code change is needed. Owner: either (a) approve pushing a PR branch cut from origin/main with e793288 2cec236 11b9118, so the hosted gitleaks run exists, or (b) record that you accept the local CI evidence. Then rerun /autodev:verify F001.",
-  "Correct the blocker wording in progress.md and next-steps.md: the red baseline does not block F001, because item 13 allows the 2 baseline ids. Only the item 6 owner gate blocks it."
- ],
- "claims": [
-  {"claim": "The HEAD tree and the 13 branch commits have no gitleaks findings", "class": "OBSERVED"},
-  {"claim": "The allowlist exempts the fixtures directory and nothing it was tested against", "class": "OBSERVED"},
-  {"claim": "The allowlist has no other bypass", "class": "INFERRED (config shape test plus three probes)"},
-  {"claim": "The pre-commit hook blocks a fake AWS key on Windows", "class": "OBSERVED"},
-  {"claim": "The CI script blocks a fake key and passes clean commits", "class": "INFERRED from verify-1 WSL evidence; workflow unchanged since"},
-  {"claim": "The hosted GitHub run will behave like the local run", "class": "INFERRED"}
- ],
- "guard_requests": [
-  "20261019-054021-32d1c2: cleanup of ignored files in a throwaway clone; not retried, used a fresh clone instead",
-  "20261019-054350-fb3e87: false positive, the guard matched the previous request's command text inside the verdict JSON; nothing was run"
- ]
+  "feature": "F001",
+  "verdict": "FAIL",
+  "commit": "2853b06f6f318259caa220a0ae3da1905187569d",
+  "date": "2026-10-19",
+  "round": 3,
+  "acceptance": [
+    {"item": "1-5, 7-12, 14 (scans, hook, pinning, rotation doc, ADR, PR rehearsal, commits, PR draft, evidence)", "result": "PASS (carried forward)", "evidence": "No product change since c4c1ffe: `git diff --name-only c4c1ffe..HEAD -- . ':!.autodev'` is empty. Results in evidence/F001/verify2/ still apply."},
+    {"item": "6 hosted secret-scan.yml run or owner acceptance of local evidence", "result": "FAIL", "evidence": "`gh run list --workflow secret-scan.yml` -> HTTP 404 (workflow not on the default branch); next-steps.md 'Needs owner' still lists the decision as open; no owner acceptance recorded."},
+    {"item": "13 tests and lint", "result": "PASS", "evidence": "verify3/checks.txt: 873 passed, 2 failed (the 2 allowed baseline ids), 22 skipped, 5 xfailed; ruff src tests = 1 error (same as 164e7df, 13-ruff.log); ruff tests/security clean."}
+  ],
+  "rubric": [
+    {"check": "G10 language", "result": "PASS", "evidence": "verify3/checks.txt: 0 segments not in 'en'"},
+    {"check": "G3 secrets/isolation", "result": "PASS (non-blocking note)", "evidence": "verify3/governance-audit.txt: local paths in evidence logs only, no keys or tokens"},
+    {"check": "G1.1 mocks in verification", "result": "PASS", "evidence": "verify3/governance-audit.txt"},
+    {"check": "G5.1 claims without evidence", "result": "PASS", "evidence": "verify3/governance-audit.txt"},
+    {"check": "G2.2 scope", "result": "PASS", "evidence": "verify3/governance-audit.txt; no change under src/"},
+    {"check": "Impact / system map", "result": "N/A", "evidence": "No runtime channel (commands.run empty); no product change since the last verify"}
+  ],
+  "feedback": [
+    "Owner gate, contract item 6: approve pushing a PR branch from origin/main with e793288 2cec236 11b9118 (option a) or record acceptance of the local evidence in next-steps.md (option b), then rerun /autodev:verify F001. No code change needed.",
+    "Do not rerun /autodev:sprint or /autodev:verify for F001 until the owner decides; three verify rounds have produced the same result."
+  ],
+  "claims": [
+    {"claim": "Suite: 873 passed, 2 failed (allowed baseline ids)", "class": "OBSERVED"},
+    {"claim": "No hosted secret-scan.yml workflow exists on GitHub", "class": "OBSERVED"},
+    {"claim": "No owner decision on item 6 is recorded", "class": "OBSERVED"},
+    {"claim": "gitleaks and pre-commit results from verify2 still hold", "class": "INFERRED (product tree unchanged since c4c1ffe; gitleaks not rerun in this session)"}
+  ]
 }

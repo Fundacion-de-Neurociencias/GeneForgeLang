@@ -68,3 +68,9 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Finding (environment): the global Python has an editable install of `geneforgelang` that points to the main checkout (`GeneForgeLang Ecosystem/GeneForgeLang/src`), and its `torchaudio` no longer loads. A bare `python -m pytest` in this worktree therefore tests the wrong copy of the code (it showed `tests/test_design_schema.py` failing with "GFL schema not found"). Always use the `.venv` command from `project.toml`.
 - Next: owner decision on item 6, then `/autodev:verify F001`.
 - Stop gate (this session, twice): blocked by the same 2 baseline ids. No in-scope fix exists (see the c4c1ffe entry): the root-cause fix `3e9f9ec` was rejected as out of scope, and weakening the tests is forbidden. Session ended under "When stuck"; owner decision in `next-steps.md` "Needs owner".
+
+## 2026-10-19: verify, F001 - FAIL 3 (owner gate only)
+- Independent session at 2853b06. No product change since c4c1ffe. Evidence in `evidence/F001/verify3/`; the old verdict is archived as `verify2/verdict-2.json`.
+- Suite: 873 passed, 2 failed (the 2 allowed baseline ids). Ruff is unchanged from base. Language check is clean. Governance audit: no blocking findings.
+- Blocking: contract item 6. GitHub has no `secret-scan.yml` workflow (404), and no owner decision is recorded.
+- Feedback: `contracts/F001-feedback-3.md`. Do not loop again until the owner decides.

@@ -1,0 +1,4 @@
+governance-auditor, range autodev/integration (164e7df)...2853b06, 2026-10-19
+BLOCKING: no
+- NON-BLOCKING G3: evidence logs (sprint3/02-tests.log, 05a-precommit-...log, verify2/precommit-item5-windows.log) contain local absolute paths (username, directory layout). No keys or tokens. .autodev/ stays out of the PR per contracts/F001-pr.md.
+- G1.1 mocks: none. G5.1 unearned claims: none. G2.2 scope: product files all within contract; no change under src/.
