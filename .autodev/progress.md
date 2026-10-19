@@ -137,3 +137,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 ## 2026-10-19: sprint, F001 - no-op (fifth time, already PASS)
 - `/autodev:sprint F001` invoked again at 359343b. `features.json` shows `passes: true`; no build work, no code change.
 - Same stop-gate blocker (2 baseline failures, out of F001 scope). Runner should target F002; owner decision pending in `next-steps.md`, "Needs owner".
+
+## 2026-10-19: verify, F001 - PASS stands (re-confirmation 5)
+- Invoked again at cca64d9. Since the round-4 PASS (5893f94) only `.autodev/` bookkeeping changed; no product change.
+- Hygiene tests re-run: 16 passed. Evidence: `evidence/F001/verify9/reconfirm.txt`. Verdict file unchanged.
+- Loop note (repeated): the runner should target F002; the baseline-test decision is in `next-steps.md`, "Needs owner".
