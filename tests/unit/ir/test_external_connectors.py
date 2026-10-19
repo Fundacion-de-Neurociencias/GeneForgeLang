@@ -1,6 +1,6 @@
 """Tests for external knowledge connectors (Fase 3)."""
 
-import os
+import random
 
 import pytest
 
@@ -34,10 +34,6 @@ class TestOpenMedConnector:
 
         assert emb1 == emb2
 
-    @pytest.mark.skipif(
-        os.getenv("CI") == "true",
-        reason="Requiere acceso a red externa"
-    )
     def test_find_similar_entities(self):
         connector = OpenMedConnector()
         similar = connector.find_similar_entities("TP53", top_k=3)
@@ -47,6 +43,33 @@ class TestOpenMedConnector:
         assert len(similar) > 0
         assert all(hasattr(s, "similarity") for s in similar)
         assert all(0 <= s.similarity <= 1 for s in similar)
+
+    def test_find_similar_entities_returns_known_genes_in_unit_range(self):
+        """Regression (F018): parallel embeddings must not score above 1.0."""
+        connector = OpenMedConnector()
+        similar = connector.find_similar_entities("TP53", top_k=3)
+
+        assert {s.entity_id for s in similar} == {"KRAS", "BRCA1"}
+        assert all(0.0 <= s.similarity <= 1.0 for s in similar)
+
+    @pytest.mark.parametrize("scale", [1e-8, 1e-3, 0.1, 0.2, 0.3, 1.0, 7.0, 1e3, 1e6])
+    def test_cosine_similarity_parallel_vectors_hit_bounds_exactly(self, scale):
+        """Parallel vectors score exactly 1.0, antiparallel exactly -1.0."""
+        connector = OpenMedConnector()
+        a = [0.1] * 768
+        b = [scale] * 768
+
+        assert connector._cosine_similarity(a, b) == 1.0
+        assert connector._cosine_similarity(a, [-x for x in b]) == -1.0
+
+    def test_cosine_similarity_random_vectors_within_bounds(self):
+        rng = random.Random(18)
+        connector = OpenMedConnector()
+        for _ in range(200):
+            a = [rng.uniform(-1, 1) for _ in range(64)]
+            b = [rng.uniform(-1, 1) for _ in range(64)]
+            assert -1.0 <= connector._cosine_similarity(a, b) <= 1.0
+            assert connector._cosine_similarity(a, a) <= 1.0
 
     def test_extract_entities_from_text(self):
         connector = OpenMedConnector(enable_privacy_filter=False)

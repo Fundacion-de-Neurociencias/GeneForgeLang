@@ -1,0 +1,42 @@
+{
+  "feature": "F018",
+  "verdict": "PASS",
+  "commit": "b5dbe767da9e81858d6c58145dd2bba01e76bdcb",
+  "evaluated_on": "2026-10-19",
+  "acceptance": [
+    {"item": "`commands.test` exits 0 on the integration branch (evidence: full output saved).", "result": "PASS", "evidence": "verify-suite.log: CI unset, -rA, 871 passed, 22 skipped, 5 xfailed, 0 FAILED lines, exit=0. verify-checks.txt: same counts with CI=true. autodev/integration (cf67007) is an ancestor of HEAD, so the merge is a fast-forward and the merged tree equals the tested tree."},
+    {"item": "Every previously failing test is fixed at its root cause in product or test code; none is skipped, deleted, marked xfail or weakened.", "result": "PASS", "evidence": "Fixes are in product code (performance.py: per-cache access_seq counter; openmed_connector.py: clamp to [-1, 1]); root causes are in contract F018.md. verify-checks.txt: tests/ diff removes only `import os` and a false CI skipif; pytest.ini, pyproject.toml and tests/conftest.py unchanged; no added skip/xfail/deselect lines. verify-oracle.txt: new regression tests fail against pre-fix product code (12 failed, 8 passed, modules loaded from the scratch copy) and pass at HEAD."},
+    {"item": "Failing at start: test_find_similar_entities and test_lru_eviction.", "result": "PASS", "evidence": "verify-suite.log lists both as PASSED; verify-oracle.txt: both pass 20/20 repeated runs; baseline-before.log shows both failing at cf67007."}
+  ],
+  "rubric": [
+    {"check": "G1.1 Real consumption", "result": "PASS", "evidence": "Library channel exercised through pytest in the isolated .venv; only mock is a frozen time.time clock in one regression test."},
+    {"check": "G1.2 Executable gate", "result": "PASS", "evidence": "verify-suite.log, verify-checks.txt"},
+    {"check": "G1.3 Root cause", "result": "PASS", "evidence": "Contract root causes reproduced by verify-oracle.txt (frozen clock evicts the wrong key; cosine >1 for parallel vectors on old code)."},
+    {"check": "G2.1 Traceability", "result": "PASS", "evidence": "All three acceptance items demonstrated above."},
+    {"check": "G2.2 Scope", "result": "PASS", "evidence": "Only the 4 files listed in the contract scope changed outside .autodev/ (git diff --stat)."},
+    {"check": "G2.3 Assumptions", "result": "PASS", "evidence": "A1-A3 in contract; A1 matches baseline-before.log."},
+    {"check": "G3.1 No secrets", "result": "PASS", "evidence": "Governance auditor: no secrets or tokens in the range."},
+    {"check": "G3.2-G3.4 Isolation / clinical data", "result": "PASS", "evidence": "No patient data; logs hold test output only (auditor)."},
+    {"check": "G4.1 Real channel", "result": "N/A", "evidence": "No user-facing UI or HTTP change; library verified via its test channel (commands.run/url empty)."},
+    {"check": "G5.1 No unearned success", "result": "PASS", "evidence": "progress.md numbers match logs (auditor and verify-suite.log)."},
+    {"check": "G7.1/G7.2 Protocol and sensitive paths", "result": "OWNER_GATE", "evidence": "core/performance.py is a sensitive path; no push or PR made; PR needs owner review (contract, Owner gates)."},
+    {"check": "G8.1/G8.2 Docs", "result": "N/A", "evidence": "No documented behaviour, command or interface changed; no public text touched."},
+    {"check": "G9.1 Quality bar", "result": "PASS", "evidence": "QB-4: new tests fail on old code (verify-oracle.txt); QB-5/QB-11: ruff clean on changed files and repo-wide (verify-checks.txt); QB-2: CacheEntry change is backward compatible (last field with default)."},
+    {"check": "G9.2 No demo shortcuts", "result": "PASS", "evidence": "Changed lines add no placeholders, prints, TODOs or swallowed exceptions. The pre-existing mock OpenMedConnector is out of scope and recorded for F002."},
+    {"check": "G9.3 Architecture", "result": "PASS", "evidence": "No new imports across layers; itertools only."},
+    {"check": "G9.4 Senior review", "result": "PASS", "evidence": "Minimal, invariant-based fixes with deterministic regression tests; non-blocking remarks in feedback."},
+    {"check": "G10.1 Language", "result": "PASS", "evidence": "verify-oracle.txt: language_check --diff autodev/integration: 0 segments not in 'en'."},
+    {"check": "Governance auditor", "result": "PASS", "evidence": "BLOCKING: 0 (4 non-blocking notes)."}
+  ],
+  "feedback": [
+    "Non-blocking: before publishing, push only fcc96fe and a669058 (the four product/test files); b5dbe76 and other .autodev/ commits must stay local (publish_autodev_state = false). Evidence logs contain local paths.",
+    "Non-blocking: suite-after.log is 195 KB; keep evidence logs to the relevant tail (see verify-suite.log for the truncated form).",
+    "Non-blocking follow-up already recorded: TTL expiry still uses wall-clock time.time(); consider time.monotonic() in a later feature."
+  ],
+  "claims": [
+    {"claim": "Full suite passes at HEAD with CI unset and with CI=true (871/22/5).", "class": "OBSERVED"},
+    {"claim": "New regression tests fail against the pre-fix product code.", "class": "OBSERVED"},
+    {"claim": "Merging into autodev/integration yields the tested tree (fast-forward).", "class": "INFERRED"},
+    {"claim": "The removed CI skip was false: the connector makes no network call.", "class": "OBSERVED"}
+  ]
+}

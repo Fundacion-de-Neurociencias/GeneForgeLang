@@ -1,0 +1,24 @@
+== new regression tests against pre-fix product code (autodev/integration versions), PYTHONPATH=scratch
+module: C:\Users\usuario\AppData\Local\Temp\claude\C--Users-usuario--autodev-workspaces-geneforgelang\0a1d7dba-59f9-44df-9e10-a12ece8970a8\scratchpad\old\geneforgelang\core\performance.py
+module: C:\Users\usuario\AppData\Local\Temp\claude\C--Users-usuario--autodev-workspaces-geneforgelang\0a1d7dba-59f9-44df-9e10-a12ece8970a8\scratchpad\old\geneforgelang\ir\external\openmed_connector.py
+FAILED tests/unit/test_performance.py::TestIntelligentCache::test_lru_eviction_independent_of_clock_resolution
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_find_similar_entities
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_find_similar_entities_returns_known_genes_in_unit_range
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[1e-08]
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[0.001]
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[0.1]
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[0.2]
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[0.3]
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[1.0]
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[1000.0]
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[1000000.0]
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_random_vectors_within_bounds
+======================== 12 failed, 8 passed in 0.24s =========================
+== network calls in connector
+53:        base_url: str = "https://api.openmed.fdn.org/v1",
+== repeat originally failing tests x20
+      7 ============================== 2 passed in 0.11s ==============================
+     13 ============================== 2 passed in 0.12s ==============================
+== language check
+0 segment(s) not in 'en'
+exit=0
