@@ -120,3 +120,6 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Invoked again after the round-4 PASS (5893f94). Since then only `.autodev/` bookkeeping changed (progress.md, reconfirm notes); no product change.
 - Hygiene tests re-run: 16 passed. Full suite, gitleaks and governance audit not re-run (empty product diff). Evidence: `evidence/F001/verify7/reconfirm.txt`.
 - Next useful step is F002 or the owner decision on the 2 baseline failures (`next-steps.md`), not another F001 verify.
+
+## 2026-10-19: verify, F001 - session ended at stop gate
+- Stop gate blocked on the same 2 baseline failures (`test_lru_eviction`, `test_find_similar_entities`); 873 passed. Not fixed: the evaluator must not change product code, the files are sensitive `core/**` on an in-flight branch, and weakening tests is forbidden. Owner decision still pending in `next-steps.md` ("Needs owner").
