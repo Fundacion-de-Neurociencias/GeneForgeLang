@@ -1,0 +1,16 @@
+# F002 attempt-2 verification checks, HEAD 4d6acff, 2026-10-19
+## pytest tests/docs
+0.01s setup    tests/docs/test_public_claims.py::test_readme_python_block_runs[README.md:237]
+0.01s call     tests/docs/test_public_claims.py::test_readme_relative_links_resolve
+
+(7 durations < 0.005s hidden.  Use -vv to show these durations.)
+[32m============================= [32m[1m94 passed[0m[32m in 0.25s[0m[32m ==============================[0m
+## full suite
+0.06s setup    tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_suggested_fixes
+0.04s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_complex_gfl_example
+0.03s call     tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_info_command
+[32m================= [32m[1m953 passed[0m, [33m22 skipped[0m, [33m5 xfailed[0m[32m in 4.45s[0m[32m ==================[0m
+## ruff
+All checks passed!
+## ruff format --check tests/docs
+2 files already formatted

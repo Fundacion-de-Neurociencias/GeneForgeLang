@@ -1,0 +1,40 @@
+{
+  "feature": "F002",
+  "verdict": "PASS",
+  "commit": "1b5242b56c9632ebbaff802d04e8598bf321524d",
+  "attempt": 5,
+  "note": "Previous verdicts kept as verdict-2.json, verdict-3.json and verdict-4.json.",
+  "acceptance": [
+    {"item": "In-scope inventory rows fixed with hunk; later-feature rows prevented and naming the owner", "result": "PASS", "class": "OBSERVED",
+     "evidence": "grep -c '| open' claims-inventory.md = 0. verify5-owned-guards.log: HEAD owned guards 4 passed, 5 xfailed; case 4 (openmed_connector.py deleted) -> C17 XPASS(strict) FAILED; case 6 (C18 runner undecodable) -> FAILED with UnicodeDecodeError, not XFAIL; case 7 (raises removed) -> meta-test FAILED. Feedback 4 resolved."},
+    {"item": "Claims test passes on head and fails on origin/main", "result": "PASS", "class": "OBSERVED",
+     "evidence": "HEAD: full suite green (verify5-checks.txt). origin/main 630059c with tests/docs copied: 29 failed, 66 passed, 5 xfailed, in 11 test functions incl. README denylist, notice and fence tags (verify5-guard-on-origin_main.log)."},
+    {"item": "Fenced GFL blocks in README.md and whitepaper.md parse or are labelled proposed", "result": "PASS", "class": "OBSERVED",
+     "evidence": "test_readme_fence_is_tagged, README parse/run tests and test_whitepaper_labels_proposed_notation pass on HEAD and fail on origin/main."},
+    {"item": "Notice identical in README.md and docs/index.md", "result": "PASS", "class": "OBSERVED",
+     "evidence": "test_intended_use_notice_present passes on HEAD, 2 failures on origin/main."},
+    {"item": "CITATION.cff validates; every DOI resolves", "result": "PASS", "class": "OBSERVED",
+     "evidence": "cffconvert: valid against schema 1.2.0; doi.org/10.5281/zenodo.15493559 -> 302; 10.1101/2024.08.31 only in the test denylist. Zenodo DOI pending owner confirmation (A2)."},
+    {"item": "Owner approves the PR in chat before merge", "result": "OWNER_GATE", "class": "OBSERVED",
+     "evidence": "No remote branch contains HEAD; origin/main still 630059c. Prepared artifact: branch autodev/F002 (exclude .autodev/ from the public PR)."}
+  ],
+  "rubric": [
+    {"check": "Deterministic checks (ruff, full pytest)", "result": "PASS", "evidence": "verify5-checks.txt: ruff clean; 969 passed, 22 skipped, 10 xfailed, exit 0"},
+    {"check": "G10 language (language_check --diff autodev/integration)", "result": "PASS", "evidence": "verify5-language.log: 0 segments outside 'en'"},
+    {"check": "Governance auditor (autodev/integration...HEAD)", "result": "PASS", "evidence": "0 blocking. Advisories: exclude .autodev/ from the public PR; Spanish local review file; execute_genesis_real.py still prints 'GeneForge v2.0 Engine' literals (C15, F011)."},
+    {"check": "G1.1 no mocks in verification", "result": "PASS", "evidence": "Guards use the real parser, validator and an isolated interpreter (auditor)."},
+    {"check": "G9 quality bar: regression guard correctness", "result": "PASS", "evidence": "Strict xfails set raises=AssertionError; non-assertion errors surface (verify5-owned-guards.log)."},
+    {"check": "Scope (src/ untouched since baseline fix)", "result": "PASS", "evidence": "git diff 5dcc4f3..HEAD touches only tests/docs/test_public_claims.py and .autodev/"}
+  ],
+  "feedback": [
+    "Advisory: when opening the PR to public main, exclude .autodev/ (publish_autodev_state = false).",
+    "Advisory for F004: the C17 guard is path-based; if the connector is moved rather than deleted, the guard passes silently. Re-point it when F004 lands.",
+    "Advisory for F011: examples/real_project/execute_genesis_real.py print literals still say 'GeneForge v2.0 Engine'."
+  ],
+  "claims": [
+    {"claim": "Full suite and lint green at HEAD", "class": "OBSERVED"},
+    {"claim": "Guard fails on origin/main in 11 test functions (29 failures)", "class": "OBSERVED"},
+    {"claim": "Non-assertion exceptions in owned guards are no longer swallowed", "class": "OBSERVED"},
+    {"claim": "Public docs unchanged since attempt 4 verification, so D5 AST/smoke and D6 evidence still hold", "class": "INFERRED"}
+  ]
+}

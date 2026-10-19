@@ -1,0 +1,19 @@
+HEAD 8b3556ff7075e6ee1bd23194a49e8d51259733cf
+--- source diff vs 4d6acff (excluding .autodev)
+(empty = unchanged)
+--- test
+0.05s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_api_integration
+0.04s setup    tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_object_literals
+[32m================= [32m[1m953 passed[0m, [33m22 skipped[0m, [33m5 xfailed[0m[32m in 4.73s[0m[32m ==================[0m
+--- claims guard
+[32m============================= [32m[1m94 passed[0m[32m in 0.25s[0m[32m ==============================[0m
+--- lint
+All checks passed!
+--- features.json F002 acceptance[0]
+Every row of spec/claims-inventory.md has status 'fixed' with the PR diff hunk as evidence.
+--- claims-inventory status counts
+grep: spec/claims-inventory.md: No such file or directory
+--- claims-inventory (.autodev/spec/claims-inventory.md) status counts
+     12 fixed
+      6 open
+      4 prevented

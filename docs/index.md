@@ -2,6 +2,8 @@
 
 > **The Symbolic Language for Biological Reasoning**
 
+> **Notice.** Research software. Not a medical device, not for clinical use, and not legal or regulatory advice.
+
 Welcome to the official documentation for GeneForgeLang (GFL). This index provides easy navigation to all documentation resources.
 
 ## Getting Started

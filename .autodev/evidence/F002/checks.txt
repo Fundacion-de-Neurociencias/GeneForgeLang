@@ -1,0 +1,18 @@
+## HEAD 17fd3e5bca8bedc42a32709bab0a96dc4c115855
+## lint
+All checks passed!
+## tests/docs
+============================ slowest 10 durations =============================
+0.01s call     tests/docs/test_public_claims.py::test_readme_relative_links_resolve
+
+(9 durations < 0.005s hidden.  Use -vv to show these durations.)
+[32m============================= [32m[1m93 passed[0m[32m in 0.19s[0m[32m ==============================[0m
+## full suite
+0.15s call     tests/unit/test_performance.py::TestIntelligentCache::test_cache_cleanup
+0.11s call     tests/unit/test_parser.py::TestParsingPerformance::test_parse_large_parameter_set
+0.07s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_performance_caching
+0.06s setup    tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_suggested_fixes
+0.05s call     tests/unit/test_enhanced_plugins.py::TestEnhancedRegistry::test_get_plugins_by_state
+0.04s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_api_integration
+0.03s call     tests/unit/test_enhanced_plugins.py::TestPluginErrorHandling::test_plugin_processing_error_continues
+[32m================= [32m[1m952 passed[0m, [33m22 skipped[0m, [33m5 xfailed[0m[32m in 4.91s[0m[32m ==================[0m

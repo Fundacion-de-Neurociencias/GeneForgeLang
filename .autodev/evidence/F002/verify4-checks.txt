@@ -1,0 +1,15 @@
+# verify 4 at 5dcc4f3, 2026-10-19
+## ruff
+All checks passed!
+ruff exit 0
+0.15s call     tests/unit/test_performance.py::TestIntelligentCache::test_cache_cleanup
+0.14s call     tests/unit/test_parser.py::TestParsingPerformance::test_parse_large_parameter_set
+0.09s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_performance_caching
+0.09s call     tests/docs/test_public_claims.py::test_readme_python_block_runs[README.md:237]
+0.08s setup    tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_object_literals
+0.07s call     tests/docs/test_public_claims.py::test_owned_claim_absent[C16-calibration-claim-F008]
+0.07s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_api_integration
+================= 968 passed, 22 skipped, 10 xfailed in 7.69s =================
+## tests/docs
+97 passed, 5 xfailed (C15-version-vs-beta, C17, C18, C19, C20-pr-description)
+## governance-auditor autodev/integration...HEAD: BLOCKING 0 (advisories: .autodev tracked on branch, exclude from PR to main; Spanish prose in contracts/F002-review.md, local only)

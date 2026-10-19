@@ -36,6 +36,7 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 - **Version number** for the first PyPI release. Recommendation: 0.3.0, which continues the v0.2.x tags and signals a pre-1.0 API.
 - **FastAPI apps.** Keep them as a secured optional extra, or remove them from the library. Recommendation: remove from the library; GeneForge does not use them.
 - **Zenodo DOI** in whitepaper.md (10.5281/zenodo.15493559): confirm it is ours and current.
+- **F002: approve the PR (acceptance item 6).** Item 1 was amended by the planner; attempt 3 marks C15-C20 `prevented` with guards. After `/autodev:verify F002` passes, only the owner's approval remains.
 - **Contact identities.** Confirm a monitored package contact email (pyproject says team@geneforgelang.org) and the security contact in SECURITY.md.
 - **Bot identity.** Agent commits appear as "Fundación de Neurociencias <admin@…>". Recommendation: a dedicated bot account so agent and human work are distinguishable.
 - **External plugins** in "GeneForgeLang Ecosystem" (gatk, samtools, biopython-tools, clawbio, causal-evidence, tangermeme, CRISPR plugins): where they should live, and whether blast (corrupt) is retired.

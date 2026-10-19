@@ -1,0 +1,27 @@
+== case 0: HEAD baseline (owned guards)
+[33mXFAIL[0m tests/docs/test_public_claims.py::[1mtest_owned_claim_absent[C15-version-vs-beta-F011][0m - C15 still present; F011 removes it, then drop this marker
+[33mXFAIL[0m tests/docs/test_public_claims.py::[1mtest_owned_claim_absent[C17-privacy-cleared-F004][0m - C17 still present; F004 removes it, then drop this marker
+[33mXFAIL[0m tests/docs/test_public_claims.py::[1mtest_owned_claim_absent[C18-mocked-conformance-F006][0m - C18 still present; F006 removes it, then drop this marker
+[33mXFAIL[0m tests/docs/test_public_claims.py::[1mtest_owned_claim_absent[C19-readthedocs-url-F011][0m - C19 still present; F011 removes it, then drop this marker
+[33mXFAIL[0m tests/docs/test_public_claims.py::[1mtest_owned_claim_absent[C20-pr-description-doc-F009][0m - C20 still present; F009 removes it, then drop this marker
+[32m================= [32m[1m4 passed[0m, [33m94 deselected[0m, [33m5 xfailed[0m[32m in 1.50s[0m[32m =================[0m
+== case 4: delete openmed_connector.py
+[XPASS(strict)] C17 still present; F004 removes it, then drop this marker
+[31mFAILED[0m tests/docs/test_public_claims.py::[1mtest_owned_claim_absent[C17-privacy-cleared-F004][0m - [XPASS(strict)] C17 still present; F004 removes it, then drop this marker
+[31m====================== [31m[1m1 failed[0m, [33m102 deselected[0m[31m in 0.17s[0m[31m ======================[0m
+== case 6: C18 file paths missing
+413:def _c18_no_mocked_conformance() -> list[str]:
+414-    hits = []
+415-    for base in ("resources", "scripts"):
+416-        for path in sorted((ROOT / base).rglob("conformance_runner.py")):
+417-            hits += [f"{_rel(path)}: {h}" for h in _find(_read(path), ("Mocking success",))]
+418-    return hits
+419-
+420-
+421-def _c19_no_dead_docs_url() -> list[str]:
+== case 7: remove raises from marker
+[31mFAILED[0m tests/docs/test_public_claims.py::[1mtest_owned_xfails_only_expect_assertion_errors[0m - AssertionError: owned-claim xfails must set raises=AssertionError: ['C15-ve...
+[31m====================== [31m[1m1 failed[0m, [33m102 deselected[0m[31m in 0.51s[0m[31m ======================[0m
+== case 6: C18 runner made undecodable (resources/tools/dev/conformance_runner.py)
+[31mFAILED[0m tests/docs/test_public_claims.py::[1mtest_owned_claim_absent[C18-mocked-conformance-F006][0m - UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: inv...
+[31m====================== [31m[1m1 failed[0m, [33m102 deselected[0m[31m in 0.46s[0m[31m ======================[0m
