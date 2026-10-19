@@ -5,7 +5,7 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 
 ## Now
 - Owner reviews and approves the onboarding plan (roadmap Phase 0-3, features F001-F016).
-- F001: built on `autodev/F001` (2026-10-19), waiting for `/autodev:verify F001`. Then the owner approves pushing a PR branch cut from `origin/main` with the product commits only (draft in `contracts/F001-pr.md`), so the hosted `gitleaks` run exists.
+- F001: built on `autodev/F001` (2026-10-19); verify FAIL 1 (scope) fixed by reverting the out-of-scope commit; waiting for `/autodev:verify F001` again. Then the owner approves pushing a PR branch cut from `origin/main` with the product commits only (draft in `contracts/F001-pr.md`), so the hosted `gitleaks` run exists.
 - F002: correct public claims (README, manuscript, whitepaper, CHANGELOG, SECURITY, CITATION) with not-for-clinical-use / not-legal-advice notices; PR for the owner to approve.
 
 ## Next
@@ -13,6 +13,8 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 - F004: provenance contract; label and disconnect simulated components on main.
 - F005: reconcile main's 31 commits with the chain; integration plan by slices.
 - F006: honest conformance runner.
+
+- Proposed feature (needs owner/planner to add it to the backlog): fix the 2 baseline test failures at their root cause - LRU victim chosen by `time.time()` ties at Windows clock resolution (`core/performance.py`), mock cosine similarity outside [0, 1] (`ir/external/openmed_connector.py`). A tested fix exists in commit 3e9f9ec on `autodev/F001` (reverted there as out of scope). Both files are on María's branch: agree with her whether it lands on her branch or after it.
 
 ## Later
 - F007-F009: integrate the chain in slices (owner approves each).

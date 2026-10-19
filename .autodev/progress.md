@@ -38,3 +38,11 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - New check: the workflow script on `origin/main` + product commits (base has no `.gitleaks.toml`, default rules) exits 0 in WSL (`verify/06b-*.log`).
 - Blocking (governance audit): commit 3e9f9ec changes `core/performance.py` and `openmed_connector.py`, outside the contract scope, on a sensitive path and on the teammate's in-flight files; the PR draft claims no library changes and stale test counts.
 - Feedback: `contracts/F001-feedback-1.md`. The hosted CI run, or owner acceptance of local evidence, is still required.
+
+## 2026-10-19: build, F001 - fixes for verify FAIL 1
+- Item 1 (scope): commit `4dc8deb` reverts `3e9f9ec`. `git diff --stat 164e7df HEAD -- src` is empty (`evidence/F001/10-11-pr-rehearsal.log`). The contract's coordination addendum is withdrawn and Done means item 13 keeps its original wording (failing ids are a subset of the 2 baseline ids).
+- Item 2 (stale PR draft): reran the PR rehearsal on the final commit set. Cherry-picking `e793288 2cec236 11b9118` onto `origin/main` 630059c is clean; the PR diff has 12 files, none under `src/` or `.autodev/`. Suite on that PR head: 873 passed, 2 failed (the 2 baseline ids), 22 skipped, 5 xfailed. `F001-pr.md` "Impact on results" updated with these counts.
+- Branch head suite (`evidence/F001/13-tests.log`): 873 passed, 2 failed (same 2 baseline ids), 22 skipped, 5 xfailed; `tests/security`: 16 passed. ruff (`13-ruff.log`): `tests/security` clean; `src tests` 1 error at both HEAD and 164e7df.
+- Known limitations: the suite is not fully green because the 2 baseline failures are back, by design (fixing them is out of F001's scope). The hosted `secret-scan.yml` run still needs the owner (push) or owner acceptance of the local evidence.
+- Proposed separate feature for the baseline fixes, coordinated with María (`next-steps.md`); the tested fix is in `3e9f9ec`.
+- Next: `/autodev:verify F001` in a separate session.
