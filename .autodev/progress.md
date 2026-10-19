@@ -81,3 +81,4 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Suite on 7904bc1 with the project command (`.venv`): 873 passed, 2 failed (the 2 baseline ids item 13 allows), 22 skipped, 5 xfailed.
 - Known limitation: the red baseline (lesson 19) is still there, so the Stop gate may block this session again. The fix is the proposed baseline feature, outside F001's scope.
 - Next: `/autodev:verify F001`.
+- Stop gate (this session): blocked by the same 2 baseline ids. No in-scope fix: the root-cause fix `3e9f9ec` was rejected as out of scope (sensitive `core/**`, files on María's in-flight branch), and weakening the tests is forbidden. Session ended under "When stuck". Owner decision: add the baseline-fix feature first (`next-steps.md`, "Needs owner").
