@@ -89,3 +89,7 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Governance audit: 0 blocking, 3 advisory. Contract amendment (allowlist regex `^nferruz/ProtGPT2$`) accepted.
 - Acceptance item 7 (hosted secret-scan run) is OWNER_GATE: push a PR branch from `origin/main` with `e793288 2cec236 11b9118`, PR text in `contracts/F001-pr.md`.
 - Stop gate after the PASS: blocked by the same 2 baseline failures (`test_lru_eviction`, `test_find_similar_entities`). Not fixed here: the evaluator does not change code, and both files are out of F001 scope (`core/**` is sensitive, on María's branch). Root-cause fix is the proposed feature in `next-steps.md` (tested patch in 3e9f9ec); owner/planner must schedule it.
+
+## 2026-10-19: sprint, F001 - no-op (already PASS)
+- `/autodev:sprint F001` invoked, but F001 already passed in verify round 4. No build work, no code change.
+- Stop gate: blocked by the same 2 baseline failures (`test_lru_eviction`, `test_find_similar_entities`). Not fixed: out of F001 scope (sensitive `core/**`, files on María's in-flight branch; fix `3e9f9ec` was rejected as out of scope), and weakening tests is forbidden. Session ended under "When stuck". Owner decision pending in `next-steps.md` ("Needs owner").
