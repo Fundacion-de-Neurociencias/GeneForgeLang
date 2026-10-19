@@ -25,3 +25,11 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - FAIL on G8.2/QB-8: README plugin example imports names that do not exist and is unmarked; README links readthedocs and Discussions, both 404.
 - Governance auditor: nothing blocking for a merge into autodev/integration; .autodev/ must not reach public main.
 - Next: F002 attempt 2 with contracts/F002-feedback-1.md.
+
+## 2026-10-19: build, F002 attempt 2 (feedback 1)
+- dcaec97: README Plugin System example rewritten against the real API (`geneforgelang.plugins.base.BaseGFLPlugin`, implements `process`); it states that `plugin_registry.register_plugin` fails in an installed package because the registry imports `src.geneforgelang` (F010). Support section: readthedocs and Discussions links (both 404) replaced by `docs/index.md`. Manuscript and final report: "revolutionary", "real-world application(s)" and "executed on the GeneForge WebApp" reworded as simulated examples.
+- Guard widened: `test_readme_python_block_runs` runs every unmarked README python block that uses geneforgelang in `python -I` from an empty temp dir; README denylist adds the two dead URLs; report denylist adds the three phrases. Test file reformatted with ruff format (it was not formatted before).
+- Verified: the widened guard fails 4 tests on 17fd3e5 (`attempt2-guard-on-17fd3e5.log`) and passes 94 on head; full suite, lint and language check in `attempt2-checks.txt`.
+- Inventory: C21 (plugin example) and C22 (support links) added as fixed. Contract: D11-D14 added under "Attempt 2".
+- Still needs owner: Zenodo DOI (A2), D10 deviation from acceptance item 1, PR approval. Release gate: `.autodev/` must not reach public main.
+- Next: `/autodev:verify F002` in a separate session.

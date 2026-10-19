@@ -1,0 +1,7 @@
+## HEAD dcaec97bc0dc32b18696fc35f7232ab996766bc3
+## lint
+All checks passed!
+## full suite
+================= 953 passed, 22 skipped, 5 xfailed in 4.33s ==================
+## language
+0 segment(s) not in 'en'

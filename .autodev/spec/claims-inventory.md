@@ -24,6 +24,8 @@ Every public claim found on 2026-10-18 (main and chain). Action follows owner de
 | C18 | scripts/conformance_runner.py:41 (chain), resources/tools/dev/conformance_runner.py:41 (main) | Conformance "PASSED" output | `actual = expected # Mocking success` | Run the real validator (F006) | open (F006) |
 | C19 | pyproject.toml `[project.urls]` | Documentation at geneforgelang.readthedocs.io; email team@geneforgelang.org | Not verified | Verify or replace (F011) | open (F011) |
 | C20 | docs/ (several status docs, e.g. `END_TO_END_TRUTH_AUDIT.md`, `PULL_REQUEST_DESCRIPTION.md`) | Status and success statements | Not verified (LESSONS 2) | Review in F009; propose removal of stale status docs (removal needs approval) | open (F009) |
+| C21 | README.md:233-251 (Plugin System) | Example imports `BasePlugin` and `register_plugin` from `geneforgelang.plugins` | Neither name exists there; the registry module imports `src.geneforgelang` and fails in an installed package (F002 feedback 1) | Rewrite against the real API and run it | fixed (F002 attempt 2; example uses `BaseGFLPlugin`, runs in an isolated interpreter via `test_readme_python_block_runs`; registry limitation stated, F010) |
+| C22 | README.md:346-347 (Support) | Discussions "Community support" and readthedocs "Comprehensive guides" | Both URLs return 404 (verify, 2026-10-19) | Remove or point to existing pages | fixed (F002 attempt 2; replaced by docs/index.md; both URLs denied in README by the claims test) |
 
 Missing everywhere: a not-for-clinical-use and not-legal-advice notice. Added by F002 (5363af4) to README.md and docs/index.md, and to the whitepaper and the real_project reports.
 
