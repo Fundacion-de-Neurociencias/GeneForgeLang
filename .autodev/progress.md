@@ -170,3 +170,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - `/autodev:sprint F001` invoked again at ba7952e. `features.json` shows `passes: true`; no build work, no code change.
 - Runner should target F002. The 2 baseline test failures (`test_lru_eviction`, `test_find_similar_entities`) are out of F001 scope; owner decision pending in `next-steps.md`, "Needs owner".
 - Stop gate blocked by the same 2 baseline failures (873 passed). Not fixed: out of F001 scope (sensitive `core/**`; fix `3e9f9ec` was already reverted as scope creep). Ended under "When stuck"; owner decision in `next-steps.md`, "Needs owner".
+
+## 2026-10-19: verify, F001 - PASS stands (re-confirmation 7)
+- Invoked again at fb25797. Since the round-4 PASS (5893f94) only `.autodev/` bookkeeping changed; no product change.
+- Hygiene tests re-run: 16 passed. Evidence: `evidence/F001/verify12/reconfirm.txt`. Verdict file unchanged.
+- Runner keeps re-invoking F001; it should move to F002 (see `next-steps.md`, "Needs owner").
