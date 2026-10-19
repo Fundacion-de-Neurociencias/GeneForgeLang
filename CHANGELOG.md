@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Microsatellite Somatic Instability & Catastrophe Cliff Gating (Neurodiagnoses Ecosystem)**:
+  - Formalized `SomaticInstabilityContract` and `SomaticDriftSimulationContract` capturing tissue-specific stochastic expansion of tandem repeats (e.g. HTT CAG repeats in striatal projection neurons) across decadal horizons.
+  - Implemented analytical projection of repeat tract distributions with DNA mismatch repair (MMR) modifier scaling (`msh3_genotype`, `mlh1_expression`) and catastrophic toxicity cliff probability calculation ($P(\text{Repeat} \ge \text{cliff}))$.
+  - Integrated `protocol` and `somatic_instability` top-level blocks in `GFLAST` and `EnhancedSemanticValidator` supporting discrete System 1 gating (`SUB_THRESHOLD_LATENT` vs `CLIFF_COLLAPSE_IMMINENT`).
+  - Added canonical example in `examples/features/huntington_somatic_instability_cliff.gfl` and documentation in `docs/geneforgelang/features/somatic_instability_repeat_cliff.md`.
+  - Added unit test suite in `tests/unit/test_somatic_instability_cliff.py` (100% passing).
 - **Regulatory Genomics Dual-Head Contracts (BPNet, AtacWorks & MIT 6.874)**:
   - Formalized `RegulatoryProfileContract` decoupling global count magnitude (`CountHeadContract`) from base-resolution spatial distribution (`ProfileHeadContract`), solving the spatial information collapse when reducing genomic signal to scalars.
   - Implemented exact Multinomial Profile negative log-likelihood (NLL) and Jensen-Shannon Divergence (JSD) analytical loss functions matching MIT 6.874 Lecture 7 empirical values ($NLL_{P1} \approx 22.3$, $NLL_{P2} \approx 160.9$).

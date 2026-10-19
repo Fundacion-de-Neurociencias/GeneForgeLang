@@ -342,6 +342,8 @@ class GFLAST:
     decision: DecisionContract | dict[str, Any] | None = None
     tape_recorder: TapeRecorderContract | dict[str, Any] | None = None
     regulatory_profile: Any | None = None
+    protocol: Any | None = None
+    somatic_instability: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -370,6 +372,14 @@ class GFLAST:
                 self.regulatory_profile.to_dict()
                 if hasattr(self.regulatory_profile, "to_dict")
                 else self.regulatory_profile
+            )
+        if self.protocol is not None:
+            result["protocol"] = self.protocol.to_dict() if hasattr(self.protocol, "to_dict") else self.protocol
+        if self.somatic_instability is not None:
+            result["somatic_instability"] = (
+                self.somatic_instability.to_dict()
+                if hasattr(self.somatic_instability, "to_dict")
+                else self.somatic_instability
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -538,10 +548,191 @@ class GFLAST:
             elif isinstance(rp_data, dict):
                 ast.regulatory_profile = RegulatoryProfileContract.from_dict(rp_data)
 
+        if "protocol" in data:
+            proto_data = data["protocol"]
+            if isinstance(proto_data, SomaticInstabilityContract):
+                ast.protocol = proto_data
+            elif isinstance(proto_data, dict):
+                ast.protocol = SomaticInstabilityContract.from_dict(proto_data)
+
+        if "somatic_instability" in data:
+            si_data = data["somatic_instability"]
+            if isinstance(si_data, SomaticInstabilityContract):
+                ast.somatic_instability = si_data
+            elif isinstance(si_data, dict):
+                ast.somatic_instability = SomaticInstabilityContract.from_dict(si_data)
+
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
 
         return ast
+
+
+# Somatic Repeat Instability & Catastrophe Cliff Contracts (Neurodiagnoses Ecosystem)
+class SomaticDriftModel(str, Enum):
+    """Stochastic models of repeat tract somatic length drift over time."""
+
+    STOCHASTIC_EXPANSION = "stochastic_expansion"  # Forward-biased expansion drift (MSH3/MLH1-driven)
+    LOGNORMAL_POPULATION = "lognormal_population"  # Lognormal distribution across cellular sub-populations
+    POISSON_JUMP_DIFFUSION = "poisson_jump_diffusion"  # Jump-diffusion slip process during transcription/repair
+
+
+@dataclass
+class SomaticDriftSimulationContract:
+    """Stochastic simulation parameters for somatic repeat expansion and catastrophe cliff."""
+
+    time_horizon_years: float = 65.0  # Age or observation window in years
+    toxicity_cliff_threshold: int = 150  # Repeat length where cell death / collapse occurs
+    stochastic_drift_rate_per_year: float = 2.3  # Mean repeat units gained per year
+    stochastic_dispersion: float = 0.25  # Dispersion / variance parameter
+    drift_model: SomaticDriftModel = SomaticDriftModel.STOCHASTIC_EXPANSION
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "time_horizon_years": self.time_horizon_years,
+            "toxicity_cliff_threshold": self.toxicity_cliff_threshold,
+            "toxicity_cliff_cag": self.toxicity_cliff_threshold,
+            "stochastic_drift_rate_per_year": self.stochastic_drift_rate_per_year,
+            "stochastic_dispersion": self.stochastic_dispersion,
+            "drift_model": str(self.drift_model.value if hasattr(self.drift_model, "value") else self.drift_model),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> SomaticDriftSimulationContract:
+        """Instantiate SomaticDriftSimulationContract from dictionary."""
+        model_val = data.get("drift_model", SomaticDriftModel.STOCHASTIC_EXPANSION)
+        try:
+            model_enum = SomaticDriftModel(str(model_val).lower())
+        except ValueError:
+            model_enum = SomaticDriftModel.STOCHASTIC_EXPANSION
+
+        cliff_val = data.get("toxicity_cliff_threshold")
+        if cliff_val is None:
+            cliff_val = data.get("toxicity_cliff_cag", 150)
+
+        return cls(
+            time_horizon_years=float(data.get("time_horizon_years", 65.0)),
+            toxicity_cliff_threshold=int(cliff_val),
+            stochastic_drift_rate_per_year=float(data.get("stochastic_drift_rate_per_year", 2.3)),
+            stochastic_dispersion=float(data.get("stochastic_dispersion", 0.25)),
+            drift_model=model_enum,
+        )
+
+
+@dataclass
+class SomaticInstabilityContract:
+    """Formal GFL IO Contract for Microsatellite Somatic Instability and Toxicity Cliff Gating.
+
+    Formalized in collaboration with Neurodiagnoses:
+    - Models the tissue-specific, stochastic somatic expansion distribution of tandem repeats.
+    - Decouples static germline repeat lengths from dynamic cellular distributions in vulnerable neurons.
+    - Computes catastrophe cliff probability for System 1 fast gating (e.g. SUB_THRESHOLD_LATENT vs CLIFF_COLLAPSE_IMMINENT).
+    """
+
+    target_gene: str = "HTT"
+    locus: str = "chr4:3074877-3074933"
+    repeat_unit: str = "CAG"
+    germline_repeat_count: int = 42
+    cell_type: str = "striatal_projection_neuron"
+    modifiers: dict[str, Any] = field(default_factory=dict)
+    simulation: SomaticDriftSimulationContract = field(default_factory=SomaticDriftSimulationContract)
+    protocol_name: str | None = None
+
+    def calculate_projected_distribution(self) -> dict[str, float]:
+        """Calculate analytical projection of repeat tract length distribution at time_horizon_years.
+
+        E[length(t)] = germline_repeat_count + drift_rate * t * modifier_factor.
+        Returns:
+            Dictionary containing mean_projected_repeat, std_dev, and cliff_exceedance_probability.
+        """
+        import math
+
+        # Modifiers impact drift rate
+        mod_factor = 1.0
+        if "mlh1_expression" in self.modifiers:
+            try:
+                mod_factor *= float(self.modifiers["mlh1_expression"])
+            except (ValueError, TypeError):
+                pass
+        if "msh3_genotype" in self.modifiers:
+            geno = str(self.modifiers["msh3_genotype"]).lower()
+            if "risk" in geno or "rs1805355" in geno:
+                mod_factor *= 1.25
+
+        years = self.simulation.time_horizon_years
+        effective_drift = self.simulation.stochastic_drift_rate_per_year * mod_factor
+        mean_projected = self.germline_repeat_count + (effective_drift * years)
+
+        # Standard deviation proportional to sqrt(years) and dispersion
+        std_dev = max(1.0, math.sqrt(max(1.0, years)) * self.simulation.stochastic_dispersion * effective_drift)
+
+        cliff = float(self.simulation.toxicity_cliff_threshold)
+        # Z-score for catastrophe threshold
+        z = (cliff - mean_projected) / std_dev
+
+        # Cumulative Gaussian tail P(Repeat >= cliff) = 0.5 * erfc(z / sqrt(2))
+        cliff_prob = 0.5 * math.erfc(z / math.sqrt(2.0))
+        cliff_prob = max(0.0, min(1.0, float(cliff_prob)))
+
+        return {
+            "mean_projected_repeat": float(mean_projected),
+            "std_dev_projected_repeat": float(std_dev),
+            "cliff_exceedance_probability": float(cliff_prob),
+            "effective_drift_rate": float(effective_drift),
+        }
+
+    def evaluate_neurodegeneration_state(self, threshold: float = 0.85) -> str:
+        """Classify biological tipping point according to Neurodiagnoses criteria."""
+        stats = self.calculate_projected_distribution()
+        prob = stats["cliff_exceedance_probability"]
+        if prob >= threshold:
+            return "CLIFF_COLLAPSE_IMMINENT"
+        return "SUB_THRESHOLD_LATENT"
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res: dict[str, Any] = {
+            "target_gene": self.target_gene,
+            "locus": self.locus,
+            "repeat_unit": self.repeat_unit,
+            "germline_repeat_count": self.germline_repeat_count,
+            "germline_cag_repeat": self.germline_repeat_count,
+            "cell_type": self.cell_type,
+            "modifiers": dict(self.modifiers),
+            "simulation": self.simulation.to_dict(),
+        }
+        if self.protocol_name:
+            res["protocol_name"] = self.protocol_name
+        return res
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> SomaticInstabilityContract:
+        """Instantiate SomaticInstabilityContract from dictionary."""
+        sim_data = data.get("simulation")
+        if sim_data is None:
+            sim_data = data.get("SomaticDrift", {})
+
+        sim_contract = (
+            sim_data
+            if isinstance(sim_data, SomaticDriftSimulationContract)
+            else SomaticDriftSimulationContract.from_dict(sim_data if isinstance(sim_data, dict) else {})
+        )
+
+        germline_count = data.get("germline_repeat_count")
+        if germline_count is None:
+            germline_count = data.get("germline_cag_repeat", 42)
+
+        return cls(
+            target_gene=str(data.get("target_gene", "HTT")),
+            locus=str(data.get("locus", "chr4:3074877-3074933")),
+            repeat_unit=str(data.get("repeat_unit", "CAG")),
+            germline_repeat_count=int(germline_count),
+            cell_type=str(data.get("cell_type", "striatal_projection_neuron")),
+            modifiers=dict(data.get("modifiers", {})),
+            simulation=sim_contract,
+            protocol_name=str(data.get("protocol_name", data.get("name", ""))) or None,
+        )
 
 
 # Regulatory Genomics Dual-Head Contracts (BPNet & AtacWorks - MIT 6.874)
@@ -2231,6 +2422,7 @@ __all__ = [
     "ProfileResolution",
     "ProfileLossMetric",
     "StrandMode",
+    "SomaticDriftModel",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -2282,6 +2474,8 @@ __all__ = [
     "ProfileHeadContract",
     "RegulatoryTrackContract",
     "RegulatoryProfileContract",
+    "SomaticDriftSimulationContract",
+    "SomaticInstabilityContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

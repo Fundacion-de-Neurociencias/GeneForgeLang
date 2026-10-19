@@ -136,6 +136,8 @@ class EnhancedSemanticValidator:
             "decision",
             "tape_recorder",
             "regulatory_profile",
+            "protocol",
+            "somatic_instability",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -146,7 +148,7 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', or 'regulatory_profile' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', or 'somatic_instability' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
@@ -210,6 +212,8 @@ class EnhancedSemanticValidator:
                 self._validate_tape_recorder_block(block_content)
             elif block_name == "regulatory_profile":
                 self._validate_regulatory_profile_block(block_content)
+            elif block_name in {"protocol", "somatic_instability"}:
+                self._validate_somatic_instability_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -849,6 +853,101 @@ class EnhancedSemanticValidator:
             ).add_fix(
                 "Change epistemic_level to 'PREDICTIVE_GUIDANCE' or 'HYPOTHESIS_GENERATING', or provide confirmed orthogonal validation"
             )
+
+    def _validate_somatic_instability_block(self, block: Any) -> None:
+        """Validate Microsatellite Somatic Instability & Catastrophe Cliff Contract block (Neurodiagnoses)."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "protocol/somatic_instability block must be a dictionary or SomaticInstabilityContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix(
+                    "Format somatic instability block as a dictionary with target_gene, germline_cag_repeat, simulation, etc."
+                )
+                return
+
+        # Validate target gene
+        if "target_gene" in block:
+            gene = str(block["target_gene"]).strip()
+            if not gene:
+                self.result.add_error(
+                    "target_gene cannot be empty in somatic instability protocol",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Provide target repeat expansion gene (e.g. 'HTT', 'ATXN1', 'C9orf72')")
+
+        # Validate locus format if present
+        if "locus" in block and block["locus"] is not None:
+            locus = str(block["locus"])
+            if not re.match(r"^chr[0-9XYM]+:[0-9]+-[0-9]+$", locus):
+                self.result.add_error(
+                    f"Invalid genomic locus format '{locus}'. Expected format 'chrN:start-end' (e.g. 'chr4:3074877-3074933')",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Specify locus as 1-based closed coordinate string 'chrN:start-end'")
+
+        # Validate germline repeat count (accepts either germline_repeat_count or germline_cag_repeat)
+        germline_count = block.get("germline_repeat_count")
+        if germline_count is None:
+            germline_count = block.get("germline_cag_repeat")
+
+        if germline_count is not None and (not isinstance(germline_count, int) or germline_count <= 0):
+            self.result.add_error(
+                f"germline repeat count must be a positive integer, got {germline_count}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set germline repeat count to a positive integer (e.g. 42 for HTT)")
+
+        # Validate simulation sub-block (accepts 'simulation' or named 'SomaticDrift')
+        sim_data = block.get("simulation")
+        if sim_data is None:
+            sim_data = block.get("SomaticDrift")
+
+        if sim_data is not None:
+            if hasattr(sim_data, "to_dict"):
+                sim_data = sim_data.to_dict()
+            if not isinstance(sim_data, dict):
+                self.result.add_error(
+                    "simulation/SomaticDrift must be a dictionary or SomaticDriftSimulationContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format simulation as a dictionary with time_horizon_years, toxicity_cliff_threshold, etc.")
+            else:
+                if "time_horizon_years" in sim_data:
+                    years = sim_data["time_horizon_years"]
+                    if not isinstance(years, (int, float)) or years <= 0:
+                        self.result.add_error(
+                            f"time_horizon_years must be a positive number, got {years}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set time_horizon_years to a positive number (e.g. 65)")
+
+                # Toxicity cliff threshold
+                cliff = sim_data.get("toxicity_cliff_threshold")
+                if cliff is None:
+                    cliff = sim_data.get("toxicity_cliff_cag")
+
+                if cliff is not None:
+                    if not isinstance(cliff, int) or cliff <= 0:
+                        self.result.add_error(
+                            f"toxicity_cliff_threshold must be a positive integer, got {cliff}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set toxicity_cliff_threshold to a positive integer (e.g. 150)")
+                    elif germline_count is not None and isinstance(germline_count, int) and cliff <= germline_count:
+                        self.result.add_error(
+                            f"toxicity_cliff_threshold ({cliff}) must be strictly greater than germline repeat count ({germline_count})",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix(f"Set toxicity_cliff_threshold greater than {germline_count}")
+
+                # Stochastic drift rate
+                if "stochastic_drift_rate_per_year" in sim_data:
+                    drift = sim_data["stochastic_drift_rate_per_year"]
+                    if not isinstance(drift, (int, float)) or drift < 0:
+                        self.result.add_error(
+                            f"stochastic_drift_rate_per_year must be non-negative, got {drift}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set stochastic_drift_rate_per_year >= 0 (e.g. 2.3)")
+
+        # Validate nested decision if embedded inside protocol
+        if "decision" in block and block["decision"] is not None:
+            self._validate_decision_block(block["decision"])
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
