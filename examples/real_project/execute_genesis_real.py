@@ -20,10 +20,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-# Add GeneForge paths
-sys.path.append("C:\\Users\\usuario\\GeneForge Ecosystem\\GeneForge\\GeneForge")
-sys.path.append("C:\\Users\\usuario\\GeneForge Ecosystem\\GeneForgeLang")
-
 
 def simulate_geneforge_engine():
     """Simulate the GeneForge engine with random scores (np.random.beta); not real predictions."""
