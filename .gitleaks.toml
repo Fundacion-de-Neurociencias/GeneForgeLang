@@ -1,0 +1,13 @@
+# gitleaks configuration for GeneForgeLang.
+# Upstream default rules plus ONE allowlist: the directory reserved for fake-secret test fixtures.
+# Do not add regexes, stopwords, commits or per-rule allowlists here; widening the allowlist is a
+# security-sensitive change. CI loads this file from the PR base commit, so a PR cannot relax its own scan.
+
+title = "GeneForgeLang gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Fake secrets used only as test fixtures"
+paths = ['''(^|/)tests/fixtures/secrets/''']
