@@ -341,6 +341,7 @@ class GFLAST:
     branch: dict[str, Any] | None = None
     decision: DecisionContract | dict[str, Any] | None = None
     tape_recorder: TapeRecorderContract | dict[str, Any] | None = None
+    regulatory_profile: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -363,6 +364,12 @@ class GFLAST:
         if self.tape_recorder is not None:
             result["tape_recorder"] = (
                 self.tape_recorder.to_dict() if hasattr(self.tape_recorder, "to_dict") else self.tape_recorder
+            )
+        if self.regulatory_profile is not None:
+            result["regulatory_profile"] = (
+                self.regulatory_profile.to_dict()
+                if hasattr(self.regulatory_profile, "to_dict")
+                else self.regulatory_profile
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -524,10 +531,337 @@ class GFLAST:
                     readout_modality=str(tr_data["readout_modality"]) if "readout_modality" in tr_data else None,
                 )
 
+        if "regulatory_profile" in data:
+            rp_data = data["regulatory_profile"]
+            if isinstance(rp_data, RegulatoryProfileContract):
+                ast.regulatory_profile = rp_data
+            elif isinstance(rp_data, dict):
+                ast.regulatory_profile = RegulatoryProfileContract.from_dict(rp_data)
+
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
 
         return ast
+
+
+# Regulatory Genomics Dual-Head Contracts (BPNet & AtacWorks - MIT 6.874)
+class SignalModality(str, Enum):
+    """Epistemic modality of genomic signal representation."""
+
+    DE_NOVO_SEQUENCE_DIRECT = "de_novo_sequence_direct"  # BPNet, Enformer, AlphaGenome (Sequence -> Profile)
+    SIGNAL_DENOISED_ENRICHED = "signal_denoised_enriched"  # AtacWorks, deepTools (Signal -> Denoised Signal)
+    EXPERIMENTAL_EMPIRICAL = "experimental_empirical"  # ChIP-nexus, ATAC-seq, CUT&RUN raw reads
+
+
+class EpistemicLevel(str, Enum):
+    """Epistemic status of a regulatory prediction or claim."""
+
+    PREDICTIVE_GUIDANCE = "predictive_guidance"  # Actionable guide for experiments, non-mechanistic
+    HYPOTHESIS_GENERATING = "hypothesis_generating"  # In silico hypothesis pending orthogonal test
+    ORTHOGONALLY_SUPPORTED = "orthogonally_supported"  # Supported by cross-assay or in silico mutagenesis
+    VALIDATED_MECHANISM = "validated_mechanism"  # Causally established biological mechanism
+
+
+class ProfileResolution(str, Enum):
+    """Spatial resolution of binding/accessibility profile head."""
+
+    BASE_PAIR = "base_pair"  # 1 bp single-nucleotide base resolution (BPNet/ChIP-nexus)
+    BINNED_10BP = "binned_10bp"  # 10 bp binned resolution
+    BINNED_128BP = "binned_128bp"  # 128 bp binned resolution (Enformer)
+    PEAK_LEVEL = "peak_level"  # Coarse peak-level binary/scalar summary
+
+
+class ProfileLossMetric(str, Enum):
+    """Loss/divergence metric between predicted and observed profile tracks."""
+
+    MULTINOMIAL_NLL = "multinomial_nll"  # Negative log-likelihood under multinomial profile model
+    JENSEN_SHANNON_DIVERGENCE = "jensen_shannon_divergence"  # Symmetric KL profile divergence [0.0, 1.0]
+    POISSON_NLL = "poisson_nll"  # Poisson count/profile loss
+    MEAN_SQUARED_ERROR = "mean_squared_error"  # Continuous MSE
+
+
+class StrandMode(str, Enum):
+    """Strand specification for regulatory tracks."""
+
+    UNSTRANDED = "unstranded"
+    STRANDED_PLUS_MINUS = "stranded_plus_minus"  # e.g., ChIP-nexus positive and negative strand reads
+
+
+@dataclass
+class CountHeadContract:
+    """Contract for global signal magnitude (total count prediction head)."""
+
+    expected_total_counts: float | None = None
+    tolerance_fold: float = 1.5  # Allowed ratio fold-change deviation
+    dispersion: float = 0.1  # Negative binomial dispersion parameter
+    loss_model: str = "negative_binomial"  # negative_binomial or log_poisson
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "expected_total_counts": self.expected_total_counts,
+            "tolerance_fold": self.tolerance_fold,
+            "dispersion": self.dispersion,
+            "loss_model": self.loss_model,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> CountHeadContract:
+        """Instantiate CountHeadContract from dictionary."""
+        return cls(
+            expected_total_counts=(
+                float(data["expected_total_counts"]) if data.get("expected_total_counts") is not None else None
+            ),
+            tolerance_fold=float(data.get("tolerance_fold", 1.5)),
+            dispersion=float(data.get("dispersion", 0.1)),
+            loss_model=str(data.get("loss_model", "negative_binomial")),
+        )
+
+
+@dataclass
+class ProfileHeadContract:
+    """Contract for base-resolution spatial distribution (profile shape head)."""
+
+    resolution: ProfileResolution = ProfileResolution.BASE_PAIR
+    loss_metric: ProfileLossMetric = ProfileLossMetric.MULTINOMIAL_NLL
+    max_jsd_threshold: float = 0.20  # Maximum acceptable Jensen-Shannon Divergence
+    strand_mode: StrandMode = StrandMode.UNSTRANDED
+    smoothing_window_bp: int = 0  # Optional smoothing window (0 = raw base resolution)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "resolution": str(self.resolution.value if hasattr(self.resolution, "value") else self.resolution),
+            "loss_metric": str(self.loss_metric.value if hasattr(self.loss_metric, "value") else self.loss_metric),
+            "max_jsd_threshold": self.max_jsd_threshold,
+            "strand_mode": str(self.strand_mode.value if hasattr(self.strand_mode, "value") else self.strand_mode),
+            "smoothing_window_bp": self.smoothing_window_bp,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ProfileHeadContract:
+        """Instantiate ProfileHeadContract from dictionary."""
+        res_val = data.get("resolution", ProfileResolution.BASE_PAIR)
+        try:
+            res_enum = ProfileResolution(str(res_val).lower())
+        except ValueError:
+            res_enum = ProfileResolution.BASE_PAIR
+
+        metric_val = data.get("loss_metric", ProfileLossMetric.MULTINOMIAL_NLL)
+        try:
+            metric_enum = ProfileLossMetric(str(metric_val).lower())
+        except ValueError:
+            metric_enum = ProfileLossMetric.MULTINOMIAL_NLL
+
+        strand_val = data.get("strand_mode", StrandMode.UNSTRANDED)
+        try:
+            strand_enum = StrandMode(str(strand_val).lower())
+        except ValueError:
+            strand_enum = StrandMode.UNSTRANDED
+
+        return cls(
+            resolution=res_enum,
+            loss_metric=metric_enum,
+            max_jsd_threshold=float(data.get("max_jsd_threshold", 0.20)),
+            strand_mode=strand_enum,
+            smoothing_window_bp=int(data.get("smoothing_window_bp", 0)),
+        )
+
+
+@dataclass
+class RegulatoryTrackContract:
+    """Contract for an experimental or enhanced regulatory track (e.g. AtacWorks denoised)."""
+
+    track_id: str
+    modality: SignalModality = SignalModality.DE_NOVO_SEQUENCE_DIRECT
+    source_measurement: str | None = None  # Raw experiment or input BAM/BigWig
+    denoiser_model: str | None = None  # e.g. "AtacWorks-v2"
+    peak_classification_threshold: float = 0.50  # Probability threshold for accessible peak classification
+    min_snr: float = 2.0  # Minimum signal-to-noise ratio
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "track_id": self.track_id,
+            "modality": str(self.modality.value if hasattr(self.modality, "value") else self.modality),
+            "source_measurement": self.source_measurement,
+            "denoiser_model": self.denoiser_model,
+            "peak_classification_threshold": self.peak_classification_threshold,
+            "min_snr": self.min_snr,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> RegulatoryTrackContract:
+        """Instantiate RegulatoryTrackContract from dictionary."""
+        mod_val = data.get("modality", SignalModality.DE_NOVO_SEQUENCE_DIRECT)
+        try:
+            mod_enum = SignalModality(str(mod_val).lower())
+        except ValueError:
+            mod_enum = SignalModality.DE_NOVO_SEQUENCE_DIRECT
+
+        return cls(
+            track_id=str(data.get("track_id", data.get("name", "track_01"))),
+            modality=mod_enum,
+            source_measurement=str(data["source_measurement"]) if "source_measurement" in data else None,
+            denoiser_model=str(data["denoiser_model"]) if "denoiser_model" in data else None,
+            peak_classification_threshold=float(data.get("peak_classification_threshold", 0.50)),
+            min_snr=float(data.get("min_snr", 2.0)),
+        )
+
+
+@dataclass
+class RegulatoryProfileContract:
+    """Formal GFL IO Contract for Regulatory Genomics Dual-Head predictions (BPNet & AtacWorks).
+
+    Grounding from MIT 6.874 (Deep Learning in the Life Sciences):
+    - Addresses the fundamental loss of spatial information when reducing genomic signal to one scalar.
+    - Decouples global total count head from base-resolution profile shape head.
+    - Enforces the Epistemic Barrier separating actionable experimental guidance from causal mechanisms.
+    """
+
+    profile_id: str
+    target_factor: str  # e.g., "OCT4", "SOX2", "NANOG", "CTCF"
+    locus: str  # Genomic coordinates, e.g., "chr7:27142000-27143000"
+    cell_type: str = "K562"
+    modality: SignalModality = SignalModality.DE_NOVO_SEQUENCE_DIRECT
+    count_head: CountHeadContract = field(default_factory=CountHeadContract)
+    profile_head: ProfileHeadContract = field(default_factory=ProfileHeadContract)
+    epistemic_level: EpistemicLevel = EpistemicLevel.PREDICTIVE_GUIDANCE
+    orthogonal_validation_required: bool = True
+    orthogonal_validation_confirmed: bool = False
+    source_model: str = "BPNet"
+
+    @staticmethod
+    def compute_multinomial_nll(observed_counts: list[int | float], predicted_probs: list[float]) -> float:
+        """Compute the Multinomial negative log-likelihood (NLL) profile loss.
+
+        Formula: -log P(k_1, ..., k_L | n, p_1, ..., p_L) where profile term is:
+        - sum_{i} k_i * ln(p_i) + log_gamma(n + 1) - sum_{i} log_gamma(k_i + 1).
+        Consistent with MIT 6.874 Lecture 7.
+        """
+        import math
+
+        if len(observed_counts) != len(predicted_probs):
+            raise ValueError(
+                f"Observed counts ({len(observed_counts)}) and predicted probs ({len(predicted_probs)}) length mismatch"
+            )
+
+        n = sum(observed_counts)
+        if n == 0:
+            return 0.0
+
+        # Profile term: - sum_i k_i * ln(p_i)
+        loss = 0.0
+        # Normalization constant (multinomial coefficient)
+        multinomial_coeff_log = math.lgamma(n + 1.0)
+
+        for k, p in zip(observed_counts, predicted_probs):
+            if k > 0:
+                p_safe = max(p, 1e-12)
+                loss -= k * math.log(p_safe)
+                multinomial_coeff_log -= math.lgamma(k + 1.0)
+
+        loss -= multinomial_coeff_log
+        return float(loss)
+
+    @staticmethod
+    def compute_jsd(p: list[float], q: list[float]) -> float:
+        """Compute the Jensen-Shannon Divergence between two normalized probability vectors.
+
+        JSD(P || Q) = 0.5 * D_KL(P || M) + 0.5 * D_KL(Q || M) where M = 0.5 * (P + Q).
+        Bounded in [0.0, 1.0] when computed with log base 2.
+        """
+        import math
+
+        if len(p) != len(q):
+            raise ValueError(f"Vectors length mismatch: {len(p)} vs {len(q)}")
+
+        # Normalize to probability distributions
+        sum_p = sum(p) or 1.0
+        sum_q = sum(q) or 1.0
+        p_norm = [max(x / sum_p, 1e-12) for x in p]
+        q_norm = [max(y / sum_q, 1e-12) for y in q]
+
+        m: list[float] = [0.5 * (px + qx) for px, qx in zip(p_norm, q_norm)]
+
+        kl_pm = sum(px * math.log2(px / mx) for px, mx in zip(p_norm, m) if px > 0)
+        kl_qm = sum(qx * math.log2(qx / mx) for qx, mx in zip(q_norm, m) if qx > 0)
+
+        return float(0.5 * kl_pm + 0.5 * kl_qm)
+
+    def validates_epistemic_barrier(self) -> tuple[bool, str]:
+        """Verify the Epistemic Barrier invariant.
+
+        A claim of VALIDATED_MECHANISM cannot be asserted without confirmed orthogonal validation.
+        """
+        if self.epistemic_level == EpistemicLevel.VALIDATED_MECHANISM and not self.orthogonal_validation_confirmed:
+            return (
+                False,
+                "EPISTEMIC BARRIER VIOLATION: A regulatory deep learning prediction cannot assert "
+                "'VALIDATED_MECHANISM' without confirmed orthogonal empirical validation.",
+            )
+        return True, "Valid epistemic boundary."
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "profile_id": self.profile_id,
+            "target_factor": self.target_factor,
+            "locus": self.locus,
+            "cell_type": self.cell_type,
+            "modality": str(self.modality.value if hasattr(self.modality, "value") else self.modality),
+            "count_head": self.count_head.to_dict(),
+            "profile_head": self.profile_head.to_dict(),
+            "epistemic_level": str(
+                self.epistemic_level.value if hasattr(self.epistemic_level, "value") else self.epistemic_level
+            ),
+            "orthogonal_validation_required": self.orthogonal_validation_required,
+            "orthogonal_validation_confirmed": self.orthogonal_validation_confirmed,
+            "source_model": self.source_model,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> RegulatoryProfileContract:
+        """Instantiate RegulatoryProfileContract from dictionary."""
+        mod_val = data.get("modality", SignalModality.DE_NOVO_SEQUENCE_DIRECT)
+        try:
+            mod_enum = SignalModality(str(mod_val).lower())
+        except ValueError:
+            mod_enum = SignalModality.DE_NOVO_SEQUENCE_DIRECT
+
+        epi_val = data.get("epistemic_level", EpistemicLevel.PREDICTIVE_GUIDANCE)
+        try:
+            epi_enum = EpistemicLevel(str(epi_val).lower())
+        except ValueError:
+            epi_enum = EpistemicLevel.PREDICTIVE_GUIDANCE
+
+        count_data = data.get("count_head", {})
+        count_head = (
+            count_data
+            if isinstance(count_data, CountHeadContract)
+            else CountHeadContract.from_dict(count_data if isinstance(count_data, dict) else {})
+        )
+
+        profile_data = data.get("profile_head", {})
+        profile_head = (
+            profile_data
+            if isinstance(profile_data, ProfileHeadContract)
+            else ProfileHeadContract.from_dict(profile_data if isinstance(profile_data, dict) else {})
+        )
+
+        return cls(
+            profile_id=str(data.get("profile_id", data.get("name", "regulatory_profile_01"))),
+            target_factor=str(data.get("target_factor", "UNKNOWN")),
+            locus=str(data.get("locus", "chr1:1-1000")),
+            cell_type=str(data.get("cell_type", "K562")),
+            modality=mod_enum,
+            count_head=count_head,
+            profile_head=profile_head,
+            epistemic_level=epi_enum,
+            orthogonal_validation_required=bool(data.get("orthogonal_validation_required", True)),
+            orthogonal_validation_confirmed=bool(data.get("orthogonal_validation_confirmed", False)),
+            source_model=str(data.get("source_model", "BPNet")),
+        )
 
 
 # AlphaGenome Atlas and Variant Impact Types
@@ -1892,6 +2226,11 @@ __all__ = [
     "CatalyticResidueRole",
     "FragmentomicsModality",
     "ViralInteractomeType",
+    "SignalModality",
+    "EpistemicLevel",
+    "ProfileResolution",
+    "ProfileLossMetric",
+    "StrandMode",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -1939,6 +2278,10 @@ __all__ = [
     "TextConditionedDesignContract",
     "AlphaGenomeLocusLink",
     "ViralInteractomeComplexContract",
+    "CountHeadContract",
+    "ProfileHeadContract",
+    "RegulatoryTrackContract",
+    "RegulatoryProfileContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

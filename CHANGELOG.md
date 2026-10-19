@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Regulatory Genomics Dual-Head Contracts (BPNet, AtacWorks & MIT 6.874)**:
+  - Formalized `RegulatoryProfileContract` decoupling global count magnitude (`CountHeadContract`) from base-resolution spatial distribution (`ProfileHeadContract`), solving the spatial information collapse when reducing genomic signal to scalars.
+  - Implemented exact Multinomial Profile negative log-likelihood (NLL) and Jensen-Shannon Divergence (JSD) analytical loss functions matching MIT 6.874 Lecture 7 empirical values ($NLL_{P1} \approx 22.3$, $NLL_{P2} \approx 160.9$).
+  - Added `SignalModality` distinguishing de novo sequence prediction (`DE_NOVO_SEQUENCE_DIRECT`) from experimental signal denoising (`SIGNAL_DENOISED_ENRICHED` e.g. AtacWorks) and raw empirical assays.
+  - Enforced the Epistemic Barrier invariant in `EnhancedSemanticValidator`: prohibits asserting `VALIDATED_MECHANISM` without confirmed orthogonal empirical validation (`orthogonal_validation_confirmed: true`).
+  - Added canonical example in `examples/features/regulatory_genomics_dual_head_profile.gfl` and documentation in `docs/geneforgelang/features/regulatory_genomics_dual_head_contracts.md`.
+  - Added unit test suite in `tests/unit/test_regulatory_genomics_contracts.py` (100% passing).
 - **Viral Interactome Complexes & AlphaGenome Locus Linking (AlphaFold DB Pandemic Portal & DeepMind 2026)**:
   - Added `ViralInteractomeComplexContract` and `ViralInteractomeType` enum formalizing quaternary viral-host and intra-viral complexes across 2,812 proteomes (8,028 high-confidence all-vs-all dimeric interactions).
   - Added `AlphaGenomeLocusLink` bridging quaternary viral complex interfaces with host receptor genomic variants (1-based `chr:pos:ref>alt` AlphaGenome Atlas format).

@@ -135,6 +135,7 @@ class EnhancedSemanticValidator:
             "complexes",
             "decision",
             "tape_recorder",
+            "regulatory_profile",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -145,7 +146,7 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', or 'complexes' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', or 'regulatory_profile' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
@@ -207,6 +208,8 @@ class EnhancedSemanticValidator:
                 self._validate_decision_block(block_content)
             elif block_name == "tape_recorder":
                 self._validate_tape_recorder_block(block_content)
+            elif block_name == "regulatory_profile":
+                self._validate_regulatory_profile_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -723,6 +726,129 @@ class EnhancedSemanticValidator:
                     ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                     ErrorSeverity.WARNING,
                 ).add_fix("Use 'targeted_amplicon_dna_seq' or 'single_cell_rna_seq_expression'")
+
+    def _validate_regulatory_profile_block(self, profile_block: Any) -> None:
+        """Validate Regulatory Genomics Dual-Head Contract block (BPNet & AtacWorks - MIT 6.874)."""
+        if not isinstance(profile_block, dict):
+            if hasattr(profile_block, "to_dict"):
+                profile_block = profile_block.to_dict()
+            else:
+                self.result.add_error(
+                    "regulatory_profile block must be a dictionary or RegulatoryProfileContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format regulatory_profile as a dictionary with target_factor, locus, count_head, etc.")
+                return
+
+        # Validate locus format (e.g. chr7:27142000-27143000)
+        if "locus" in profile_block:
+            locus = str(profile_block["locus"])
+            if not re.match(r"^chr[0-9XYM]+:[0-9]+-[0-9]+$", locus):
+                self.result.add_error(
+                    f"Invalid genomic locus format '{locus}'. Expected format 'chrN:start-end' (e.g. 'chr7:27142000-27143000')",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Specify locus as 1-based closed coordinate string 'chrN:start-end'")
+        else:
+            self.result.add_error(
+                "regulatory_profile block missing required 'locus' coordinates",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'locus: chrN:start-end' to regulatory_profile")
+
+        # Validate target factor
+        if "target_factor" in profile_block:
+            tf = str(profile_block["target_factor"]).strip()
+            if not tf:
+                self.result.add_error(
+                    "target_factor cannot be empty",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Provide a target transcription factor or chromatin mark (e.g. 'CTCF', 'OCT4', 'ATAC')")
+
+        # Validate signal modality if present
+        if "modality" in profile_block:
+            mod = str(profile_block["modality"]).lower()
+            valid_modalities = {
+                "de_novo_sequence_direct",
+                "signal_denoised_enriched",
+                "experimental_empirical",
+            }
+            if mod not in valid_modalities:
+                self.result.add_error(
+                    f"Unknown signal modality '{profile_block['modality']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'de_novo_sequence_direct', 'signal_denoised_enriched', or 'experimental_empirical'")
+
+        # Validate count_head if present
+        if "count_head" in profile_block and profile_block["count_head"] is not None:
+            ch = profile_block["count_head"]
+            if hasattr(ch, "to_dict"):
+                ch = ch.to_dict()
+            if not isinstance(ch, dict):
+                self.result.add_error(
+                    "count_head must be a dictionary or CountHeadContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format count_head as a dictionary with tolerance_fold, expected_total_counts, etc.")
+            else:
+                if "expected_total_counts" in ch and ch["expected_total_counts"] is not None:
+                    counts = ch["expected_total_counts"]
+                    if not isinstance(counts, (int, float)) or counts < 0:
+                        self.result.add_error(
+                            f"expected_total_counts must be a non-negative number, got {counts}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set expected_total_counts to a non-negative float or integer")
+
+                if "tolerance_fold" in ch:
+                    fold = ch["tolerance_fold"]
+                    if not isinstance(fold, (int, float)) or fold < 1.0:
+                        self.result.add_error(
+                            f"tolerance_fold must be >= 1.0, got {fold}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set tolerance_fold to a value >= 1.0 (e.g. 1.5)")
+
+        # Validate profile_head if present
+        if "profile_head" in profile_block and profile_block["profile_head"] is not None:
+            ph = profile_block["profile_head"]
+            if hasattr(ph, "to_dict"):
+                ph = ph.to_dict()
+            if not isinstance(ph, dict):
+                self.result.add_error(
+                    "profile_head must be a dictionary or ProfileHeadContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format profile_head as a dictionary with resolution, loss_metric, max_jsd_threshold, etc.")
+            else:
+                if "max_jsd_threshold" in ph:
+                    jsd_thresh = ph["max_jsd_threshold"]
+                    if not isinstance(jsd_thresh, (int, float)) or not (0.0 <= jsd_thresh <= 1.0):
+                        self.result.add_error(
+                            f"max_jsd_threshold must be between 0.0 and 1.0, got {jsd_thresh}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set max_jsd_threshold between 0.0 and 1.0 (e.g. 0.20)")
+
+                if "resolution" in ph:
+                    res = str(ph["resolution"]).lower()
+                    valid_resolutions = {"base_pair", "binned_10bp", "binned_128bp", "peak_level"}
+                    if res not in valid_resolutions:
+                        self.result.add_error(
+                            f"Unknown profile resolution '{ph['resolution']}'",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ErrorSeverity.WARNING,
+                        ).add_fix("Use 'base_pair', 'binned_10bp', 'binned_128bp', or 'peak_level'")
+
+        # Enforce Epistemic Barrier (MIT 6.874 Invariant)
+        # Deep learning predictions cannot claim VALIDATED_MECHANISM without confirmed orthogonal empirical validation.
+        epistemic_level = str(profile_block.get("epistemic_level", "predictive_guidance")).lower()
+        confirmed_validation = bool(profile_block.get("orthogonal_validation_confirmed", False))
+        if (
+            epistemic_level in {"validated_mechanism", "epistemic_level.validated_mechanism"}
+            and not confirmed_validation
+        ):
+            self.result.add_error(
+                "EPISTEMIC BARRIER VIOLATION: A regulatory neural network profile prediction cannot assert "
+                "'VALIDATED_MECHANISM' without confirmed orthogonal empirical validation ('orthogonal_validation_confirmed: true'). "
+                "Per MIT 6.874, accurate prediction guides experiments but does not establish a biological mechanism on its own.",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(
+                "Change epistemic_level to 'PREDICTIVE_GUIDANCE' or 'HYPOTHESIS_GENERATING', or provide confirmed orthogonal validation"
+            )
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
