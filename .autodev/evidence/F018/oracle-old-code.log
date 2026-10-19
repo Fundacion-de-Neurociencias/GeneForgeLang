@@ -1,0 +1,16 @@
+# New regression tests against pre-fix product code (cf67007 versions of performance.py and openmed_connector.py), PYTHONPATH=C:/Users/usuario/AppData/Local/Temp/claude/C--Users-usuario--autodev-workspaces-geneforgelang/38906841-db31-4aec-861d-85addb141903/scratchpad/oldsrc
+module: C:\Users\usuario\AppData\Local\Temp\claude\C--Users-usuario--autodev-workspaces-geneforgelang\38906841-db31-4aec-861d-85addb141903\scratchpad\oldsrc\geneforgelang\core\performance.py
+module: C:\Users\usuario\AppData\Local\Temp\claude\C--Users-usuario--autodev-workspaces-geneforgelang\38906841-db31-4aec-861d-85addb141903\scratchpad\oldsrc\geneforgelang\ir\external\openmed_connector.py
+PASSED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[7.0]
+FAILED tests/unit/test_performance.py::TestIntelligentCache::test_lru_eviction_independent_of_clock_resolution - AssertionError: assert 3 is None
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_find_similar_entities_returns_known_genes_in_unit_range - assert False
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[1e-08] - assert 1.000000000000007 == 1.0
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[0.001] - assert 1.000000000000015 == 1.0
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[0.1] - assert 1.0000000000000002 == 1.0
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[0.2] - assert 1.0000000000000002 == 1.0
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[0.3] - assert 1.0000000000000033 == 1.0
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[1.0] - assert 1.0000000000000069 == 1.0
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[1000.0] - assert 1.000000000000008 == 1.0
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_cosine_similarity_parallel_vectors_hit_bounds_exactly[1000000.0] - assert 1.000000000000008 == 1.0
+======================== 10 failed, 1 passed in 0.25s =========================
+exit=1
