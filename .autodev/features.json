@@ -300,6 +300,25 @@
       ],
       "passes": false,
       "notes": "Depends on F009 (gfl_service.py arrives with the chain). Needs the owner's keep/remove decision first. Quality bar: QB-1, QB-7, QB-11 (spec/quality-bar.md)."
+    },
+    {
+      "id": "F017",
+      "priority": 17,
+      "category": "docs",
+      "description": "Bring all documentation, code comments, docstrings and CI step names into English (owner directive 2026-10-19), with skill `translate`: faithful translation plus independent review.",
+      "steps": [
+        "Run tools/language_check.py --summary and split the backlog by area into reviewable commits.",
+        "Translate each area faithfully (skill translate); correct untrue claims instead of polishing them.",
+        "Independent review of fidelity and quality against the originals."
+      ],
+      "acceptance": [
+        "`python <plugin>/tools/language_check.py --summary` reports 0 segments outside `[language] exceptions` (evidence: output saved).",
+        "For a sample of at least 10 translated passages per area, the reviewer confirms every statement, number, warning and link of the original is preserved (G10.2; evidence: review table).",
+        "`tools/writing_check.py` reports no blocking findings on the translated docs (`--public` for public text).",
+        "Code behaviour unchanged: the diff touches only prose, comments and docstrings, and the test command result is unchanged."
+      ],
+      "passes": false,
+      "notes": "Baseline 124 segments across 60 files. Measured on the chain tip (main has fewer). Public repo: translated public text also passes writing_check --public."
     }
   ]
 }

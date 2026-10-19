@@ -106,3 +106,8 @@ base_url = ""
 wait_ci = ""
 required_headers = []
 command = ""
+
+[language]
+# Owner directive 2026-10-19: all prose in English unless he explicitly asks otherwise (PROTOCOL 0b, rubric G10).
+required = "en"
+exceptions = []
