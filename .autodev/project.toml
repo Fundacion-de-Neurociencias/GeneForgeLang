@@ -28,13 +28,13 @@ frameworks = ["pydantic", "pyyaml", "ply", "fastapi (optional extra)", "click/ty
 
 [commands]
 # Every command runs from the repository root. Empty = not yet established.
-setup = "python -m pip install -e \".[dev,cli]\" pytest-asyncio"
+setup = "uv venv .venv --python 3.11 && uv pip install --python .venv -e \".[dev,cli]\" pytest-asyncio"   # isolated: never the global Python
 # Building needs the PyPA 'build' package, which no extra declares yet (F010 adds it).
 build = ""
 # pytest.ini (asyncio_mode = auto, --strict-config) requires pytest-asyncio installed.
-test = "python -m pytest tests -q"
+test = "uv run --no-project --python .venv python -m pytest tests -q -p no:cacheprovider"
 # ruff.toml takes precedence over [tool.ruff] in pyproject.toml; F007 unifies them.
-lint = "ruff check src tests"
+lint = "uv run --no-project --python .venv ruff check src tests"
 run = ""
 e2e = ""
 url = ""
