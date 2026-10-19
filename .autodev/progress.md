@@ -180,3 +180,4 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 ## 2026-10-19: sprint, F001 - no-op (eighth time, already PASS)
 - `/autodev:sprint F001` invoked again at 0cac395. `features.json` shows `passes: true`; no build work, no code change.
 - Runner should target F002. Baseline failures (`test_lru_eviction`, `test_find_similar_entities`) remain an owner decision in `next-steps.md`, "Needs owner".
+- Stop gate (sprint, eighth no-op): blocked by the same 2 baseline failures (873 passed): `test_find_similar_entities`, `test_lru_eviction`. Not fixed: out of F001 scope, sensitive `core/**`, an earlier fix (`3e9f9ec`) was reverted as scope creep. Ended under "When stuck"; owner decision in `next-steps.md`, "Needs owner".
