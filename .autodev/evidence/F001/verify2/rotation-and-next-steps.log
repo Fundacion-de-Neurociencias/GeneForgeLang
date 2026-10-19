@@ -1,0 +1,9 @@
+### item 8
+5:43AM INF scanned ~2363 bytes (2.36 KB) in 22.2ms
+5:43AM INF no leaks found
+exit=0
+lines matching [=:]\s*\S{8,}:
+urls:
+0
+### item 7
+29:- **Required checks and sensitive paths (with F003).** Add the status-check context `gitleaks` (workflow `.github/workflows/secret-scan.yml`) as required on `main`. Add `.gitleaks.toml` and `.pre-commit-config.yaml` to `[collaboration] sensitive_paths` in project.toml (`.github/workflows/**` is already there).

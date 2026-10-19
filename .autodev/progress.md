@@ -47,3 +47,15 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Proposed separate feature for the baseline fixes, coordinated with María (`next-steps.md`); the tested fix is in `3e9f9ec`.
 - Next: `/autodev:verify F001` in a separate session.
 - Blocked on a rule conflict (Stop gate, same session): the gate requires a green suite, and the only 2 failures are the baseline ids. The only root-cause fix (`3e9f9ec`) is what verify rejected as out of scope (`F001-feedback-1.md`, item 1). Re-applying it repeats the FAIL. Making the tests pass by changing them would hide real defects (LRU picks the wrong victim on clock ties; similarity outside [0, 1]), which the protocol forbids. Root-cause hypothesis: the baseline was red before F001 started (same ids at 164e7df), so no in-scope change can make it green. Owner decision needed (`next-steps.md`, "Needs owner").
+
+## 2026-10-19: verify, F001 - FAIL 2 (owner gate only)
+- Independent session at c4c1ffe; evidence in `evidence/F001/verify2/`, verdict in `evidence/F001/verdict.json` (the old verdict is archived as `verify/verdict-1.json`).
+- All reproducible items pass:
+  - suite: 873 passed, 2 failed (the 2 baseline ids that item 13 allows); ruff unchanged from base; language check clean.
+  - gitleaks (rerun with the checksum-verified binary): HEAD export clean, branch range clean, allowlist probes as expected.
+  - pre-commit hook: first shown on Windows (default `PRE_COMMIT_HOME`); it passes a clean change and blocks a fake key.
+  - governance audit: no blocking findings.
+- Blocking: contract item 6. No hosted `secret-scan.yml` run and no owner acceptance of the local evidence. No code change is needed.
+- Correction: F001 is not blocked by the red baseline (item 13 allows it); only the item 6 owner gate blocks it.
+- Guard requests from this session (both can be rejected): 20261019-054021-32d1c2, 20261019-054350-fb3e87.
+- Feedback: `contracts/F001-feedback-2.md`.

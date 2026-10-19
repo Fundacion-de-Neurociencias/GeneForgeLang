@@ -1,0 +1,16 @@
+### item 5 (Windows, default PRE_COMMIT_HOME, pre-commit 4.3.0), fresh clone at c4c1ffe
+-- positive control: clean staged change
+[INFO] Initializing environment for https://github.com/gitleaks/gitleaks.
+[INFO] Installing environment for https://github.com/gitleaks/gitleaks.
+[INFO] Once installed this environment will be reused.
+[INFO] This may take a few minutes...
+Detect hardcoded secrets.................................................Passed
+exit=0 (expect 0)
+-- fake AWS key staged
+Detect hardcoded secrets.................................................Failed
+- hook id: gitleaks
+    ░    gitleaks
+RuleID:      aws-access-token
+File:        src/tmp/leak.txt
+5:43AM WRN leaks found: 1
+exit=1 (expect 1)
