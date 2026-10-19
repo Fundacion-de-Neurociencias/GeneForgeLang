@@ -187,3 +187,21 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Hygiene tests re-run: 16 passed. Evidence: `evidence/F001/verify13/reconfirm.txt`. Verdict file unchanged.
 - Runner keeps re-invoking F001; it should move to F002. Baseline failures (`test_lru_eviction`, `test_find_similar_entities`) remain an owner decision in `next-steps.md`, "Needs owner".
 - Stop gate (verify, re-confirmation 8): blocked by the same 2 baseline failures (873 passed): `test_find_similar_entities`, `test_lru_eviction`. Not fixed: the evaluator must not write product code, the failures are out of F001 scope, and they sit in sensitive `core/**` files. Ended under "When stuck"; owner decision in `next-steps.md`, "Needs owner".
+## 2026-10-19: build, F018 (restore a truthful green suite)
+- Baseline at cf67007: 2 failed, 857 passed, 22 skipped, 5 xfailed (`.autodev/evidence/F018/baseline-before.log`).
+- Root causes and fixes (contract `.autodev/contracts/F018.md`, evaluator review `F018-review.md`):
+  - `test_lru_eviction`: LRU ordered by `time.time()`, which ties at 15.625 ms resolution on CPython 3.11/Windows and fell back to insertion order. `IntelligentCache` now stamps a per-cache monotonic `CacheEntry.access_seq` on every put and hit; `LRUEvictionPolicy` evicts the lowest.
+  - `test_find_similar_entities`: cosine similarity of parallel vectors rounded to 1.0000000000000033. `_cosine_similarity` now clamps to [-1, 1]. The test had been skipped in CI with a false "requires network access" reason, which hid the failure; the skip is removed.
+  - Same fixes already exist on team branch `origin/feature/PDN_feature-GFP`; field name and semantics match (contract, Coordination).
+- Tests added: `test_lru_eviction_independent_of_clock_resolution` (frozen clock), `test_find_similar_entities_returns_known_genes_in_unit_range`, `test_cosine_similarity_parallel_vectors_hit_bounds_exactly` (9 scales), `test_cosine_similarity_random_vectors_within_bounds`.
+- Evidence (`.autodev/evidence/F018/`): `suite-after.log` (CI unset, -rA: 871 passed, 22 skipped, 5 xfailed, exit 0); `oracle-old-code.log` (new tests against cf67007 product code: 10 failed, 1 passed); `repeat.log` (20/20 runs of both original tests pass); `lint-before.txt` (1 finding, I001) vs `lint-after.txt` (0); `lint-repo-wide.txt` (exit 0); `diff-checks.log` (test diff, config untouched, integration is fast-forward).
+- Findings for later features: `OpenMedConnector` is a mock with hardcoded embeddings and a fictitious `base_url` (G9, F002); TTL expiry uses wall-clock `time.time()` rather than `time.monotonic()`.
+- Owner gate: `core/performance.py` is a sensitive path; the PR needs owner review.
+- Next: independent verification (`/autodev:verify F018`).
+
+## 2026-10-19: verify, F018 - PASS
+- Independent evaluator at b5dbe76. Verdict: `.autodev/evidence/F018/verdict.json`.
+- Full suite (CI unset and CI=true): 871 passed, 22 skipped, 5 xfailed, exit 0 (`verify-suite.log`, `verify-checks.txt`). Both originally failing tests pass, 20/20 repeats.
+- New regression tests fail against the pre-fix product code (12 failed, `verify-oracle.txt`). Tests diff removes only the false CI skip; no config or conftest change. Ruff clean (changed files and repo-wide). Language check: 0 findings.
+- Governance auditor: 0 blocking. Notes: publish only the product/test commits, never `.autodev/`; `core/performance.py` is a sensitive path (owner review gate).
+- Next: F001.

@@ -1,0 +1,88 @@
+[1m============================= test session starts =============================[0m
+platform win32 -- Python 3.11.15, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\usuario\.autodev\workspaces\geneforgelang
+configfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)
+plugins: anyio-4.15.1, platformdirs-4.13.5, asyncio-1.4.0, cov-7.1.0, mock-3.17.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 886 items
+
+tests\bench\test_corpus.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                          [  0%][0m
+tests\governance\test_behavioral_soundness.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                      [  1%][0m
+tests\governance\test_corpus_soundness.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m [  4%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m [ 12%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m [ 20%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m [ 28%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m [ 36%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m [ 45%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                                               [ 46%][0m
+tests\integration\test_end_to_end.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                    [ 47%][0m
+tests\test_advanced_validation.py [32m.[0m[32m                                      [ 48%][0m
+tests\test_api.py [32m.[0m[32m.[0m[32m                                                     [ 48%][0m
+tests\test_basic_functionality.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                   [ 48%][0m
+tests\test_basic_plugin_functionality.py [32m.[0m[32m                               [ 48%][0m
+tests\test_complete_workflow.py [32m.[0m[32m                                        [ 48%][0m
+tests\test_design_file.py [32m.[0m[32m                                              [ 49%][0m
+tests\test_design_implementation.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                 [ 49%][0m
+tests\test_design_schema.py [32m.[0m[32m                                            [ 49%][0m
+tests\test_enhanced_inference_engine.py [33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[33ms[0m[32m             [ 51%][0m
+tests\test_enhanced_inference_standalone.py [32m.[0m[32m.[0m[32m                           [ 52%][0m
+tests\test_example_optimize.py [32m.[0m[32m                                         [ 52%][0m
+tests\test_examples_roundtrip.py [33ms[0m[33ms[0m[32m.[0m[32m                                     [ 52%][0m
+tests\test_io_contracts.py [32m.[0m[32m.[0m[32m                                            [ 52%][0m
+tests\test_new_features.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                      [ 55%][0m
+tests\test_optimize_implementation.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                             [ 56%][0m
+tests\test_platform.py [32m.[0m[32m.[0m[32m.[0m[32m                                               [ 56%][0m
+tests\test_plugin_interfaces.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m           [ 59%][0m
+tests\test_schema_registry.py [32m.[0m[32m.[0m[32m.[0m[32m                                        [ 60%][0m
+tests\test_workflow.py [32m.[0m[32m                                                 [ 60%][0m
+tests\unit\ir\test_executor.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                     [ 60%][0m
+tests\unit\ir\test_external_connectors.py [32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m       [ 63%][0m
+tests\unit\ir\test_fase4.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                    [ 66%][0m
+tests\unit\ir\test_graph_executor.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                [ 66%][0m
+tests\unit\ir\test_instruction.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                            [ 68%][0m
+tests\unit\ir\test_knowledge_grounding.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                         [ 68%][0m
+tests\unit\ir\test_parser_ir.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                  [ 69%][0m
+tests\unit\ir\test_reasoning_loop.py [32m.[0m[32m.[0m[32m.[0m[31m                                 [ 69%][0m
+tests\unit\ir\test_state.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                        [ 70%][0m
+tests\unit\ir\test_state_evaluator.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                              [ 71%][0m
+tests\unit\ir\test_state_propagation.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                             [ 71%][0m
+tests\unit\test_design_block.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                       [ 73%][0m
+tests\unit\test_enhanced_cli.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                    [ 75%][0m
+tests\unit\test_enhanced_plugins.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                             [ 76%][0m
+tests\unit\test_error_handling.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m             [ 79%][0m
+tests\unit\test_grammar_parser.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33mx[0m[33mx[0m[33mx[0m[33mx[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33mx[0m[31m             [ 82%][0m
+tests\unit\test_optimize_block.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                    [ 84%][0m
+tests\unit\test_parser.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                            [ 87%][0m
+tests\unit\test_performance.py [32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                   [ 89%][0m
+tests\unit\test_symbolic_reasoning.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m          [ 92%][0m
+tests\unit\test_types.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m              [ 96%][0m
+tests\unit\test_validator.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m           [100%][0m
+
+================================== FAILURES ===================================
+[31m[1m_______________ TestOpenMedConnector.test_find_similar_entities _______________[0m
+[1m[31mtests\unit\ir\test_external_connectors.py[0m:48: in test_find_similar_entities
+    [0m[94massert[39;49;00m [96mall[39;49;00m([94m0[39;49;00m <= s.similarity <= [94m1[39;49;00m [94mfor[39;49;00m s [95min[39;49;00m similar)[90m[39;49;00m
+[1m[31mE   assert False[0m
+[1m[31mE    +  where False = all(<generator object TestOpenMedConnector.test_find_similar_entities.<locals>.<genexpr> at 0x00000224647D5B60>)[0m
+[31m[1m___________________ TestIntelligentCache.test_lru_eviction ____________________[0m
+[1m[31mtests\unit\test_performance.py[0m:52: in test_lru_eviction
+    [0m[94massert[39;49;00m cache.get([33m"[39;49;00m[33mkey1[39;49;00m[33m"[39;49;00m) == [94m100[39;49;00m[90m[39;49;00m
+[1m[31mE   AssertionError: assert None == 100[0m
+[1m[31mE    +  where None = get('key1')[0m
+[1m[31mE    +    where get = <geneforgelang.core.performance.IntelligentCache object at 0x0000022464FAC1D0>.get[0m
+============================ slowest 10 durations =============================
+0.42s call     tests/test_platform.py::test_cli_tools
+0.15s call     tests/unit/test_performance.py::TestIntelligentCache::test_cache_cleanup
+0.15s call     tests/unit/test_performance.py::TestPerformanceOptimizer::test_cache_cleanup
+0.15s call     tests/unit/test_performance.py::TestIntelligentCache::test_ttl_eviction
+0.12s call     tests/unit/test_parser.py::TestParsingPerformance::test_parse_large_parameter_set
+0.07s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_api_integration
+0.06s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_performance_caching
+0.03s call     tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_info_command
+0.03s call     tests/unit/test_enhanced_plugins.py::TestEnhancedRegistry::test_get_plugins_by_state
+0.03s call     tests/unit/test_enhanced_plugins.py::TestEnhancedRegistry::test_process_with_plugins
+[36m[1m=========================== short test summary info ===========================[0m
+[31mFAILED[0m tests/unit/ir/test_external_connectors.py::[1mTestOpenMedConnector::test_find_similar_entities[0m - assert False
+[31mFAILED[0m tests/unit/test_performance.py::[1mTestIntelligentCache::test_lru_eviction[0m - AssertionError: assert None == 100
+[31m============ [31m[1m2 failed[0m, [32m857 passed[0m, [33m22 skipped[0m, [33m5 xfailed[0m[31m in 3.90s[0m[31m =============[0m
+exit=1
