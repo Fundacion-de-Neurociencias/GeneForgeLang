@@ -28,7 +28,7 @@ samtools = "biocontainers/samtools:v1.15.1_cv4"
 To use container execution, install the `containers` extra:
 
 ```bash
-pip install geneforgelang[containers]
+pip install -e ".[containers]"  # from a source checkout; not yet on PyPI
 ```
 
 This installs the `docker` Python package required for container interaction.

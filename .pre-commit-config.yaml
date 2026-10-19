@@ -46,3 +46,9 @@ repos:
         pass_filenames: false
         always_run: true
         args: [--tb=short, -q]
+
+  # Secret scanning of staged changes (F001). Config: .gitleaks.toml. CI runs the same scan.
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.3
+    hooks:
+      - id: gitleaks
