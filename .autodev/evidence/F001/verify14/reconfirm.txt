@@ -1,0 +1,8 @@
+Re-confirmation at eea1260, 2026-10-19
+Product changes since round-4 PASS (5893f94), excluding .autodev/: only the F018 merge from autodev/integration
+(src/geneforgelang/core/performance.py, ir/external/openmed_connector.py, 2 test files). The F001 three-dot diff vs integration is unchanged (12 files).
+Full suite (project .venv, project.toml test command): 887 passed, 22 skipped, 5 xfailed. The 2 baseline failures are gone (fixed by F018).
+ruff check .: All checks passed.
+tests/security/test_repository_hygiene.py: 16 passed.
+Governance audit (autodev/integration...HEAD): BLOCKING: no. Advisories: secret and pickle still in git history, dev postgres password in docker-compose (owner decisions); confirm the .gitleaks.toml regex amendment in the contract text.
+Note: running with the global Python imports the main checkout via an editable install and fails test_design_schema_validation ("GFL schema not found"). That failure comes from the environment, not from F001.

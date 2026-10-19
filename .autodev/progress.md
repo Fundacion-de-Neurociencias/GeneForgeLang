@@ -205,3 +205,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - New regression tests fail against the pre-fix product code (12 failed, `verify-oracle.txt`). Tests diff removes only the false CI skip; no config or conftest change. Ruff clean (changed files and repo-wide). Language check: 0 findings.
 - Governance auditor: 0 blocking. Notes: publish only the product/test commits, never `.autodev/`; `core/performance.py` is a sensitive path (owner review gate).
 - Next: F001.
+
+## 2026-10-19: verify, F001 - PASS stands (re-confirmation 9)
+- At eea1260, after the F018 merge. Full suite in `.venv`: 887 passed, 0 failed. The baseline failures are fixed by F018. ruff clean. Governance audit: no blocking findings.
+- Evidence: `evidence/F001/verify14/`. Verdict file unchanged.
+- Environment note: the global Python resolves `geneforgelang` to the main checkout (editable install). Always use the `.venv` command from project.toml.
