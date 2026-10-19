@@ -1,0 +1,18 @@
+## HEAD 2853b06
+## tests
+0.09s call     tests/unit/test_parser.py::TestParsingPerformance::test_parse_large_parameter_set
+0.06s setup    tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_error_locations
+0.05s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_performance_caching
+0.04s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_api_integration
+[36m[1m=========================== short test summary info ===========================[0m
+[31mFAILED[0m tests/unit/ir/test_external_connectors.py::[1mTestOpenMedConnector::test_find_similar_entities[0m - assert False
+[31mFAILED[0m tests/unit/test_performance.py::[1mTestIntelligentCache::test_lru_eviction[0m - AssertionError: assert None == 100
+[31m============ [31m[1m2 failed[0m, [32m873 passed[0m, [33m22 skipped[0m, [33m5 xfailed[0m[31m in 4.91s[0m[31m =============[0m
+## ruff src tests (HEAD)
+1	I001	[*] unsorted-imports
+Found 1 error.
+[*] 1 fixable with `--fix`.
+## ruff tests/security
+All checks passed!
+## language check
+0 segment(s) not in 'en'

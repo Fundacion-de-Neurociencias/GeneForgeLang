@@ -1,0 +1,30 @@
+{
+  "feature": "F001",
+  "verdict": "FAIL",
+  "commit": "2853b06f6f318259caa220a0ae3da1905187569d",
+  "date": "2026-10-19",
+  "round": 3,
+  "acceptance": [
+    {"item": "1-5, 7-12, 14 (scans, hook, pinning, rotation doc, ADR, PR rehearsal, commits, PR draft, evidence)", "result": "PASS (carried forward)", "evidence": "No product change since c4c1ffe: `git diff --name-only c4c1ffe..HEAD -- . ':!.autodev'` is empty. Results in evidence/F001/verify2/ still apply."},
+    {"item": "6 hosted secret-scan.yml run or owner acceptance of local evidence", "result": "FAIL", "evidence": "`gh run list --workflow secret-scan.yml` -> HTTP 404 (workflow not on the default branch); next-steps.md 'Needs owner' still lists the decision as open; no owner acceptance recorded."},
+    {"item": "13 tests and lint", "result": "PASS", "evidence": "verify3/checks.txt: 873 passed, 2 failed (the 2 allowed baseline ids), 22 skipped, 5 xfailed; ruff src tests = 1 error (same as 164e7df, 13-ruff.log); ruff tests/security clean."}
+  ],
+  "rubric": [
+    {"check": "G10 language", "result": "PASS", "evidence": "verify3/checks.txt: 0 segments not in 'en'"},
+    {"check": "G3 secrets/isolation", "result": "PASS (non-blocking note)", "evidence": "verify3/governance-audit.txt: local paths in evidence logs only, no keys or tokens"},
+    {"check": "G1.1 mocks in verification", "result": "PASS", "evidence": "verify3/governance-audit.txt"},
+    {"check": "G5.1 claims without evidence", "result": "PASS", "evidence": "verify3/governance-audit.txt"},
+    {"check": "G2.2 scope", "result": "PASS", "evidence": "verify3/governance-audit.txt; no change under src/"},
+    {"check": "Impact / system map", "result": "N/A", "evidence": "No runtime channel (commands.run empty); no product change since the last verify"}
+  ],
+  "feedback": [
+    "Owner gate, contract item 6: approve pushing a PR branch from origin/main with e793288 2cec236 11b9118 (option a) or record acceptance of the local evidence in next-steps.md (option b), then rerun /autodev:verify F001. No code change needed.",
+    "Do not rerun /autodev:sprint or /autodev:verify for F001 until the owner decides; three verify rounds have produced the same result."
+  ],
+  "claims": [
+    {"claim": "Suite: 873 passed, 2 failed (allowed baseline ids)", "class": "OBSERVED"},
+    {"claim": "No hosted secret-scan.yml workflow exists on GitHub", "class": "OBSERVED"},
+    {"claim": "No owner decision on item 6 is recorded", "class": "OBSERVED"},
+    {"claim": "gitleaks and pre-commit results from verify2 still hold", "class": "INFERRED (product tree unchanged since c4c1ffe; gitleaks not rerun in this session)"}
+  ]
+}

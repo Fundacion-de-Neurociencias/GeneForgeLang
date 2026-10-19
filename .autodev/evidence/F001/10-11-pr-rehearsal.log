@@ -1,0 +1,43 @@
+# head: 4dc8deb  origin/main: 630059c
+## item 10: per-commit paths 164e7df..HEAD
+e3afeb9 autodev=2 total=2  docs(autodev): F001 sprint contract and evaluator review [F001]
+e793288 autodev=0 total=7  fix(security): untrack dev-container secrets file and remove pickle model [F001]
+2cec236 autodev=0 total=5  ci(security): gitleaks secret scan in pre-commit and CI [F001]
+11b9118 autodev=0 total=2  fix(security): allowlist the public ProtGPT2 model id in gitleaks [F001]
+5ac769b autodev=1 total=1  docs(autodev): F001 contract amendment for the gitleaks false positive [F001]
+5c05c25 autodev=8 total=8  docs(autodev): F001 evidence, rotation list, PR draft and progress log [F001]
+3a42fdd autodev=8 total=8  docs(autodev): F001 evidence logs [F001]
+3e9f9ec autodev=0 total=4  fix(core): deterministic LRU order and unit-interval similarity scores [F001]
+8b72a38 autodev=11 total=11  docs(autodev): F001 coordination addendum, progress and evidence [F001]
+881f7d9 autodev=7 total=7  chore(autodev): keep runner state out of the index [F001]
+d536239 autodev=6 total=6  test(verify): FAIL [F001]
+4dc8deb autodev=0 total=4  chore(core): revert out-of-scope baseline fixes [F001]
+## item 11: subjects not matching the pattern
+(none)
+## src diff vs base
+(end)
+## cherry-pick e793288 2cec236 11b9118 onto origin/main (temporary worktree)
+cherry-pick: ok
+autodev paths in PR diff:
+(end)
+src paths in PR diff:
+(end)
+PR files:
+D	.devcontainer/.env
+A	.devcontainer/.env.example
+A	.github/workflows/secret-scan.yml
+M	.gitignore
+A	.gitleaks.toml
+M	.pre-commit-config.yaml
+A	docs/decisions/20261019-no-pickle-artifacts.md
+D	resources/tools/genetics/genetic_predictor.py
+D	resources/tools/genetics/genetic_risk_predictor.pkl
+D	resources/tools/genetics/train_dummy_model.py
+A	tests/security/__init__.py
+A	tests/security/test_repository_hygiene.py
+ 12 files changed, 381 insertions(+), 129 deletions(-)
+## tests/security and full suite on the PR head
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_find_similar_entities - assert False
+FAILED tests/unit/test_performance.py::TestIntelligentCache::test_lru_eviction - AssertionError: assert None == 100
+============ 2 failed, 873 passed, 22 skipped, 5 xfailed in 16.35s ============
+tmp worktree and branch deleted

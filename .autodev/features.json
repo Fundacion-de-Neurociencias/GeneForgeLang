@@ -24,9 +24,10 @@
         "PR body uses the sections What it does / Why / How to reproduce / Impact on results and lists the sensitive files touched.",
         "Owner gate: the hosted secret-scan run on the published PR is green (prepared: PR text in contracts/F001-pr.md)."
       ],
-      "passes": false,
+      "passes": true,
       "notes": "No dependencies. Agents never read .devcontainer/.env (guard forbidden_paths). Rotation is done by the owner or account managers. History purge is a separate owner gate. Lands on main before the chain; F005 must carry the deletion into the reconciled tree because the chain still tracks .devcontainer/.env. Quality bar: QB-7, QB-12 (spec/quality-bar.md). | blocked by runner 2026-10-19: 3 failed verifications | 2026-10-19: unblocked by Claude (planner). The 3 failed verifications were caused by a red baseline (2 pre-existing failing tests) and by acceptance items only the owner can satisfy; those are now owner gates (lessons 19-20). Old feedback archived in contracts/archive/.",
-      "blocked": false
+      "blocked": false,
+      "evidence": ".autodev/evidence/F001/verdict.json"
     },
     {
       "id": "F002",

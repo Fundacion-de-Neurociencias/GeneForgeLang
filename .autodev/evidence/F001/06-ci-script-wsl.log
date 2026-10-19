@@ -1,0 +1,143 @@
+### install step (verbatim)
+gitleaks_8.24.3_linux_x64.tar.gz: OK
+install exit=0
+
+### scenario: pull_request, clean commit (expect exit 0)
+8.24.3
+Using .gitleaks.toml from the base commit 5ac769b50848472aac7d7d40fe122e0bcff54da0
+Scanning commits 5ac769b50848472aac7d7d40fe122e0bcff54da0..1843f016f040f9a4c8aa3e36b5fae7f74f641240
+5:14AM INF Unknown SCM platform. Use --platform to include links in findings. host=
+5:14AM INF 1 commits scanned.
+5:14AM INF scanned ~13 bytes (13 bytes) in 157ms
+5:14AM INF no leaks found
+Scanning the checked-out tree
+5:14AM INF scanned ~2252378 bytes (2.25 MB) in 192ms
+5:14AM INF no leaks found
+exit=0 -> OK
+
+### scenario: pull_request, commit adds fake AWS key (expect exit 1)
+8.24.3
+Using .gitleaks.toml from the base commit 5ac769b50848472aac7d7d40fe122e0bcff54da0
+Scanning commits 5ac769b50848472aac7d7d40fe122e0bcff54da0..e833a9ebd2487aacaa8da3a4932dc33580a83e8d
+5:14AM INF Unknown SCM platform. Use --platform to include links in findings. host=
+Finding:     aws_access_key_id = REDACTED
+Secret:      REDACTED
+RuleID:      aws-access-token
+Entropy:     3.921928
+File:        src/tmp/leak.txt
+Line:        1
+Commit:      e833a9ebd2487aacaa8da3a4932dc33580a83e8d
+Author:      throwaway
+Email:       t@example.invalid
+Date:        2026-10-19T03:14:07Z
+Fingerprint: e833a9ebd2487aacaa8da3a4932dc33580a83e8d:src/tmp/leak.txt:aws-access-token:1
+
+5:14AM INF 1 commits scanned.
+5:14AM INF scanned ~41 bytes (41 bytes) in 145ms
+5:14AM WRN leaks found: 1
+Scanning the checked-out tree
+Finding:     aws_access_key_id = REDACTED
+Secret:      REDACTED
+RuleID:      aws-access-token
+Entropy:     3.921928
+File:        src/tmp/leak.txt
+Line:        1
+Fingerprint: src/tmp/leak.txt:aws-access-token:1
+
+5:14AM INF scanned ~2252406 bytes (2.25 MB) in 155ms
+5:14AM WRN leaks found: 1
+exit=1 -> OK
+17:paths = ['''(^|/)tests/fixtures/secrets/''', '''src/tmp/''']
+
+### scenario: pull_request, PR widens its own allowlist and leaks (expect exit 1)
+8.24.3
+Using .gitleaks.toml from the base commit 5ac769b50848472aac7d7d40fe122e0bcff54da0
+Scanning commits 5ac769b50848472aac7d7d40fe122e0bcff54da0..5c3b6e1a249879c741af99767195963ebe8e73ee
+5:14AM INF Unknown SCM platform. Use --platform to include links in findings. host=
+Finding:     aws_access_key_id = REDACTED
+Secret:      REDACTED
+RuleID:      aws-access-token
+Entropy:     3.646439
+File:        src/tmp/leak.txt
+Line:        1
+Commit:      5c3b6e1a249879c741af99767195963ebe8e73ee
+Author:      throwaway
+Email:       t@example.invalid
+Date:        2026-10-19T03:14:08Z
+Fingerprint: 5c3b6e1a249879c741af99767195963ebe8e73ee:src/tmp/leak.txt:aws-access-token:1
+
+5:14AM INF 1 commits scanned.
+5:14AM INF scanned ~102 bytes (102 bytes) in 186ms
+5:14AM WRN leaks found: 1
+Scanning the checked-out tree
+Finding:     aws_access_key_id = REDACTED
+Secret:      REDACTED
+RuleID:      aws-access-token
+Entropy:     3.646439
+File:        src/tmp/leak.txt
+Line:        1
+Fingerprint: src/tmp/leak.txt:aws-access-token:1
+
+5:14AM INF scanned ~2252406 bytes (2.25 MB) in 252ms
+5:14AM WRN leaks found: 1
+exit=1 -> OK
+
+### scenario: push, new branch (before is all zeros), clean tree (expect exit 0)
+8.24.3
+No commit range to scan; scanning the tree only
+Scanning the checked-out tree
+5:14AM INF scanned ~2252378 bytes (2.25 MB) in 214ms
+5:14AM INF no leaks found
+exit=0 -> OK
+
+### scenario: push, unreachable before (force-push), clean tree (expect exit 0)
+8.24.3
+No commit range to scan; scanning the tree only
+Scanning the checked-out tree
+5:14AM INF scanned ~2252378 bytes (2.25 MB) in 149ms
+5:14AM INF no leaks found
+exit=0 -> OK
+
+### scenario: push, normal range, clean (expect exit 0)
+8.24.3
+Scanning commits 5ac769b50848472aac7d7d40fe122e0bcff54da0..1843f016f040f9a4c8aa3e36b5fae7f74f641240
+5:14AM INF Unknown SCM platform. Use --platform to include links in findings. host=
+5:14AM INF 1 commits scanned.
+5:14AM INF scanned ~13 bytes (13 bytes) in 207ms
+5:14AM INF no leaks found
+Scanning the checked-out tree
+5:14AM INF scanned ~2252378 bytes (2.25 MB) in 318ms
+5:14AM INF no leaks found
+exit=0 -> OK
+
+### scenario: push, normal range, leak (expect exit 1)
+8.24.3
+Scanning commits 5ac769b50848472aac7d7d40fe122e0bcff54da0..e833a9ebd2487aacaa8da3a4932dc33580a83e8d
+5:14AM INF Unknown SCM platform. Use --platform to include links in findings. host=
+Finding:     aws_access_key_id = REDACTED
+Secret:      REDACTED
+RuleID:      aws-access-token
+Entropy:     3.921928
+File:        src/tmp/leak.txt
+Line:        1
+Commit:      e833a9ebd2487aacaa8da3a4932dc33580a83e8d
+Author:      throwaway
+Email:       t@example.invalid
+Date:        2026-10-19T03:14:07Z
+Fingerprint: e833a9ebd2487aacaa8da3a4932dc33580a83e8d:src/tmp/leak.txt:aws-access-token:1
+
+5:14AM INF 1 commits scanned.
+5:14AM INF scanned ~41 bytes (41 bytes) in 584ms
+5:14AM WRN leaks found: 1
+Scanning the checked-out tree
+Finding:     aws_access_key_id = REDACTED
+Secret:      REDACTED
+RuleID:      aws-access-token
+Entropy:     3.921928
+File:        src/tmp/leak.txt
+Line:        1
+Fingerprint: src/tmp/leak.txt:aws-access-token:1
+
+5:14AM INF scanned ~2252406 bytes (2.25 MB) in 569ms
+5:14AM WRN leaks found: 1
+exit=1 -> OK

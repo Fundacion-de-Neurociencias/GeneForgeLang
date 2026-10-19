@@ -1,0 +1,18 @@
+### item 2: export of HEAD c4c1ffe
+5:39AM INF scanned ~2302456 bytes (2.30 MB) in 686ms
+5:39AM INF no leaks found
+exit=0
+### item 3: 164e7df..HEAD
+5:39AM INF 13 commits scanned.
+5:39AM INF scanned ~145254 bytes (145.25 KB) in 278ms
+5:39AM INF no leaks found
+exit=0
+### item 4: allowlist, throwaway clone
+-- mode=dir (first attempt passed two paths; v8.24 'dir' takes one, it scanned the cwd's ignored .venv instead; discarded, rerun below)
+-- mode=git exit=1
+    generic-api-key src/tmp/near.py
+    aws-access-token src/tmp/leak.txt
+-- mode=dir (rerun, clone root) exit=1
+    generic-api-key src/tmp/near.py
+    aws-access-token src/tmp/leak.txt
+   expected: src/tmp/leak.txt + src/tmp/near.py reported, tests/fixtures/secrets/fake.txt not reported

@@ -171,3 +171,14 @@ parsetab.py
 generar_*.py
 *_interactivo.py
 *_desde_*.py
+
+# Secrets and code-executing serialized artifacts (F001; see docs/decisions/20261019-no-pickle-artifacts.md).
+# Keep the negations last: *.env.example files are the only tracked env files.
+.env
+.env.*
+**/.env
+*.pkl
+*.pickle
+*.joblib
+!.env.example
+!**/.env.example

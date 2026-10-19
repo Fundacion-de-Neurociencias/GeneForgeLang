@@ -1,0 +1,9 @@
+# head: 4dc8deb  date: 2026-10-19T05:33:24+02:00
+0.09s call     tests/security/test_repository_hygiene.py::test_no_code_executing_deserialization
+0.07s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_performance_caching
+0.05s setup    tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_error_locations
+0.03s call     tests/governance/test_corpus_soundness.py::test_corpus_noise_resistance[pmid_42250783.gfl]
+=========================== short test summary info ===========================
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_find_similar_entities - assert False
+FAILED tests/unit/test_performance.py::TestIntelligentCache::test_lru_eviction - AssertionError: assert None == 100
+============ 2 failed, 873 passed, 22 skipped, 5 xfailed in 5.42s =============

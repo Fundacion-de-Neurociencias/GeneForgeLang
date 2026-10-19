@@ -5,7 +5,7 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 
 ## Now
 - Owner reviews and approves the onboarding plan (roadmap Phase 0-3, features F001-F016).
-- F001: remove `.devcontainer/.env` and the `.pkl` from the tree; gitleaks in pre-commit and CI; rotation list by service name.
+- F001: built on `autodev/F001` (2026-10-19). Every reproducible item passed in verify 3. The hosted `secret-scan.yml` run is now an owner gate that does not block the feature (contract amendment, 2026-10-19). Next: `/autodev:verify F001`.
 - F002: correct public claims (README, manuscript, whitepaper, CHANGELOG, SECURITY, CITATION) with not-for-clinical-use / not-legal-advice notices; PR for the owner to approve.
 
 ## Next
@@ -14,6 +14,8 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 - F005: reconcile main's 31 commits with the chain; integration plan by slices.
 - F006: honest conformance runner.
 
+- Proposed feature (needs owner/planner to add it to the backlog): fix the 2 baseline test failures at their root cause - LRU victim chosen by `time.time()` ties at Windows clock resolution (`core/performance.py`), mock cosine similarity outside [0, 1] (`ir/external/openmed_connector.py`). A tested fix exists in commit 3e9f9ec on `autodev/F001` (reverted there as out of scope). Both files are on María's branch: agree with her whether it lands on her branch or after it.
+
 ## Later
 - F007-F009: integrate the chain in slices (owner approves each).
 - F010-F012: public API facade, unified version, publish readiness (TestPyPI dry run is an owner gate).
@@ -21,8 +23,13 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 - Phase 3: specification and conformance work backed by real code.
 
 ## Needs owner
-- **Key rotation.** After F001 lists the services, the owner or the account managers rotate the keys. Agents never read the file.
-- **History purge.** Removing `.devcontainer/.env` from the public history needs a force-push. Separate approval; recommended only after rotation, because the old values are already public.
+- **F001 hosted CI run (owner gate, does not block verification).** Approve publishing a PR branch cut from `origin/main` with `e793288 2cec236 11b9118` (draft in `contracts/F001-pr.md`), so the hosted `secret-scan.yml` run exists and proves the workflow itself.
+- **Red baseline (lesson 19).** The 2 baseline failures below still make the Stop gate block every session. Recommendation: add the baseline-fix feature (under "Next") at the top of the backlog, coordinated with María. The 2 red baseline tests do not block F001 (item 13 allows them); their fix stays the separate proposed feature under "Next".
+- **Guard requests 20261019-054021-32d1c2 and 20261019-054350-fb3e87.** Reject both: the first is a cleanup of a throwaway clone that is not needed; the second is a false positive on text inside a JSON file.
+- **Key rotation (now).** F001 listed the services in `spec/secret-rotation.md` (Google API key for Gemini, plus anything else in the file). The owner or the account managers rotate every credential in the file. Agents never read the file.
+- **History purge (separate decision, never run by an agent).** Removing `.devcontainer/.env` (and the deleted `.pkl`) from the public history needs `git filter-repo` plus a force-push to `main` and every branch that contains it, and every collaborator must re-clone. Recommended only after rotation, because the old values are already public and may be in forks. Decide: purge / do not purge.
+- **Required checks and sensitive paths (with F003).** Add the status-check context `gitleaks` (workflow `.github/workflows/secret-scan.yml`) as required on `main`. Add `.gitleaks.toml` and `.pre-commit-config.yaml` to `[collaboration] sensitive_paths` in project.toml (`.github/workflows/**` is already there).
+- **Pre-commit config (finding from F001).** The existing `poetry-check` hook clones the poetry repository, which fails on Windows without `core.longpaths` ("Filename too long"), and the project is not a Poetry project. F003 should drop it or fix it.
 - **María's branch (PDN, `feature/PDN_feature-GFP`).** Decide with María whether it lands before or after the chain. Recommendation: after slice 1, rebased by her with our help, because the chain is larger and already reconciled.
 - **EVIDENCE_MATRIX.md (ADNI/NACC variables).** Legal review before it enters the public repo. Recommendation: keep it out until the review is done.
 - **Patent and regulatory review.** A patent lawyer and a regulatory expert review the items in `spec/ecosystem.md` ("Expert review list"). Agents do not decide.

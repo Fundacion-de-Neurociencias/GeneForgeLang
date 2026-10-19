@@ -1,0 +1,72 @@
+unredacted-key-count .autodev/evidence/F001/verify4/ci-script-item6-wsl.log:0
+unredacted-key-count .autodev/evidence/F001/verify4/docs-commits-items-7-12.log:0
+unredacted-key-count .autodev/evidence/F001/verify4/gitleaks-items-2-4.log:0
+unredacted-key-count .autodev/evidence/F001/verify4/precommit-item5-windows.log:0
+### item 7 next-steps
+12:- F003: one CI that gates PRs; one lint config; branch-protection settings for main (owner applies or approves).
+31:- **Required checks and sensitive paths (with F003).** Add the status-check context `gitleaks` (workflow `.github/workflows/secret-scan.yml`) as required on `main`. Add `.gitleaks.toml` and `.pre-commit-config.yaml` to `[collaboration] sensitive_paths` in project.toml (`.github/workflows/**` is already there).
+32:- **Pre-commit config (finding from F001).** The existing `poetry-check` hook clones the poetry repository, which fails on Windows without `core.longpaths` ("Filename too long"), and the project is not a Poetry project. F003 should drop it or fix it.
+### item 8 rotation
+[90m10:58AM[0m [32mINF[0m [1mno leaks found[0m
+exit=0
+field-lines 6
+### item 9 ADR
+7:## Context
+9:The repository tracked `resources/tools/genetics/genetic_risk_predictor.pkl`, a scikit-learn model saved with `pickle`. Two scripts came with it:
+11:- `resources/tools/genetics/train_dummy_model.py` trained a `RandomForestClassifier` on `make_classification` random data and pickled it.
+12:- `resources/tools/genetics/genetic_predictor.py` loaded the pickle at import time and presented its output as a "probability of carrying a pathogenic variant".
+18:## Decision
+20:1. Delete the three files: `genetic_risk_predictor.pkl`, `genetic_predictor.py` and `train_dummy_model.py`.
+21:2. Adopt the rule: **no pickle or other code-executing serialization artifact is tracked in the repository or shipped in the package.** This covers `pickle`, `joblib`, `dill`, `cloudpickle`, `shelve`, PyTorch checkpoints loaded with `torch.load`, and NumPy files loaded with `allow_pickle=True`.
+24:   - `.gitignore` ignores `*.pkl`, `*.pickle` and `*.joblib`.
+29:## Consequences
+### items 10-11 commits 164e7df..HEAD
+66dbd35 autodev=1 product=0 cc=1 docs(autodev): F001 sprint session ended at stop gate [F001]
+eeb36b0 autodev=3 product=0 cc=1 chore(autodev): align F001 contract with owner-gate acceptance [F001]
+7904bc1 autodev=3 product=0 cc=1 chore(autodev): archive F001 feedback from the red-baseline cycle
+3709093 autodev=1 product=0 cc=1 chore(autodev): unblock F001-F003; owner gates instead of loop-impossible acceptance items
+c133860 autodev=1 product=0 cc=1 chore(autodev): block F002 after repeated failures
+9bb54ac autodev=1 product=0 cc=1 chore(autodev): block F001 after repeated failures
+db1143a autodev=1 product=0 cc=1 docs(autodev): F001 verify session ended at stop gate [F001]
+2f3d891 autodev=6 product=0 cc=1 test(verify): FAIL [F001]
+2853b06 autodev=1 product=0 cc=1 docs(autodev): F001 stop gate blocked by baseline, session ended [F001]
+65bb2df autodev=3 product=0 cc=1 docs(autodev): F001 owner gate is item 6, not the baseline [F001]
+b201d51 autodev=10 product=0 cc=1 test(verify): FAIL [F001]
+c4c1ffe autodev=2 product=0 cc=1 docs(autodev): F001 blocked by red baseline, owner decision requested [F001]
+edf83a4 autodev=7 product=0 cc=1 docs(autodev): F001 scope fix, refreshed PR draft and evidence [F001]
+4dc8deb autodev=0 product=4 cc=1 chore(core): revert out-of-scope baseline fixes [F001]
+d536239 autodev=6 product=0 cc=1 test(verify): FAIL [F001]
+881f7d9 autodev=7 product=0 cc=1 chore(autodev): keep runner state out of the index [F001]
+8b72a38 autodev=11 product=0 cc=1 docs(autodev): F001 coordination addendum, progress and evidence [F001]
+3e9f9ec autodev=0 product=4 cc=1 fix(core): deterministic LRU order and unit-interval similarity scores [F001]
+3a42fdd autodev=8 product=0 cc=1 docs(autodev): F001 evidence logs [F001]
+5c05c25 autodev=8 product=0 cc=1 docs(autodev): F001 evidence, rotation list, PR draft and progress log [F001]
+5ac769b autodev=1 product=0 cc=1 docs(autodev): F001 contract amendment for the gitleaks false positive [F001]
+11b9118 autodev=0 product=2 cc=1 fix(security): allowlist the public ProtGPT2 model id in gitleaks [F001]
+2cec236 autodev=0 product=5 cc=1 ci(security): gitleaks secret scan in pre-commit and CI [F001]
+e793288 autodev=0 product=7 cc=1 fix(security): untrack dev-container secrets file and remove pickle model [F001]
+e3afeb9 autodev=2 product=0 cc=1 docs(autodev): F001 sprint contract and evaluator review [F001]
+### item 10 rehearsal
+cherry-pick exit=0
+autodev paths in PR diff: 0
+product files differing PR head vs branch: 0
+### item 12 PR draft
+6:## What it does
+8:- Stops tracking `.devcontainer/.env` and adds `.devcontainer/.env.example` with variable names only (`GOOGLE_API_KEY`, `PYTHONPATH`, `GFL_ENV`).
+11:- Adds secret scanning at two layers with the same rules (`.gitleaks.toml`, gitleaks upstream defaults):
+13:  - workflow `.github/workflows/secret-scan.yml` (job `gitleaks`) on pull requests and pushes to `main`. It scans the commit range and the tree, and fails on any finding.
+16:## Why
+18:- `.devcontainer/.env` was public. Its credentials must be treated as leaked: the owner rotates them (list of services kept privately by the maintainers). This PR stops further exposure; it does not rewrite history.
+21:- On pull requests the scan loads `.gitleaks.toml` from the base commit, so a PR cannot widen its own allowlist.
+24:## How to reproduce
+28:git archive HEAD | tar -x -C /tmp/gfl-head && gitleaks dir /tmp/gfl-head --config .gitleaks.toml --redact   # no leaks found
+33:## Impact on results
+39:- `.devcontainer/.env`: removed from the index. The file was not opened.
+40:- `.github/workflows/secret-scan.yml`: new workflow.
+41:- `.gitleaks.toml`: scan configuration. Widening it weakens the guard.
+42:- `.pre-commit-config.yaml`: one hook block appended.
+### pinning
+15:permissions:
+16:  contents: read
+24:        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+35:          echo "9991e0b2903da4c8f6122b5c3186448b927a5da4deef1fe45271c3793f4ee29c  gitleaks_8.24.3_linux_x64.tar.gz" | sha256sum -c -

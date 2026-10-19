@@ -1,0 +1,28 @@
+### item 2: clean export of HEAD (66dbd35)
+[90m10:56AM[0m [32mINF[0m [1mscanned ~2333186 bytes (2.33 MB) in 1.13s[0m
+[90m10:56AM[0m [32mINF[0m [1mno leaks found[0m
+exit=0 (expect 0)
+
+### item 3: branch commits 164e7df..HEAD
+[90m10:56AM[0m [32mINF[0m [1m24 commits scanned.[0m
+[90m10:56AM[0m [32mINF[0m [1mscanned ~191231 bytes (191.23 KB) in 187ms[0m
+[90m10:56AM[0m [32mINF[0m [1mno leaks found[0m
+exit=0 (expect 0)
+
+### item 4: allowlist behaviour in a throwaway clone
+warning: the following paths have collided (e.g. case-sensitive paths
+on a case-insensitive filesystem) and only one from the same
+colliding group is in the working tree:
+
+  'CONTRIBUTING.MD'
+  'CONTRIBUTING.md'
+-- mode=dir exit=1 (expect 1)
+   finding: aws-access-token src/tmp/leak.txt
+   finding: generic-api-key src/tmp/near_allowlist.py
+   fixture reported: False (expect False); same key elsewhere reported: True (expect True); non-allowlisted tokenizer_name value reported: True (expect True)
+   check=0
+-- mode=git exit=1 (expect 1)
+   finding: aws-access-token src/tmp/leak.txt
+   finding: generic-api-key src/tmp/near_allowlist.py
+   fixture reported: False (expect False); same key elsewhere reported: True (expect True); non-allowlisted tokenizer_name value reported: True (expect True)
+   check=0

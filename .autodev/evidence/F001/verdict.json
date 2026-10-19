@@ -1,0 +1,118 @@
+{
+  "feature": "F001",
+  "verdict": "PASS",
+  "commit": "66dbd35f530fb335dee547aa1cf5680ffa344e7b",
+  "date": "2026-10-19",
+  "round": 4,
+  "acceptance": [
+    {
+      "item": "1 git ls-files lists no .env (other than *.env.example) and no *.pkl/*.pickle/*.joblib",
+      "result": "PASS",
+      "evidence": "verify4/checks.txt: tests/security/test_repository_hygiene.py all pass (test_no_tracked_env_files, test_no_tracked_serialized_models, test_gitignore_blocks_secrets_and_pickles)"
+    },
+    {
+      "item": "2 gitleaks over HEAD tree = 0 findings; fake AWS key blocked by pre-commit hook and by the CI script run locally",
+      "result": "PASS",
+      "evidence": "verify4/gitleaks-items-2-4.log (export of 66dbd35: no leaks, exit 0; 164e7df..HEAD 24 commits: no leaks, exit 0; allowlist dir+git modes: fixture not reported, same key elsewhere and non-allowlisted tokenizer_name value reported); verify4/precommit-item5-windows.log (clean: Passed exit 0; fake key: hook gitleaks Failed, RuleID aws-access-token, exit 1); verify4/ci-script-item6-wsl.log (checksum OK; 7/7 scenarios as expected, incl. PR widening its own allowlist still fails)"
+    },
+    {
+      "item": "3 CI step pinned by SHA (Pinned-Dependencies) and listed as required check in the F003 protection request",
+      "result": "PASS",
+      "evidence": "verify4/docs-commits-items-7-12.log: actions/checkout@11bd719... (v4.2.2), literal SHA-256 piped to sha256sum -c, permissions contents: read; next-steps.md:31 asks to make context 'gitleaks' required with F003. Binary-instead-of-action deviation accepted by the review (licence requirement)."
+    },
+    {
+      "item": "4 secret-rotation.md names services and owners only; gitleaks over it finds nothing",
+      "result": "PASS",
+      "evidence": "verify4/docs-commits-items-7-12.log: gitleaks dir exit 0; no URLs; no suspicious key=value lines"
+    },
+    {
+      "item": "5 ADR Context/Decision/Consequences records the pickle removal and the no-pickle rule",
+      "result": "PASS",
+      "evidence": "docs/decisions/20261019-no-pickle-artifacts.md:7,18,29; names the three files; rule at line 21"
+    },
+    {
+      "item": "6 PR body sections and sensitive files",
+      "result": "PASS",
+      "evidence": "contracts/F001-pr.md: What it does / Why / How to reproduce / Impact on results; lists the four sensitive files; CHANGELOG Security/Removed text at :49-55. PR rehearsal: cherry-pick of e793288 2cec236 11b9118 onto origin/main succeeds, 0 .autodev paths, product tree identical to branch."
+    },
+    {
+      "item": "7 Owner gate: hosted secret-scan run on the published PR is green",
+      "result": "OWNER_GATE",
+      "evidence": "Prepared: product commits e793288 2cec236 11b9118 (cherry-pick onto origin/main verified clean), PR text contracts/F001-pr.md. Pushing and opening the PR are the owner's steps."
+    }
+  ],
+  "rubric": [
+    {
+      "check": "Deterministic checks (contract item 13)",
+      "result": "PASS",
+      "evidence": "verify4/checks.txt: 873 passed, 2 failed (exactly the 2 allowed baseline ids), 22 skipped, 5 xfailed; ruff src tests: 1 error (same count as 164e7df); ruff tests/security clean"
+    },
+    {
+      "check": "G10 language",
+      "result": "PASS",
+      "evidence": "verify4/checks.txt: 0 segments not in 'en'"
+    },
+    {
+      "check": "G3 secrets/isolation",
+      "result": "PASS",
+      "evidence": "verify4/governance-audit.txt; 0 unredacted fake keys in verify4 logs"
+    },
+    {
+      "check": "G1.1 mocks in verification",
+      "result": "PASS",
+      "evidence": "verify4/governance-audit.txt"
+    },
+    {
+      "check": "G2.2 scope",
+      "result": "PASS",
+      "evidence": "verify4/governance-audit.txt; src/ diff empty"
+    },
+    {
+      "check": "G5.1 claims without evidence",
+      "result": "PASS",
+      "evidence": "verify4/governance-audit.txt"
+    },
+    {
+      "check": "QB-12 conventional commits, .autodev separation",
+      "result": "PASS",
+      "evidence": "verify4/docs-commits-items-7-12.log: every subject conventional; no commit mixes .autodev and product paths; product commits reference [F001]"
+    },
+    {
+      "check": "Contract amendment (allowlist regexes ^nferruz/ProtGPT2$)",
+      "result": "ACCEPTED",
+      "evidence": "Single fully anchored literal, no regexTarget; hygiene test enforces the literal shape; non-allowlisted tokenizer_name value still reported (verify4/gitleaks-items-2-4.log)"
+    },
+    {
+      "check": "Impact / system map",
+      "result": "N/A",
+      "evidence": "No .autodev/system map; commands.run empty (library, CLI channel only)"
+    }
+  ],
+  "feedback": [
+    "Non-blocking: update contract F001.md scope lines that still say 'No regexes' to match the accepted amendment.",
+    "Non-blocking: older evidence logs contain local absolute paths; redact them if any log is ever published.",
+    "Owner: push a PR branch from origin/main with e793288 2cec236 11b9118 and open the PR with contracts/F001-pr.md; confirm the hosted 'gitleaks' run is green."
+  ],
+  "claims": [
+    {
+      "claim": "HEAD tree export and branch commits have zero gitleaks findings",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "Pre-commit hook gitleaks blocks a staged fake AWS key and passes a clean change",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "secret-scan.yml run blocks are correct on Linux for PR and push events",
+      "class": "OBSERVED (WSL Ubuntu, verbatim script; not a hosted runner)"
+    },
+    {
+      "claim": "The hosted GitHub run will be green",
+      "class": "INFERRED (same script and binary verified locally; owner gate)"
+    },
+    {
+      "claim": "The Windows gitleaks binary is v8.24.3",
+      "class": "INFERRED (built by pre-commit from rev v8.24.3; binary prints 'version is set by build process')"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+# head: 4dc8deb
+$ ruff check tests/security
+All checks passed!
+exit=0
+$ ruff check src tests
+  |
+
+Found 1 error.
+[*] 1 fixable with `--fix`.
+$ ruff check src tests @164e7df (worktree)
+
+Found 1 error.
+[*] 1 fixable with `--fix`.

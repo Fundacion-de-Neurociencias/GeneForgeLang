@@ -1,0 +1,7 @@
+$ gitleaks dir .autodev/spec/secret-rotation.md --redact --no-banner
+5:16AM INF scanned ~2344 bytes (2.34 KB) in 6ms
+5:16AM INF no leaks found
+exit=0
+$ grep -nE "[=:]\s*\S{8,}" (expect no output)
+$ grep -nE "https?|www\." (expect no output)
+done
