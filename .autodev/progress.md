@@ -47,3 +47,9 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Baseline on 7e23933 with the project commands: `pytest tests` 953 passed, 22 skipped, 5 xfailed; `ruff check src tests` clean. Source unchanged since 4d6acff (`git diff --stat 4d6acff HEAD -- . ':!.autodev'` empty).
 - Recorded both decisions under "Needs owner" in `next-steps.md`, with the recommended wording for item 1.
 - Next: owner/planner amends item 1 and the owner approves the PR; then `/autodev:verify F002`. Do not run `/autodev:sprint F002` again before that.
+
+## 2026-10-19: verify F002 - FAIL (feedback 3)
+- Independent evaluator at 8b3556f. Source unchanged since 4d6acff. 953 passed, 22 skipped, 5 xfailed; ruff clean; claims guard 94 passed (`verify3-checks.txt`).
+- FAIL only on acceptance items 1 (inventory: 12 fixed, 4 prevented, 6 open; wording not amended) and 6 (no owner approval). See contracts/F002-feedback-3.md.
+- Governance auditor: nothing blocking. `.autodev/` must stay out of any PR to public main.
+- Next: owner decisions; no further sprint or verify until they are recorded.

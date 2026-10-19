@@ -1,0 +1,115 @@
+{
+  "feature": "F002",
+  "verdict": "FAIL",
+  "commit": "4d6acff566a1a7f845a81338a1aa991a065e31ff",
+  "attempt": 2,
+  "acceptance": [
+    {
+      "item": "Every row of spec/claims-inventory.md has status 'fixed' with the PR diff hunk",
+      "result": "FAIL",
+      "evidence": "C1-C5, C7-C10, C14, C21, C22 fixed with hunks; C6, C11-C13 prevented by the guard; C15-C20 open and owned by F004/F006/F008/F009/F011. Deviation D10 in contracts/F002.md; must be confirmed by the owner at the PR gate (D11). Literal acceptance not met; needs the owner or planner to amend the acceptance item in features.json."
+    },
+    {
+      "item": "tests/docs/test_public_claims.py passes on head and fails on origin/main",
+      "result": "PASS",
+      "evidence": "verify2-checks.txt: 94 passed on head; verify2-guard-on-origin_main.log: 29 failed across 11 test families (README denylist, notice, fence tags, ...)"
+    },
+    {
+      "item": "Every fenced GFL block in README.md/whitepaper.md parses or is labelled proposed",
+      "result": "PASS",
+      "evidence": "test_readme_fence_is_tagged / test_readme_python_block_is_honest / test_whitepaper_labels_proposed_notation pass on head (verify2-checks.txt); whitepaper has no fences"
+    },
+    {
+      "item": "Notice text identical in README.md and docs/index.md",
+      "result": "PASS",
+      "evidence": "test_intended_use_notice_present passes on head, fails 2x on origin/main"
+    },
+    {
+      "item": "CITATION.cff validates and has no unresolvable DOI",
+      "result": "PASS",
+      "evidence": "verify2-realchannel.log: cffconvert valid (schema 1.2.0); doi.org/10.5281/zenodo.15493559 -> 302; bioRxiv DOI absent outside .autodev and tests/docs"
+    },
+    {
+      "item": "Owner approves the PR before merge",
+      "result": "FAIL",
+      "evidence": "Pending: owner approval of the PR has not happened. Not satisfiable in verify; origin/main still 630059c, nothing merged or pushed"
+    }
+  ],
+  "rubric": [
+    {
+      "check": "Deterministic checks (tests, lint)",
+      "result": "PASS",
+      "evidence": "verify2-checks.txt: 953 passed, 22 skipped, 5 xfailed; ruff check clean; ruff format clean on tests/docs"
+    },
+    {
+      "check": "G8.2/QB-8 README claims (feedback 1 items 1-2)",
+      "result": "PASS",
+      "evidence": "verify2-realchannel.log: README plugin block run with python -I from an empty dir, exit 0; register_plugin caveat confirmed (ModuleNotFoundError: No module named 'src'); all README external links 200"
+    },
+    {
+      "check": "Guard bites on prior attempt (D14)",
+      "result": "PASS",
+      "evidence": "verify2-guard-on-17fd3e5.log: exactly 4 failures (unsupported links, plugin block runs, 2 simulation reports)"
+    },
+    {
+      "check": "G10 language",
+      "result": "PASS",
+      "evidence": "verify2-language.log: 0 segments not in 'en'"
+    },
+    {
+      "check": "G1.1 no mocks in verification",
+      "result": "PASS",
+      "evidence": "governance auditor: guard uses the real parser/validator and a real subprocess"
+    },
+    {
+      "check": "G3 secrets / patient data",
+      "result": "PASS",
+      "evidence": "governance auditor: none in the diff"
+    },
+    {
+      "check": "G2.2 scope",
+      "result": "PASS (non-blocking note)",
+      "evidence": "src/ changes are the declared baseline fix 0a7a97b (identical hunks from feature/PDN_feature-GFP)"
+    },
+    {
+      "check": "Release gate: .autodev/ in a public PR",
+      "result": "N/A for verify; BLOCKING for release",
+      "evidence": "governance auditor finding 1; publish_autodev_state = false"
+    }
+  ],
+  "feedback": [
+    "Blocking (owner/planner, not code): acceptance item 1 requires every inventory row 'fixed'; C6, C11-C13 are 'prevented' and C15-C20 'open' (owned by F004/F006/F008/F009/F011). Amend the acceptance item or deliver those rows.",
+    "Blocking (owner): acceptance item 6, owner approval of the PR in chat, has not happened.",
+    "Non-blocking: examples/real_project/Manuscript_GeneForge_v2_Beta.md still says 'The successful discovery of high-quality gRNA candidates' (Discussion) and 'The comprehensive validation framework ensures reliable execution in production environments' (Conclusions). The banner covers them, but rewording would remove the contradiction. Candidate for F009.",
+    "Release gate: exclude .autodev/ from the PR to public main.",
+    "Owner: confirm the Zenodo DOI (A2) and the D10 deviation from acceptance item 1 when approving the PR.",
+    "F009: docs/dev/reports/TICKET_SUMMARY_GF-163.1.md contains local file:///C:/Users/usuario paths."
+  ],
+  "claims": [
+    {
+      "claim": "Full suite and lint green at HEAD",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "README plugin example runs for a reader with the installed package",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "Guard fails on origin/main and on 17fd3e5, passes on HEAD",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "CITATION.cff valid and its DOI resolves",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "Zenodo record 15493559 is this project's whitepaper",
+      "class": "INFERRED (title/creator match; owner confirmation pending)"
+    },
+    {
+      "claim": "Nothing merged to main",
+      "class": "OBSERVED (origin/main = 630059c)"
+    }
+  ],
+  "note": "All code-level checks pass (D1-D14, rubric). The FAIL is only the two acceptance items that need human decisions."
+}
