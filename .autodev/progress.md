@@ -99,3 +99,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Hygiene tests re-run: 16 passed. Full suite, gitleaks and governance audit not re-run (nothing to audit). Evidence: `evidence/F001/verify5/reconfirm.txt`.
 - Item 7 is still OWNER_GATE (hosted secret-scan run on the published PR). Next feature: F002.
 - Stop gate (this session): blocked by the same 2 baseline failures (`test_lru_eviction`, `test_find_similar_entities`). Not fixed: the evaluator does not change code, both files are out of F001 scope (sensitive `core/**`, on María's in-flight branch), and weakening tests is forbidden. Ended under "When stuck"; owner decision still pending in `next-steps.md`.
+
+## 2026-10-19: sprint, F001 - no-op again (already PASS)
+- `/autodev:sprint F001` invoked once more. No build work and no code change, because F001 passed in verify round 4.
+- Stop gate: blocked by the same 2 baseline failures (`test_lru_eviction`, `test_find_similar_entities`). Not fixed, for the reasons already recorded (out of F001 scope; `3e9f9ec` rejected; weakening tests is forbidden). Ended under "When stuck".
+- Loop note: the runner keeps re-invoking sprint/verify on F001 although it passes. It should move to F002 once the owner decides on the baseline fix (`next-steps.md`, "Needs owner").
