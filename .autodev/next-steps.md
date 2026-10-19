@@ -5,7 +5,7 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 
 ## Now
 - Owner reviews and approves the onboarding plan (roadmap Phase 0-3, features F001-F016).
-- F001: built on `autodev/F001` (2026-10-19); verify FAIL 1 (scope) fixed by reverting the out-of-scope commit; waiting for `/autodev:verify F001` again. Then the owner approves pushing a PR branch cut from `origin/main` with the product commits only (draft in `contracts/F001-pr.md`), so the hosted `gitleaks` run exists.
+- F001: built on `autodev/F001` (2026-10-19). Verify FAIL 2 passes every reproducible item; the only blocker is contract item 6 (hosted `secret-scan.yml` run or owner acceptance of the local evidence). No code change is pending. See "Needs owner".
 - F002: correct public claims (README, manuscript, whitepaper, CHANGELOG, SECURITY, CITATION) with not-for-clinical-use / not-legal-advice notices; PR for the owner to approve.
 
 ## Next
@@ -23,7 +23,8 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 - Phase 3: specification and conformance work backed by real code.
 
 ## Needs owner
-- **F001 blocked by a red baseline (decide now).** The Stop gate needs a green suite. Verify rejected the root-cause fix for the 2 pre-existing failures as out of F001's scope (María's files, sensitive `core/**`). Choose one: (a) approve the fix `3e9f9ec` inside F001 (record the approval; the generator cherry-picks it back and it joins the PR); or (b) add a separate feature with a higher priority than F001 for the baseline fixes, coordinated with María, and run it first. Recommendation: (b), with María's agreement, because it keeps the security PR free of library changes.
+- **F001 hosted CI gate, contract item 6 (decide now).** Choose one: (a) approve pushing a PR branch cut from `origin/main` with `e793288 2cec236 11b9118` (draft in `contracts/F001-pr.md`) so a hosted `secret-scan.yml` run exists; or (b) record here that you accept the local evidence (`evidence/F001/verify2/`). Then run `/autodev:verify F001`. Recommendation: (a), because the hosted run also proves the workflow itself. The 2 red baseline tests do not block F001 (item 13 allows them); their fix stays the separate proposed feature under "Next".
+- **Guard requests 20261019-054021-32d1c2 and 20261019-054350-fb3e87.** Reject both: the first is a cleanup of a throwaway clone that is not needed; the second is a false positive on text inside a JSON file.
 - **Key rotation (now).** F001 listed the services in `spec/secret-rotation.md` (Google API key for Gemini, plus anything else in the file). The owner or the account managers rotate every credential in the file. Agents never read the file.
 - **History purge (separate decision, never run by an agent).** Removing `.devcontainer/.env` (and the deleted `.pkl`) from the public history needs `git filter-repo` plus a force-push to `main` and every branch that contains it, and every collaborator must re-clone. Recommended only after rotation, because the old values are already public and may be in forks. Decide: purge / do not purge.
 - **Required checks and sensitive paths (with F003).** Add the status-check context `gitleaks` (workflow `.github/workflows/secret-scan.yml`) as required on `main`. Add `.gitleaks.toml` and `.pre-commit-config.yaml` to `[collaboration] sensitive_paths` in project.toml (`.github/workflows/**` is already there).

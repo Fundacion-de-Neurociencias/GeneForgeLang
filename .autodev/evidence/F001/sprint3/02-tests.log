@@ -1,0 +1,91 @@
+# head: b201d51  date: 2026-10-19T09:31:33+02:00
+# cmd: uv run --no-project --python .venv python -m pytest tests -q -p no:cacheprovider
+# import: C:\Users\usuario\.autodev\workspaces\geneforgelang\src\geneforgelang\__init__.py
+============================= test session starts =============================
+platform win32 -- Python 3.11.15, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\usuario\.autodev\workspaces\geneforgelang
+configfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)
+plugins: anyio-4.15.1, platformdirs-4.13.5, asyncio-1.4.0, cov-7.1.0, mock-3.17.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 902 items
+
+tests\bench\test_corpus.py ....                                          [  0%]
+tests\governance\test_behavioral_soundness.py .....                      [  0%]
+tests\governance\test_corpus_soundness.py .............................. [  4%]
+........................................................................ [ 12%]
+........................................................................ [ 20%]
+........................................................................ [ 28%]
+........................................................................ [ 36%]
+........................................................................ [ 44%]
+..........                                                               [ 45%]
+tests\integration\test_end_to_end.py ................                    [ 47%]
+tests\security\test_repository_hygiene.py ................               [ 48%]
+tests\test_advanced_validation.py .                                      [ 49%]
+tests\test_api.py ..                                                     [ 49%]
+tests\test_basic_functionality.py ....                                   [ 49%]
+tests\test_basic_plugin_functionality.py .                               [ 49%]
+tests\test_complete_workflow.py .                                        [ 49%]
+tests\test_design_file.py .                                              [ 50%]
+tests\test_design_implementation.py ....                                 [ 50%]
+tests\test_design_schema.py .                                            [ 50%]
+tests\test_enhanced_inference_engine.py ssssssssssssssssssss             [ 52%]
+tests\test_enhanced_inference_standalone.py ..                           [ 52%]
+tests\test_example_optimize.py .                                         [ 53%]
+tests\test_examples_roundtrip.py ss.                                     [ 53%]
+tests\test_io_contracts.py ..                                            [ 53%]
+tests\test_new_features.py ........................                      [ 56%]
+tests\test_optimize_implementation.py ......                             [ 56%]
+tests\test_platform.py ...                                               [ 57%]
+tests\test_plugin_interfaces.py ..............................           [ 60%]
+tests\test_schema_registry.py ...                                        [ 60%]
+tests\test_workflow.py .                                                 [ 61%]
+tests\unit\ir\test_executor.py .....                                     [ 61%]
+tests\unit\ir\test_external_connectors.py ..F.....................       [ 64%]
+tests\unit\ir\test_fase4.py .........................                    [ 67%]
+tests\unit\ir\test_graph_executor.py ....                                [ 67%]
+tests\unit\ir\test_instruction.py ...........                            [ 68%]
+tests\unit\ir\test_knowledge_grounding.py ......                         [ 69%]
+tests\unit\ir\test_parser_ir.py .......                                  [ 70%]
+tests\unit\ir\test_reasoning_loop.py ...                                 [ 70%]
+tests\unit\ir\test_state.py .....                                        [ 71%]
+tests\unit\ir\test_state_evaluator.py .....                              [ 71%]
+tests\unit\ir\test_state_propagation.py ....                             [ 72%]
+tests\unit\test_design_block.py ..................                       [ 74%]
+tests\unit\test_enhanced_cli.py .....................                    [ 76%]
+tests\unit\test_enhanced_plugins.py ........                             [ 77%]
+tests\unit\test_error_handling.py ..........................             [ 80%]
+tests\unit\test_grammar_parser.py ..............xxxx.......x             [ 83%]
+tests\unit\test_optimize_block.py ...................                    [ 85%]
+tests\unit\test_parser.py ...................                            [ 87%]
+tests\unit\test_performance.py .F.....................                   [ 89%]
+tests\unit\test_symbolic_reasoning.py .........................          [ 92%]
+tests\unit\test_types.py ..................................              [ 96%]
+tests\unit\test_validator.py .................................           [100%]
+
+================================== FAILURES ===================================
+_______________ TestOpenMedConnector.test_find_similar_entities _______________
+tests\unit\ir\test_external_connectors.py:48: in test_find_similar_entities
+    assert all(0 <= s.similarity <= 1 for s in similar)
+E   assert False
+E    +  where False = all(<generator object TestOpenMedConnector.test_find_similar_entities.<locals>.<genexpr> at 0x00000206F57A90E0>)
+___________________ TestIntelligentCache.test_lru_eviction ____________________
+tests\unit\test_performance.py:52: in test_lru_eviction
+    assert cache.get("key1") == 100
+E   AssertionError: assert None == 100
+E    +  where None = get('key1')
+E    +    where get = <geneforgelang.core.performance.IntelligentCache object at 0x00000206F601A050>.get
+============================ slowest 10 durations =============================
+0.67s call     tests/test_platform.py::test_cli_tools
+0.18s call     tests/security/test_repository_hygiene.py::test_no_inline_gitleaks_allow
+0.15s call     tests/unit/test_performance.py::TestIntelligentCache::test_cache_cleanup
+0.15s call     tests/unit/test_performance.py::TestPerformanceOptimizer::test_cache_cleanup
+0.15s call     tests/unit/test_performance.py::TestIntelligentCache::test_ttl_eviction
+0.10s call     tests/unit/test_parser.py::TestParsingPerformance::test_parse_large_parameter_set
+0.08s call     tests/security/test_repository_hygiene.py::test_no_code_executing_deserialization
+0.07s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_performance_caching
+0.05s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_api_integration
+0.05s setup    tests/unit/test_grammar_parser.py::TestAdvancedGFLParser::test_error_locations
+=========================== short test summary info ===========================
+FAILED tests/unit/ir/test_external_connectors.py::TestOpenMedConnector::test_find_similar_entities - assert False
+FAILED tests/unit/test_performance.py::TestIntelligentCache::test_lru_eviction - AssertionError: assert None == 100
+============ 2 failed, 873 passed, 22 skipped, 5 xfailed in 6.20s =============

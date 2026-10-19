@@ -59,3 +59,11 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Correction: F001 is not blocked by the red baseline (item 13 allows it); only the item 6 owner gate blocks it.
 - Guard requests from this session (both can be rejected): 20261019-054021-32d1c2, 20261019-054350-fb3e87.
 - Feedback: `contracts/F001-feedback-2.md`.
+
+## 2026-10-19: build, F001 - after verify FAIL 2 (owner gate only)
+- No code change: feedback 2 passes every reproducible item and needs no code fix.
+- Non-blocking item 2 fixed: `next-steps.md` no longer says F001 is blocked by the red baseline. "Needs owner" now holds the item 6 gate as the decide-now entry: (a) approve pushing a PR branch from `origin/main` with `e793288 2cec236 11b9118`, or (b) record acceptance of the local evidence. Recommendation: (a).
+- Item 3 (guard requests 20261019-054021-32d1c2, 20261019-054350-fb3e87): listed under "Needs owner" with the advice to reject both. Only the owner can resolve them.
+- Suite at b201d51 with the project command (`.venv`): 873 passed, 2 failed (the 2 baseline ids item 13 allows), 22 skipped, 5 xfailed (`evidence/F001/sprint3/02-tests.log`, which also records the import path).
+- Finding (environment): the global Python has an editable install of `geneforgelang` that points to the main checkout (`GeneForgeLang Ecosystem/GeneForgeLang/src`), and its `torchaudio` no longer loads. A bare `python -m pytest` in this worktree therefore tests the wrong copy of the code (it showed `tests/test_design_schema.py` failing with "GFL schema not found"). Always use the `.venv` command from `project.toml`.
+- Next: owner decision on item 6, then `/autodev:verify F001`.
