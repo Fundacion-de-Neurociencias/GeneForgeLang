@@ -79,3 +79,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Verified: injection makes the 3 plain guards fail, removing C17 makes its strict xfail XPASS -> fail (`evidence/F002/attempt3-owned-guards.log`); full suite 968 passed, 22 skipped, 10 xfailed; ruff clean (`attempt3-checks.txt`).
 - Still needs owner: PR approval (item 6), Zenodo DOI (A2).
 - Next: `/autodev:verify F002` in a separate session.
+
+## 2026-10-19: verify, F002 attempt 3 - FAIL
+- Green: ruff, full suite (968 passed, 22 skipped, 10 xfailed), tests/docs on HEAD (97 passed, 5 xfailed), guard on origin/main (29 failed in 13 families), cffconvert, Zenodo DOI 302, language check 0, governance auditor 0 blocking. Inventory: 0 rows `open`.
+- FAIL: the `_owned_xfail` strict xfails have no `raises=`. Deleting `openmed_connector.py` reports C17 as XFAIL instead of an error or an XPASS, which breaks D16. One-line fix. See `contracts/F002-feedback-4.md` and `evidence/F002/verify4-owned-guards.log`.
+- Owner gates: PR approval and the Zenodo DOI (A2).

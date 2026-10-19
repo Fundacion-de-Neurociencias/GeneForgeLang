@@ -1,0 +1,26 @@
+{
+  "feature": "F002",
+  "verdict": "FAIL",
+  "commit": "8b3556ff7075e6ee1bd23194a49e8d51259733cf",
+  "attempt": 3,
+  "note": "Source identical to 4d6acff (verified in verify3-checks.txt); HEAD adds only .autodev bookkeeping. Previous verdict kept as verdict-2.json.",
+  "acceptance": [
+    {"item": "Every row of spec/claims-inventory.md has status 'fixed'", "result": "FAIL", "class": "OBSERVED",
+     "evidence": "verify3-checks.txt: .autodev/spec/claims-inventory.md has 12 fixed, 4 prevented, 6 open; acceptance text in features.json is unchanged (not amended by owner/planner)."},
+    {"item": "tests/docs/test_public_claims.py passes on head and fails on origin/main", "result": "PASS", "class": "OBSERVED",
+     "evidence": "verify3-checks.txt: 94 passed on HEAD; origin/main failure carried from verify2-guard-on-origin_main.log (source unchanged)."},
+    {"item": "Fenced GFL blocks parse or are labelled proposed", "result": "PASS", "class": "INFERRED",
+     "evidence": "Guard tests covering this pass on HEAD (verify3-checks.txt); README/whitepaper unchanged since 4d6acff."},
+    {"item": "Notice text identical in README.md and docs/index.md", "result": "PASS", "class": "OBSERVED",
+     "evidence": "test_intended_use_notice_present included in the 94 passing guard tests."},
+    {"item": "CITATION.cff validates, no unresolvable DOI", "result": "PASS", "class": "INFERRED",
+     "evidence": "CITATION.cff unchanged since 4d6acff; verify2-realchannel.log (cffconvert valid, Zenodo DOI 302). Owner confirmation of the Zenodo DOI still pending."},
+    {"item": "Owner approves the PR before merge", "result": "FAIL", "class": "OBSERVED",
+     "evidence": "No approval in next-steps.md, inbox or features.json; still listed under 'Needs owner'."}
+  ],
+  "rubric": [
+    {"check": "Deterministic checks", "result": "PASS", "evidence": "verify3-checks.txt: 953 passed, 22 skipped, 5 xfailed; ruff check clean"},
+    {"check": "Governance auditor (autodev/integration...HEAD)", "result": "PASS", "evidence": "No blocking findings. Advisory: sprint baseline log on 7e23933 not archived (superseded by verify3-checks.txt); .autodev/ must be excluded from any PR to public main."}
+  ],
+  "blocking_reasons": ["acceptance item 1 literal wording not met; needs owner/planner amendment", "acceptance item 6 owner approval missing"]
+}
