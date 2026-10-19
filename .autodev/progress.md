@@ -153,3 +153,4 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Invoked again at 2357da4. Since the round-4 PASS (5893f94) only `.autodev/` bookkeeping changed; no product change.
 - Hygiene tests re-run: 16 passed. Evidence: `evidence/F001/verify10/reconfirm.txt`. Verdict file unchanged.
 - Loop note (repeated): the runner keeps re-invoking verify/sprint on F001. It should move to F002; the baseline-test decision is in `next-steps.md`, "Needs owner".
+- Stop gate blocked on the same 2 baseline failures (`test_lru_eviction`, `test_find_similar_entities`), out of F001 scope. The evaluator does not change product code; the session ends here. Owner decision pending (`next-steps.md`, "Needs owner").
