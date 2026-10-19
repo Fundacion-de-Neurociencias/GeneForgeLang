@@ -40,3 +40,10 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Governance auditor: nothing blocking for verify. Release gate: `.autodev/` must not reach public main.
 - Open for the owner at the PR: Zenodo DOI (A2), D10 deviation from acceptance item 1, PR approval. Non-blocking wording left in the bannered manuscript (F009).
 - Correction (same day): the PASS above was wrong. Acceptance items 1 (literal "every row fixed") and 6 (owner approval) are not met, and the evaluator rule requires every item. Verdict changed to FAIL, `passes` back to false. Code needs no change; see contracts/F002-feedback-2.md (owner/planner decisions).
+
+## 2026-10-19: sprint F002 (after feedback 2) - no build, blocked on owner
+- Read `contracts/F002-feedback-2.md`: every code-level check passed at 4d6acff; the FAIL rests on acceptance item 1 (literal "every row fixed") and item 6 (owner approves the PR).
+- No code change made. Item 1 needs an edit to `features.json`, which the builder may not make, or pulling C15-C20 work from F004/F006/F008/F009/F011 into F002, which is out of scope. Item 6 is the owner's decision.
+- Baseline on 7e23933 with the project commands: `pytest tests` 953 passed, 22 skipped, 5 xfailed; `ruff check src tests` clean. Source unchanged since 4d6acff (`git diff --stat 4d6acff HEAD -- . ':!.autodev'` empty).
+- Recorded both decisions under "Needs owner" in `next-steps.md`, with the recommended wording for item 1.
+- Next: owner/planner amends item 1 and the owner approves the PR; then `/autodev:verify F002`. Do not run `/autodev:sprint F002` again before that.
