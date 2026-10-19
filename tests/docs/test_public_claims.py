@@ -362,9 +362,15 @@ def test_readme_relative_links_resolve() -> None:
 # claim is absent. While the claim is still in the tree the guard is a strict
 # xfail naming the owning feature: when that feature removes the claim the guard
 # XPASSes and fails the suite until the marker is dropped, and from then on it
-# blocks the claim from returning.
+# blocks the claim from returning. Only the guard's own AssertionError counts as
+# the expected failure; any other exception (a missing or unreadable file) is
+# reported as an error instead of being swallowed as an xfail.
 def _owned_xfail(row: str, feature: str) -> pytest.MarkDecorator:
-    return pytest.mark.xfail(strict=True, reason=f"{row} still present; {feature} removes it, then drop this marker")
+    return pytest.mark.xfail(
+        strict=True,
+        raises=AssertionError,
+        reason=f"{row} still present; {feature} removes it, then drop this marker",
+    )
 
 
 def _pyproject() -> dict:
@@ -397,6 +403,10 @@ def _c16_no_calibration_claim() -> list[str]:
 
 def _c17_no_unconditional_privacy_flag() -> list[str]:
     path = ROOT / "src" / "geneforgelang" / "ir" / "external" / "openmed_connector.py"
+    # A deleted connector carries no claim: the guard passes, so the strict
+    # xfail XPASSes and forces the marker to be dropped.
+    if not path.is_file():
+        return []
     return [f"{_rel(path)}: privacy_cleared is hardcoded True"] if '"privacy_cleared": True' in _read(path) else []
 
 
