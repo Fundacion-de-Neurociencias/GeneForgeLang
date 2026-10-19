@@ -52,7 +52,8 @@
         "CITATION.cff validates with cffconvert --validate and contains no DOI that fails to resolve (doi.org HEAD request logged).",
         "Owner gate: the owner approves the PR in chat before merge."
       ],
-      "passes": true, "evidence": ".autodev/evidence/F002/verdict.json",
+      "passes": true,
+      "evidence": ".autodev/evidence/F002/verdict.json",
       "notes": "No dependencies. The chain rewrites README and adds SECURITY.md and EVIDENCE_MATRIX.md, so F005 and each slice must keep the corrections; the CI claims test (F003 makes it required) is what prevents regressions. The ADNI/NACC content of EVIDENCE_MATRIX.md arrives with the chain and needs legal review before it lands (see Needs owner). Quality bar: QB-6, QB-8 (spec/quality-bar.md). | blocked by runner 2026-10-19: 3 failed verifications | 2026-10-19: unblocked by Claude (planner). The 3 failed verifications were caused by a red baseline (2 pre-existing failing tests) and by acceptance items only the owner can satisfy; those are now owner gates (lessons 19-20). Old feedback archived in contracts/archive/.",
       "blocked": false
     },
@@ -334,6 +335,19 @@
       "passes": true,
       "notes": "Inserted by the runner on 2026-10-19: the baseline suite was red before building.",
       "evidence": ".autodev/evidence/F018/verdict.json"
+    },
+    {
+      "id": "F019",
+      "priority": 4,
+      "description": "Remove machine-specific paths (this developer's home directory) from every tracked file of the public repository, and keep them out with a check.",
+      "acceptance": [
+        "A grep of tracked files for absolute home-directory paths (C:\\Users\\..., /home/..., /Users/...) finds nothing outside documented test fixtures (evidence: output).",
+        "Code that needed those paths uses repo-relative paths or configuration; affected examples and the LSP still run (evidence: commands run).",
+        "tools/publish_check.py on the publish branch reports no home-path findings, including pre-existing ones."
+      ],
+      "passes": false,
+      "category": "hygiene",
+      "notes": "Found by publish_check on PR #22 (2026-10-19): src/gfl_lsp/gfl_lsp/server/main.py, docs/dev/decisions/ADR-001-*.md, docs/dev/reports/TICKET_SUMMARY_GF-163.1.md."
     }
   ]
 }
