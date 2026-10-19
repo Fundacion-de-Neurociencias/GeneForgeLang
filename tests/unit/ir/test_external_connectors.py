@@ -1,7 +1,8 @@
 """Tests for external knowledge connectors (Fase 3)."""
 
-import pytest
 import os
+
+import pytest
 
 from geneforgelang.ir.external import (
     HuggingScienceConnector,
