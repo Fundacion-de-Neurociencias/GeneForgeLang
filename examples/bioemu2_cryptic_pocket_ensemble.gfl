@@ -1,0 +1,62 @@
+# BioEmu2 Boltzmann Conformational Ensemble & Cryptic Pocket Screening Protocol
+# Grounded in Microsoft Research AI for Science (2026) equilibrium sampling & free energy emulation
+# Demonstrating Boltzmann ensemble generation, cryptic pocket selection, and VHH allosteric gating
+
+metadata:
+  protocol_name: "TauBoltzmannEnsembleScreening"
+  target_organism: "Homo sapiens"
+  pathology: "Tauopathy / Frontotemporal Lobar Degeneration"
+  version: "2.1.0"
+
+ensemble:
+  target: "MAPT_HUMAN"
+  generator: "bioemu2"
+  sample_size: 1000
+  temperature_kelvin: 310.15
+  solvation: "explicit_equivalent"
+  max_energy_cutoff_kcal_mol: 12.0
+
+cryptic_pocket:
+  pocket_id: "tau_phf6_cryptic_cleft"
+  target_ensemble: "TauBoltzmannEnsembleScreening"
+  residues:
+    - 306
+    - 307
+    - 308
+    - 309
+    - 310
+    - 311
+  probe_radius_angstrom: 1.4
+  min_boltzmann_weight: 0.08
+  max_delta_g_relative_kcal_mol: 1.85
+  target_pathogen_domain: "tau_phf6_hexapeptide"
+  is_transient: true
+
+thermodynamic_binding:
+  binder_id: "vhh_tau_inhibitor_v1"
+  target_ensemble: "TauBoltzmannEnsembleScreening"
+  stabilized_state_condition: "cryptic_pocket_exposed == true"
+  min_target_fraction: 0.85
+  max_delta_delta_g_kcal_mol: -2.8
+  binding_pocket_id: "tau_phf6_cryptic_cleft"
+  temperature_kelvin: 310.15
+
+decision:
+  task_id: "cryptic_druggability_gate"
+  strategy: "system_1_calibrated"
+  engine: "biodecision-4b"
+  threshold: 0.85
+  allowed_space:
+    - "DRUGGABLE_CRYPTIC_ACCESSIBLE"
+    - "STERICALLY_COLLAPSED_LATENT"
+
+experiment:
+  tool: "bioemu2"
+  type: "cryptic_pocket_detection"
+  params:
+    target_gene: "MAPT"
+    replicates: 3
+
+output:
+  report_format: "tabular_thermodynamic_summary"
+  destination: "evidence/ensembles/tau_boltzmann_bioemu2.json"

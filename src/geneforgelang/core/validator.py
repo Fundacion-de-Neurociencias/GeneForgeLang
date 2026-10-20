@@ -138,6 +138,9 @@ class EnhancedSemanticValidator:
             "regulatory_profile",
             "protocol",
             "somatic_instability",
+            "ensemble",
+            "cryptic_pocket",
+            "thermodynamic_binding",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -148,7 +151,7 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', or 'somatic_instability' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', 'somatic_instability', 'ensemble', 'cryptic_pocket', or 'thermodynamic_binding' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
@@ -214,6 +217,12 @@ class EnhancedSemanticValidator:
                 self._validate_regulatory_profile_block(block_content)
             elif block_name in {"protocol", "somatic_instability"}:
                 self._validate_somatic_instability_block(block_content)
+            elif block_name == "ensemble":
+                self._validate_ensemble_block(block_content)
+            elif block_name == "cryptic_pocket":
+                self._validate_cryptic_pocket_block(block_content)
+            elif block_name == "thermodynamic_binding":
+                self._validate_thermodynamic_binding_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -949,6 +958,130 @@ class EnhancedSemanticValidator:
         if "decision" in block and block["decision"] is not None:
             self._validate_decision_block(block["decision"])
 
+    def _validate_ensemble_block(self, block: Any) -> None:
+        """Validate BoltzmannEnsembleContract block (BioEmu2)."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "ensemble block must be a dictionary or BoltzmannEnsembleContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format ensemble as a dictionary with target, sample_size, generator, etc.")
+                return
+
+        # Target protein is required
+        if "target" not in block or not str(block["target"]).strip():
+            self.result.add_error(
+                "ensemble block missing required 'target' protein identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'target: <protein_name_or_uniprot>' to ensemble block")
+
+        # Validate sample_size
+        if "sample_size" in block:
+            size = block["sample_size"]
+            if not isinstance(size, int) or size <= 0:
+                self.result.add_error(
+                    f"sample_size must be a positive integer, got {size}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set sample_size to a positive integer (e.g. 1000)")
+
+        # Validate temperature_kelvin
+        if "temperature_kelvin" in block:
+            temp = block["temperature_kelvin"]
+            if not isinstance(temp, (int, float)) or temp <= 0:
+                self.result.add_error(
+                    f"temperature_kelvin must be positive, got {temp}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set temperature_kelvin to a positive temperature in Kelvin (e.g. 310.15)")
+
+        # Validate generator if provided
+        if "generator" in block:
+            gen = str(block["generator"]).lower()
+            valid_generators = {"bioemu2", "alphafold3", "chai1", "boltz1", "molecular_dynamics"}
+            if gen not in valid_generators:
+                self.result.add_error(
+                    f"Unknown ensemble generator '{block['generator']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'bioemu2', 'alphafold3', 'chai1', or 'molecular_dynamics'")
+
+    def _validate_cryptic_pocket_block(self, block: Any) -> None:
+        """Validate CrypticPocketContract block."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "cryptic_pocket block must be a dictionary or CrypticPocketContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format cryptic_pocket as a dictionary with pocket_id, residues, min_boltzmann_weight, etc.")
+                return
+
+        # Validate residues list
+        if "residues" in block:
+            residues = block["residues"]
+            if not isinstance(residues, list) or len(residues) == 0:
+                self.result.add_error(
+                    "residues must be a non-empty list of residue indices",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Provide a list of integer residue numbers (e.g. residues: [306, 311])")
+            else:
+                for r in residues:
+                    if not isinstance(r, int) or r <= 0:
+                        self.result.add_error(
+                            f"Residue index must be a positive integer, got {r}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Use positive 1-based integers for residue indices")
+
+        # Validate min_boltzmann_weight
+        if "min_boltzmann_weight" in block:
+            weight = block["min_boltzmann_weight"]
+            if not isinstance(weight, (int, float)) or not (0.0 < weight <= 1.0):
+                self.result.add_error(
+                    f"min_boltzmann_weight must be in range (0.0, 1.0], got {weight}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set min_boltzmann_weight between 0.01 and 1.0 (e.g. 0.05)")
+
+        # Validate max_delta_g_relative_kcal_mol
+        if "max_delta_g_relative_kcal_mol" in block:
+            dg = block["max_delta_g_relative_kcal_mol"]
+            if not isinstance(dg, (int, float)):
+                self.result.add_error(
+                    f"max_delta_g_relative_kcal_mol must be a number, got {dg}",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Set max_delta_g_relative_kcal_mol to a number in kcal/mol (e.g. 2.5)")
+
+    def _validate_thermodynamic_binding_block(self, block: Any) -> None:
+        """Validate ThermodynamicBindingContract block."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "thermodynamic_binding block must be a dictionary or ThermodynamicBindingContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format thermodynamic_binding as a dictionary with binder_id, min_target_fraction, etc.")
+                return
+
+        # Validate min_target_fraction
+        if "min_target_fraction" in block:
+            frac = block["min_target_fraction"]
+            if not isinstance(frac, (int, float)) or not (0.0 < frac <= 1.0):
+                self.result.add_error(
+                    f"min_target_fraction must be in range (0.0, 1.0], got {frac}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set min_target_fraction between 0.0 and 1.0 (e.g. 0.85)")
+
+        # Validate max_delta_delta_g_kcal_mol
+        if "max_delta_delta_g_kcal_mol" in block:
+            ddg = block["max_delta_delta_g_kcal_mol"]
+            if not isinstance(ddg, (int, float)):
+                self.result.add_error(
+                    f"max_delta_delta_g_kcal_mol must be a number, got {ddg}",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Set max_delta_delta_g_kcal_mol to a number in kcal/mol (e.g. -2.5)")
+
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
         self.symbol_table[block_name] = {"contract": contract}
@@ -1291,6 +1424,7 @@ class EnhancedSemanticValidator:
             "prompteina",
             "dna_typewriter",
             "targeted_amplicon_dna_seq",
+            "bioemu2",
         }
 
         if tool not in known_tools:
@@ -1319,6 +1453,9 @@ class EnhancedSemanticValidator:
             "simulation",
             "validation",
             "somatic_expansion_evaluation",
+            "structural_ensemble_generation",
+            "cryptic_pocket_detection",
+            "thermodynamic_refinement",
         }
 
         if exp_type not in valid_types:
@@ -1404,6 +1541,14 @@ class EnhancedSemanticValidator:
             "prompteina": ["design", "simulation", "analysis", "validation"],
             "dna_typewriter": ["gene_editing", "sequencing", "analysis", "simulation"],
             "targeted_amplicon_dna_seq": ["sequencing", "analysis", "validation"],
+            "bioemu2": [
+                "analysis",
+                "simulation",
+                "validation",
+                "structural_ensemble_generation",
+                "cryptic_pocket_detection",
+                "thermodynamic_refinement",
+            ],
         }
 
         if tool in compatibility_matrix:

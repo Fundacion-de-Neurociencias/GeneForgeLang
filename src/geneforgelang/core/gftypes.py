@@ -36,6 +36,8 @@ class DataType(str, Enum):
     CONTACT_MAP = "CONTACT_MAP"
     SEQUENCE_EMBEDDING = "SEQUENCE_EMBEDDING"
     ATTENTION_MAP = "ATTENTION_MAP"
+    BOLTZMANN_ENSEMBLE = "BOLTZMANN_ENSEMBLE"
+    CONFORMATIONAL_LANDSCAPE = "CONFORMATIONAL_LANDSCAPE"
 
     # General data types
     CSV = "CSV"
@@ -344,6 +346,9 @@ class GFLAST:
     regulatory_profile: Any | None = None
     protocol: Any | None = None
     somatic_instability: Any | None = None
+    ensemble: Any | None = None
+    cryptic_pocket: Any | None = None
+    thermodynamic_binding: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -380,6 +385,18 @@ class GFLAST:
                 self.somatic_instability.to_dict()
                 if hasattr(self.somatic_instability, "to_dict")
                 else self.somatic_instability
+            )
+        if self.ensemble is not None:
+            result["ensemble"] = self.ensemble.to_dict() if hasattr(self.ensemble, "to_dict") else self.ensemble
+        if self.cryptic_pocket is not None:
+            result["cryptic_pocket"] = (
+                self.cryptic_pocket.to_dict() if hasattr(self.cryptic_pocket, "to_dict") else self.cryptic_pocket
+            )
+        if self.thermodynamic_binding is not None:
+            result["thermodynamic_binding"] = (
+                self.thermodynamic_binding.to_dict()
+                if hasattr(self.thermodynamic_binding, "to_dict")
+                else self.thermodynamic_binding
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -561,6 +578,27 @@ class GFLAST:
                 ast.somatic_instability = si_data
             elif isinstance(si_data, dict):
                 ast.somatic_instability = SomaticInstabilityContract.from_dict(si_data)
+
+        if "ensemble" in data:
+            ens_data = data["ensemble"]
+            if isinstance(ens_data, BoltzmannEnsembleContract):
+                ast.ensemble = ens_data
+            elif isinstance(ens_data, dict):
+                ast.ensemble = BoltzmannEnsembleContract.from_dict(ens_data)
+
+        if "cryptic_pocket" in data:
+            cp_data = data["cryptic_pocket"]
+            if isinstance(cp_data, CrypticPocketContract):
+                ast.cryptic_pocket = cp_data
+            elif isinstance(cp_data, dict):
+                ast.cryptic_pocket = CrypticPocketContract.from_dict(cp_data)
+
+        if "thermodynamic_binding" in data:
+            tb_data = data["thermodynamic_binding"]
+            if isinstance(tb_data, ThermodynamicBindingContract):
+                ast.thermodynamic_binding = tb_data
+            elif isinstance(tb_data, dict):
+                ast.thermodynamic_binding = ThermodynamicBindingContract.from_dict(tb_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -1550,6 +1588,210 @@ class LigandConditionedPocketContract:
         }
 
 
+class EnsembleGenerator(str, Enum):
+    """Generative structural ensemble models (grounded in BioEmu2 / Microsoft Research AI for Science 2026)."""
+
+    BIOEMU_2 = "bioemu2"
+    ALPHAFOLD_3 = "alphafold3"
+    CHAI_1 = "chai1"
+    BOLTZ_1 = "boltz1"
+    MOLECULAR_DYNAMICS = "molecular_dynamics"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class SolvationModel(str, Enum):
+    """Solvation treatment for thermodynamic conformational ensembles."""
+
+    EXPLICIT_EQUIVALENT = "explicit_equivalent"
+    IMPLICIT_GB = "implicit_gb"
+    VACUUM = "vacuum"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+@dataclass
+class BoltzmannEnsembleContract:
+    """Formal GFL IO Contract for Thermodynamic Boltzmann Conformational Ensembles.
+
+    Inspired by Microsoft Research AI for Science's BioEmu2 (MIT license, 2026):
+    - Emulates equilibrium conformational dynamics generating thousands of independent,
+      thermodynamically consistent structures per hour on a single GPU.
+    - Yields relative free energy accuracy (~1 kcal/mol), resolving cryptic pockets,
+      metastable functional states, and transient cavity exposures.
+    """
+
+    target: str  # Protein name, UniProt ID, or sequence identifier (e.g., 'MAPT_HUMAN', 'TDP43')
+    sample_size: int = 1000  # Number of independent conformational samples
+    generator: EnsembleGenerator = EnsembleGenerator.BIOEMU_2
+    temperature_kelvin: float = 310.15  # Physiological temperature (37 °C)
+    solvation: SolvationModel = SolvationModel.EXPLICIT_EQUIVALENT
+    ensemble_id: str | None = None
+    max_energy_cutoff_kcal_mol: float = 15.0  # Cutoff above ground state to discard non-physical conformers
+
+    def compute_boltzmann_weight(self, delta_g_kcal_mol: float) -> float:
+        """Calculate Boltzmann probability weight P_i proportional to exp(-Delta G / (k_B * T)).
+
+        k_B = 0.001987204 kcal / (mol * K).
+        """
+        import math
+
+        k_b = 0.00198720425864083
+        kt = k_b * max(1.0, self.temperature_kelvin)
+        exponent = -max(-50.0, min(50.0, delta_g_kcal_mol / kt))
+        return float(math.exp(exponent))
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res: dict[str, Any] = {
+            "target": self.target,
+            "sample_size": self.sample_size,
+            "generator": str(self.generator),
+            "temperature_kelvin": self.temperature_kelvin,
+            "solvation": str(self.solvation),
+            "max_energy_cutoff_kcal_mol": self.max_energy_cutoff_kcal_mol,
+        }
+        if self.ensemble_id:
+            res["ensemble_id"] = self.ensemble_id
+        return res
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> BoltzmannEnsembleContract:
+        """Instantiate BoltzmannEnsembleContract from dictionary."""
+        gen_val = data.get("generator", EnsembleGenerator.BIOEMU_2)
+        try:
+            gen_enum = EnsembleGenerator(str(gen_val).lower())
+        except ValueError:
+            gen_enum = EnsembleGenerator.BIOEMU_2
+
+        solv_val = data.get("solvation", SolvationModel.EXPLICIT_EQUIVALENT)
+        try:
+            solv_enum = SolvationModel(str(solv_val).lower())
+        except ValueError:
+            solv_enum = SolvationModel.EXPLICIT_EQUIVALENT
+
+        return cls(
+            target=str(data.get("target", "TARGET_PROTEIN")),
+            sample_size=int(data.get("sample_size", 1000)),
+            generator=gen_enum,
+            temperature_kelvin=float(data.get("temperature_kelvin", 310.15)),
+            solvation=solv_enum,
+            ensemble_id=str(data.get("ensemble_id", data.get("name", ""))) or None,
+            max_energy_cutoff_kcal_mol=float(data.get("max_energy_cutoff_kcal_mol", 15.0)),
+        )
+
+
+@dataclass
+class CrypticPocketContract:
+    """Formal GFL IO Contract for Cryptic Pocket Conformational Selection and Dynamic Cavity Queries.
+
+    Models transiently accessible binding pockets that remain collapsed in the apo static ground state
+    but open with significant Boltzmann weight (P >= threshold) in the thermodynamic ensemble.
+    """
+
+    pocket_id: str
+    target_ensemble: str  # Identifier of the BoltzmannEnsembleContract
+    residues: list[int]  # 1-based residue indices defining the cryptic pocket boundary
+    probe_radius_angstrom: float = 1.4  # Water probe equivalent
+    min_boltzmann_weight: float = 0.05  # Minimum thermodynamic occupancy (e.g. 5% population)
+    max_delta_g_relative_kcal_mol: float = 2.5  # Energy penalty for pocket opening relative to ground state
+    is_transient: bool = True
+    target_pathogen_domain: str | None = None  # e.g., 'tau_phf6_hexapeptide', 'tdp43_rrm_loop'
+
+    def evaluates_druggability(self, observed_boltzmann_weight: float, observed_delta_g: float) -> bool:
+        """Check if transient pocket meets thermodynamic druggability criteria."""
+        return (
+            observed_boltzmann_weight >= self.min_boltzmann_weight
+            and observed_delta_g <= self.max_delta_g_relative_kcal_mol
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res: dict[str, Any] = {
+            "pocket_id": self.pocket_id,
+            "target_ensemble": self.target_ensemble,
+            "residues": list(self.residues),
+            "probe_radius_angstrom": self.probe_radius_angstrom,
+            "min_boltzmann_weight": self.min_boltzmann_weight,
+            "max_delta_g_relative_kcal_mol": self.max_delta_g_relative_kcal_mol,
+            "is_transient": self.is_transient,
+        }
+        if self.target_pathogen_domain:
+            res["target_pathogen_domain"] = self.target_pathogen_domain
+        return res
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> CrypticPocketContract:
+        """Instantiate CrypticPocketContract from dictionary."""
+        residues_raw = data.get("residues", [])
+        return cls(
+            pocket_id=str(data.get("pocket_id", data.get("name", "cryptic_pocket_01"))),
+            target_ensemble=str(data.get("target_ensemble", data.get("from", "default_ensemble"))),
+            residues=[int(r) for r in residues_raw],
+            probe_radius_angstrom=float(data.get("probe_radius_angstrom", 1.4)),
+            min_boltzmann_weight=float(data.get("min_boltzmann_weight", 0.05)),
+            max_delta_g_relative_kcal_mol=float(data.get("max_delta_g_relative_kcal_mol", 2.5)),
+            is_transient=bool(data.get("is_transient", True)),
+            target_pathogen_domain=str(data["target_pathogen_domain"]) if "target_pathogen_domain" in data else None,
+        )
+
+
+@dataclass
+class ThermodynamicBindingContract:
+    """Formal GFL IO Contract for VHH/Nanobody and Small-Molecule Conformational Selection.
+
+    Formulates binding equilibrium not as rigid lock-and-key docking, but as allosteric stabilization
+    of active/desired conformational states (e.g. GPCR TM6 outward displacement >= 10.0 A)
+    with relative binding free energy Delta Delta G (kcal/mol).
+    """
+
+    binder_id: str
+    target_ensemble: str
+    stabilized_state_condition: str  # e.g., 'tm6_displacement >= 10.0'
+    min_target_fraction: float = 0.80  # Desired population shift into active state
+    max_delta_delta_g_kcal_mol: float = -2.0  # Favorable relative stabilization energy
+    binding_pocket_id: str | None = None
+    temperature_kelvin: float = 310.15
+
+    def satisfies_allosteric_stabilization(
+        self, observed_active_fraction: float, observed_delta_delta_g: float
+    ) -> bool:
+        """Verify whether binder successfully shifts conformational equilibrium to active state."""
+        return (
+            observed_active_fraction >= self.min_target_fraction
+            and observed_delta_delta_g <= self.max_delta_delta_g_kcal_mol
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res: dict[str, Any] = {
+            "binder_id": self.binder_id,
+            "target_ensemble": self.target_ensemble,
+            "stabilized_state_condition": self.stabilized_state_condition,
+            "min_target_fraction": self.min_target_fraction,
+            "max_delta_delta_g_kcal_mol": self.max_delta_delta_g_kcal_mol,
+            "temperature_kelvin": self.temperature_kelvin,
+        }
+        if self.binding_pocket_id:
+            res["binding_pocket_id"] = self.binding_pocket_id
+        return res
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ThermodynamicBindingContract:
+        """Instantiate ThermodynamicBindingContract from dictionary."""
+        return cls(
+            binder_id=str(data.get("binder_id", data.get("name", "vhh_stabilizer_01"))),
+            target_ensemble=str(data.get("target_ensemble", "default_ensemble")),
+            stabilized_state_condition=str(data.get("stabilized_state_condition", "active_conformation == True")),
+            min_target_fraction=float(data.get("min_target_fraction", 0.80)),
+            max_delta_delta_g_kcal_mol=float(data.get("max_delta_delta_g_kcal_mol", -2.0)),
+            binding_pocket_id=str(data["binding_pocket_id"]) if "binding_pocket_id" in data else None,
+            temperature_kelvin=float(data.get("temperature_kelvin", 310.15)),
+        )
+
+
 @dataclass
 class PhysicsRefinementPolicy:
     """Physics-based force field energy minimization and steric clash relief for co-folding predictions."""
@@ -2423,6 +2665,8 @@ __all__ = [
     "ProfileLossMetric",
     "StrandMode",
     "SomaticDriftModel",
+    "EnsembleGenerator",
+    "SolvationModel",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -2446,6 +2690,9 @@ __all__ = [
     "ExperimentalRestraintsContract",
     "RunsNPosesMetric",
     "LigandConditionedPocketContract",
+    "BoltzmannEnsembleContract",
+    "CrypticPocketContract",
+    "ThermodynamicBindingContract",
     "PhysicsRefinementPolicy",
     "MegasynthaseDomain",
     "MegasynthaseModule",
