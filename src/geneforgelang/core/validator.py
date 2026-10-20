@@ -141,6 +141,7 @@ class EnhancedSemanticValidator:
             "ensemble",
             "cryptic_pocket",
             "thermodynamic_binding",
+            "bacteriophage",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -151,7 +152,7 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', 'somatic_instability', 'ensemble', 'cryptic_pocket', or 'thermodynamic_binding' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', 'somatic_instability', 'ensemble', 'cryptic_pocket', 'thermodynamic_binding', or 'bacteriophage' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
@@ -223,6 +224,8 @@ class EnhancedSemanticValidator:
                 self._validate_cryptic_pocket_block(block_content)
             elif block_name == "thermodynamic_binding":
                 self._validate_thermodynamic_binding_block(block_content)
+            elif block_name == "bacteriophage":
+                self._validate_bacteriophage_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -1082,6 +1085,78 @@ class EnhancedSemanticValidator:
                     ErrorCodes.TYPE_INVALID_TYPE,
                 ).add_fix("Set max_delta_delta_g_kcal_mol to a number in kcal/mol (e.g. -2.5)")
 
+    def _validate_bacteriophage_block(self, block: Any) -> None:
+        """Validate BacteriophageTherapyContract and BiodefenseSafetyGate block (Omnii-1)."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "bacteriophage block must be a dictionary or BacteriophageTherapyContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format bacteriophage as a dictionary with target_pathogen, biodefense_gate, etc.")
+                return
+
+        # Target pathogen is required
+        if "target_pathogen" not in block or not str(block["target_pathogen"]).strip():
+            self.result.add_error(
+                "bacteriophage block missing required 'target_pathogen' identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'target_pathogen: <bacterial_strain>' to bacteriophage block")
+
+        # Validate capsid architecture if provided
+        if "capsid_architecture" in block:
+            arch = str(block["capsid_architecture"]).lower()
+            valid_archs = {
+                "myoviridae_t4",
+                "siphoviridae_lambda",
+                "podoviridae_t7",
+                "tequatrovirus",
+                "custom_chassis",
+            }
+            if arch not in valid_archs:
+                self.result.add_error(
+                    f"Unknown capsid_architecture '{block['capsid_architecture']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'myoviridae_t4', 'siphoviridae_lambda', or 'podoviridae_t7'")
+
+        # Validate biodefense safety gate if present
+        if "biodefense_gate" in block and block["biodefense_gate"] is not None:
+            gate = block["biodefense_gate"]
+            if hasattr(gate, "to_dict"):
+                gate = gate.to_dict()
+            if not isinstance(gate, dict):
+                self.result.add_error(
+                    "biodefense_gate must be a dictionary or BiodefenseSafetyGate",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format biodefense_gate as a dictionary with safety constraints")
+            else:
+                # Invariant: prohibit_amr_transfer_genes must be True for compassionate human use
+                if "prohibit_amr_transfer_genes" in gate and not bool(gate["prohibit_amr_transfer_genes"]):
+                    self.result.add_error(
+                        "BIODEFENSE INVARIANT VIOLATION: Synthetic bacteriophage cannot disable 'prohibit_amr_transfer_genes'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix(
+                        "Set 'prohibit_amr_transfer_genes: true' to prevent horizontal gene transfer of resistance"
+                    )
+
+                # Invariant: prohibit_toxin_homology must be True
+                if "prohibit_toxin_homology" in gate and not bool(gate["prohibit_toxin_homology"]):
+                    self.result.add_error(
+                        "BIODEFENSE INVARIANT VIOLATION: Synthetic bacteriophage cannot disable 'prohibit_toxin_homology'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Set 'prohibit_toxin_homology: true' to guarantee absence of bacterial toxin homology")
+
+                # Invariant: max_off_target_microbiome_lysis must be <= 0.05
+                if "max_off_target_microbiome_lysis" in gate:
+                    lysis = gate["max_off_target_microbiome_lysis"]
+                    if not isinstance(lysis, (int, float)) or not (0.0 <= lysis <= 0.05):
+                        self.result.add_error(
+                            f"max_off_target_microbiome_lysis must be between 0.0 and 0.05 (<= 5% commensal perturbation), got {lysis}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set max_off_target_microbiome_lysis <= 0.01 for clinical safety")
+
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
         self.symbol_table[block_name] = {"contract": contract}
@@ -1425,6 +1500,7 @@ class EnhancedSemanticValidator:
             "dna_typewriter",
             "targeted_amplicon_dna_seq",
             "bioemu2",
+            "omnii-1",
         }
 
         if tool not in known_tools:
@@ -1456,6 +1532,10 @@ class EnhancedSemanticValidator:
             "structural_ensemble_generation",
             "cryptic_pocket_detection",
             "thermodynamic_refinement",
+            "bacteriophage_design",
+            "epigenomic_5hmc_profiling",
+            "multimodal_genome_generation",
+            "rare_earth_chelator_design",
         }
 
         if exp_type not in valid_types:
@@ -1548,6 +1628,17 @@ class EnhancedSemanticValidator:
                 "structural_ensemble_generation",
                 "cryptic_pocket_detection",
                 "thermodynamic_refinement",
+            ],
+            "omnii-1": [
+                "design",
+                "simulation",
+                "analysis",
+                "validation",
+                "sequencing",
+                "bacteriophage_design",
+                "epigenomic_5hmc_profiling",
+                "multimodal_genome_generation",
+                "rare_earth_chelator_design",
             ],
         }
 

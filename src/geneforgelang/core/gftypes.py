@@ -349,6 +349,7 @@ class GFLAST:
     ensemble: Any | None = None
     cryptic_pocket: Any | None = None
     thermodynamic_binding: Any | None = None
+    bacteriophage: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -397,6 +398,10 @@ class GFLAST:
                 self.thermodynamic_binding.to_dict()
                 if hasattr(self.thermodynamic_binding, "to_dict")
                 else self.thermodynamic_binding
+            )
+        if self.bacteriophage is not None:
+            result["bacteriophage"] = (
+                self.bacteriophage.to_dict() if hasattr(self.bacteriophage, "to_dict") else self.bacteriophage
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -599,6 +604,13 @@ class GFLAST:
                 ast.thermodynamic_binding = tb_data
             elif isinstance(tb_data, dict):
                 ast.thermodynamic_binding = ThermodynamicBindingContract.from_dict(tb_data)
+
+        if "bacteriophage" in data:
+            phage_data = data["bacteriophage"]
+            if isinstance(phage_data, BacteriophageTherapyContract):
+                ast.bacteriophage = phage_data
+            elif isinstance(phage_data, dict):
+                ast.bacteriophage = BacteriophageTherapyContract.from_dict(phage_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -1115,6 +1127,7 @@ class AviModality(str, Enum):
     ATAC_SEQ = "ATAC-seq"
     MOTIF_DISRUPTION = "Motif-Disruption"
     EVOLUTIONARY_CONSERVATION = "Evolutionary-Conservation"
+    FIVE_HMC = "5hmC"
 
     def __str__(self) -> str:
         """Return enum value."""
@@ -1412,6 +1425,7 @@ class ConsensusModel(str, Enum):
     PROTENIX = "protenix"
     PROTEIN_MPNN = "protein_mpnn"
     LIGAND_MPNN = "ligand_mpnn"
+    OMNII_1 = "omnii1"
 
     def __str__(self) -> str:
         """Return the enum value as string."""
@@ -1789,6 +1803,149 @@ class ThermodynamicBindingContract:
             max_delta_delta_g_kcal_mol=float(data.get("max_delta_delta_g_kcal_mol", -2.0)),
             binding_pocket_id=str(data["binding_pocket_id"]) if "binding_pocket_id" in data else None,
             temperature_kelvin=float(data.get("temperature_kelvin", 310.15)),
+        )
+
+
+class PhageCapsidArchitecture(str, Enum):
+    """Bacteriophage virion morphology and genomic delivery chassis."""
+
+    MYOVIRIDAE_T4 = "myoviridae_t4"  # Contractile tail, large genome (e.g. T4-like)
+    SIPHOVIRIDAE_LAMBDA = "siphoviridae_lambda"  # Long non-contractile tail (e.g. Lambda)
+    PODOVIRIDAE_T7 = "podoviridae_t7"  # Short non-contractile tail (e.g. T7)
+    TEQUATROVIRUS = "tequatrovirus"
+    CUSTOM_CHASSIS = "custom_chassis"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+@dataclass
+class BiodefenseSafetyGate:
+    """Strict biodefense and clinical biosafety verification for synthetic bacteriophages.
+
+    Enforces compassion-use clinical invariants:
+    - Zero horizontal gene transfer of antimicrobial resistance (AMR).
+    - Zero bacterial toxin or virulence factor homology.
+    - Zero off-target lysis of beneficial human commensal microbiota.
+    """
+
+    max_immunogenicity_score: float = 0.15
+    prohibit_amr_transfer_genes: bool = True
+    prohibit_toxin_homology: bool = True
+    max_off_target_microbiome_lysis: float = 0.01  # <= 1% commensal perturbation
+    verified_clearance: bool = True
+
+    def passes_safety_gate(
+        self,
+        immunogenicity: float,
+        has_amr_genes: bool,
+        has_toxin_homology: bool,
+        off_target_lysis: float,
+    ) -> bool:
+        """Evaluate synthetic phage candidate against biodefense safety constraints."""
+        if immunogenicity > self.max_immunogenicity_score:
+            return False
+        if self.prohibit_amr_transfer_genes and has_amr_genes:
+            return False
+        if self.prohibit_toxin_homology and has_toxin_homology:
+            return False
+        return off_target_lysis <= self.max_off_target_microbiome_lysis
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "max_immunogenicity_score": self.max_immunogenicity_score,
+            "prohibit_amr_transfer_genes": self.prohibit_amr_transfer_genes,
+            "prohibit_toxin_homology": self.prohibit_toxin_homology,
+            "max_off_target_microbiome_lysis": self.max_off_target_microbiome_lysis,
+            "verified_clearance": self.verified_clearance,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> BiodefenseSafetyGate:
+        """Instantiate BiodefenseSafetyGate from dictionary."""
+        return cls(
+            max_immunogenicity_score=float(data.get("max_immunogenicity_score", 0.15)),
+            prohibit_amr_transfer_genes=bool(data.get("prohibit_amr_transfer_genes", True)),
+            prohibit_toxin_homology=bool(data.get("prohibit_toxin_homology", True)),
+            max_off_target_microbiome_lysis=float(data.get("max_off_target_microbiome_lysis", 0.01)),
+            verified_clearance=bool(data.get("verified_clearance", True)),
+        )
+
+
+@dataclass
+class BacteriophageTherapyContract:
+    """Formal GFL IO Contract for AI-Designed Synthetic Bacteriophage Therapy.
+
+    Grounded in Radical Numerics' Omnii-1 multimodal genome foundation model (2026),
+    enabling compassionate human administration against antimicrobial resistant (AMR) pathogens
+    (Pseudomonas aeruginosa, Acinetobacter baumannii, MRSA):
+    - Unifies genomic DNA architecture, tail fiber receptor binding, and 5hmC epigenetic evasion.
+    - Enforces biodefense safety gates against toxin/AMR transduction.
+    """
+
+    therapy_id: str
+    target_pathogen: str  # e.g., "Pseudomonas_aeruginosa_AMR_strain_01"
+    model: str = "omnii-1"
+    modalities: list[str] = field(
+        default_factory=lambda: [
+            "DNA_GENOME",
+            "COAT_PROTEIN_STRUCTURE",
+            "RECEPTOR_BINDING_FIBER",
+            "EPIGENOMIC_5HMC_EVASION",
+        ]
+    )
+    capsid_architecture: PhageCapsidArchitecture = PhageCapsidArchitecture.MYOVIRIDAE_T4
+    host_range_expansion: bool = True
+    receptor_binding_fiber_ref: str | None = None
+    biodefense_gate: BiodefenseSafetyGate = field(default_factory=BiodefenseSafetyGate)
+    compassionate_use_approved: bool = True
+    target_cfu_reduction_log10: float = 6.0  # Log-kill efficacy target
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "therapy_id": self.therapy_id,
+            "target_pathogen": self.target_pathogen,
+            "model": self.model,
+            "modalities": list(self.modalities),
+            "capsid_architecture": str(self.capsid_architecture),
+            "host_range_expansion": self.host_range_expansion,
+            "receptor_binding_fiber_ref": self.receptor_binding_fiber_ref,
+            "biodefense_gate": self.biodefense_gate.to_dict(),
+            "compassionate_use_approved": self.compassionate_use_approved,
+            "target_cfu_reduction_log10": self.target_cfu_reduction_log10,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> BacteriophageTherapyContract:
+        """Instantiate BacteriophageTherapyContract from dictionary."""
+        arch_val = data.get("capsid_architecture", PhageCapsidArchitecture.MYOVIRIDAE_T4)
+        try:
+            arch_enum = PhageCapsidArchitecture(str(arch_val).lower())
+        except ValueError:
+            arch_enum = PhageCapsidArchitecture.MYOVIRIDAE_T4
+
+        gate_data = data.get("biodefense_gate", {})
+        gate = (
+            gate_data
+            if isinstance(gate_data, BiodefenseSafetyGate)
+            else BiodefenseSafetyGate.from_dict(gate_data if isinstance(gate_data, dict) else {})
+        )
+
+        return cls(
+            therapy_id=str(data.get("therapy_id", data.get("name", "phage_therapy_01"))),
+            target_pathogen=str(data.get("target_pathogen", "UNKNOWN_PATHOGEN")),
+            model=str(data.get("model", "omnii-1")),
+            modalities=list(data.get("modalities", ["DNA_GENOME", "COAT_PROTEIN_STRUCTURE"])),
+            capsid_architecture=arch_enum,
+            host_range_expansion=bool(data.get("host_range_expansion", True)),
+            receptor_binding_fiber_ref=str(data["receptor_binding_fiber_ref"])
+            if "receptor_binding_fiber_ref" in data
+            else None,
+            biodefense_gate=gate,
+            compassionate_use_approved=bool(data.get("compassionate_use_approved", True)),
+            target_cfu_reduction_log10=float(data.get("target_cfu_reduction_log10", 6.0)),
         )
 
 
@@ -2454,6 +2611,7 @@ class FragmentomicsModality(str, Enum):
     END_MOTIF_FREQUENCY = "end_motif_frequency"
     WINDOW_PROTECTION_SCORE = "window_protection_score"
     HIERARCHICAL_STACKED_ATTENTION = "hierarchical_stacked_attention"
+    HYDROXYMETHYLATION_5HMC = "5hmC_hydroxymethylation"
 
     def __str__(self) -> str:
         """Return enum value."""
@@ -2667,6 +2825,7 @@ __all__ = [
     "SomaticDriftModel",
     "EnsembleGenerator",
     "SolvationModel",
+    "PhageCapsidArchitecture",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -2693,6 +2852,8 @@ __all__ = [
     "BoltzmannEnsembleContract",
     "CrypticPocketContract",
     "ThermodynamicBindingContract",
+    "BiodefenseSafetyGate",
+    "BacteriophageTherapyContract",
     "PhysicsRefinementPolicy",
     "MegasynthaseDomain",
     "MegasynthaseModule",

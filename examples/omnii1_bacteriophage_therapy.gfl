@@ -1,0 +1,50 @@
+# Omnii-1 Multimodal Genome Language Model & Biosafe Bacteriophage Therapy Protocol
+# Grounded in Radical Numerics (2026) multimodal unification across 28 modalities
+# Featuring de novo phage design, 5hmC epigenetic CRISPR evasion, and biodefense clinical clearance
+
+metadata:
+  protocol_name: "OmniiPhageAMRRescue"
+  target_organism: "Pseudomonas aeruginosa"
+  clinical_indication: "Multidrug-Resistant Ventilator-Associated Pneumonia (Compassionate Use)"
+  version: "2.2.0"
+
+bacteriophage:
+  therapy_id: "omnii_phage_pa01_rescue"
+  target_pathogen: "Pseudomonas_aeruginosa_AMR_strain_01"
+  model: "omnii-1"
+  modalities:
+    - "DNA_GENOME"
+    - "COAT_PROTEIN_STRUCTURE"
+    - "RECEPTOR_BINDING_FIBER"
+    - "EPIGENOMIC_5HMC_EVASION"
+  capsid_architecture: "myoviridae_t4"
+  host_range_expansion: true
+  receptor_binding_fiber_ref: "PA01_OprM_porin_targeted_fiber"
+  compassionate_use_approved: true
+  target_cfu_reduction_log10: 6.5
+  biodefense_gate:
+    max_immunogenicity_score: 0.10
+    prohibit_amr_transfer_genes: true
+    prohibit_toxin_homology: true
+    max_off_target_microbiome_lysis: 0.005
+    verified_clearance: true
+
+decision:
+  task_id: "compassionate_administration_gate"
+  strategy: "system_1_calibrated"
+  engine: "biodecision-4b"
+  threshold: 0.90
+  allowed_space:
+    - "CLEARED_COMPASSIONATE_HUMAN_USE"
+    - "CONTAMINATED_OR_UNSAFE_REJECTED"
+
+experiment:
+  tool: "omnii-1"
+  type: "bacteriophage_design"
+  params:
+    target_gene: "oprM"
+    replicates: 3
+
+output:
+  report_format: "clinical_biodefense_dossier"
+  destination: "evidence/therapies/omnii_phage_pa01_summary.json"
