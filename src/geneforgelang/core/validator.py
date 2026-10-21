@@ -142,6 +142,7 @@ class EnhancedSemanticValidator:
             "cryptic_pocket",
             "thermodynamic_binding",
             "bacteriophage",
+            "virtual_cell",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -152,7 +153,7 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', 'somatic_instability', 'ensemble', 'cryptic_pocket', 'thermodynamic_binding', or 'bacteriophage' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', 'somatic_instability', 'ensemble', 'cryptic_pocket', 'thermodynamic_binding', 'bacteriophage', or 'virtual_cell' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
@@ -226,6 +227,8 @@ class EnhancedSemanticValidator:
                 self._validate_thermodynamic_binding_block(block_content)
             elif block_name == "bacteriophage":
                 self._validate_bacteriophage_block(block_content)
+            elif block_name == "virtual_cell":
+                self._validate_virtual_cell_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -1157,6 +1160,95 @@ class EnhancedSemanticValidator:
                             ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                         ).add_fix("Set max_off_target_microbiome_lysis <= 0.01 for clinical safety")
 
+    def _validate_virtual_cell_block(self, block: Any) -> None:
+        """Validate VirtualCellPerturbationContract and PerturbationReadout block (Virtual Biology Initiative)."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "virtual_cell block must be a dictionary or VirtualCellPerturbationContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format virtual_cell as a dictionary with cell_type, target_gene_or_compound, readout, etc.")
+                return
+
+        # Validate cell_type
+        if "cell_type" not in block or not str(block["cell_type"]).strip():
+            self.result.add_error(
+                "virtual_cell block missing required 'cell_type' identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'cell_type: <target_cellular_phenotype>' to virtual_cell block")
+
+        # Validate target_gene_or_compound
+        if "target_gene_or_compound" not in block or not str(block["target_gene_or_compound"]).strip():
+            self.result.add_error(
+                "virtual_cell block missing required 'target_gene_or_compound' perturbation target",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'target_gene_or_compound: <gene_or_small_molecule>' to virtual_cell block")
+
+        # Validate perturbation_type if provided
+        if "perturbation_type" in block:
+            pt = str(block["perturbation_type"]).lower()
+            valid_types = {
+                "crispr_knockout",
+                "crispr_inhibition",
+                "crispr_activation",
+                "small_molecule_inhibition",
+                "base_editing",
+                "prime_editing",
+                "overexpression",
+            }
+            if pt not in valid_types:
+                self.result.add_error(
+                    f"Unknown perturbation_type '{block['perturbation_type']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'crispr_knockout', 'crispr_inhibition', or 'small_molecule_inhibition'")
+
+        # Validate atlas_ref if provided
+        if "atlas_ref" in block:
+            atlas = str(block["atlas_ref"]).lower()
+            valid_atlases = {
+                "tabula_sapiens",
+                "cellxgene",
+                "zebrahub",
+                "human_cell_atlas",
+                "custom_atlas",
+            }
+            if atlas not in valid_atlases:
+                self.result.add_error(
+                    f"Unknown atlas_ref '{block['atlas_ref']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'tabula_sapiens', 'cellxgene', or 'zebrahub'")
+
+        # Validate readout sub-block if present
+        if "readout" in block and block["readout"] is not None:
+            readout = block["readout"]
+            if hasattr(readout, "to_dict"):
+                readout = readout.to_dict()
+            if not isinstance(readout, dict):
+                self.result.add_error(
+                    "readout must be a dictionary or PerturbationReadout",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format readout as a dictionary with min_survival_probability, etc.")
+            else:
+                if "min_survival_probability" in readout:
+                    surv = readout["min_survival_probability"]
+                    if not isinstance(surv, (int, float)) or not (0.0 <= surv <= 1.0):
+                        self.result.add_error(
+                            f"min_survival_probability must be between 0.0 and 1.0, got {surv}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set min_survival_probability to a probability fraction (e.g. 0.85)")
+
+                if "max_transcriptome_cosine_distance" in readout:
+                    dist = readout["max_transcriptome_cosine_distance"]
+                    if not isinstance(dist, (int, float)) or dist < 0.0:
+                        self.result.add_error(
+                            f"max_transcriptome_cosine_distance must be non-negative, got {dist}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set max_transcriptome_cosine_distance to a non-negative number (e.g. 0.15)")
+
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
         self.symbol_table[block_name] = {"contract": contract}
@@ -1501,6 +1593,7 @@ class EnhancedSemanticValidator:
             "targeted_amplicon_dna_seq",
             "bioemu2",
             "omnii-1",
+            "virtual-cell-foundation-1",
         }
 
         if tool not in known_tools:
@@ -1536,6 +1629,8 @@ class EnhancedSemanticValidator:
             "epigenomic_5hmc_profiling",
             "multimodal_genome_generation",
             "rare_earth_chelator_design",
+            "virtual_cell_simulation",
+            "perturbation_phenotype_prediction",
         }
 
         if exp_type not in valid_types:
@@ -1639,6 +1734,13 @@ class EnhancedSemanticValidator:
                 "epigenomic_5hmc_profiling",
                 "multimodal_genome_generation",
                 "rare_earth_chelator_design",
+            ],
+            "virtual-cell-foundation-1": [
+                "simulation",
+                "analysis",
+                "validation",
+                "virtual_cell_simulation",
+                "perturbation_phenotype_prediction",
             ],
         }
 

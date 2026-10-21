@@ -1,0 +1,45 @@
+# Virtual Cell In Silico Perturbation & Open Atlas Phenotype Screening Protocol
+# Grounded in the $1.8B Virtual Biology Initiative (CZ Biohub, DOE, NIH, Google DeepMind, Isomorphic Labs, Meta)
+# Anchoring cellular transitions against Tabula Sapiens with quantitative phenotypic gates
+
+metadata:
+  protocol_name: "CorticalTauPerturbationInSilico"
+  target_organism: "Homo sapiens"
+  clinical_indication: "Frontotemporal Dementia / Alzheimer's Disease"
+  version: "2.3.0"
+
+virtual_cell:
+  simulation_id: "mapt_crispri_cortical_rescue"
+  cell_type: "human_cortical_neuron"
+  target_gene_or_compound: "MAPT"
+  perturbation_type: "crispr_inhibition"
+  atlas_ref: "tabula_sapiens"
+  dose_or_fold_change: 0.20
+  tissue_context: "cerebral_cortex"
+  engine: "virtual-cell-foundation-1"
+  wet_lab_clearance: true
+  readout:
+    max_transcriptome_cosine_distance: 0.12
+    min_survival_probability: 0.92
+    mitochondrial_potential_retention: 0.95
+    off_target_pathway_disruption: 0.03
+
+decision:
+  task_id: "virtual_to_wet_lab_gate"
+  strategy: "system_1_calibrated"
+  engine: "biodecision-4b"
+  threshold: 0.88
+  allowed_space:
+    - "CLEARED_FOR_WET_LAB_VALIDATION"
+    - "INSUFFICIENT_PREDICTIVE_CONFIDENCE"
+
+experiment:
+  tool: "virtual-cell-foundation-1"
+  type: "virtual_cell_simulation"
+  params:
+    target_gene: "MAPT"
+    replicates: 5
+
+output:
+  report_format: "single_cell_phenotype_dossier"
+  destination: "evidence/simulations/mapt_virtual_cell_tabula_sapiens.json"

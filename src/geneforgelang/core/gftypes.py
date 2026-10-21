@@ -350,6 +350,7 @@ class GFLAST:
     cryptic_pocket: Any | None = None
     thermodynamic_binding: Any | None = None
     bacteriophage: Any | None = None
+    virtual_cell: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -402,6 +403,10 @@ class GFLAST:
         if self.bacteriophage is not None:
             result["bacteriophage"] = (
                 self.bacteriophage.to_dict() if hasattr(self.bacteriophage, "to_dict") else self.bacteriophage
+            )
+        if self.virtual_cell is not None:
+            result["virtual_cell"] = (
+                self.virtual_cell.to_dict() if hasattr(self.virtual_cell, "to_dict") else self.virtual_cell
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -611,6 +616,13 @@ class GFLAST:
                 ast.bacteriophage = phage_data
             elif isinstance(phage_data, dict):
                 ast.bacteriophage = BacteriophageTherapyContract.from_dict(phage_data)
+
+        if "virtual_cell" in data:
+            vc_data = data["virtual_cell"]
+            if isinstance(vc_data, VirtualCellPerturbationContract):
+                ast.virtual_cell = vc_data
+            elif isinstance(vc_data, dict):
+                ast.virtual_cell = VirtualCellPerturbationContract.from_dict(vc_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -1949,6 +1961,153 @@ class BacteriophageTherapyContract:
         )
 
 
+class PerturbationType(str, Enum):
+    """Experimental or in silico biological perturbation modality."""
+
+    CRISPR_KNOCKOUT = "crispr_knockout"
+    CRISPR_INHIBITION = "crispr_inhibition"
+    CRISPR_ACTIVATION = "crispr_activation"
+    SMALL_MOLECULE_INHIBITION = "small_molecule_inhibition"
+    BASE_EDITING = "base_editing"
+    PRIME_EDITING = "prime_editing"
+    OVEREXPRESSION = "overexpression"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class CellAtlasReference(str, Enum):
+    """Canonical open cellular and developmental atlas repositories (Virtual Biology Initiative)."""
+
+    TABULA_SAPIENS = "tabula_sapiens"
+    CELLXGENE = "cellxgene"
+    ZEBRAHUB = "zebrahub"
+    HUMAN_CELL_ATLAS = "human_cell_atlas"
+    CUSTOM_ATLAS = "custom_atlas"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+@dataclass
+class PerturbationReadout:
+    """Quantitative single-cell and phenotypic endpoints for in silico perturbation predictions."""
+
+    max_transcriptome_cosine_distance: float = 0.15  # Transcriptomic divergence threshold
+    min_survival_probability: float = 0.85  # Predicted cell viability fraction
+    mitochondrial_potential_retention: float = 0.90  # Metabolic and organellar integrity
+    off_target_pathway_disruption: float = 0.05  # Maximum permissible uncalibrated collateral disruption
+
+    def satisfies_phenotype_gate(
+        self,
+        observed_cosine_distance: float,
+        observed_survival: float,
+        observed_mito_retention: float,
+        observed_off_target: float,
+    ) -> bool:
+        """Evaluate if in silico perturbed cell state satisfies therapeutic criteria without toxic collapse."""
+        return (
+            observed_cosine_distance <= self.max_transcriptome_cosine_distance
+            and observed_survival >= self.min_survival_probability
+            and observed_mito_retention >= self.mitochondrial_potential_retention
+            and observed_off_target <= self.off_target_pathway_disruption
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "max_transcriptome_cosine_distance": self.max_transcriptome_cosine_distance,
+            "min_survival_probability": self.min_survival_probability,
+            "mitochondrial_potential_retention": self.mitochondrial_potential_retention,
+            "off_target_pathway_disruption": self.off_target_pathway_disruption,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> PerturbationReadout:
+        """Instantiate PerturbationReadout from dictionary."""
+        return cls(
+            max_transcriptome_cosine_distance=float(data.get("max_transcriptome_cosine_distance", 0.15)),
+            min_survival_probability=float(data.get("min_survival_probability", 0.85)),
+            mitochondrial_potential_retention=float(data.get("mitochondrial_potential_retention", 0.90)),
+            off_target_pathway_disruption=float(data.get("off_target_pathway_disruption", 0.05)),
+        )
+
+
+@dataclass
+class VirtualCellPerturbationContract:
+    """Formal GFL IO Contract for Whole-Cell In Silico Perturbation and Virtual Biology.
+
+    Grounded in the $1.8B Virtual Biology Initiative (CZ Biohub, DOE, NIH, Google DeepMind,
+    Isomorphic Labs, Meta, 2026; Tabula Sapiens, CELLxGENE, Zebrahub):
+    - Replaces isolated single-protein models with digital cellular experiments predicting
+      system-level responses to drug or genetic interventions before touching the wet lab.
+    - Anchors predictions to open cell atlas foundations and verifies viability/phenotypic retention.
+    """
+
+    simulation_id: str
+    cell_type: str  # e.g., "human_cortical_neuron", "striatal_msn", "hepatocyte"
+    target_gene_or_compound: str  # e.g., "MAPT", "SNCA", "Gcase_activator"
+    perturbation_type: PerturbationType = PerturbationType.CRISPR_INHIBITION
+    atlas_ref: CellAtlasReference = CellAtlasReference.TABULA_SAPIENS
+    dose_or_fold_change: float = 0.20  # e.g., 0.20 = 80% knockdown
+    readout: PerturbationReadout = field(default_factory=PerturbationReadout)
+    engine: str = "virtual-cell-foundation-1"
+    wet_lab_clearance: bool = True
+    tissue_context: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res: dict[str, Any] = {
+            "simulation_id": self.simulation_id,
+            "cell_type": self.cell_type,
+            "target_gene_or_compound": self.target_gene_or_compound,
+            "perturbation_type": str(self.perturbation_type),
+            "atlas_ref": str(self.atlas_ref),
+            "dose_or_fold_change": self.dose_or_fold_change,
+            "readout": self.readout.to_dict(),
+            "engine": self.engine,
+            "wet_lab_clearance": self.wet_lab_clearance,
+        }
+        if self.tissue_context:
+            res["tissue_context"] = self.tissue_context
+        return res
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> VirtualCellPerturbationContract:
+        """Instantiate VirtualCellPerturbationContract from dictionary."""
+        pt_val = data.get("perturbation_type", PerturbationType.CRISPR_INHIBITION)
+        try:
+            pt_enum = PerturbationType(str(pt_val).lower())
+        except ValueError:
+            pt_enum = PerturbationType.CRISPR_INHIBITION
+
+        atlas_val = data.get("atlas_ref", CellAtlasReference.TABULA_SAPIENS)
+        try:
+            atlas_enum = CellAtlasReference(str(atlas_val).lower())
+        except ValueError:
+            atlas_enum = CellAtlasReference.TABULA_SAPIENS
+
+        readout_data = data.get("readout", {})
+        readout = (
+            readout_data
+            if isinstance(readout_data, PerturbationReadout)
+            else PerturbationReadout.from_dict(readout_data if isinstance(readout_data, dict) else {})
+        )
+
+        return cls(
+            simulation_id=str(data.get("simulation_id", data.get("name", "virtual_cell_sim_01"))),
+            cell_type=str(data.get("cell_type", "human_cell")),
+            target_gene_or_compound=str(data.get("target_gene_or_compound", "TARGET_GENE")),
+            perturbation_type=pt_enum,
+            atlas_ref=atlas_enum,
+            dose_or_fold_change=float(data.get("dose_or_fold_change", 0.20)),
+            readout=readout,
+            engine=str(data.get("engine", "virtual-cell-foundation-1")),
+            wet_lab_clearance=bool(data.get("wet_lab_clearance", True)),
+            tissue_context=str(data["tissue_context"]) if "tissue_context" in data else None,
+        )
+
+
 @dataclass
 class PhysicsRefinementPolicy:
     """Physics-based force field energy minimization and steric clash relief for co-folding predictions."""
@@ -2826,6 +2985,8 @@ __all__ = [
     "EnsembleGenerator",
     "SolvationModel",
     "PhageCapsidArchitecture",
+    "PerturbationType",
+    "CellAtlasReference",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -2854,6 +3015,8 @@ __all__ = [
     "ThermodynamicBindingContract",
     "BiodefenseSafetyGate",
     "BacteriophageTherapyContract",
+    "PerturbationReadout",
+    "VirtualCellPerturbationContract",
     "PhysicsRefinementPolicy",
     "MegasynthaseDomain",
     "MegasynthaseModule",
