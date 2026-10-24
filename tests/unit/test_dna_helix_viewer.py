@@ -232,9 +232,11 @@ def test_dna_helix_html_generation_and_rendering(tmp_path: Path) -> None:
 
 def test_dmd_exemplar_gfl_file_validates() -> None:
     """Test that examples/dmd_gene_helix_viewer.gfl parses and validates cleanly."""
-    example_path = Path("examples/dmd_gene_helix_viewer.gfl")
+    example_path = Path(__file__).resolve().parent.parent.parent / "examples" / "dmd_gene_helix_viewer.gfl"
     if not example_path.exists():
-        example_path = Path("GeneForgeLang/examples/dmd_gene_helix_viewer.gfl")
+        example_path = Path("examples/dmd_gene_helix_viewer.gfl")
+    if not example_path.exists():
+        example_path = Path("GeneForge/gfl_core/examples/dmd_gene_helix_viewer.gfl")
 
     assert example_path.is_file(), f"Exemplar file not found: {example_path}"
 
