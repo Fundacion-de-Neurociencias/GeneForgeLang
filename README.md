@@ -65,10 +65,21 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 - **🛡️ Data Sovereignty & Biosecurity**: Provenance, Consent, Jurisdiction, and Population equity tracking as first-class language semantics
 - **🔒 Security Policy & Continuous AI Scanning**: Coordinated vulnerability reporting via [SECURITY.md](SECURITY.md) with support for automated AI security auditing (Anthropic OSS Scanner) and Bandit static analysis gates
 
+### **🧬 Interactive Visualization & Dynamic DNA Helix Explorer (`GF-HelixView`)**
+
+- **Dynamic B-DNA Double Helix (SVG 2.5D)**: Physical geometry rendering of the right-handed B-DNA double helix (10 base pairs per turn, pitch 3.4 nm, rise 0.34 nm, major groove 2.2 nm, minor groove 1.2 nm) with explicit sugar-phosphate backbones and Watson-Crick hydrogen bonding ($A=T$ with 2 H-bonds vs $G\equiv C$ with 3 H-bonds).
+- **Reading Head & Interactive Scrubber**: Dynamic scanning across loci (1 to $N$ bp) with speed controls ($0.5\times$ to $5\times$), keyboard navigation (`ArrowLeft`, `ArrowRight`, `Space`), and real-time physical metrics.
+- **Dynamic Codon Translation & Frameshift Disruption Alerts**: Real-time 3-frame translation from nucleotide triplets to amino acids, with live detection and alerting of open reading frame disruptions and premature termination codons (PTC).
+- **Exon & Splicing Architecture Overlays**: Canonical donor (`GT`, 5' ss) and acceptor (`AG`, 3' ss) boundary identification, reading phase tracking (Phase 0, 1, 2), and quick-jump navigation across exons.
+- **ClinVar & Known Variant Tracks**: Pathogenicity classification badges (Pathogenic, Likely Pathogenic, VUS, Benign), HGVS nomenclature, molecular consequences, and direct jump-to-mutation controls.
+- **Epigenomics (5hmC) & CRISPR PAM Scanner**: Methylated CpG dinucleotide overlays and automated SpCas9 PAM window scanning (`NGG` motif with 20-nt guide alignment and -3 nt cleavage marker).
+- **Zero-Dependency Portable HTML5/SVG Export**: Self-contained single-file HTML applications (~40 KB) that run offline in any modern browser without CDN, NPM, or external runtime requirements.
+
 ## Key Features
 
 - **Declarative Syntax**: Clean, readable YAML-based workflow definitions
 - **Type Safety**: Strong typing system with comprehensive validation
+- **Interactive Multi-Omic Visualizer**: Real-time dynamic B-DNA helix scanner with reading frame translation, frameshift alerts, ClinVar variant tracks, and CRISPR PAM detection (`gfl view dna`)
 - **Plugin Architecture**: Extensible system for custom tools and algorithms
 - **Web Interface**: Modern web UI for workflow creation and management
 - **CLI Tools**: Comprehensive command-line interface for automation
@@ -191,6 +202,12 @@ gfl parse workflow.gfl --validate
 # Execute a workflow
 gfl infer workflow.gfl
 
+# View and interact with a DNA locus from a GFL protocol
+gfl view dna examples/dmd_gene_helix_viewer.gfl --open
+
+# View directly from a FASTA file specifying gene and active coordinate
+gfl view dna --fasta locus.fasta --gene DMD --coord 161 --output viewer.html --open
+
 # Get help (or check full options)
 gfl --help
 gfl -h
@@ -245,6 +262,74 @@ optimize:
     max_experiments: 50
 ```
 
+## 🧬 Interactive DNA Helix Explorer (`GF-HelixView`)
+
+GeneForge introduces a high-fidelity, interactive B-DNA double helix explorer that bridges biophysical structure with multi-omic annotation tracks.
+
+### Declarative GFL Protocol
+
+Define a visualization contract directly in your `.gfl` file with strict 2-space indentation:
+
+```yaml
+dna_viewer:
+  name: "dmd_exons44_51_helix"
+  target_gene: "DMD"
+  genomic_range: "chrX:31,180,000-31,210,000"
+  conformation: "b_dna"
+  active_coordinate: 161
+  dna_sequence: "ATGAAGATGAGGACCAGGTC...TTTAA"
+  tracks:
+    - "exons"
+    - "reading_frames"
+    - "clinvar_variants"
+    - "epigenetics_5hmc"
+    - "crispr_pam_sites"
+  exons:
+    - exon_number: 44
+      start_coord: 1
+      end_coord: 148
+      phase: 0
+      donor_splice_boundary: "GT"
+      acceptor_splice_boundary: "AG"
+    - exon_number: 45
+      start_coord: 149
+      end_coord: 324
+      phase: 1
+      donor_splice_boundary: "GT"
+      acceptor_splice_boundary: "AG"
+  variants:
+    - coordinate: 161
+      variant_id: "VCV000000001"
+      clinical_significance: "pathogenic"
+      molecular_consequence: "frameshift_variant"
+      hgvs_cdna: "c.6438delT"
+      hgvs_protein: "p.Phe2147LeufsTer3"
+      notes: "Exon 45 deletion disruption; dystrophin reading frame altered"
+  epigenetic_marks:
+    - coordinate: 42
+      modification_type: "5hmC"
+      strand: "+"
+  crispr_pam_sites:
+    - coordinate: 88
+      pam_motif: "NGG"
+      guide_sequence: "GATGAAGATGAAGATGAAGA"
+      target_strand: "+"
+```
+
+### CLI Commands
+
+Launch and export interactive helix viewers directly from the terminal:
+
+```bash
+# Generate and open viewer from a GFL protocol
+gfl view dna examples/dmd_gene_helix_viewer.gfl --open
+
+# Generate from a FASTA file specifying gene and active coordinate
+gfl view dna --fasta locus.fasta --gene DMD --coord 161 --output locus_viewer.html --open
+```
+
+Explore the compiled human *DMD* reference visualization in [`visualizations/dmd_exons44_51_helix.html`](visualizations/dmd_exons44_51_helix.html) and full documentation in [`docs/geneforgelang/features/dna_helix_viewer.md`](docs/geneforgelang/features/dna_helix_viewer.md).
+
 ## Architecture
 
 GFL follows a modular architecture:
@@ -256,6 +341,8 @@ src/geneforgelang/
 │   ├── validator.py # Semantic validation
 │   ├── gftypes.py    # Type system
 │   └── api.py      # Public API
+├── visualization/  # Interactive visualization instruments (GF-HelixView)
+│   └── dna_helix_viewer.py
 ├── plugins/        # Plugin system
 ├── web/           # Web interface
 ├── cli/           # Command-line tools
