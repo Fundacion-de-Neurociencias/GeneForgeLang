@@ -163,14 +163,20 @@ class OutputFormatter:
         if self.use_rich:
             self.console.print(f"[green]✓[/green] {message}")
         else:
-            print(f"✓ {message}")
+            try:
+                print(f"✓ {message}")
+            except UnicodeEncodeError:
+                print(f"[OK] {message}")
 
     def print_warning(self, message: str):
         """Print warning message."""
         if self.use_rich:
             self.console.print(f"[yellow]⚠[/yellow] {message}")
         else:
-            print(f"⚠ {message}")
+            try:
+                print(f"⚠ {message}")
+            except UnicodeEncodeError:
+                print(f"[WARN] {message}")
 
     def progress(self, description: str = "Processing..."):
         """Create a progress context manager."""
@@ -305,6 +311,7 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
         self._add_batch_command(subparsers)
         self._add_info_command(subparsers)
         self._add_performance_command(subparsers)
+        self._add_view_command(subparsers)
 
         return parser
 
@@ -454,6 +461,76 @@ For more information, visit: https://github.com/geneforgelang/geneforgelang
         benchmark_parser.add_argument("--iterations", type=int, default=10, help="Number of iterations")
 
         parser.set_defaults(func=self.cmd_performance)
+
+    def _add_view_command(self, subparsers):
+        """Add view subcommand for interactive visualization tools."""
+        parser = subparsers.add_parser("view", help="Interactive visualizers (DNA helix, multi-omics)")
+        view_subparsers = parser.add_subparsers(dest="view_type")
+
+        # DNA view
+        dna_parser = view_subparsers.add_parser("dna", help="Visualize DNA sequence in interactive B-DNA double helix")
+        dna_parser.add_argument("file", nargs="?", type=Path, help="GFL or FASTA file to visualize")
+        dna_parser.add_argument("--fasta", type=Path, help="Path to FASTA file")
+        dna_parser.add_argument("--gene", default="DMD", help="Target gene symbol (default: DMD)")
+        dna_parser.add_argument("--coord", type=int, default=1, help="Initial nucleotide coordinate")
+        dna_parser.add_argument(
+            "--output", "-o", type=Path, default=Path("dna_helix_viewer.html"), help="Output HTML file"
+        )
+        dna_parser.add_argument("--open", action="store_true", help="Open generated HTML in browser")
+        dna_parser.set_defaults(func=self.cmd_view_dna)
+
+        parser.set_defaults(func=self.cmd_view)
+
+    def cmd_view(self, args: argparse.Namespace) -> int:
+        """Fallback for gfl view without subcommand."""
+        if not getattr(args, "view_type", None):
+            self.formatter.print_info("Usage: gfl view dna [file] [--fasta PATH] [--output OUT.html]")
+            return 0
+        return 0
+
+    def cmd_view_dna(self, args: argparse.Namespace) -> int:
+        """Visualize DNA sequence or GFL protocol in interactive B-DNA helix viewer."""
+        import webbrowser
+
+        from geneforgelang.core.gftypes import DNAViewerContract
+        from geneforgelang.visualization.dna_helix_viewer import render_dna_helix_viewer
+
+        file_arg = getattr(args, "file", None)
+        fasta_arg = getattr(args, "fasta", None)
+        gene_arg = getattr(args, "gene", "DMD")
+        coord_arg = getattr(args, "coord", 1)
+        output_path = getattr(args, "output", Path("dna_helix_viewer.html"))
+
+        contract = DNAViewerContract(
+            viewer_id=f"{gene_arg.lower()}_helix_explorer",
+            target_gene=gene_arg,
+            active_coordinate=coord_arg,
+        )
+
+        if fasta_arg and fasta_arg.is_file():
+            contract.sequence_source = str(fasta_arg)
+        elif file_arg and file_arg.is_file():
+            if file_arg.suffix.lower() in {".fa", ".fasta", ".fna"}:
+                contract.sequence_source = str(file_arg)
+            elif file_arg.suffix.lower() in {".gfl", ".yaml", ".yml"}:
+                from geneforgelang.core.api import parse
+                from geneforgelang.core.gftypes import GFLAST
+
+                text = file_arg.read_text(encoding="utf-8")
+                ast_dict = parse(text)
+                ast = GFLAST.from_dict(ast_dict)
+                if hasattr(ast, "dna_viewer") and ast.dna_viewer:
+                    if isinstance(ast.dna_viewer, DNAViewerContract):
+                        contract = ast.dna_viewer
+                    elif isinstance(ast.dna_viewer, dict):
+                        contract = DNAViewerContract.from_dict(ast.dna_viewer)
+
+        render_dna_helix_viewer(contract, output_path=output_path)
+        self.formatter.print_success(f"Interactive DNA Helix Viewer generated: {output_path}")
+
+        if getattr(args, "open", False):
+            webbrowser.open(str(output_path.resolve()))
+        return 0
 
     def run(self, args: list[str] | None = None) -> int:
         """Run the CLI with the given arguments."""

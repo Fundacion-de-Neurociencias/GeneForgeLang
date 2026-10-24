@@ -1,0 +1,102 @@
+# DMD Multi-Dimensional Dynamic DNA Helix Explorer Protocol
+# Visualizing B-DNA physical geometry, antiparallel strands, groove metrics,
+# exon/intron splicing, 3-frame translation, ClinVar pathogenic mutations, 5hmC marks, and CRISPR PAMs.
+
+metadata:
+  protocol_name: "DMD_Exons44_51_MultiOmic_Helix_Explorer"
+  target_gene: "DMD"
+  genomic_coordinates: "chrX:31119222-31139222"
+  reference_build: "GRCh38"
+  author: "Fundacion de Neurociencias / GeneForge Project"
+  version: "1.0.0"
+
+dna_viewer:
+  viewer_id: "dmd_exons44_51_scanner"
+  target_gene: "DMD"
+  genomic_range: "chrX:31119222-31139222"
+  reference_build: "GRCh38"
+  helix_type: "b_dna"
+  active_coordinate: 161
+  raw_sequence: "ATGCTTTGGTGGGAAGAAGTAGAGGACTGTTATGAAAGAGAAGATGTTCAAAAGAAAACATTCACAAAATGGGTAAATGCACAGTTTTCTAAATTTGGGAAGCAGCATATTGAGAACCTCTTCAGTGACCTACAGGATGGGAGGCGCCTCCTAGACCTCCTCGAAGGCCTGACAGGGCAAAAACTGCCAAAAGAAAAAGGATCCACAAGAGTTCATGCCCTGAACAATGTCAACAAGGCACTGCGGGTTTTGCAGAACAATAATGTTGATTTAGTGAATATTGGAAGTACTGACATCGTAGATGGAAATCATAAACTGACTCTTGGTTTGATTTGGAATATAATCCTCCACTGGCAGGTCAAAAATGTAATGAAAAATATCATGGCTGGATTGCAACAAACCAACAGTGAAAAGATTCTCCTGAGCTGGGTCCGACAATCAACTCGTAATTATCCACAGGTTAATGTAATCAACTTCACCACCAGCTGGTCTGATGGCCTGGCTTTGAATGCTCTCATCCATAGTCATAGGCCAGACCTCATTGACTGGAATAGTGTGATCTGTCAGCAGTCAGCCACACAACGACTGGAACATGCATTCAACATCGCCAGATATCAATTAGGCATAGAGAAACTACTCGATCCTGAAGATGTTGATACCACCTATCCAGATAAGAAGTCCATCTTAATGTACATC"
+  tracks:
+    - "exons"
+    - "reading_frames"
+    - "clinvar_variants"
+    - "epigenetics_5hmc"
+    - "crispr_pam_sites"
+  exons:
+    - exon_number: 44
+      start_coord: 1
+      end_coord: 148
+      phase: 0
+      splice_donor: "GT"
+      splice_acceptor: "AG"
+    - exon_number: 45
+      start_coord: 149
+      end_coord: 324
+      phase: 1
+      splice_donor: "GT"
+      splice_acceptor: "AG"
+    - exon_number: 46
+      start_coord: 325
+      end_coord: 510
+      phase: 2
+      splice_donor: "GT"
+      splice_acceptor: "AG"
+  variants:
+    - coordinate: 161
+      ref_allele: "T"
+      alt_allele: "A"
+      variant_id: "VCV000098451"
+      pathogenicity: "pathogenic"
+      molecular_consequence: "nonsense (p.Arg54Ter)"
+      clinical_significance: "Pathogenic (ClinVar)"
+      condition: "Duchenne Muscular Dystrophy"
+      hgvs_c: "c.161T>A"
+      hgvs_p: "p.Arg54Ter"
+    - coordinate: 312
+      ref_allele: "G"
+      alt_allele: "T"
+      variant_id: "VCV000104523"
+      pathogenicity: "likely_pathogenic"
+      molecular_consequence: "missense (p.Gly104Val)"
+      clinical_significance: "Likely Pathogenic"
+      condition: "Becker Muscular Dystrophy"
+      hgvs_c: "c.312G>T"
+      hgvs_p: "p.Gly104Val"
+  epigenetic_marks:
+    - coordinate: 105
+      modification_type: "5hmC"
+      modification_probability: 0.94
+    - coordinate: 218
+      modification_type: "5mC"
+      modification_probability: 0.88
+  crispr_sites:
+    - pam_sequence: "TGG"
+      start_coord: 155
+      strand: "+"
+      target_grna_20nt: "TCAGTGACCTACAGGATGGG"
+      cleavage_offset: -3
+  interactive: true
+  export_format: "html"
+
+decision:
+  task_id: "dmd_exon_skipping_clearance"
+  strategy: "system_1_calibrated"
+  engine: "biodecision-4b"
+  threshold: 0.95
+  allowed_space:
+    - "EXON_SKIPPING_TARGET_VALIDATED"
+    - "FRAMESHIFT_PTC_PREVENTED"
+    - "TARGET_OFF_PATHWAY"
+
+experiment:
+  tool: "geneforge_helix_view"
+  type: "in_silico_validation"
+  params:
+    target_gene: "DMD"
+    replicates: 1
+
+output:
+  report_format: "interactive_helix_dashboard"
+  destination: "visualizations/dmd_exons44_51_helix.html"

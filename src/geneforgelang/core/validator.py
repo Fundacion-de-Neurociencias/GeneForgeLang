@@ -144,6 +144,7 @@ class EnhancedSemanticValidator:
             "bacteriophage",
             "virtual_cell",
             "force_field_engine",
+            "dna_viewer",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -154,7 +155,7 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', 'somatic_instability', 'ensemble', 'cryptic_pocket', 'thermodynamic_binding', 'bacteriophage', 'virtual_cell', or 'force_field_engine' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', 'somatic_instability', 'ensemble', 'cryptic_pocket', 'thermodynamic_binding', 'bacteriophage', 'virtual_cell', 'force_field_engine', or 'dna_viewer' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
@@ -232,6 +233,8 @@ class EnhancedSemanticValidator:
                 self._validate_virtual_cell_block(block_content)
             elif block_name == "force_field_engine":
                 self._validate_force_field_engine_block(block_content)
+            elif block_name == "dna_viewer":
+                self._validate_dna_viewer_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -1333,6 +1336,110 @@ class EnhancedSemanticValidator:
                             ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                         ).add_fix("Set vdw_14_scale to 0.5 for Amber conventions")
 
+    def _validate_dna_viewer_block(self, block: Any) -> None:
+        """Validate DNAViewerContract block for multi-dimensional genomic visualization."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "dna_viewer block must be a dictionary or DNAViewerContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format dna_viewer as a dictionary with target_gene, active_coordinate, tracks, etc.")
+                return
+
+        # Validate target_gene
+        if "target_gene" in block:
+            gene = block["target_gene"]
+            if not isinstance(gene, str) or not gene.strip():
+                self.result.add_error(
+                    "target_gene must be a non-empty string",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Specify a valid gene symbol such as 'DMD' or 'TP53'")
+
+        # Validate helix_type
+        if "helix_type" in block:
+            ht = str(block["helix_type"]).lower()
+            valid_ht = {"b_dna", "a_dna", "z_dna"}
+            if ht not in valid_ht:
+                self.result.add_error(
+                    f"Unknown helix_type '{block['helix_type']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'b_dna' (default), 'a_dna', or 'z_dna'")
+
+        # Validate active_coordinate
+        if "active_coordinate" in block:
+            coord = block["active_coordinate"]
+            if not isinstance(coord, int) or coord < 1:
+                self.result.add_error(
+                    f"active_coordinate must be a positive 1-based integer, got {coord}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set active_coordinate to a 1-based integer >= 1")
+
+        # Validate raw_sequence if provided directly
+        if "raw_sequence" in block and block["raw_sequence"] is not None:
+            seq = str(block["raw_sequence"]).strip().upper()
+            if not seq:
+                self.result.add_error(
+                    "raw_sequence cannot be empty when provided",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Provide a non-empty DNA sequence string (e.g. 'ATG...')")
+            else:
+                valid_bases = set("ATGCNU")
+                invalid = set(seq) - valid_bases
+                if invalid:
+                    self.result.add_error(
+                        f"raw_sequence contains invalid nucleic acid bases: {sorted(list(invalid))}",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Use standard nucleotide characters: A, T, G, C, N")
+
+        # Validate tracks
+        if "tracks" in block and isinstance(block["tracks"], list):
+            valid_tracks = {
+                "exons",
+                "reading_frames",
+                "clinvar_variants",
+                "epigenetics_5hmc",
+                "crispr_pam_sites",
+                "somatic_repeat_expansion",
+            }
+            for track in block["tracks"]:
+                t_str = str(track).lower()
+                if t_str not in valid_tracks:
+                    self.result.add_error(
+                        f"Unknown viewer track '{track}'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ErrorSeverity.WARNING,
+                    ).add_fix(f"Choose from valid tracks: {sorted(list(valid_tracks))}")
+
+        # Validate exons
+        if "exons" in block and isinstance(block["exons"], list):
+            for i, exon in enumerate(block["exons"]):
+                if isinstance(exon, dict):
+                    start = exon.get("start_coord")
+                    end = exon.get("end_coord")
+                    if (
+                        start is not None
+                        and end is not None
+                        and (not isinstance(start, int) or not isinstance(end, int) or start > end or start < 1)
+                    ):
+                        self.result.add_error(
+                            f"Exon {i + 1} has invalid coordinate range ({start}, {end})",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Ensure start_coord >= 1 and start_coord <= end_coord")
+
+        # Validate variants
+        if "variants" in block and isinstance(block["variants"], list):
+            for i, var in enumerate(block["variants"]):
+                if isinstance(var, dict):
+                    vcoord = var.get("coordinate")
+                    if vcoord is not None and (not isinstance(vcoord, int) or vcoord < 1):
+                        self.result.add_error(
+                            f"Variant {i + 1} coordinate must be >= 1, got {vcoord}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Provide a 1-based positive coordinate for each variant")
+
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
         self.symbol_table[block_name] = {"contract": contract}
@@ -1680,6 +1787,7 @@ class EnhancedSemanticValidator:
             "virtual-cell-foundation-1",
             "gromacs",
             "amber",
+            "geneforge_helix_view",
         }
 
         if tool not in known_tools:
@@ -1719,6 +1827,7 @@ class EnhancedSemanticValidator:
             "perturbation_phenotype_prediction",
             "inter_engine_validation",
             "molecular_dynamics_production",
+            "in_silico_validation",
         }
 
         if exp_type not in valid_types:
@@ -1845,6 +1954,12 @@ class EnhancedSemanticValidator:
                 "inter_engine_validation",
                 "molecular_dynamics_production",
                 "thermodynamic_refinement",
+            ],
+            "geneforge_helix_view": [
+                "in_silico_validation",
+                "analysis",
+                "validation",
+                "simulation",
             ],
         }
 

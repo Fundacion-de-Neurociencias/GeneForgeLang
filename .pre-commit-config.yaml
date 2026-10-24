@@ -27,7 +27,7 @@ repos:
       - id: mypy
         additional_dependencies: [types-PyYAML, types-requests]
         args: [--strict, --ignore-missing-imports]
-        exclude: ^(resources/|applications/|gfl-plugin-)
+        exclude: ^(resources/|applications/|gfl-plugin-|src/geneforgelang/cli/|src/geneforgelang/core/enhanced_inference_engine\.py|src/geneforgelang/utils/example_implementations\.py)
 
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.5

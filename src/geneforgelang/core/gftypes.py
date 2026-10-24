@@ -352,6 +352,7 @@ class GFLAST:
     bacteriophage: Any | None = None
     virtual_cell: Any | None = None
     force_field_engine: Any | None = None
+    dna_viewer: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -415,6 +416,8 @@ class GFLAST:
                 if hasattr(self.force_field_engine, "to_dict")
                 else self.force_field_engine
             )
+        if self.dna_viewer is not None:
+            result["dna_viewer"] = self.dna_viewer.to_dict() if hasattr(self.dna_viewer, "to_dict") else self.dna_viewer
         if self.metadata:
             result["metadata"] = self.metadata
         return result
@@ -637,6 +640,13 @@ class GFLAST:
                 ast.force_field_engine = ffe_data
             elif isinstance(ffe_data, dict):
                 ast.force_field_engine = ForceFieldEngineContract.from_dict(ffe_data)
+
+        if "dna_viewer" in data:
+            dv_data = data["dna_viewer"]
+            if isinstance(dv_data, DNAViewerContract):
+                ast.dna_viewer = dv_data
+            elif isinstance(dv_data, dict):
+                ast.dna_viewer = DNAViewerContract.from_dict(dv_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -2294,6 +2304,325 @@ class ForceFieldEngineContract:
         )
 
 
+class HelixConformation(str, Enum):
+    """Canonical nucleic acid double helix conformations."""
+
+    B_DNA = "b_dna"  # Canonical Watson-Crick right-handed B-DNA (10-10.5 bp/turn, pitch 3.4 nm, rise 0.34 nm)
+    A_DNA = "a_dna"  # Compact right-handed A-form (11 bp/turn, dehydrated or RNA-DNA hybrid)
+    Z_DNA = "z_dna"  # Left-handed zig-zag Z-form (12 bp/turn, alternating purine-pyrimidine tracts)
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class ViewerTrackType(str, Enum):
+    """Modular genomic visualization and multi-omic overlay tracks."""
+
+    EXONS = "exons"  # Exon/intron boundaries, splice donor (GT) and acceptor (AG) junctions
+    READING_FRAMES = "reading_frames"  # Codon triplet groupings, 3-frame translation, frameshift alerts
+    CLINVAR_VARIANTS = "clinvar_variants"  # Pathogenic, likely pathogenic, and VUS variant pins
+    EPIGENETICS_5HMC = "epigenetics_5hmc"  # 5hmC and 5mC methylation marks and modification probabilities
+    CRISPR_PAM_SITES = "crispr_pam_sites"  # SpCas9 NGG, Cas12a TTTV PAM recognition and guide RNA target windows
+    SOMATIC_REPEAT_EXPANSION = (
+        "somatic_repeat_expansion"  # Tandem microsatellite repeat count and instability threshold
+    )
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class VariantPathogenicity(str, Enum):
+    """ACMG/AMP clinical pathogenicity classifications."""
+
+    PATHOGENIC = "pathogenic"
+    LIKELY_PATHOGENIC = "likely_pathogenic"
+    UNCERTAIN_SIGNIFICANCE = "uncertain_significance"
+    LIKELY_BENIGN = "likely_benign"
+    BENIGN = "benign"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+@dataclass
+class ViewerVariantAnnotation:
+    """Clinical or population variant mapped to exact genomic/transcript coordinates."""
+
+    coordinate: int
+    ref_allele: str
+    alt_allele: str
+    variant_id: str
+    pathogenicity: VariantPathogenicity = VariantPathogenicity.PATHOGENIC
+    molecular_consequence: str = "missense"  # missense, nonsense, frameshift, splice_donor, inframe_deletion
+    clinical_significance: str = "Pathogenic"
+    condition: str = "Muscular Dystrophy"
+    hgvs_c: str | None = None
+    hgvs_p: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res: dict[str, Any] = {
+            "coordinate": self.coordinate,
+            "ref_allele": self.ref_allele,
+            "alt_allele": self.alt_allele,
+            "variant_id": self.variant_id,
+            "pathogenicity": str(self.pathogenicity),
+            "molecular_consequence": self.molecular_consequence,
+            "clinical_significance": self.clinical_significance,
+            "condition": self.condition,
+        }
+        if self.hgvs_c:
+            res["hgvs_c"] = self.hgvs_c
+        if self.hgvs_p:
+            res["hgvs_p"] = self.hgvs_p
+        return res
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ViewerVariantAnnotation:
+        """Instantiate ViewerVariantAnnotation from dictionary."""
+        patho_val = data.get("pathogenicity", VariantPathogenicity.PATHOGENIC)
+        try:
+            patho_enum = VariantPathogenicity(str(patho_val).lower())
+        except ValueError:
+            patho_enum = VariantPathogenicity.PATHOGENIC
+
+        return cls(
+            coordinate=int(data.get("coordinate", 1)),
+            ref_allele=str(data.get("ref_allele", "A")),
+            alt_allele=str(data.get("alt_allele", "T")),
+            variant_id=str(data.get("variant_id", "VAR_001")),
+            pathogenicity=patho_enum,
+            molecular_consequence=str(data.get("molecular_consequence", "missense")),
+            clinical_significance=str(data.get("clinical_significance", "Pathogenic")),
+            condition=str(data.get("condition", "Muscular Dystrophy")),
+            hgvs_c=str(data["hgvs_c"]) if "hgvs_c" in data else None,
+            hgvs_p=str(data["hgvs_p"]) if "hgvs_p" in data else None,
+        )
+
+
+@dataclass
+class ViewerExonAnnotation:
+    """Exon structure and splice junction coordinate boundaries."""
+
+    exon_number: int
+    start_coord: int
+    end_coord: int
+    phase: int = 0
+    splice_donor: str = "GT"
+    splice_acceptor: str = "AG"
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "exon_number": self.exon_number,
+            "start_coord": self.start_coord,
+            "end_coord": self.end_coord,
+            "phase": self.phase,
+            "splice_donor": self.splice_donor,
+            "splice_acceptor": self.splice_acceptor,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ViewerExonAnnotation:
+        """Instantiate ViewerExonAnnotation from dictionary."""
+        return cls(
+            exon_number=int(data.get("exon_number", 1)),
+            start_coord=int(data.get("start_coord", 1)),
+            end_coord=int(data.get("end_coord", 100)),
+            phase=int(data.get("phase", 0)),
+            splice_donor=str(data.get("splice_donor", "GT")),
+            splice_acceptor=str(data.get("splice_acceptor", "AG")),
+        )
+
+
+@dataclass
+class ViewerEpigeneticMark:
+    """Cytosine base modifications (5mC / 5hmC) and chromatin accessibility."""
+
+    coordinate: int
+    modification_type: str = "5hmC"
+    modification_probability: float = 0.95
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "coordinate": self.coordinate,
+            "modification_type": self.modification_type,
+            "modification_probability": self.modification_probability,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ViewerEpigeneticMark:
+        """Instantiate ViewerEpigeneticMark from dictionary."""
+        return cls(
+            coordinate=int(data.get("coordinate", 1)),
+            modification_type=str(data.get("modification_type", "5hmC")),
+            modification_probability=float(data.get("modification_probability", 0.95)),
+        )
+
+
+@dataclass
+class ViewerCrisprPamSite:
+    """Targetable CRISPR Cas endonuclease recognition motif."""
+
+    pam_sequence: str = "NGG"
+    start_coord: int = 1
+    strand: str = "+"
+    target_grna_20nt: str = ""
+    cleavage_offset: int = -3
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "pam_sequence": self.pam_sequence,
+            "start_coord": self.start_coord,
+            "strand": self.strand,
+            "target_grna_20nt": self.target_grna_20nt,
+            "cleavage_offset": self.cleavage_offset,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ViewerCrisprPamSite:
+        """Instantiate ViewerCrisprPamSite from dictionary."""
+        return cls(
+            pam_sequence=str(data.get("pam_sequence", "NGG")),
+            start_coord=int(data.get("start_coord", 1)),
+            strand=str(data.get("strand", "+")),
+            target_grna_20nt=str(data.get("target_grna_20nt", "")),
+            cleavage_offset=int(data.get("cleavage_offset", -3)),
+        )
+
+
+@dataclass
+class DNAViewerContract:
+    """Formal GFL IO Contract for Multi-Dimensional Dynamic DNA Helix Visualization.
+
+    Inspired by the interactive B-DNA double helix scanner design (Sohaib Hassan 2026)
+    and extended with full multi-omic dimensions: exons/introns, reading frames & translation,
+    ClinVar pathogenic variant pins, 5mC/5hmC epigenetic marks, and CRISPR-Cas PAM windows.
+    """
+
+    viewer_id: str
+    target_gene: str = "DMD"
+    sequence_source: str | None = None
+    raw_sequence: str | None = None
+    genomic_range: str | None = "chrX:31119222-31139222"
+    reference_build: str = "GRCh38"
+    helix_type: HelixConformation = HelixConformation.B_DNA
+    active_coordinate: int = 1
+    tracks: list[ViewerTrackType] = field(
+        default_factory=lambda: [
+            ViewerTrackType.EXONS,
+            ViewerTrackType.READING_FRAMES,
+            ViewerTrackType.CLINVAR_VARIANTS,
+        ]
+    )
+    variants: list[ViewerVariantAnnotation] = field(default_factory=list)
+    exons: list[ViewerExonAnnotation] = field(default_factory=list)
+    epigenetic_marks: list[ViewerEpigeneticMark] = field(default_factory=list)
+    crispr_sites: list[ViewerCrisprPamSite] = field(default_factory=list)
+    interactive: bool = True
+    export_format: str = "html"
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res: dict[str, Any] = {
+            "viewer_id": self.viewer_id,
+            "target_gene": self.target_gene,
+            "reference_build": self.reference_build,
+            "helix_type": str(self.helix_type),
+            "active_coordinate": self.active_coordinate,
+            "tracks": [str(t) for t in self.tracks],
+            "interactive": self.interactive,
+            "export_format": self.export_format,
+        }
+        if self.sequence_source:
+            res["sequence_source"] = self.sequence_source
+        if self.raw_sequence:
+            res["raw_sequence"] = self.raw_sequence
+        if self.genomic_range:
+            res["genomic_range"] = self.genomic_range
+        if self.variants:
+            res["variants"] = [v.to_dict() for v in self.variants]
+        if self.exons:
+            res["exons"] = [e.to_dict() for e in self.exons]
+        if self.epigenetic_marks:
+            res["epigenetic_marks"] = [m.to_dict() for m in self.epigenetic_marks]
+        if self.crispr_sites:
+            res["crispr_sites"] = [c.to_dict() for c in self.crispr_sites]
+        return res
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> DNAViewerContract:
+        """Instantiate DNAViewerContract from dictionary."""
+        ht_val = data.get("helix_type", HelixConformation.B_DNA)
+        try:
+            ht_enum = HelixConformation(str(ht_val).lower())
+        except ValueError:
+            ht_enum = HelixConformation.B_DNA
+
+        tracks_list: list[ViewerTrackType] = []
+        raw_tracks = data.get("tracks", ["exons", "reading_frames", "clinvar_variants"])
+        if isinstance(raw_tracks, list):
+            for t in raw_tracks:
+                try:
+                    tracks_list.append(ViewerTrackType(str(t).lower()))
+                except ValueError:
+                    pass
+        if not tracks_list:
+            tracks_list = [
+                ViewerTrackType.EXONS,
+                ViewerTrackType.READING_FRAMES,
+                ViewerTrackType.CLINVAR_VARIANTS,
+            ]
+
+        variants: list[ViewerVariantAnnotation] = []
+        for v in data.get("variants", []):
+            if isinstance(v, ViewerVariantAnnotation):
+                variants.append(v)
+            elif isinstance(v, dict):
+                variants.append(ViewerVariantAnnotation.from_dict(v))
+
+        exons: list[ViewerExonAnnotation] = []
+        for e in data.get("exons", []):
+            if isinstance(e, ViewerExonAnnotation):
+                exons.append(e)
+            elif isinstance(e, dict):
+                exons.append(ViewerExonAnnotation.from_dict(e))
+
+        epigenetic_marks: list[ViewerEpigeneticMark] = []
+        for m in data.get("epigenetic_marks", []):
+            if isinstance(m, ViewerEpigeneticMark):
+                epigenetic_marks.append(m)
+            elif isinstance(m, dict):
+                epigenetic_marks.append(ViewerEpigeneticMark.from_dict(m))
+
+        crispr_sites: list[ViewerCrisprPamSite] = []
+        for c in data.get("crispr_sites", []):
+            if isinstance(c, ViewerCrisprPamSite):
+                crispr_sites.append(c)
+            elif isinstance(c, dict):
+                crispr_sites.append(ViewerCrisprPamSite.from_dict(c))
+
+        return cls(
+            viewer_id=str(data.get("viewer_id", data.get("name", "dmd_helix_viewer"))),
+            target_gene=str(data.get("target_gene", "DMD")),
+            sequence_source=str(data["sequence_source"]) if "sequence_source" in data else None,
+            raw_sequence=str(data["raw_sequence"]) if "raw_sequence" in data else None,
+            genomic_range=str(data["genomic_range"]) if "genomic_range" in data else "chrX:31119222-31139222",
+            reference_build=str(data.get("reference_build", "GRCh38")),
+            helix_type=ht_enum,
+            active_coordinate=int(data.get("active_coordinate", 1)),
+            tracks=tracks_list,
+            variants=variants,
+            exons=exons,
+            epigenetic_marks=epigenetic_marks,
+            crispr_sites=crispr_sites,
+            interactive=bool(data.get("interactive", True)),
+            export_format=str(data.get("export_format", "html")),
+        )
+
+
 @dataclass
 class PhysicsRefinementPolicy:
     """Physics-based force field energy minimization and steric clash relief for co-folding predictions."""
@@ -3176,6 +3505,9 @@ __all__ = [
     "ForceFieldFamily",
     "SimulationEngine",
     "WaterModel",
+    "HelixConformation",
+    "ViewerTrackType",
+    "VariantPathogenicity",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -3208,6 +3540,11 @@ __all__ = [
     "VirtualCellPerturbationContract",
     "InterEngineEnergyTolerance",
     "ForceFieldEngineContract",
+    "ViewerVariantAnnotation",
+    "ViewerExonAnnotation",
+    "ViewerEpigeneticMark",
+    "ViewerCrisprPamSite",
+    "DNAViewerContract",
     "PhysicsRefinementPolicy",
     "MegasynthaseDomain",
     "MegasynthaseModule",
