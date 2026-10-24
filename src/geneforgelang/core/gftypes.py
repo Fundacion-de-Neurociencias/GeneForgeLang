@@ -351,6 +351,7 @@ class GFLAST:
     thermodynamic_binding: Any | None = None
     bacteriophage: Any | None = None
     virtual_cell: Any | None = None
+    force_field_engine: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -407,6 +408,12 @@ class GFLAST:
         if self.virtual_cell is not None:
             result["virtual_cell"] = (
                 self.virtual_cell.to_dict() if hasattr(self.virtual_cell, "to_dict") else self.virtual_cell
+            )
+        if self.force_field_engine is not None:
+            result["force_field_engine"] = (
+                self.force_field_engine.to_dict()
+                if hasattr(self.force_field_engine, "to_dict")
+                else self.force_field_engine
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -623,6 +630,13 @@ class GFLAST:
                 ast.virtual_cell = vc_data
             elif isinstance(vc_data, dict):
                 ast.virtual_cell = VirtualCellPerturbationContract.from_dict(vc_data)
+
+        if "force_field_engine" in data:
+            ffe_data = data["force_field_engine"]
+            if isinstance(ffe_data, ForceFieldEngineContract):
+                ast.force_field_engine = ffe_data
+            elif isinstance(ffe_data, dict):
+                ast.force_field_engine = ForceFieldEngineContract.from_dict(ffe_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -2108,6 +2122,178 @@ class VirtualCellPerturbationContract:
         )
 
 
+class ForceFieldFamily(str, Enum):
+    """Molecular mechanics all-atom force field families."""
+
+    AMBER_FF14SB = "amber_ff14sb"
+    AMBER_FF19SB = "amber_ff19sb"
+    CHARMM36M = "charmm36m"
+    OPLS_AA = "opls_aa"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class SimulationEngine(str, Enum):
+    """Computational molecular dynamics and mechanics engines."""
+
+    GROMACS = "gromacs"
+    AMBER = "amber"
+    OPENMM = "openmm"
+    NAMD = "namd"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class WaterModel(str, Enum):
+    """Explicit solvent water models for biomolecular simulation."""
+
+    OPC = "opc"  # 4-point optimal point charge water (recommended for ff19SB)
+    OPC3 = "opc3"  # 3-point optimal point charge water
+    TIP3P = "tip3p"  # Standard 3-point water
+    TIP4P_EW = "tip4p_ew"
+    TIP4P_D = "tip4p_d"  # Dispersion-corrected water for IDPs
+
+    def __str__(self) -> str:
+        return self.value
+
+
+@dataclass
+class InterEngineEnergyTolerance:
+    """Rigorous inter-engine potential energy and force consistency standards.
+
+    Grounded in Miletić, Wieczór, Simmerling et al. (JCTC / ChemRxiv 2024/2026):
+    - Validates static potential energy equivalence across independent MD engines (e.g. GROMACS vs Amber).
+    - Checks amino-acid-specific CMAP corrections, improper dihedral atom ordering,
+      and 1-4 electrostatic (0.8333) and van der Waals (0.5) scaling factors.
+    """
+
+    max_potential_energy_delta_kj_mol: float = 1e-6  # Ground truth static interaction energy tolerance
+    max_force_delta_kj_mol_nm: float = 1e-4  # Ground truth atomic force tolerance
+    audit_improper_dihedral_ordering: bool = True  # Strict atom sequence check to prevent chiral inversion
+    audit_cmap_residue_spec: bool = True  # 2D phi/psi grid specific to each of the 20 amino acids
+    electrostatic_14_scale: float = 0.8333333  # Amber standard 1/1.2 electrostatic 1-4 scaling
+    vdw_14_scale: float = 0.5000000  # Amber standard 1/2.0 van der Waals 1-4 scaling
+
+    def satisfies_inter_engine_portability(
+        self,
+        observed_energy_delta: float,
+        observed_force_delta: float,
+        improper_ordering_valid: bool = True,
+        cmap_spec_valid: bool = True,
+    ) -> bool:
+        """Evaluate if cross-engine topology translation preserves bitwise energetic equivalence."""
+        if observed_energy_delta > self.max_potential_energy_delta_kj_mol:
+            return False
+        if observed_force_delta > self.max_force_delta_kj_mol_nm:
+            return False
+        if self.audit_improper_dihedral_ordering and not improper_ordering_valid:
+            return False
+        return not (self.audit_cmap_residue_spec and not cmap_spec_valid)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "max_potential_energy_delta_kj_mol": self.max_potential_energy_delta_kj_mol,
+            "max_force_delta_kj_mol_nm": self.max_force_delta_kj_mol_nm,
+            "audit_improper_dihedral_ordering": self.audit_improper_dihedral_ordering,
+            "audit_cmap_residue_spec": self.audit_cmap_residue_spec,
+            "electrostatic_14_scale": self.electrostatic_14_scale,
+            "vdw_14_scale": self.vdw_14_scale,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> InterEngineEnergyTolerance:
+        """Instantiate InterEngineEnergyTolerance from dictionary."""
+        return cls(
+            max_potential_energy_delta_kj_mol=float(data.get("max_potential_energy_delta_kj_mol", 1e-6)),
+            max_force_delta_kj_mol_nm=float(data.get("max_force_delta_kj_mol_nm", 1e-4)),
+            audit_improper_dihedral_ordering=bool(data.get("audit_improper_dihedral_ordering", True)),
+            audit_cmap_residue_spec=bool(data.get("audit_cmap_residue_spec", True)),
+            electrostatic_14_scale=float(data.get("electrostatic_14_scale", 0.8333333)),
+            vdw_14_scale=float(data.get("vdw_14_scale", 0.5)),
+        )
+
+
+@dataclass
+class ForceFieldEngineContract:
+    """Formal GFL IO Contract for Force Field Engine Portability and CMAP/Improper Validation.
+
+    Guarantees that a molecular topology parameterized in Amber (prmtop/inpcrd) or GROMACS (top/gro)
+    yields identical potential energy landscapes and forces without engine-dependent parameter drift.
+    """
+
+    contract_id: str
+    force_field: ForceFieldFamily = ForceFieldFamily.AMBER_FF19SB
+    primary_engine: SimulationEngine = SimulationEngine.GROMACS
+    reference_engine: SimulationEngine = SimulationEngine.AMBER
+    water_model: WaterModel = WaterModel.OPC
+    energy_tolerance: InterEngineEnergyTolerance = field(default_factory=InterEngineEnergyTolerance)
+    verified_portability: bool = True
+    target_structure_ref: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res: dict[str, Any] = {
+            "contract_id": self.contract_id,
+            "force_field": str(self.force_field),
+            "primary_engine": str(self.primary_engine),
+            "reference_engine": str(self.reference_engine),
+            "water_model": str(self.water_model),
+            "energy_tolerance": self.energy_tolerance.to_dict(),
+            "verified_portability": self.verified_portability,
+        }
+        if self.target_structure_ref:
+            res["target_structure_ref"] = self.target_structure_ref
+        return res
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ForceFieldEngineContract:
+        """Instantiate ForceFieldEngineContract from dictionary."""
+        ff_val = data.get("force_field", ForceFieldFamily.AMBER_FF19SB)
+        try:
+            ff_enum = ForceFieldFamily(str(ff_val).lower())
+        except ValueError:
+            ff_enum = ForceFieldFamily.AMBER_FF19SB
+
+        pe_val = data.get("primary_engine", SimulationEngine.GROMACS)
+        try:
+            pe_enum = SimulationEngine(str(pe_val).lower())
+        except ValueError:
+            pe_enum = SimulationEngine.GROMACS
+
+        re_val = data.get("reference_engine", SimulationEngine.AMBER)
+        try:
+            re_enum = SimulationEngine(str(re_val).lower())
+        except ValueError:
+            re_enum = SimulationEngine.AMBER
+
+        wm_val = data.get("water_model", WaterModel.OPC)
+        try:
+            wm_enum = WaterModel(str(wm_val).lower())
+        except ValueError:
+            wm_enum = WaterModel.OPC
+
+        tol_data = data.get("energy_tolerance", {})
+        tol = (
+            tol_data
+            if isinstance(tol_data, InterEngineEnergyTolerance)
+            else InterEngineEnergyTolerance.from_dict(tol_data if isinstance(tol_data, dict) else {})
+        )
+
+        return cls(
+            contract_id=str(data.get("contract_id", data.get("name", "ff_portability_01"))),
+            force_field=ff_enum,
+            primary_engine=pe_enum,
+            reference_engine=re_enum,
+            water_model=wm_enum,
+            energy_tolerance=tol,
+            verified_portability=bool(data.get("verified_portability", True)),
+            target_structure_ref=str(data["target_structure_ref"]) if "target_structure_ref" in data else None,
+        )
+
+
 @dataclass
 class PhysicsRefinementPolicy:
     """Physics-based force field energy minimization and steric clash relief for co-folding predictions."""
@@ -2987,6 +3173,9 @@ __all__ = [
     "PhageCapsidArchitecture",
     "PerturbationType",
     "CellAtlasReference",
+    "ForceFieldFamily",
+    "SimulationEngine",
+    "WaterModel",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -3017,6 +3206,8 @@ __all__ = [
     "BacteriophageTherapyContract",
     "PerturbationReadout",
     "VirtualCellPerturbationContract",
+    "InterEngineEnergyTolerance",
+    "ForceFieldEngineContract",
     "PhysicsRefinementPolicy",
     "MegasynthaseDomain",
     "MegasynthaseModule",

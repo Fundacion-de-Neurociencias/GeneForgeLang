@@ -143,6 +143,7 @@ class EnhancedSemanticValidator:
             "thermodynamic_binding",
             "bacteriophage",
             "virtual_cell",
+            "force_field_engine",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -153,7 +154,7 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', 'somatic_instability', 'ensemble', 'cryptic_pocket', 'thermodynamic_binding', 'bacteriophage', or 'virtual_cell' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', 'somatic_instability', 'ensemble', 'cryptic_pocket', 'thermodynamic_binding', 'bacteriophage', 'virtual_cell', or 'force_field_engine' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
@@ -229,6 +230,8 @@ class EnhancedSemanticValidator:
                 self._validate_bacteriophage_block(block_content)
             elif block_name == "virtual_cell":
                 self._validate_virtual_cell_block(block_content)
+            elif block_name == "force_field_engine":
+                self._validate_force_field_engine_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -1249,6 +1252,87 @@ class EnhancedSemanticValidator:
                             ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                         ).add_fix("Set max_transcriptome_cosine_distance to a non-negative number (e.g. 0.15)")
 
+    def _validate_force_field_engine_block(self, block: Any) -> None:
+        """Validate ForceFieldEngineContract and InterEngineEnergyTolerance block (Miletić et al.)."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "force_field_engine block must be a dictionary or ForceFieldEngineContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format force_field_engine as a dictionary with force_field, primary_engine, etc.")
+                return
+
+        # Validate force_field family
+        if "force_field" in block:
+            ff = str(block["force_field"]).lower()
+            valid_ffs = {"amber_ff14sb", "amber_ff19sb", "charmm36m", "opls_aa"}
+            if ff not in valid_ffs:
+                self.result.add_error(
+                    f"Unknown force_field '{block['force_field']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'amber_ff19sb', 'amber_ff14sb', or 'charmm36m'")
+
+        # Validate primary and reference engines
+        for engine_field in ["primary_engine", "reference_engine"]:
+            if engine_field in block:
+                eng = str(block[engine_field]).lower()
+                valid_engines = {"gromacs", "amber", "openmm", "namd"}
+                if eng not in valid_engines:
+                    self.result.add_error(
+                        f"Unknown {engine_field} '{block[engine_field]}'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ErrorSeverity.WARNING,
+                    ).add_fix("Use 'gromacs', 'amber', or 'openmm'")
+
+        # Validate water_model
+        if "water_model" in block:
+            wm = str(block["water_model"]).lower()
+            valid_waters = {"opc", "opc3", "tip3p", "tip4p_ew", "tip4p_d"}
+            if wm not in valid_waters:
+                self.result.add_error(
+                    f"Unknown water_model '{block['water_model']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'opc' (recommended for ff19SB), 'opc3', or 'tip3p'")
+
+        # Validate energy_tolerance sub-block if present
+        if "energy_tolerance" in block and block["energy_tolerance"] is not None:
+            tol = block["energy_tolerance"]
+            if hasattr(tol, "to_dict"):
+                tol = tol.to_dict()
+            if not isinstance(tol, dict):
+                self.result.add_error(
+                    "energy_tolerance must be a dictionary or InterEngineEnergyTolerance",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format energy_tolerance as a dictionary with max_potential_energy_delta_kj_mol, etc.")
+            else:
+                if "max_potential_energy_delta_kj_mol" in tol:
+                    e_tol = tol["max_potential_energy_delta_kj_mol"]
+                    if not isinstance(e_tol, (int, float)) or e_tol <= 0.0:
+                        self.result.add_error(
+                            f"max_potential_energy_delta_kj_mol must be a positive number, got {e_tol}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set max_potential_energy_delta_kj_mol to a positive float (e.g. 1e-6)")
+
+                if "electrostatic_14_scale" in tol:
+                    scale = tol["electrostatic_14_scale"]
+                    if not isinstance(scale, (int, float)) or not (0.0 < scale <= 1.0):
+                        self.result.add_error(
+                            f"electrostatic_14_scale must be in range (0.0, 1.0], got {scale}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set electrostatic_14_scale to 0.8333333 for Amber conventions")
+
+                if "vdw_14_scale" in tol:
+                    vscale = tol["vdw_14_scale"]
+                    if not isinstance(vscale, (int, float)) or not (0.0 < vscale <= 1.0):
+                        self.result.add_error(
+                            f"vdw_14_scale must be in range (0.0, 1.0], got {vscale}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set vdw_14_scale to 0.5 for Amber conventions")
+
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
         self.symbol_table[block_name] = {"contract": contract}
@@ -1594,6 +1678,8 @@ class EnhancedSemanticValidator:
             "bioemu2",
             "omnii-1",
             "virtual-cell-foundation-1",
+            "gromacs",
+            "amber",
         }
 
         if tool not in known_tools:
@@ -1631,6 +1717,8 @@ class EnhancedSemanticValidator:
             "rare_earth_chelator_design",
             "virtual_cell_simulation",
             "perturbation_phenotype_prediction",
+            "inter_engine_validation",
+            "molecular_dynamics_production",
         }
 
         if exp_type not in valid_types:
@@ -1741,6 +1829,22 @@ class EnhancedSemanticValidator:
                 "validation",
                 "virtual_cell_simulation",
                 "perturbation_phenotype_prediction",
+            ],
+            "gromacs": [
+                "simulation",
+                "analysis",
+                "validation",
+                "inter_engine_validation",
+                "molecular_dynamics_production",
+                "thermodynamic_refinement",
+            ],
+            "amber": [
+                "simulation",
+                "analysis",
+                "validation",
+                "inter_engine_validation",
+                "molecular_dynamics_production",
+                "thermodynamic_refinement",
             ],
         }
 
