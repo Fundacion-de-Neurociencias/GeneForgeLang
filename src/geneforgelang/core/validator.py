@@ -52,6 +52,7 @@ class EnhancedSemanticValidator:
         self.result = EnhancedValidationResult(file_path=self.result.file_path)
         self.nested_level = 0
         self.schema_loader.clear()
+        self.current_ast = ast
 
         try:
             # Load schema imports first
@@ -145,6 +146,8 @@ class EnhancedSemanticValidator:
             "virtual_cell",
             "force_field_engine",
             "dna_viewer",
+            "perturbation_atlas",
+            "perturb_swarm",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -155,7 +158,7 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', 'somatic_instability', 'ensemble', 'cryptic_pocket', 'thermodynamic_binding', 'bacteriophage', 'virtual_cell', 'force_field_engine', or 'dna_viewer' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', 'somatic_instability', 'ensemble', 'cryptic_pocket', 'thermodynamic_binding', 'bacteriophage', 'virtual_cell', 'force_field_engine', 'dna_viewer', or 'perturbation_atlas' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
@@ -235,6 +238,8 @@ class EnhancedSemanticValidator:
                 self._validate_force_field_engine_block(block_content)
             elif block_name == "dna_viewer":
                 self._validate_dna_viewer_block(block_content)
+            elif block_name in ("perturbation_atlas", "perturb_swarm"):
+                self._validate_perturbation_atlas_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -1220,13 +1225,15 @@ class EnhancedSemanticValidator:
                 "zebrahub",
                 "human_cell_atlas",
                 "custom_atlas",
+                "shi_brain_perturb_seq",
+                "perturbai_brain_atlas",
             }
             if atlas not in valid_atlases:
                 self.result.add_error(
                     f"Unknown atlas_ref '{block['atlas_ref']}'",
                     ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                     ErrorSeverity.WARNING,
-                ).add_fix("Use 'tabula_sapiens', 'cellxgene', or 'zebrahub'")
+                ).add_fix("Use 'tabula_sapiens', 'cellxgene', 'zebrahub', or 'shi_brain_perturb_seq'")
 
         # Validate readout sub-block if present
         if "readout" in block and block["readout"] is not None:
@@ -1439,6 +1446,155 @@ class EnhancedSemanticValidator:
                             f"Variant {i + 1} coordinate must be >= 1, got {vcoord}",
                             ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                         ).add_fix("Provide a 1-based positive coordinate for each variant")
+
+    def _validate_perturbation_atlas_block(self, block: Any) -> None:
+        """Validate PerturbationAtlasContract block (OpenAI/Scripps/PerturbAI distributed biological reasoning)."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "perturbation_atlas block must be a dictionary or PerturbationAtlasContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format perturbation_atlas as a dictionary with name, perturbation_targets, etc.")
+                return
+
+        # Validate name
+        if "name" not in block or not str(block["name"]).strip():
+            self.result.add_error(
+                "perturbation_atlas block missing required 'name' identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'name: <screen_id>' to perturbation_atlas block")
+
+        # Validate dataset_ref
+        if "dataset_ref" not in block or not str(block["dataset_ref"]).strip():
+            self.result.add_error(
+                "perturbation_atlas block missing required 'dataset_ref' (DOI or benchmark reference)",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'dataset_ref: doi:10.64898/2026.10.15.759436v1' or relevant paper reference")
+
+        # Validate cell_atlas_size if present
+        if "cell_atlas_size" in block and block["cell_atlas_size"] is not None:
+            size = block["cell_atlas_size"]
+            if not isinstance(size, int) or size <= 0:
+                self.result.add_error(
+                    f"cell_atlas_size must be a positive integer, got {size}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Specify cell_atlas_size as a positive integer (e.g. 7700000)")
+
+        # Validate modality if present
+        if "modality" in block and block["modality"] is not None:
+            mod = str(block["modality"]).lower()
+            valid_modalities = {
+                "in_vivo_perturb_seq",
+                "single_cell_crispr",
+                "perturb_cite_seq",
+                "optical_pooled_screen",
+            }
+            if mod not in valid_modalities:
+                self.result.add_error(
+                    f"Unknown atlas modality '{block['modality']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix(f"Choose from valid modalities: {sorted(list(valid_modalities))}")
+
+        # Validate perturbation_targets
+        if "perturbation_targets" not in block or not isinstance(block["perturbation_targets"], list):
+            self.result.add_error(
+                "perturbation_atlas block missing required 'perturbation_targets' list",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add a list of 'perturbation_targets' with gene symbols and pathways")
+        elif len(block["perturbation_targets"]) == 0:
+            self.result.add_error(
+                "perturbation_targets list cannot be empty",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Specify at least one perturbation target with gene: <SYMBOL>")
+        else:
+            for idx, target in enumerate(block["perturbation_targets"]):
+                if hasattr(target, "to_dict"):
+                    target = target.to_dict()
+                if not isinstance(target, dict):
+                    self.result.add_error(
+                        f"Perturbation target {idx + 1} must be a dictionary",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    ).add_fix("Format perturbation target with gene, pathway_focus, etc.")
+                    continue
+
+                if "gene" not in target or not str(target["gene"]).strip():
+                    self.result.add_error(
+                        f"Perturbation target {idx + 1} missing required 'gene' symbol",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    ).add_fix("Provide a valid non-empty gene symbol (e.g. 'DCTN1')")
+
+        # Validate swarm_policy if present
+        if "swarm_policy" in block and block["swarm_policy"] is not None:
+            policy = block["swarm_policy"]
+            if hasattr(policy, "to_dict"):
+                policy = policy.to_dict()
+            if isinstance(policy, dict):
+                if "agent_granularity" in policy and policy["agent_granularity"] is not None:
+                    gran = str(policy["agent_granularity"]).lower()
+                    valid_gran = {"per_perturbation", "per_cell_type", "hierarchical_cluster"}
+                    if gran not in valid_gran:
+                        self.result.add_error(
+                            f"Unknown agent_granularity '{policy['agent_granularity']}' in swarm_policy",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ErrorSeverity.WARNING,
+                        ).add_fix(f"Choose from valid granularities: {sorted(list(valid_gran))}")
+
+                if "min_expert_preference_score" in policy and policy["min_expert_preference_score"] is not None:
+                    score = policy["min_expert_preference_score"]
+                    if not isinstance(score, (int, float)) or not (0.0 <= score <= 1.0):
+                        self.result.add_error(
+                            f"min_expert_preference_score must be a float between 0.0 and 1.0, got {score}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set min_expert_preference_score to a calibrated decimal fraction (e.g. 0.75)")
+
+        # Validate divergence_check / paralog_divergence if present
+        div_check = block.get("divergence_check") or block.get("paralog_divergence")
+        if div_check is not None:
+            if hasattr(div_check, "to_dict"):
+                div_check = div_check.to_dict()
+            if isinstance(div_check, dict):
+                has_pair = "pair" in div_check and isinstance(div_check["pair"], list) and len(div_check["pair"]) >= 2
+                has_pairs = (
+                    "pairs" in div_check and isinstance(div_check["pairs"], list) and len(div_check["pairs"]) > 0
+                )
+                if not has_pair and not has_pairs:
+                    self.result.add_error(
+                        "divergence_check requires at least one homologous gene pair to evaluate opposition",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Specify pair: ['GRIN2A', 'GRIN2B'] or pairs: [['GRIN2A', 'GRIN2B']]")
+
+                if (
+                    "min_transcriptional_divergence" in div_check
+                    and div_check["min_transcriptional_divergence"] is not None
+                ):
+                    div_val = div_check["min_transcriptional_divergence"]
+                    if not isinstance(div_val, (int, float)) or div_val < 0.0:
+                        self.result.add_error(
+                            f"min_transcriptional_divergence must be non-negative, got {div_val}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set min_transcriptional_divergence to a non-negative threshold (e.g. 0.30)")
+
+        # Cross-Contract Synergy: check compatibility with virtual_cell if linked
+        if "virtual_cell_link" in block and block["virtual_cell_link"]:
+            vc_link = str(block["virtual_cell_link"]).strip()
+            # If the current AST also contains a virtual_cell block, cross-validate simulation_id
+            if (
+                hasattr(self, "current_ast")
+                and isinstance(self.current_ast, dict)
+                and "virtual_cell" in self.current_ast
+            ):
+                vc_block = self.current_ast["virtual_cell"]
+                if isinstance(vc_block, dict):
+                    vc_id = str(vc_block.get("simulation_id", vc_block.get("name", ""))).strip()
+                    if vc_id and vc_id != vc_link:
+                        self.result.add_error(
+                            f"virtual_cell_link '{vc_link}' does not match simulation_id '{vc_id}' in document",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ErrorSeverity.WARNING,
+                        ).add_fix(f"Align virtual_cell_link with simulation_id: '{vc_id}'")
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""

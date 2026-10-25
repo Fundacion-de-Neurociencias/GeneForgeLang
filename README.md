@@ -56,6 +56,7 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 - **🛑 DepMap CRISPR Stop-Gates**: Empirical epistemic stopping gates based on Broad DepMap Public co-dependency and statistical significance
 - **🔬 Google DeepMind AlphaGenome**: 18-modality unified variant impact scoring (AVI Score) and regulatory motif disruption analysis
 - **🍊 Tangermeme Cis-Regulatory Logic & Seqlet Syntax (Nature Methods)**: Decoupled sequence-to-function interpretation, recursive variable-length seqlet calling, and context-bound claims preserving formal conditions ($\text{Claim}, \text{ContextState}, \text{Provenance}$). Empowers researchers and AI agents to decipher why and under what exact conditions a DNA sequence functions, eliminating generic assertions in favor of contextualized, falsifiable hypotheses.
+- **🧠 Distributed Biological Reasoning & Perturbation Atlas (Sun et al. / Shi et al. / OpenAI / Scripps)**: High-throughput whole-brain in vivo Perturb-seq screen contracts (`perturbation_atlas:`, 7.7M cells, 1,947 disease genes) with unary agent swarm allocation, paralog phenotypic dissonance detection (*Grin2a* vs *Grin2b* opposition), causal disease transition synthesis, and `ReasoningAtlasCompiler` for epistemic causality graph generation.
 
 ### **Privacy-Preserving Bio-Skills & Governance**
 

@@ -353,6 +353,7 @@ class GFLAST:
     virtual_cell: Any | None = None
     force_field_engine: Any | None = None
     dna_viewer: Any | None = None
+    perturbation_atlas: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -418,6 +419,12 @@ class GFLAST:
             )
         if self.dna_viewer is not None:
             result["dna_viewer"] = self.dna_viewer.to_dict() if hasattr(self.dna_viewer, "to_dict") else self.dna_viewer
+        if self.perturbation_atlas is not None:
+            result["perturbation_atlas"] = (
+                self.perturbation_atlas.to_dict()
+                if hasattr(self.perturbation_atlas, "to_dict")
+                else self.perturbation_atlas
+            )
         if self.metadata:
             result["metadata"] = self.metadata
         return result
@@ -647,6 +654,13 @@ class GFLAST:
                 ast.dna_viewer = dv_data
             elif isinstance(dv_data, dict):
                 ast.dna_viewer = DNAViewerContract.from_dict(dv_data)
+
+        if "perturbation_atlas" in data:
+            pa_data = data["perturbation_atlas"]
+            if isinstance(pa_data, PerturbationAtlasContract):
+                ast.perturbation_atlas = pa_data
+            elif isinstance(pa_data, dict):
+                ast.perturbation_atlas = PerturbationAtlasContract.from_dict(pa_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -2008,6 +2022,8 @@ class CellAtlasReference(str, Enum):
     ZEBRAHUB = "zebrahub"
     HUMAN_CELL_ATLAS = "human_cell_atlas"
     CUSTOM_ATLAS = "custom_atlas"
+    SHI_BRAIN_PERTURB_SEQ = "shi_brain_perturb_seq"
+    PERTURBAI_BRAIN_ATLAS = "perturbai_brain_atlas"
 
     def __str__(self) -> str:
         return self.value
@@ -2129,6 +2145,325 @@ class VirtualCellPerturbationContract:
             engine=str(data.get("engine", "virtual-cell-foundation-1")),
             wet_lab_clearance=bool(data.get("wet_lab_clearance", True)),
             tissue_context=str(data["tissue_context"]) if "tissue_context" in data else None,
+        )
+
+
+# ============================================================================
+# Distributed Biological Reasoning & Perturbation Screen Contracts (OpenAI / Scripps / PerturbAI)
+# ============================================================================
+
+
+class AtlasModality(str, Enum):
+    """Experimental modality of high-throughput perturbation screen."""
+
+    IN_VIVO_PERTURB_SEQ = "in_vivo_perturb_seq"
+    SINGLE_CELL_CRISPR = "single_cell_crispr"
+    PERTURB_CITE_SEQ = "perturb_cite_seq"
+    OPTICAL_POOLED_SCREEN = "optical_pooled_screen"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class SwarmGranularity(str, Enum):
+    """Allocation granularity of autonomous AI reasoning agents across biological perturbations."""
+
+    PER_PERTURBATION = "per_perturbation"
+    PER_CELL_TYPE = "per_cell_type"
+    HIERARCHICAL_CLUSTER = "hierarchical_cluster"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class PhenotypicRelationshipType(str, Enum):
+    """Epistemic relationship between perturbation outcomes in reasoning atlas."""
+
+    SYNERGISTIC = "synergistic"
+    OPPOSING = "opposing"
+    NEUTRAL = "neutral"
+    DIVERGENT = "divergent"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+@dataclass
+class SwarmReasoningPolicy:
+    """Policy governing distributed agent allocation and literature grounding (Sun et al., 2026)."""
+
+    agent_granularity: SwarmGranularity = SwarmGranularity.PER_PERTURBATION
+    literature_grounding: bool = True
+    min_expert_preference_score: float = 0.75
+    synthesis_aggregator: str = "reasoning_atlas"
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "agent_granularity": str(self.agent_granularity),
+            "literature_grounding": self.literature_grounding,
+            "min_expert_preference_score": self.min_expert_preference_score,
+            "synthesis_aggregator": self.synthesis_aggregator,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> SwarmReasoningPolicy:
+        """Instantiate SwarmReasoningPolicy from dictionary."""
+        gran = data.get("agent_granularity", SwarmGranularity.PER_PERTURBATION)
+        try:
+            gran_enum = SwarmGranularity(str(gran).lower())
+        except ValueError:
+            gran_enum = SwarmGranularity.PER_PERTURBATION
+
+        return cls(
+            agent_granularity=gran_enum,
+            literature_grounding=bool(data.get("literature_grounding", True)),
+            min_expert_preference_score=float(data.get("min_expert_preference_score", 0.75)),
+            synthesis_aggregator=str(data.get("synthesis_aggregator", "reasoning_atlas")),
+        )
+
+
+@dataclass
+class ParalogDivergenceContract:
+    """Formal contract evaluating phenotypic and transcriptional divergence between paralogous genes."""
+
+    evaluate_paralog_opposition: bool = True
+    pair: list[str] = field(default_factory=list)
+    pairs: list[list[str]] = field(default_factory=list)
+    min_transcriptional_divergence: float = 0.30
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res: dict[str, Any] = {
+            "evaluate_paralog_opposition": self.evaluate_paralog_opposition,
+            "min_transcriptional_divergence": self.min_transcriptional_divergence,
+        }
+        if self.pair:
+            res["pair"] = list(self.pair)
+        if self.pairs:
+            res["pairs"] = [list(p) for p in self.pairs]
+        return res
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ParalogDivergenceContract:
+        """Instantiate ParalogDivergenceContract from dictionary."""
+        raw_pair = data.get("pair", [])
+        pair = [str(g) for g in raw_pair] if isinstance(raw_pair, list) else []
+
+        raw_pairs = data.get("pairs", [])
+        pairs = []
+        if isinstance(raw_pairs, list):
+            for p in raw_pairs:
+                if isinstance(p, list):
+                    pairs.append([str(g) for g in p])
+
+        if not pairs and pair:
+            pairs = [pair]
+
+        return cls(
+            evaluate_paralog_opposition=bool(data.get("evaluate_paralog_opposition", True)),
+            pair=pair,
+            pairs=pairs,
+            min_transcriptional_divergence=float(data.get("min_transcriptional_divergence", 0.30)),
+        )
+
+
+@dataclass
+class PerturbationAtlasTarget:
+    """Single genetic perturbation target within high-throughput screening atlas."""
+
+    gene: str
+    pathway_focus: str | None = None
+    target_cell_types: list[str] = field(default_factory=list)
+    expected_phenotype: str | None = None
+    causal_transition_refs: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res: dict[str, Any] = {
+            "gene": self.gene,
+            "target_cell_types": list(self.target_cell_types),
+            "causal_transition_refs": list(self.causal_transition_refs),
+        }
+        if self.pathway_focus:
+            res["pathway_focus"] = self.pathway_focus
+        if self.expected_phenotype:
+            res["expected_phenotype"] = self.expected_phenotype
+        return res
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> PerturbationAtlasTarget:
+        """Instantiate PerturbationAtlasTarget from dictionary."""
+        raw_types = data.get("target_cell_types", [])
+        cell_types = [str(ct) for ct in raw_types] if isinstance(raw_types, list) else []
+
+        raw_refs = data.get("causal_transition_refs", [])
+        refs = [str(r) for r in raw_refs] if isinstance(raw_refs, list) else []
+
+        return cls(
+            gene=str(data.get("gene", "")),
+            pathway_focus=data.get("pathway_focus"),
+            target_cell_types=cell_types,
+            expected_phenotype=data.get("expected_phenotype"),
+            causal_transition_refs=refs,
+        )
+
+
+@dataclass
+class ReasoningAtlasEdge:
+    """Causal and phenotypic relationship edge between perturbations in Reasoning Atlas."""
+
+    source_gene: str
+    target_gene: str
+    relationship_type: PhenotypicRelationshipType
+    confidence: float = 1.0
+    literature_support: list[str] = field(default_factory=list)
+    transcriptional_cosine_similarity: float = 0.0
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "source_gene": self.source_gene,
+            "target_gene": self.target_gene,
+            "relationship_type": str(self.relationship_type),
+            "confidence": self.confidence,
+            "literature_support": list(self.literature_support),
+            "transcriptional_cosine_similarity": self.transcriptional_cosine_similarity,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ReasoningAtlasEdge:
+        """Instantiate ReasoningAtlasEdge from dictionary."""
+        rel = data.get("relationship_type", PhenotypicRelationshipType.NEUTRAL)
+        try:
+            rel_enum = PhenotypicRelationshipType(str(rel).lower())
+        except ValueError:
+            rel_enum = PhenotypicRelationshipType.NEUTRAL
+
+        raw_lit = data.get("literature_support", [])
+        lit = [str(x) for x in raw_lit] if isinstance(raw_lit, list) else []
+
+        return cls(
+            source_gene=str(data.get("source_gene", "")),
+            target_gene=str(data.get("target_gene", "")),
+            relationship_type=rel_enum,
+            confidence=float(data.get("confidence", 1.0)),
+            literature_support=lit,
+            transcriptional_cosine_similarity=float(data.get("transcriptional_cosine_similarity", 0.0)),
+        )
+
+
+@dataclass
+class ReasoningAtlasGraph:
+    """Epistemic causality graph output generated by ReasoningAtlasCompiler."""
+
+    atlas_name: str
+    organism: str
+    nodes: list[str] = field(default_factory=list)
+    edges: list[ReasoningAtlasEdge] = field(default_factory=list)
+    paralog_divergences: list[dict[str, Any]] = field(default_factory=list)
+    causal_transitions: list[dict[str, Any]] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "atlas_name": self.atlas_name,
+            "organism": self.organism,
+            "nodes": list(self.nodes),
+            "edges": [e.to_dict() for e in self.edges],
+            "paralog_divergences": self.paralog_divergences,
+            "causal_transitions": self.causal_transitions,
+            "metadata": self.metadata,
+        }
+
+
+@dataclass
+class PerturbationAtlasContract:
+    """Formal GFL IO Contract for High-Throughput In Vivo CRISPR Perturbation Screens.
+
+    Grounded in Sun et al., 2026 (OpenAI, Scripps Research, PerturbAI) and Shi et al., 2026
+    (Whole-Brain In Vivo Perturb-seq Atlas, 7.7M cells, 1,947 disease genes):
+    - Deploys distributed biological reasoning swarms (1 agent per perturbation).
+    - Detects paralog phenotypic dissonance (e.g., Grin2a vs Grin2b opposition).
+    - Unifies cellular perturbation outcomes with causal disease transition graphs and virtual_cell simulations.
+    """
+
+    name: str
+    organism: str = "Mus musculus"
+    dataset_ref: str = "doi:10.64898/2026.10.15.759436v1"
+    cell_atlas_size: int = 7700000
+    modality: AtlasModality = AtlasModality.IN_VIVO_PERTURB_SEQ
+    perturbation_targets: list[PerturbationAtlasTarget] = field(default_factory=list)
+    swarm_policy: SwarmReasoningPolicy = field(default_factory=SwarmReasoningPolicy)
+    divergence_check: ParalogDivergenceContract | None = None
+    mcp_endpoint: str | None = None
+    virtual_cell_link: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        res: dict[str, Any] = {
+            "name": self.name,
+            "organism": self.organism,
+            "dataset_ref": self.dataset_ref,
+            "cell_atlas_size": self.cell_atlas_size,
+            "modality": str(self.modality),
+            "perturbation_targets": [t.to_dict() for t in self.perturbation_targets],
+            "swarm_policy": self.swarm_policy.to_dict(),
+        }
+        if self.divergence_check:
+            res["divergence_check"] = self.divergence_check.to_dict()
+        if self.mcp_endpoint:
+            res["mcp_endpoint"] = self.mcp_endpoint
+        if self.virtual_cell_link:
+            res["virtual_cell_link"] = self.virtual_cell_link
+        return res
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> PerturbationAtlasContract:
+        """Instantiate PerturbationAtlasContract from dictionary."""
+        mod_raw = data.get("modality", AtlasModality.IN_VIVO_PERTURB_SEQ)
+        try:
+            mod_enum = AtlasModality(str(mod_raw).lower())
+        except ValueError:
+            mod_enum = AtlasModality.IN_VIVO_PERTURB_SEQ
+
+        raw_targets = data.get("perturbation_targets", [])
+        targets = []
+        if isinstance(raw_targets, list):
+            for t in raw_targets:
+                if isinstance(t, PerturbationAtlasTarget):
+                    targets.append(t)
+                elif isinstance(t, dict):
+                    targets.append(PerturbationAtlasTarget.from_dict(t))
+
+        raw_policy = data.get("swarm_policy", {})
+        policy = (
+            raw_policy
+            if isinstance(raw_policy, SwarmReasoningPolicy)
+            else SwarmReasoningPolicy.from_dict(raw_policy if isinstance(raw_policy, dict) else {})
+        )
+
+        div_raw = data.get("divergence_check", data.get("paralog_divergence"))
+        divergence = None
+        if div_raw:
+            divergence = (
+                div_raw
+                if isinstance(div_raw, ParalogDivergenceContract)
+                else ParalogDivergenceContract.from_dict(div_raw if isinstance(div_raw, dict) else {})
+            )
+
+        return cls(
+            name=str(data.get("name", "whole_brain_crispr_screen")),
+            organism=str(data.get("organism", "Mus musculus")),
+            dataset_ref=str(data.get("dataset_ref", "doi:10.64898/2026.10.15.759436v1")),
+            cell_atlas_size=int(data.get("cell_atlas_size", 7700000)),
+            modality=mod_enum,
+            perturbation_targets=targets,
+            swarm_policy=policy,
+            divergence_check=divergence,
+            mcp_endpoint=data.get("mcp_endpoint"),
+            virtual_cell_link=data.get("virtual_cell_link"),
         )
 
 
@@ -3545,6 +3880,15 @@ __all__ = [
     "ViewerEpigeneticMark",
     "ViewerCrisprPamSite",
     "DNAViewerContract",
+    "AtlasModality",
+    "SwarmGranularity",
+    "PhenotypicRelationshipType",
+    "SwarmReasoningPolicy",
+    "ParalogDivergenceContract",
+    "PerturbationAtlasTarget",
+    "ReasoningAtlasEdge",
+    "ReasoningAtlasGraph",
+    "PerturbationAtlasContract",
     "PhysicsRefinementPolicy",
     "MegasynthaseDomain",
     "MegasynthaseModule",
