@@ -148,6 +148,8 @@ class EnhancedSemanticValidator:
             "dna_viewer",
             "perturbation_atlas",
             "perturb_swarm",
+            "biosecurity_watermark",
+            "synth_provenance",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -240,6 +242,8 @@ class EnhancedSemanticValidator:
                 self._validate_dna_viewer_block(block_content)
             elif block_name in ("perturbation_atlas", "perturb_swarm"):
                 self._validate_perturbation_atlas_block(block_content)
+            elif block_name in ("biosecurity_watermark", "synth_provenance"):
+                self._validate_biosecurity_watermark_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -1595,6 +1599,87 @@ class EnhancedSemanticValidator:
                             ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                             ErrorSeverity.WARNING,
                         ).add_fix(f"Align virtual_cell_link with simulation_id: '{vc_id}'")
+
+    def _validate_biosecurity_watermark_block(self, block: Any) -> None:
+        """Validate biosecurity_watermark / synth_provenance block according to SynthID Bio standards."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "biosecurity_watermark block must be a dictionary or BiosecurityWatermarkContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format biosecurity_watermark as a dictionary with name, target_modality, algorithm, etc.")
+            return
+
+        # Name is required
+        if "name" not in block or not str(block["name"]).strip():
+            self.result.add_error(
+                "biosecurity_watermark block missing required 'name' identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'name: <watermark_id>' to biosecurity_watermark block")
+
+        # Modality check
+        valid_modalities = {"protein", "mrna", "coding_dna", "genomic_dna", "multimodal"}
+        mod = block.get("target_modality", block.get("modality", "protein"))
+        if str(mod).lower() not in valid_modalities:
+            self.result.add_error(
+                f"Unknown target_modality '{mod}' in biosecurity_watermark",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Select a valid modality from: {sorted(list(valid_modalities))}")
+
+        # Algorithm check
+        valid_algorithms = {"synthid_gvalue", "synonymous_codon_hmac", "kmer_pseudorandom"}
+        alg = block.get("algorithm", block.get("watermark_algorithm", "synthid_gvalue"))
+        if str(alg).lower() not in valid_algorithms:
+            self.result.add_error(
+                f"Unknown watermark algorithm '{alg}' in biosecurity_watermark",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Select a valid algorithm from: {sorted(list(valid_algorithms))}")
+
+        # Detection policy validation
+        policy = block.get("detection_policy", block.get("policy"))
+        if policy is not None:
+            if hasattr(policy, "to_dict"):
+                policy = policy.to_dict()
+            if isinstance(policy, dict):
+                if "min_z_score" in policy and policy["min_z_score"] is not None:
+                    z = policy["min_z_score"]
+                    if not isinstance(z, (int, float)) or z <= 0.0:
+                        self.result.add_error(
+                            f"min_z_score must be a positive float, got {z}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set min_z_score to a positive threshold (e.g. 4.5)")
+
+                if "green_list_fraction" in policy and policy["green_list_fraction"] is not None:
+                    gamma = policy["green_list_fraction"]
+                    if not isinstance(gamma, (int, float)) or not (0.10 <= gamma <= 0.90):
+                        self.result.add_error(
+                            f"green_list_fraction must be between 0.10 and 0.90, got {gamma}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set green_list_fraction between 0.10 and 0.90 (standard is 0.50)")
+
+        # Viability guardrails validation
+        guardrails = block.get("viability_guardrails", block.get("guardrails"))
+        if guardrails is not None:
+            if hasattr(guardrails, "to_dict"):
+                guardrails = guardrails.to_dict()
+            if isinstance(guardrails, dict):
+                if "max_delta_delta_g" in guardrails and guardrails["max_delta_delta_g"] is not None:
+                    ddg = guardrails["max_delta_delta_g"]
+                    if not isinstance(ddg, (int, float)) or ddg < 0.0:
+                        self.result.add_error(
+                            f"max_delta_delta_g must be non-negative, got {ddg}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set max_delta_delta_g to a non-negative energy threshold in kcal/mol (e.g. 0.50)")
+
+                if "min_cai_score" in guardrails and guardrails["min_cai_score"] is not None:
+                    cai = guardrails["min_cai_score"]
+                    if not isinstance(cai, (int, float)) or not (0.0 < cai <= 1.0):
+                        self.result.add_error(
+                            f"min_cai_score must be a float between 0.0 and 1.0, got {cai}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set min_cai_score to an adaptation threshold (e.g. 0.80)")
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""

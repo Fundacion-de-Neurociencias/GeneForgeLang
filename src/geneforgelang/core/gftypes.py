@@ -354,6 +354,7 @@ class GFLAST:
     force_field_engine: Any | None = None
     dna_viewer: Any | None = None
     perturbation_atlas: Any | None = None
+    biosecurity_watermark: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -424,6 +425,12 @@ class GFLAST:
                 self.perturbation_atlas.to_dict()
                 if hasattr(self.perturbation_atlas, "to_dict")
                 else self.perturbation_atlas
+            )
+        if self.biosecurity_watermark is not None:
+            result["biosecurity_watermark"] = (
+                self.biosecurity_watermark.to_dict()
+                if hasattr(self.biosecurity_watermark, "to_dict")
+                else self.biosecurity_watermark
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -661,6 +668,19 @@ class GFLAST:
                 ast.perturbation_atlas = pa_data
             elif isinstance(pa_data, dict):
                 ast.perturbation_atlas = PerturbationAtlasContract.from_dict(pa_data)
+
+        if "biosecurity_watermark" in data:
+            bw_data = data["biosecurity_watermark"]
+            if isinstance(bw_data, BiosecurityWatermarkContract):
+                ast.biosecurity_watermark = bw_data
+            elif isinstance(bw_data, dict):
+                ast.biosecurity_watermark = BiosecurityWatermarkContract.from_dict(bw_data)
+        elif "synth_provenance" in data:
+            bw_data = data["synth_provenance"]
+            if isinstance(bw_data, BiosecurityWatermarkContract):
+                ast.biosecurity_watermark = bw_data
+            elif isinstance(bw_data, dict):
+                ast.biosecurity_watermark = BiosecurityWatermarkContract.from_dict(bw_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -2467,6 +2487,257 @@ class PerturbationAtlasContract:
         )
 
 
+# ============================================================================
+# SynthID Bio & Multimodal Biological Watermarking Contracts (Nature 2026; DeepMind)
+# ============================================================================
+
+
+class WatermarkModality(str, Enum):
+    """Biological sequence or structural modality target for watermarking."""
+
+    PROTEIN = "protein"
+    MRNA = "mrna"
+    CODING_DNA = "coding_dna"
+    GENOMIC_DNA = "genomic_dna"
+    MULTIMODAL = "multimodal"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class WatermarkAlgorithm(str, Enum):
+    """Cryptographic and statistical watermarking algorithms for biological sequences."""
+
+    SYNTHID_GVALUE = "synthid_gvalue"
+    SYNONYMOUS_CODON_HMAC = "synonymous_codon_hmac"
+    KMER_PSEUDORANDOM = "kmer_pseudorandom"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+@dataclass
+class WatermarkProvenance:
+    """Institutional, provenance, and biosecurity metadata embedded in biological watermark."""
+
+    institution: str = "Fundacion de Neurociencias"
+    lab_id: str = "INVESTIGO_NEUROIA"
+    generator_engine: str = "GeneForge-Rosalind"
+    biosecurity_clearance: str = "passed_pathogen_screening"
+    timestamp: str = ""
+    signature_hash: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "institution": self.institution,
+            "lab_id": self.lab_id,
+            "generator_engine": self.generator_engine,
+            "biosecurity_clearance": self.biosecurity_clearance,
+            "timestamp": self.timestamp,
+            "signature_hash": self.signature_hash,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> WatermarkProvenance:
+        return cls(
+            institution=str(data.get("institution", "Fundacion de Neurociencias")),
+            lab_id=str(data.get("lab_id", "INVESTIGO_NEUROIA")),
+            generator_engine=str(data.get("generator_engine", "GeneForge-Rosalind")),
+            biosecurity_clearance=str(data.get("biosecurity_clearance", "passed_pathogen_screening")),
+            timestamp=str(data.get("timestamp", "")),
+            signature_hash=str(data.get("signature_hash", "")),
+        )
+
+
+@dataclass
+class WatermarkViabilityGuardrails:
+    """Biophysical and biochemical constraints ensuring watermarking preserves biological function."""
+
+    max_delta_delta_g: float = 0.50  # kcal/mol
+    min_cai_score: float = 0.80  # Codon Adaptation Index
+    preserve_amino_acid_sequence: bool = True  # 100% synonymous in coding DNA/mRNA
+    avoid_splice_motifs: bool = True  # Avoid introducing cryptic splice donors/acceptors
+    forbidden_motifs: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "max_delta_delta_g": self.max_delta_delta_g,
+            "min_cai_score": self.min_cai_score,
+            "preserve_amino_acid_sequence": self.preserve_amino_acid_sequence,
+            "avoid_splice_motifs": self.avoid_splice_motifs,
+            "forbidden_motifs": list(self.forbidden_motifs),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> WatermarkViabilityGuardrails:
+        return cls(
+            max_delta_delta_g=float(data.get("max_delta_delta_g", 0.50)),
+            min_cai_score=float(data.get("min_cai_score", 0.80)),
+            preserve_amino_acid_sequence=bool(data.get("preserve_amino_acid_sequence", True)),
+            avoid_splice_motifs=bool(data.get("avoid_splice_motifs", True)),
+            forbidden_motifs=list(data.get("forbidden_motifs", [])),
+        )
+
+
+@dataclass
+class WatermarkDetectionPolicy:
+    """Detection statistical thresholds and parameters for provenance verification."""
+
+    min_z_score: float = 4.50
+    green_list_fraction: float = 0.50
+    context_kmer_size: int = 3
+    significance_threshold_pvalue: float = 1e-5
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "min_z_score": self.min_z_score,
+            "green_list_fraction": self.green_list_fraction,
+            "context_kmer_size": self.context_kmer_size,
+            "significance_threshold_pvalue": self.significance_threshold_pvalue,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> WatermarkDetectionPolicy:
+        return cls(
+            min_z_score=float(data.get("min_z_score", 4.50)),
+            green_list_fraction=float(data.get("green_list_fraction", 0.50)),
+            context_kmer_size=int(data.get("context_kmer_size", 3)),
+            significance_threshold_pvalue=float(data.get("significance_threshold_pvalue", 1e-5)),
+        )
+
+
+@dataclass
+class WatermarkVerificationResult:
+    """Empirical detection result proving presence or absence of AI provenance watermark."""
+
+    is_watermarked: bool
+    g_value: float
+    z_score: float
+    p_value: float
+    modality: WatermarkModality | str
+    confidence_level: str
+    extracted_provenance: dict[str, Any] = field(default_factory=dict)
+    cai_score: float | None = None
+    amino_acid_identity_preserved: bool | None = None
+    notes: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "is_watermarked": self.is_watermarked,
+            "g_value": self.g_value,
+            "z_score": self.z_score,
+            "p_value": self.p_value,
+            "modality": str(self.modality),
+            "confidence_level": self.confidence_level,
+            "extracted_provenance": dict(self.extracted_provenance),
+            "cai_score": self.cai_score,
+            "amino_acid_identity_preserved": self.amino_acid_identity_preserved,
+            "notes": self.notes,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> WatermarkVerificationResult:
+        mod_raw = data.get("modality", WatermarkModality.PROTEIN)
+        mod = mod_raw if isinstance(mod_raw, WatermarkModality) else WatermarkModality(str(mod_raw))
+        return cls(
+            is_watermarked=bool(data.get("is_watermarked", False)),
+            g_value=float(data.get("g_value", 0.50)),
+            z_score=float(data.get("z_score", 0.0)),
+            p_value=float(data.get("p_value", 1.0)),
+            modality=mod,
+            confidence_level=str(data.get("confidence_level", "NATURAL_OR_UNWATERMARKED")),
+            extracted_provenance=dict(data.get("extracted_provenance", {})),
+            cai_score=float(data["cai_score"]) if data.get("cai_score") is not None else None,
+            amino_acid_identity_preserved=(
+                bool(data["amino_acid_identity_preserved"])
+                if data.get("amino_acid_identity_preserved") is not None
+                else None
+            ),
+            notes=str(data.get("notes", "")),
+        )
+
+
+@dataclass
+class BiosecurityWatermarkContract:
+    """Formal GFL contract for SynthID Bio and multimodal biological watermarking."""
+
+    name: str
+    target_modality: WatermarkModality = WatermarkModality.PROTEIN
+    algorithm: WatermarkAlgorithm = WatermarkAlgorithm.SYNTHID_GVALUE
+    provenance: WatermarkProvenance = field(default_factory=WatermarkProvenance)
+    viability_guardrails: WatermarkViabilityGuardrails = field(default_factory=WatermarkViabilityGuardrails)
+    detection_policy: WatermarkDetectionPolicy = field(default_factory=WatermarkDetectionPolicy)
+    security_key_ref: str | None = None
+    sequence_payload: str | None = None
+    verified_result: WatermarkVerificationResult | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "name": self.name,
+            "target_modality": str(self.target_modality),
+            "algorithm": str(self.algorithm),
+            "provenance": self.provenance.to_dict(),
+            "viability_guardrails": self.viability_guardrails.to_dict(),
+            "detection_policy": self.detection_policy.to_dict(),
+            "security_key_ref": self.security_key_ref,
+            "sequence_payload": self.sequence_payload,
+            "verified_result": self.verified_result.to_dict() if self.verified_result else None,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> BiosecurityWatermarkContract:
+        mod_raw = data.get("target_modality", data.get("modality", WatermarkModality.PROTEIN))
+        mod_enum = mod_raw if isinstance(mod_raw, WatermarkModality) else WatermarkModality(str(mod_raw).lower())
+
+        alg_raw = data.get("algorithm", data.get("watermark_algorithm", WatermarkAlgorithm.SYNTHID_GVALUE))
+        alg_enum = alg_raw if isinstance(alg_raw, WatermarkAlgorithm) else WatermarkAlgorithm(str(alg_raw).lower())
+
+        raw_prov = data.get("provenance", {})
+        prov = (
+            raw_prov
+            if isinstance(raw_prov, WatermarkProvenance)
+            else WatermarkProvenance.from_dict(raw_prov if isinstance(raw_prov, dict) else {})
+        )
+
+        raw_guard = data.get("viability_guardrails", data.get("guardrails", {}))
+        guard = (
+            raw_guard
+            if isinstance(raw_guard, WatermarkViabilityGuardrails)
+            else WatermarkViabilityGuardrails.from_dict(raw_guard if isinstance(raw_guard, dict) else {})
+        )
+
+        raw_pol = data.get("detection_policy", data.get("policy", {}))
+        pol = (
+            raw_pol
+            if isinstance(raw_pol, WatermarkDetectionPolicy)
+            else WatermarkDetectionPolicy.from_dict(raw_pol if isinstance(raw_pol, dict) else {})
+        )
+
+        raw_res = data.get("verified_result")
+        res = None
+        if raw_res:
+            res = (
+                raw_res
+                if isinstance(raw_res, WatermarkVerificationResult)
+                else WatermarkVerificationResult.from_dict(raw_res if isinstance(raw_res, dict) else {})
+            )
+
+        return cls(
+            name=str(data.get("name", "biosecurity_watermark")),
+            target_modality=mod_enum,
+            algorithm=alg_enum,
+            provenance=prov,
+            viability_guardrails=guard,
+            detection_policy=pol,
+            security_key_ref=data.get("security_key_ref"),
+            sequence_payload=data.get("sequence_payload"),
+            verified_result=res,
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 class ForceFieldFamily(str, Enum):
     """Molecular mechanics all-atom force field families."""
 
@@ -3889,6 +4160,13 @@ __all__ = [
     "ReasoningAtlasEdge",
     "ReasoningAtlasGraph",
     "PerturbationAtlasContract",
+    "WatermarkModality",
+    "WatermarkAlgorithm",
+    "WatermarkProvenance",
+    "WatermarkViabilityGuardrails",
+    "WatermarkDetectionPolicy",
+    "WatermarkVerificationResult",
+    "BiosecurityWatermarkContract",
     "PhysicsRefinementPolicy",
     "MegasynthaseDomain",
     "MegasynthaseModule",
