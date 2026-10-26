@@ -2326,6 +2326,53 @@ class ViewerTrackType(str, Enum):
     SOMATIC_REPEAT_EXPANSION = (
         "somatic_repeat_expansion"  # Tandem microsatellite repeat count and instability threshold
     )
+    GNOMAD_POPULATION_AF = "gnomad_population_af"  # Population allele frequency & filtering allele frequency (faf95/faf99)
+    LONG_READ_SV = "long_read_sv"  # Long-read structural variants (DEL, INS, DUP, INV, BND) & benign polymorphism status
+    TANDEM_REPEAT_EXPANSIONS = "tandem_repeat_expansions"  # Long-read resolved tandem repeat sizing & population percentiles
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class GnomadDatasetVersion(str, Enum):
+    """Supported versions of the Genome Aggregation Database (gnomAD)."""
+
+    GNOMAD_V2 = "gnomad_v2"
+    GNOMAD_V3 = "gnomad_v3"
+    GNOMAD_V4 = "gnomad_v4"
+    GNOMAD_V5_AOU = "gnomad_v5_aou"  # gnomAD v5 incorporating >400k diverse genomes from All of Us
+    GNOMAD_LONG_READ = "gnomad_long_read"  # Long-read structural variant and repeat callset
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class GnomadStructuralVariantType(str, Enum):
+    """Structural variant classes resolved by long-read sequencing."""
+
+    DEL = "DEL"
+    INS = "INS"
+    DUP = "DUP"
+    INV = "INV"
+    BND = "BND"
+    STR_EXPANSION = "STR_EXPANSION"
+    MEI = "MEI"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class GnomadAncestryGroup(str, Enum):
+    """Major continental and sub-continental genetic ancestry clusters."""
+
+    AFR = "afr"  # African / African American
+    AMR = "amr"  # Admixed American / Hispanic / Latino
+    EAS = "eas"  # East Asian
+    NFE = "nfe"  # Non-Finnish European
+    SAS = "sas"  # South Asian
+    MID = "mid"  # Middle Eastern
+    ASJ = "asj"  # Ashkenazi Jewish
+    GLOBAL = "global"
 
     def __str__(self) -> str:
         return self.value
@@ -2494,12 +2541,169 @@ class ViewerCrisprPamSite:
 
 
 @dataclass
+class ViewerLongReadSVAnnotation:
+    """Long-read resolved structural variant with empirical population frequency."""
+
+    sv_id: str
+    sv_type: GnomadStructuralVariantType
+    chromosome: str
+    start_coord: int
+    end_coord: int
+    length_bp: int
+    allele_frequency_lr: float
+    allele_count_lr: int = 1
+    allele_number_lr: int = 1000
+    is_benign_population_polymorphism: bool = False
+    supporting_long_reads: int = 10
+
+    def __post_init__(self) -> None:
+        if self.allele_frequency_lr >= 0.01 and not self.is_benign_population_polymorphism:
+            self.is_benign_population_polymorphism = True
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "sv_id": self.sv_id,
+            "sv_type": str(self.sv_type),
+            "chromosome": self.chromosome,
+            "start_coord": self.start_coord,
+            "end_coord": self.end_coord,
+            "length_bp": self.length_bp,
+            "allele_frequency_lr": self.allele_frequency_lr,
+            "allele_count_lr": self.allele_count_lr,
+            "allele_number_lr": self.allele_number_lr,
+            "is_benign_population_polymorphism": self.is_benign_population_polymorphism,
+            "supporting_long_reads": self.supporting_long_reads,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ViewerLongReadSVAnnotation:
+        sv_t = data.get("sv_type", "DEL")
+        try:
+            sv_enum = GnomadStructuralVariantType(str(sv_t).upper())
+        except ValueError:
+            sv_enum = GnomadStructuralVariantType.DEL
+        af = float(data.get("allele_frequency_lr", 0.0))
+        return cls(
+            sv_id=str(data.get("sv_id", "")),
+            sv_type=sv_enum,
+            chromosome=str(data.get("chromosome", "chr1")),
+            start_coord=int(data.get("start_coord", 1)),
+            end_coord=int(data.get("end_coord", 1)),
+            length_bp=int(data.get("length_bp", 0)),
+            allele_frequency_lr=af,
+            allele_count_lr=int(data.get("allele_count_lr", 1)),
+            allele_number_lr=int(data.get("allele_number_lr", 1000)),
+            is_benign_population_polymorphism=bool(
+                data.get("is_benign_population_polymorphism", False) or af >= 0.01
+            ),
+            supporting_long_reads=int(data.get("supporting_long_reads", 10)),
+        )
+
+
+@dataclass
+class ViewerTandemRepeatAnnotation:
+    """Tandem repeat locus with long-read population distribution baselines."""
+
+    repeat_id: str
+    gene_symbol: str
+    repeat_unit: str  # e.g., "CAG", "G4C2"
+    start_coord: int
+    end_coord: int
+    normal_max_copies: int
+    pathogenic_min_copies: int
+    observed_patient_copies: int
+    population_p95_copies: float = 22.0
+    population_p99_copies: float = 28.0
+    population_p99_9_copies: float = 34.0
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "repeat_id": self.repeat_id,
+            "gene_symbol": self.gene_symbol,
+            "repeat_unit": self.repeat_unit,
+            "start_coord": self.start_coord,
+            "end_coord": self.end_coord,
+            "normal_max_copies": self.normal_max_copies,
+            "pathogenic_min_copies": self.pathogenic_min_copies,
+            "observed_patient_copies": self.observed_patient_copies,
+            "population_p95_copies": self.population_p95_copies,
+            "population_p99_copies": self.population_p99_copies,
+            "population_p99_9_copies": self.population_p99_9_copies,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ViewerTandemRepeatAnnotation:
+        return cls(
+            repeat_id=str(data.get("repeat_id", "")),
+            gene_symbol=str(data.get("gene_symbol", "")),
+            repeat_unit=str(data.get("repeat_unit", "")),
+            start_coord=int(data.get("start_coord", 1)),
+            end_coord=int(data.get("end_coord", 1)),
+            normal_max_copies=int(data.get("normal_max_copies", 35)),
+            pathogenic_min_copies=int(data.get("pathogenic_min_copies", 40)),
+            observed_patient_copies=int(data.get("observed_patient_copies", 18)),
+            population_p95_copies=float(data.get("population_p95_copies", 22.0)),
+            population_p99_copies=float(data.get("population_p99_copies", 28.0)),
+            population_p99_9_copies=float(data.get("population_p99_9_copies", 34.0)),
+        )
+
+
+@dataclass
+class GnomadPopulationTrack:
+    """gnomAD population allele frequency and equity metrics."""
+
+    dataset_version: GnomadDatasetVersion = GnomadDatasetVersion.GNOMAD_V5_AOU
+    global_af: float = 0.0
+    max_ancestry_af: float = 0.0
+    max_ancestry_group: GnomadAncestryGroup = GnomadAncestryGroup.GLOBAL
+    faf95: float = 0.0
+    ancestry_frequencies: dict[str, float] = field(default_factory=dict)
+    is_equity_divergent: bool = False
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "dataset_version": str(self.dataset_version),
+            "global_af": self.global_af,
+            "max_ancestry_af": self.max_ancestry_af,
+            "max_ancestry_group": str(self.max_ancestry_group),
+            "faf95": self.faf95,
+            "ancestry_frequencies": self.ancestry_frequencies,
+            "is_equity_divergent": self.is_equity_divergent,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> GnomadPopulationTrack:
+        dv = data.get("dataset_version", GnomadDatasetVersion.GNOMAD_V5_AOU)
+        try:
+            dv_enum = GnomadDatasetVersion(str(dv).lower())
+        except ValueError:
+            dv_enum = GnomadDatasetVersion.GNOMAD_V5_AOU
+
+        mag = data.get("max_ancestry_group", GnomadAncestryGroup.GLOBAL)
+        try:
+            mag_enum = GnomadAncestryGroup(str(mag).lower())
+        except ValueError:
+            mag_enum = GnomadAncestryGroup.GLOBAL
+
+        return cls(
+            dataset_version=dv_enum,
+            global_af=float(data.get("global_af", 0.0)),
+            max_ancestry_af=float(data.get("max_ancestry_af", 0.0)),
+            max_ancestry_group=mag_enum,
+            faf95=float(data.get("faf95", 0.0)),
+            ancestry_frequencies=data.get("ancestry_frequencies", {}),
+            is_equity_divergent=bool(data.get("is_equity_divergent", False)),
+        )
+
+
+@dataclass
 class DNAViewerContract:
     """Formal GFL IO Contract for Multi-Dimensional Dynamic DNA Helix Visualization.
 
     Inspired by the interactive B-DNA double helix scanner design (Sohaib Hassan 2026)
     and extended with full multi-omic dimensions: exons/introns, reading frames & translation,
-    ClinVar pathogenic variant pins, 5mC/5hmC epigenetic marks, and CRISPR-Cas PAM windows.
+    ClinVar pathogenic variant pins, 5mC/5hmC epigenetic marks, CRISPR-Cas PAM windows,
+    long-read structural variants, and gnomAD v5 (All of Us) population frequency tracks.
     """
 
     viewer_id: str
@@ -2521,6 +2725,9 @@ class DNAViewerContract:
     exons: list[ViewerExonAnnotation] = field(default_factory=list)
     epigenetic_marks: list[ViewerEpigeneticMark] = field(default_factory=list)
     crispr_sites: list[ViewerCrisprPamSite] = field(default_factory=list)
+    gnomad_track: GnomadPopulationTrack | None = None
+    long_read_svs: list[ViewerLongReadSVAnnotation] = field(default_factory=list)
+    tandem_repeats: list[ViewerTandemRepeatAnnotation] = field(default_factory=list)
     interactive: bool = True
     export_format: str = "html"
 
@@ -2550,6 +2757,12 @@ class DNAViewerContract:
             res["epigenetic_marks"] = [m.to_dict() for m in self.epigenetic_marks]
         if self.crispr_sites:
             res["crispr_sites"] = [c.to_dict() for c in self.crispr_sites]
+        if self.gnomad_track:
+            res["gnomad_track"] = self.gnomad_track.to_dict()
+        if self.long_read_svs:
+            res["long_read_svs"] = [sv.to_dict() for sv in self.long_read_svs]
+        if self.tandem_repeats:
+            res["tandem_repeats"] = [tr.to_dict() for tr in self.tandem_repeats]
         return res
 
     @classmethod
@@ -2604,6 +2817,24 @@ class DNAViewerContract:
             elif isinstance(c, dict):
                 crispr_sites.append(ViewerCrisprPamSite.from_dict(c))
 
+        gnomad_track = None
+        if "gnomad_track" in data and isinstance(data["gnomad_track"], dict):
+            gnomad_track = GnomadPopulationTrack.from_dict(data["gnomad_track"])
+
+        long_read_svs: list[ViewerLongReadSVAnnotation] = []
+        for sv_d in data.get("long_read_svs", []):
+            if isinstance(sv_d, ViewerLongReadSVAnnotation):
+                long_read_svs.append(sv_d)
+            elif isinstance(sv_d, dict):
+                long_read_svs.append(ViewerLongReadSVAnnotation.from_dict(sv_d))
+
+        tandem_repeats: list[ViewerTandemRepeatAnnotation] = []
+        for tr_d in data.get("tandem_repeats", []):
+            if isinstance(tr_d, ViewerTandemRepeatAnnotation):
+                tandem_repeats.append(tr_d)
+            elif isinstance(tr_d, dict):
+                tandem_repeats.append(ViewerTandemRepeatAnnotation.from_dict(tr_d))
+
         return cls(
             viewer_id=str(data.get("viewer_id", data.get("name", "dmd_helix_viewer"))),
             target_gene=str(data.get("target_gene", "DMD")),
@@ -2618,6 +2849,9 @@ class DNAViewerContract:
             exons=exons,
             epigenetic_marks=epigenetic_marks,
             crispr_sites=crispr_sites,
+            gnomad_track=gnomad_track,
+            long_read_svs=long_read_svs,
+            tandem_repeats=tandem_repeats,
             interactive=bool(data.get("interactive", True)),
             export_format=str(data.get("export_format", "html")),
         )
@@ -3508,6 +3742,9 @@ __all__ = [
     "HelixConformation",
     "ViewerTrackType",
     "VariantPathogenicity",
+    "GnomadDatasetVersion",
+    "GnomadStructuralVariantType",
+    "GnomadAncestryGroup",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -3544,6 +3781,9 @@ __all__ = [
     "ViewerExonAnnotation",
     "ViewerEpigeneticMark",
     "ViewerCrisprPamSite",
+    "ViewerLongReadSVAnnotation",
+    "ViewerTandemRepeatAnnotation",
+    "GnomadPopulationTrack",
     "DNAViewerContract",
     "PhysicsRefinementPolicy",
     "MegasynthaseDomain",

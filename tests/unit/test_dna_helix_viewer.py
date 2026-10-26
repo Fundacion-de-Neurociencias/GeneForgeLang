@@ -254,3 +254,72 @@ def test_dmd_exemplar_gfl_file_validates() -> None:
     assert ast.dna_viewer.active_coordinate == 161
     assert len(ast.dna_viewer.exons) == 3
     assert len(ast.dna_viewer.variants) == 2
+
+
+def test_gnomad_long_read_and_v5_tracks() -> None:
+    """Test GnomadPopulationTrack, ViewerLongReadSVAnnotation, and ViewerTandemRepeatAnnotation."""
+    from geneforgelang.core.gftypes import (
+        GnomadAncestryGroup,
+        GnomadDatasetVersion,
+        GnomadPopulationTrack,
+        GnomadStructuralVariantType,
+        ViewerLongReadSVAnnotation,
+        ViewerTandemRepeatAnnotation,
+    )
+
+    # 1. Enums
+    assert str(GnomadDatasetVersion.GNOMAD_V5_AOU) == "gnomad_v5_aou"
+    assert str(GnomadDatasetVersion.GNOMAD_LONG_READ) == "gnomad_long_read"
+    assert str(GnomadStructuralVariantType.INV) == "INV"
+    assert str(GnomadAncestryGroup.AFR) == "afr"
+
+    # 2. Population Track roundtrip
+    pop_track = GnomadPopulationTrack(
+        dataset_version=GnomadDatasetVersion.GNOMAD_V5_AOU,
+        global_af=0.0012,
+        max_ancestry_af=0.045,
+        max_ancestry_group=GnomadAncestryGroup.AFR,
+        faf95=0.038,
+        ancestry_frequencies={"afr": 0.045, "nfe": 0.0001, "amr": 0.002},
+        is_equity_divergent=True,
+    )
+    d = pop_track.to_dict()
+    restored = GnomadPopulationTrack.from_dict(d)
+    assert restored.global_af == 0.0012
+    assert restored.max_ancestry_group == GnomadAncestryGroup.AFR
+    assert restored.is_equity_divergent is True
+
+    # 3. Long-read SV Annotation
+    sv = ViewerLongReadSVAnnotation(
+        sv_id="gnomAD_LR_chrX_31120000_INV",
+        sv_type=GnomadStructuralVariantType.INV,
+        chromosome="chrX",
+        start_coord=31120000,
+        end_coord=31124500,
+        length_bp=4500,
+        allele_frequency_lr=0.024,
+    )
+    assert sv.is_benign_population_polymorphism is True
+    sv_d = sv.to_dict()
+    sv_restored = ViewerLongReadSVAnnotation.from_dict(sv_d)
+    assert sv_restored.length_bp == 4500
+    assert sv_restored.sv_type == GnomadStructuralVariantType.INV
+
+    # 4. Tandem repeat annotation
+    tr = ViewerTandemRepeatAnnotation(
+        repeat_id="STR_HTT_CAG",
+        gene_symbol="HTT",
+        repeat_unit="CAG",
+        start_coord=3074877,
+        end_coord=3074933,
+        normal_max_copies=35,
+        pathogenic_min_copies=40,
+        observed_patient_copies=18,
+        population_p95_copies=21.0,
+        population_p99_copies=27.0,
+        population_p99_9_copies=34.0,
+    )
+    tr_d = tr.to_dict()
+    tr_restored = ViewerTandemRepeatAnnotation.from_dict(tr_d)
+    assert tr_restored.repeat_unit == "CAG"
+    assert tr_restored.normal_max_copies == 35

@@ -234,6 +234,9 @@ def generate_dna_helix_viewer_html(contract: DNAViewerContract) -> str:
         "exons": exons_data,
         "epigenetics": epigenetics_data,
         "crispr": crispr_data,
+        "gnomad_track": contract.gnomad_track.to_dict() if contract.gnomad_track else None,
+        "long_read_svs": [sv.to_dict() for sv in contract.long_read_svs],
+        "tandem_repeats": [tr.to_dict() for tr in contract.tandem_repeats],
         "codon_table": {k: [v[0], v[1]] for k, v in CODON_TABLE.items()},
     }
 

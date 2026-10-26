@@ -1403,6 +1403,9 @@ class EnhancedSemanticValidator:
                 "epigenetics_5hmc",
                 "crispr_pam_sites",
                 "somatic_repeat_expansion",
+                "gnomad_population_af",
+                "long_read_sv",
+                "tandem_repeat_expansions",
             }
             for track in block["tracks"]:
                 t_str = str(track).lower()
@@ -1412,6 +1415,41 @@ class EnhancedSemanticValidator:
                         ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                         ErrorSeverity.WARNING,
                     ).add_fix(f"Choose from valid tracks: {sorted(list(valid_tracks))}")
+
+        # Validate gnomad_track if provided
+        if "gnomad_track" in block and block["gnomad_track"] is not None:
+            gtrack = block["gnomad_track"]
+            if isinstance(gtrack, dict):
+                for f_key in ["global_af", "max_ancestry_af", "faf95"]:
+                    if f_key in gtrack:
+                        val = gtrack[f_key]
+                        if not isinstance(val, (int, float)) or not (0.0 <= val <= 1.0):
+                            self.result.add_error(
+                                f"gnomad_track '{f_key}' must be between 0.0 and 1.0, got {val}",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ).add_fix(f"Provide a valid allele frequency in [0.0, 1.0] for {f_key}")
+
+        # Validate long_read_svs
+        if "long_read_svs" in block and isinstance(block["long_read_svs"], list):
+            for i, sv in enumerate(block["long_read_svs"]):
+                if isinstance(sv, dict):
+                    af = sv.get("allele_frequency_lr")
+                    if af is not None and (not isinstance(af, (int, float)) or not (0.0 <= af <= 1.0)):
+                        self.result.add_error(
+                            f"long_read_svs[{i}] allele_frequency_lr must be between 0.0 and 1.0, got {af}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Provide a valid long-read allele frequency in [0.0, 1.0]")
+
+        # Validate tandem_repeats
+        if "tandem_repeats" in block and isinstance(block["tandem_repeats"], list):
+            for i, tr in enumerate(block["tandem_repeats"]):
+                if isinstance(tr, dict):
+                    obs = tr.get("observed_patient_copies")
+                    if obs is not None and (not isinstance(obs, int) or obs < 0):
+                        self.result.add_error(
+                            f"tandem_repeats[{i}] observed_patient_copies must be an integer >= 0, got {obs}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set observed_patient_copies to a non-negative integer")
 
         # Validate exons
         if "exons" in block and isinstance(block["exons"], list):
