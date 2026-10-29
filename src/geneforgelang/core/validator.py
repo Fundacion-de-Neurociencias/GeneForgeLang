@@ -150,6 +150,8 @@ class EnhancedSemanticValidator:
             "perturb_swarm",
             "biosecurity_watermark",
             "synth_provenance",
+            "genomic_llm",
+            "carbonx",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -244,6 +246,8 @@ class EnhancedSemanticValidator:
                 self._validate_perturbation_atlas_block(block_content)
             elif block_name in ("biosecurity_watermark", "synth_provenance"):
                 self._validate_biosecurity_watermark_block(block_content)
+            elif block_name in ("genomic_llm", "carbonx"):
+                self._validate_genomic_llm_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -1680,6 +1684,109 @@ class EnhancedSemanticValidator:
                             f"min_cai_score must be a float between 0.0 and 1.0, got {cai}",
                             ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                         ).add_fix("Set min_cai_score to an adaptation threshold (e.g. 0.80)")
+
+    def _validate_genomic_llm_block(self, block: Any) -> None:
+        """Validate genomic_llm / carbonx block according to Carbon-X specifications."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "genomic_llm block must be a dictionary or GenomicLLMContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format genomic_llm as a dictionary with name, task_type, etc.")
+            return
+
+        # Name is required
+        if "name" not in block or not str(block["name"]).strip():
+            self.result.add_error(
+                "genomic_llm block missing required 'name' identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'name: <analysis_id>' to genomic_llm block")
+
+        # Task type check
+        valid_tasks = {
+            "variant_effect_reasoning",
+            "locus_annotation",
+            "promoter_generation",
+            "pathway_impact",
+            "chat_with_dna",
+        }
+        task = block.get("task_type", "variant_effect_reasoning")
+        if str(task).lower() not in valid_tasks:
+            self.result.add_error(
+                f"Unknown task_type '{task}' in genomic_llm",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Select a valid task from: {sorted(list(valid_tasks))}")
+
+        # Model checkpoint check
+        valid_models = {"carbonx-14b", "carbonx-base"}
+        mod = block.get("model", "carbonx-14b")
+        if str(mod).lower() not in valid_models:
+            self.result.add_error(
+                f"Unknown model checkpoint '{mod}' in genomic_llm",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Select a valid model checkpoint: {sorted(list(valid_models))}")
+
+        # Context token limit check
+        max_tokens = block.get("max_context_tokens", 40960)
+        if not isinstance(max_tokens, int) or max_tokens <= 0:
+            self.result.add_error(
+                f"max_context_tokens must be a positive integer, got {max_tokens}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set max_context_tokens to a positive integer (up to 40960)")
+        elif max_tokens > 40960:
+            self.result.add_error(
+                f"max_context_tokens ({max_tokens}) exceeds Carbon-X hardware limit of 40,960 tokens",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set max_context_tokens <= 40960 (equivalent to ~245,760 bp of contiguous DNA)")
+
+        # Target locus coordinate validation
+        locus = block.get("target_locus", block.get("locus"))
+        if locus is not None:
+            if hasattr(locus, "to_dict"):
+                locus = locus.to_dict()
+            if isinstance(locus, dict):
+                start = locus.get("start", 0)
+                end = locus.get("end", 0)
+                if isinstance(start, int) and isinstance(end, int):
+                    if start < 0 or end < 0:
+                        self.result.add_error(
+                            f"Locus coordinates cannot be negative (start={start}, end={end})",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Use 0-based or 1-based non-negative genomic coordinates")
+                    elif start > end:
+                        self.result.add_error(
+                            f"Invalid locus coordinates: start ({start}) cannot be greater than end ({end})",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Ensure start <= end in target_locus block")
+
+        # Sequence payload validation
+        seq = block.get("sequence_payload", block.get("sequence"))
+        query = block.get("query")
+        if query is not None:
+            if hasattr(query, "to_dict"):
+                query = query.to_dict()
+            if isinstance(query, dict) and not seq:
+                seq = query.get("sequence")
+
+        if seq is not None and isinstance(seq, str):
+            clean_seq = re.sub(r"\s+", "", seq.upper())
+            # 1. Length check against max context window
+            # 40,960 tokens * 6 bp = 245,760 bp
+            if len(clean_seq) > 245760:
+                self.result.add_error(
+                    f"Sequence length ({len(clean_seq)} bp) exceeds Carbon-X max context window (245,760 bp / 40,960 tokens)",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Truncate or partition sequence into windows <= 245,760 bp")
+
+            # 2. Nucleotide validity
+            invalid_nucleotides = set(clean_seq) - {"A", "C", "G", "T", "N"}
+            if invalid_nucleotides:
+                self.result.add_error(
+                    f"Sequence contains invalid IUPAC nucleotide characters: {sorted(list(invalid_nucleotides))}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Ensure sequence contains only standard DNA bases ('A', 'C', 'G', 'T', 'N')")
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""

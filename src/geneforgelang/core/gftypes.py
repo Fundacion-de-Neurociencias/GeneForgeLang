@@ -355,6 +355,7 @@ class GFLAST:
     dna_viewer: Any | None = None
     perturbation_atlas: Any | None = None
     biosecurity_watermark: Any | None = None
+    genomic_llm: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -431,6 +432,10 @@ class GFLAST:
                 self.biosecurity_watermark.to_dict()
                 if hasattr(self.biosecurity_watermark, "to_dict")
                 else self.biosecurity_watermark
+            )
+        if self.genomic_llm is not None:
+            result["genomic_llm"] = (
+                self.genomic_llm.to_dict() if hasattr(self.genomic_llm, "to_dict") else self.genomic_llm
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -681,6 +686,19 @@ class GFLAST:
                 ast.biosecurity_watermark = bw_data
             elif isinstance(bw_data, dict):
                 ast.biosecurity_watermark = BiosecurityWatermarkContract.from_dict(bw_data)
+
+        if "genomic_llm" in data:
+            gl_data = data["genomic_llm"]
+            if isinstance(gl_data, GenomicLLMContract):
+                ast.genomic_llm = gl_data
+            elif isinstance(gl_data, dict):
+                ast.genomic_llm = GenomicLLMContract.from_dict(gl_data)
+        elif "carbonx" in data:
+            gl_data = data["carbonx"]
+            if isinstance(gl_data, GenomicLLMContract):
+                ast.genomic_llm = gl_data
+            elif isinstance(gl_data, dict):
+                ast.genomic_llm = GenomicLLMContract.from_dict(gl_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -2738,6 +2756,226 @@ class BiosecurityWatermarkContract:
         )
 
 
+class CarbonXTaskType(str, Enum):
+    """Supported reasoning and generative task types for Carbon-X."""
+
+    VARIANT_EFFECT_REASONING = "variant_effect_reasoning"
+    LOCUS_ANNOTATION = "locus_annotation"
+    PROMOTER_GENERATION = "promoter_generation"
+    PATHWAY_IMPACT = "pathway_impact"
+    CHAT_WITH_DNA = "chat_with_dna"
+
+
+class CarbonXModelSize(str, Enum):
+    """Carbon-X model checkpoints."""
+
+    CARBONX_14B = "carbonx-14b"
+    CARBONX_BASE = "carbonx-base"
+
+
+@dataclass
+class CarbonXTargetLocus:
+    """Genomic locus coordinate specification."""
+
+    chrom: str = "chr1"
+    start: int = 0
+    end: int = 0
+    strand: str = "+"
+    assembly: str = "GRCh38"
+    gene_symbol: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "chrom": self.chrom,
+            "start": self.start,
+            "end": self.end,
+            "strand": self.strand,
+            "assembly": self.assembly,
+            "gene_symbol": self.gene_symbol,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> CarbonXTargetLocus:
+        return cls(
+            chrom=str(data.get("chrom", data.get("chr", "chr1"))),
+            start=int(data.get("start", 0)),
+            end=int(data.get("end", 0)),
+            strand=str(data.get("strand", "+")),
+            assembly=str(data.get("assembly", "GRCh38")),
+            gene_symbol=str(data["gene_symbol"]) if "gene_symbol" in data and data["gene_symbol"] is not None else None,
+        )
+
+
+@dataclass
+class CarbonXQuery:
+    """Prompt and query configuration for Carbon-X."""
+
+    prompt: str
+    task_type: CarbonXTaskType = CarbonXTaskType.VARIANT_EFFECT_REASONING
+    sequence: str | None = None
+    locus: CarbonXTargetLocus | None = None
+    variant_delta: dict[str, Any] | None = None
+    max_new_tokens: int = 1024
+    temperature: float = 0.2
+    system_prompt: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "prompt": self.prompt,
+            "task_type": self.task_type.value if hasattr(self.task_type, "value") else str(self.task_type),
+            "sequence": self.sequence,
+            "locus": self.locus.to_dict() if self.locus else None,
+            "variant_delta": self.variant_delta,
+            "max_new_tokens": self.max_new_tokens,
+            "temperature": self.temperature,
+            "system_prompt": self.system_prompt,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> CarbonXQuery:
+        task_raw = data.get("task_type", CarbonXTaskType.VARIANT_EFFECT_REASONING)
+        if isinstance(task_raw, CarbonXTaskType):
+            task_enum = task_raw
+        else:
+            s_task = str(task_raw).lower()
+            if "." in s_task:
+                s_task = s_task.split(".")[-1]
+            task_enum = CarbonXTaskType(s_task)
+
+        locus_raw = data.get("locus")
+        locus = None
+        if locus_raw:
+            locus = locus_raw if isinstance(locus_raw, CarbonXTargetLocus) else CarbonXTargetLocus.from_dict(locus_raw)
+
+        return cls(
+            prompt=str(data.get("prompt", "")),
+            task_type=task_enum,
+            sequence=data.get("sequence"),
+            locus=locus,
+            variant_delta=data.get("variant_delta"),
+            max_new_tokens=int(data.get("max_new_tokens", 1024)),
+            temperature=float(data.get("temperature", 0.2)),
+            system_prompt=data.get("system_prompt"),
+        )
+
+
+@dataclass
+class CarbonXReasoningResult:
+    """Structured scientific explanation and predictions generated by Carbon-X."""
+
+    explanation: str
+    predicted_effects: list[str] = field(default_factory=list)
+    functional_consequences: list[str] = field(default_factory=list)
+    confidence_score: float = 0.85
+    token_count_dna: int = 0
+    token_count_text: int = 0
+    evidence_status: str = "carbonx_inference"
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "explanation": self.explanation,
+            "predicted_effects": list(self.predicted_effects),
+            "functional_consequences": list(self.functional_consequences),
+            "confidence_score": self.confidence_score,
+            "token_count_dna": self.token_count_dna,
+            "token_count_text": self.token_count_text,
+            "evidence_status": self.evidence_status,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> CarbonXReasoningResult:
+        return cls(
+            explanation=str(data.get("explanation", "")),
+            predicted_effects=list(data.get("predicted_effects", [])),
+            functional_consequences=list(data.get("functional_consequences", [])),
+            confidence_score=float(data.get("confidence_score", 0.85)),
+            token_count_dna=int(data.get("token_count_dna", 0)),
+            token_count_text=int(data.get("token_count_text", 0)),
+            evidence_status=str(data.get("evidence_status", "carbonx_inference")),
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
+@dataclass
+class GenomicLLMContract:
+    """Formal GFL contract for Carbon-X and genomic foundation language models."""
+
+    name: str
+    model: CarbonXModelSize = CarbonXModelSize.CARBONX_14B
+    task_type: CarbonXTaskType = CarbonXTaskType.VARIANT_EFFECT_REASONING
+    query: CarbonXQuery | None = None
+    target_locus: CarbonXTargetLocus | None = None
+    sequence_payload: str | None = None
+    max_context_tokens: int = 40960
+    temperature: float = 0.2
+    verified_result: CarbonXReasoningResult | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "name": self.name,
+            "model": self.model.value if hasattr(self.model, "value") else str(self.model),
+            "task_type": self.task_type.value if hasattr(self.task_type, "value") else str(self.task_type),
+            "query": self.query.to_dict() if self.query else None,
+            "target_locus": self.target_locus.to_dict() if self.target_locus else None,
+            "sequence_payload": self.sequence_payload,
+            "max_context_tokens": self.max_context_tokens,
+            "temperature": self.temperature,
+            "verified_result": self.verified_result.to_dict() if self.verified_result else None,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> GenomicLLMContract:
+        mod_raw = data.get("model", CarbonXModelSize.CARBONX_14B)
+        if isinstance(mod_raw, CarbonXModelSize):
+            mod_enum = mod_raw
+        else:
+            s_mod = str(mod_raw).lower()
+            if "." in s_mod:
+                s_mod = s_mod.split(".")[-1]
+            mod_enum = CarbonXModelSize(s_mod)
+
+        task_raw = data.get("task_type", CarbonXTaskType.VARIANT_EFFECT_REASONING)
+        if isinstance(task_raw, CarbonXTaskType):
+            task_enum = task_raw
+        else:
+            s_task = str(task_raw).lower()
+            if "." in s_task:
+                s_task = s_task.split(".")[-1]
+            task_enum = CarbonXTaskType(s_task)
+
+        query_raw = data.get("query")
+        query = None
+        if query_raw:
+            query = query_raw if isinstance(query_raw, CarbonXQuery) else CarbonXQuery.from_dict(query_raw)
+
+        locus_raw = data.get("target_locus", data.get("locus"))
+        locus = None
+        if locus_raw:
+            locus = locus_raw if isinstance(locus_raw, CarbonXTargetLocus) else CarbonXTargetLocus.from_dict(locus_raw)
+
+        res_raw = data.get("verified_result", data.get("reasoning_result"))
+        res = None
+        if res_raw:
+            res = res_raw if isinstance(res_raw, CarbonXReasoningResult) else CarbonXReasoningResult.from_dict(res_raw)
+
+        return cls(
+            name=str(data.get("name", "genomic_llm_analysis")),
+            model=mod_enum,
+            task_type=task_enum,
+            query=query,
+            target_locus=locus,
+            sequence_payload=data.get("sequence_payload", data.get("sequence")),
+            max_context_tokens=int(data.get("max_context_tokens", 40960)),
+            temperature=float(data.get("temperature", 0.2)),
+            verified_result=res,
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 class ForceFieldFamily(str, Enum):
     """Molecular mechanics all-atom force field families."""
 
@@ -4167,6 +4405,12 @@ __all__ = [
     "WatermarkDetectionPolicy",
     "WatermarkVerificationResult",
     "BiosecurityWatermarkContract",
+    "CarbonXTaskType",
+    "CarbonXModelSize",
+    "CarbonXTargetLocus",
+    "CarbonXQuery",
+    "CarbonXReasoningResult",
+    "GenomicLLMContract",
     "PhysicsRefinementPolicy",
     "MegasynthaseDomain",
     "MegasynthaseModule",
