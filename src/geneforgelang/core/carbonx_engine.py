@@ -297,10 +297,18 @@ class CarbonXEngine:
                             explanation=content,
                             predicted_effects=["remote_neural_inference_completed"],
                             functional_consequences=["mac_studio_m4_max_verified"],
-                            confidence_score=0.92,
+                            confidence_score=0.75,
                             token_count_dna=CarbonXTokenizer.count_dna_tokens(query.sequence or ""),
                             token_count_text=CarbonXTokenizer.estimate_text_tokens(query.prompt),
-                            evidence_status="carbonx_neural_inference",
+                            evidence_status="exploratory_hypothesis",
+                            metadata={
+                                "experimental_validation": "unvalidated_by_wet_lab",
+                                "scientific_disclaimer": (
+                                    "Generative genomic LLM inference. Unvalidated by wet-lab experiments; "
+                                    "accuracy unknown. Must be corroborated with ClinVar, AlphaGenome, or "
+                                    "empirical perturbation assays."
+                                ),
+                            },
                         )
         except (urllib.error.URLError, TimeoutError, OSError):
             # Endpoint offline or unreachable; fall back to deterministic evaluation
@@ -374,15 +382,21 @@ class CarbonXEngine:
             explanation=explanation,
             predicted_effects=predicted_effects,
             functional_consequences=consequences,
-            confidence_score=0.88,
+            confidence_score=0.75,
             token_count_dna=dna_tokens,
             token_count_text=text_tokens,
-            evidence_status="carbonx_offline_evaluation",
+            evidence_status="exploratory_hypothesis",
             metadata={
                 "gc_content": round(gc_content, 2),
                 "cpg_count": cpg_count,
                 "sequence_length_bp": len(sequence),
                 "model": str(contract.model.value),
+                "experimental_validation": "unvalidated_by_wet_lab",
+                "scientific_disclaimer": (
+                    "Generative genomic LLM inference. Unvalidated by wet-lab experiments; "
+                    "accuracy unknown. Must be corroborated with ClinVar, AlphaGenome, or "
+                    "empirical perturbation assays."
+                ),
             },
         )
 

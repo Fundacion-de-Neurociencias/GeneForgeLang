@@ -189,9 +189,11 @@ class TestCarbonXEngine:
         result = engine.execute(contract, timeout_seconds=0.1)
 
         assert isinstance(result, CarbonXReasoningResult)
-        assert result.confidence_score >= 0.80
+        assert result.confidence_score >= 0.70
         assert result.token_count_dna == 10  # 59 bp -> ceil(59/6) = 10 tokens
-        assert result.evidence_status == "carbonx_offline_evaluation"
+        assert result.evidence_status == "exploratory_hypothesis"
+        assert result.metadata["experimental_validation"] == "unvalidated_by_wet_lab"
+        assert "scientific_disclaimer" in result.metadata
         assert len(result.predicted_effects) > 0
         assert "transition" in str(result.predicted_effects[0]).lower()
         assert contract.verified_result is not None
@@ -297,3 +299,20 @@ genomic_llm:
         )
         assert res6.is_valid is False
         assert any("invalid IUPAC nucleotide characters" in e.message for e in res6.errors)
+
+    def test_validator_warning_on_exceeding_50kb(self) -> None:
+        validator = EnhancedSemanticValidator()
+        # Sequence of 52,000 bp (exceeds 50 kb pre-training chunk size)
+        long_seq = "ATGC" * 13000
+        res = validator.validate_ast(
+            {
+                "genomic_llm": {
+                    "name": "long_locus_test",
+                    "task_type": "locus_annotation",
+                    "sequence": long_seq,
+                }
+            }
+        )
+        assert res.is_valid is True  # Warning does not invalidate document
+        assert len(res.warnings) > 0
+        assert any("exceeds Carbon-X pretraining chunk limit (~50,000 bp)" in w.message for w in res.warnings)

@@ -1779,6 +1779,14 @@ class EnhancedSemanticValidator:
                     f"Sequence length ({len(clean_seq)} bp) exceeds Carbon-X max context window (245,760 bp / 40,960 tokens)",
                     ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                 ).add_fix("Truncate or partition sequence into windows <= 245,760 bp")
+            elif len(clean_seq) > 50000:
+                # Warning for sequences exceeding the 50 kb pre-training chunk size
+                self.result.add_error(
+                    f"Sequence length ({len(clean_seq)} bp) exceeds Carbon-X pretraining chunk limit (~50,000 bp). "
+                    "Long-range attention fidelity and reasoning precision may degrade. Chunking into windows <= 50 kb is recommended.",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Partition sequence into locus windows <= 50,000 bp for optimal grounding")
 
             # 2. Nucleotide validity
             invalid_nucleotides = set(clean_seq) - {"A", "C", "G", "T", "N"}
