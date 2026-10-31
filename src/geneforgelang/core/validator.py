@@ -1034,6 +1034,30 @@ class EnhancedSemanticValidator:
                     ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                     ErrorSeverity.WARNING,
                 ).add_fix("Use 'bioemu2', 'alphafold3', 'chai1', or 'molecular_dynamics'")
+            elif gen == "alphafold3":
+                # Check AlphaFold v3.0.5+ (>10x faster Jackhmmer MSA pipeline)
+                ver_raw = block.get("engine_version")
+                if ver_raw is not None:
+                    m_ver = re.match(r"^v?(\d+)\.(\d+)\.(\d+)", str(ver_raw).strip())
+                    if not m_ver:
+                        self.result.add_error(
+                            f"Invalid semantic version '{ver_raw}' for alphafold3 engine_version",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Format engine_version as '3.0.5' or 'v3.0.5'")
+                    else:
+                        ver_tuple = (int(m_ver.group(1)), int(m_ver.group(2)), int(m_ver.group(3)))
+                        if ver_tuple < (3, 0, 5):
+                            self.result.add_error(
+                                f"AlphaFold 3 version '{ver_raw}' is older than v3.0.5 (>10x slower Jackhmmer MSA pipeline)",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                                ErrorSeverity.WARNING,
+                            ).add_fix("Upgrade engine_version to '3.0.5' or newer for >10x faster Jackhmmer MSA")
+                if "fast_jackhmmer_msa" in block and block["fast_jackhmmer_msa"] is False:
+                    self.result.add_error(
+                        "fast_jackhmmer_msa is disabled for alphafold3; MSA generation will be >10x slower",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ErrorSeverity.WARNING,
+                    ).add_fix("Set 'fast_jackhmmer_msa: true' (supported in AlphaFold >=3.0.5)")
 
     def _validate_cryptic_pocket_block(self, block: Any) -> None:
         """Validate CrypticPocketContract block."""

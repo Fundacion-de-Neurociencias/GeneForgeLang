@@ -1546,6 +1546,8 @@ class MultiModelConsensus:
 
     af3_iptm: float | None = None
     af3_ipae: float | None = None
+    af3_version: str = "3.0.5"
+    af3_fast_jackhmmer_msa: bool = True
     rf3_confidence: float | None = None
     boltz_confidence: float | None = None
     chai1_confidence: float | None = None
@@ -1595,6 +1597,8 @@ class MultiModelConsensus:
         return {
             "af3_iptm": self.af3_iptm,
             "af3_ipae": self.af3_ipae,
+            "af3_version": self.af3_version,
+            "af3_fast_jackhmmer_msa": self.af3_fast_jackhmmer_msa,
             "rf3_confidence": self.rf3_confidence,
             "boltz_confidence": self.boltz_confidence,
             "chai1_confidence": self.chai1_confidence,
@@ -1748,6 +1752,8 @@ class BoltzmannEnsembleContract:
     solvation: SolvationModel = SolvationModel.EXPLICIT_EQUIVALENT
     ensemble_id: str | None = None
     max_energy_cutoff_kcal_mol: float = 15.0  # Cutoff above ground state to discard non-physical conformers
+    engine_version: str | None = None
+    fast_jackhmmer_msa: bool = True
 
     def compute_boltzmann_weight(self, delta_g_kcal_mol: float) -> float:
         """Calculate Boltzmann probability weight P_i proportional to exp(-Delta G / (k_B * T)).
@@ -1770,7 +1776,10 @@ class BoltzmannEnsembleContract:
             "temperature_kelvin": self.temperature_kelvin,
             "solvation": str(self.solvation),
             "max_energy_cutoff_kcal_mol": self.max_energy_cutoff_kcal_mol,
+            "fast_jackhmmer_msa": self.fast_jackhmmer_msa,
         }
+        if self.engine_version:
+            res["engine_version"] = self.engine_version
         if self.ensemble_id:
             res["ensemble_id"] = self.ensemble_id
         return res
@@ -1798,6 +1807,8 @@ class BoltzmannEnsembleContract:
             solvation=solv_enum,
             ensemble_id=str(data.get("ensemble_id", data.get("name", ""))) or None,
             max_energy_cutoff_kcal_mol=float(data.get("max_energy_cutoff_kcal_mol", 15.0)),
+            engine_version=str(data["engine_version"]) if data.get("engine_version") else None,
+            fast_jackhmmer_msa=bool(data.get("fast_jackhmmer_msa", True)),
         )
 
 
