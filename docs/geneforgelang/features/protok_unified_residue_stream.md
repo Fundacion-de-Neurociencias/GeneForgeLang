@@ -91,7 +91,7 @@ ProTok enables structural steganography via `embed_structural_watermark()` and `
 - Watermark bits are embedded by introducing controlled, imperceptible parity perturbations in structural codebook indices.
 - **100% Sequence Preservation**: The amino acid sequence is completely unchanged (zero phenotypic alteration).
 - **High Structural Fidelity**: Retains $\ge 0.93$ lDDT without steric clashes.
-- **Calibrated Detection**: `detect_structural_watermark()` computes parity correlation against the secret key; watermarked constructs yield $>85\%$ agreement, achieving $100\%$ TPR at $\le 0.1\%$ FPR.
+- **Detection**: `detect_structural_watermark()` computes parity agreement against the secret key and reports an exact one-sided binomial `null_p_value` (null match probability 0.5). Embedding is deterministic, so freshly marked streams match fully; the false positive rate of a fixed threshold depends on stream length (about 1% at n=10 and 0.1% at n=20 for a 0.85 threshold). This is a toy parity scheme, not benchmarked against re-quantization or removal, and not a validated biosecurity watermark.
 
 ---
 

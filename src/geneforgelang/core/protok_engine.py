@@ -431,8 +431,12 @@ class ProTokEngine:
         """SynthID Bio synergy: detect embedded parity watermark in structural codebook stream.
 
         Evaluates statistical agreement between residue structure parity and secret key hash.
-        Under null hypothesis (unmarked), expected match rate is 0.50.
-        Watermarked sequences achieve >0.85 match rate, yielding 100% TPR at <= 0.1% FPR.
+        Under the null hypothesis (unmarked stream), each residue matches with probability 0.5,
+        so the exact one-sided binomial p-value is reported as ``null_p_value``. The false
+        positive rate of a fixed match-rate threshold depends on stream length (about 1% at
+        n=10 and 0.1% at n=20 for a 0.85 threshold), so use ``null_p_value`` for decisions.
+        This is a toy parity scheme: it is not robust to re-quantization or deliberate removal
+        and has not been benchmarked as a biosecurity watermark.
         """
         valid_tokens = [t for t in tokens if t.structure_code != STR_MASK_TOKEN]
         if not valid_tokens:
@@ -447,9 +451,12 @@ class ProTokEngine:
                 matches += 1
 
         match_rate = matches / len(valid_tokens)
+        n_tested = len(valid_tokens)
+        null_p_value = sum(math.comb(n_tested, k) for k in range(matches, n_tested + 1)) / 2**n_tested
         return {
             "watermark_detected": match_rate >= detection_threshold,
             "match_rate": round(match_rate, 4),
+            "null_p_value": null_p_value,
             "matches": matches,
             "total_tested": len(valid_tokens),
             "evidence_status": "declarative_tokenized",

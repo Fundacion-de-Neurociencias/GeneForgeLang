@@ -256,6 +256,28 @@ class TestProTokEngine:
         detection_false = engine.detect_structural_watermark(watermarked, secret_key="wrong_key_xyz")
         assert detection_false["watermark_detected"] is False
 
+    def test_watermark_false_positive_rate_measured(self) -> None:
+        """Measure the empirical FPR over many wrong keys on a 40-residue stream."""
+        engine = ProTokEngine()
+        seq = "MQIFVKTLTGKTITLEVEPSDTIENVKAKIQDKEGIPPDQ"
+        tokens = ProTokTokenizer.encode_residues(
+            sequence=seq,
+            dihedrals=[(-60.0, -45.0)] * len(seq),
+            ec_classification="EC:2.3.2.27",
+        )
+        marked = engine.embed_structural_watermark(tokens, secret_key="true_key")
+        true_det = engine.detect_structural_watermark(marked, secret_key="true_key")
+        assert true_det["watermark_detected"] is True
+        assert true_det["null_p_value"] < 1e-6
+
+        trials = 2000
+        false_hits = sum(
+            engine.detect_structural_watermark(marked, secret_key=f"wrong_key_{i}")["watermark_detected"]
+            for i in range(trials)
+        )
+        # Exact null FPR at n=40, threshold 0.80 is about 1e-4, so >5 hits in 2000 trials is implausible.
+        assert false_hits <= 5
+
     def test_backbone_coordinates_quantization(self) -> None:
         # 3 residues forming an alpha-helical segment (approximate coordinates)
         backbone = [
