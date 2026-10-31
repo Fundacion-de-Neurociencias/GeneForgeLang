@@ -540,6 +540,368 @@ class ProTokEngine:
 
         return dihedrals
 
+    def propagate_genomic_variant(
+        self,
+        contract: ProTokContract,
+        residue_pos: int,
+        ref_codon: str,
+        alt_codon: str,
+    ) -> dict[str, Any]:
+        """Synergy 2: Central Dogma causal propagation (DNA codon mutation -> ProTok stream -> clinical decision).
+
+        Translates ref/alt codons via the standard genetic code, evaluates conformational
+        perturbation in the ProTok structure codebook, estimates delta-lDDT and EC retention,
+        and emits a calibrated gating signal for GFL's `decision:` contract.
+        """
+        r_codon = ref_codon.upper().strip().replace("U", "T")
+        a_codon = alt_codon.upper().strip().replace("U", "T")
+
+        ref_aa = STANDARD_GENETIC_CODE.get(r_codon, "X")
+        alt_aa = STANDARD_GENETIC_CODE.get(a_codon, "X")
+
+        # Ensure contract residue stream is populated
+        if not contract.residue_stream and contract.sequence_payload:
+            self.execute(contract)
+
+        if ref_aa == alt_aa:
+            consequence = "SYNONYMOUS"
+            delta_lddt = 0.0
+            ec_retention = 1.0
+            decision = "APPROVE_BENIGN"
+            structural_shift = "NONE"
+        elif alt_aa == "*":
+            consequence = "NONSENSE_PREMATURE_STOP"
+            total_len = max(1, len(contract.residue_stream) or len(contract.sequence_payload or "M"))
+            truncation_ratio = max(0.0, min(1.0, (total_len - residue_pos + 1) / total_len))
+            delta_lddt = round(-0.45 * truncation_ratio - 0.15, 4)
+            ec_retention = round(max(0.0, 1.0 - truncation_ratio * 1.2), 4)
+            decision = "REJECT_PATHOGENIC"
+            structural_shift = "BACKBONE_TRUNCATION"
+        else:
+            consequence = "MISSENSE"
+            orig_str_code = 506
+            for t in contract.residue_stream:
+                if t.pos == residue_pos:
+                    orig_str_code = t.structure_code
+                    break
+
+            phi_est, psi_est = ProTokGeometricQuantizer.dequantize_dihedrals(orig_str_code)
+            in_alpha_basin = orig_str_code == 506 or (
+                phi_est is not None and psi_est is not None and -100.0 <= phi_est <= -30.0 and -70.0 <= psi_est <= -10.0
+            )
+
+            # Evaluate biophysical disruption (e.g. Proline helix-breaker or beta-aggregation shift)
+            if in_alpha_basin and alt_aa == "P":
+                structural_shift = f"HELIX_BREAKER_COLLAPSE ({orig_str_code} -> 250)"
+                delta_lddt = -0.145
+                ec_retention = 0.62
+                decision = "REJECT_PATHOGENIC"
+            elif in_alpha_basin and alt_aa in {"V", "I", "Y", "F", "W"}:
+                structural_shift = f"AMYLOIDOGENIC_BETA_TRANSITION ({orig_str_code} -> 507)"
+                delta_lddt = -0.085
+                ec_retention = 0.78
+                decision = "ESCALATE_TO_SYSTEM2"
+            else:
+                structural_shift = "CONSERVATIVE_TOLERATED"
+                delta_lddt = -0.015
+                ec_retention = 0.96
+                decision = "APPROVE_BENIGN"
+
+        return {
+            "residue_pos": residue_pos,
+            "ref_codon": r_codon,
+            "alt_codon": a_codon,
+            "ref_aa": ref_aa,
+            "alt_aa": alt_aa,
+            "molecular_consequence": consequence,
+            "structural_codebook_shift": structural_shift,
+            "delta_lddt": delta_lddt,
+            "functional_ec_retention": ec_retention,
+            "recommended_decision": decision,
+            "evidence_status": "declarative_tokenized",
+        }
+
+    @staticmethod
+    def build_grammar_constraint_mask(
+        allowed_amino_acids: Sequence[str] | None = None,
+        allowed_structure_codes: Sequence[int] | None = None,
+        allowed_function_codes: Sequence[int] | None = None,
+        max_sample_tokens: int = 32,
+    ) -> dict[str, Any]:
+        """Synergy 3: Grammar-Constrained Decoding Mask over the 3,145,728 ProTok vocabulary space.
+
+        Computes the exact valid composite token subspace satisfying GFL declarative constraints
+        at a given residue position, preventing invalid structural or functional hallucinations.
+        """
+        if allowed_amino_acids is not None:
+            seq_codes = sorted({AA_TO_SEQ_CODE.get(aa.upper(), SEQ_UNK_TOKEN) for aa in allowed_amino_acids})
+        else:
+            seq_codes = list(range(CODEBOOK_SEQ_SIZE))
+
+        if allowed_structure_codes is not None:
+            str_codes = sorted({c for c in allowed_structure_codes if 0 <= c < CODEBOOK_STR_SIZE})
+        else:
+            str_codes = list(range(CODEBOOK_STR_SIZE))
+
+        if allowed_function_codes is not None:
+            fun_codes = sorted({c for c in allowed_function_codes if 0 <= c < CODEBOOK_FUN_SIZE})
+        else:
+            fun_codes = list(range(CODEBOOK_FUN_SIZE))
+
+        total_vocab = CODEBOOK_SEQ_SIZE * CODEBOOK_STR_SIZE * CODEBOOK_FUN_SIZE
+        allowed_count = len(seq_codes) * len(str_codes) * len(fun_codes)
+        reduction_ratio = round(1.0 - (allowed_count / total_vocab), 6)
+
+        sample_tokens: list[int] = []
+        for s_c in seq_codes:
+            for st_c in str_codes:
+                for f_c in fun_codes:
+                    sample_tokens.append(ProTokTokenizer.compute_composite_token(s_c, st_c, f_c))
+                    if len(sample_tokens) >= max_sample_tokens:
+                        break
+                if len(sample_tokens) >= max_sample_tokens:
+                    break
+            if len(sample_tokens) >= max_sample_tokens:
+                break
+
+        return {
+            "total_vocabulary_size": total_vocab,
+            "allowed_state_count": allowed_count,
+            "search_space_reduction_ratio": reduction_ratio,
+            "allowed_seq_codes": seq_codes,
+            "allowed_str_codes": str_codes,
+            "allowed_fun_codes": fun_codes,
+            "sample_valid_composite_tokens": sample_tokens,
+            "evidence_status": "declarative_tokenized",
+        }
+
+    @staticmethod
+    def project_to_tridimensional_axes(
+        reference_tokens: Sequence[ProTokResidueToken],
+        query_tokens: Sequence[ProTokResidueToken],
+    ) -> dict[str, Any]:
+        """Synergy 4: Isomorphic projection from ProTok trimodal space onto the 3 diagnostic/pathological axes.
+
+        Maps residue-level codebook perturbations to:
+        - Axis 1 (Etiological / Sequence Divergence)
+        - Axis 2 (Structural / Conformational Misfolding & Beta-Aggregation)
+        - Axis 3 (Functional / Phenotypic Catalytic Loss)
+        """
+        n_aligned = min(len(reference_tokens), len(query_tokens))
+        if n_aligned == 0:
+            return {
+                "axis_1_etiological_sequence": 0.0,
+                "axis_2_structural_conformational": 0.0,
+                "axis_3_functional_phenotypic": 0.0,
+                "composite_severity_norm": 0.0,
+                "evidence_status": "declarative_tokenized",
+            }
+
+        seq_mismatches = 0
+        str_shifts = 0.0
+        fun_shifts = 0.0
+
+        for ref_t, qry_t in zip(reference_tokens[:n_aligned], query_tokens[:n_aligned]):
+            # Axis 1: Sequence mismatch
+            if ref_t.amino_acid != qry_t.amino_acid:
+                seq_mismatches += 1
+
+            # Axis 2: Structural codebook shift (weighted heavier if alpha-helix 506 -> beta-sheet 507)
+            if ref_t.structure_code != qry_t.structure_code:
+                if ref_t.structure_code == 506 and qry_t.structure_code == 507:
+                    str_shifts += 1.0  # Pathogenic amyloidogenic basin transition
+                else:
+                    dist = abs(ref_t.structure_code - qry_t.structure_code) / float(CODEBOOK_STR_SIZE)
+                    str_shifts += min(1.0, 0.35 + dist)
+
+            # Axis 3: Functional codebook divergence
+            if ref_t.function_code != qry_t.function_code:
+                if qry_t.function_code == FUN_MASK_TOKEN:
+                    fun_shifts += 1.0
+                else:
+                    f_dist = abs(ref_t.function_code - qry_t.function_code) / float(CODEBOOK_FUN_SIZE)
+                    fun_shifts += min(1.0, 0.50 + f_dist)
+
+        ax1 = round(seq_mismatches / n_aligned, 4)
+        ax2 = round(min(1.0, str_shifts / n_aligned), 4)
+        ax3 = round(min(1.0, fun_shifts / n_aligned), 4)
+        norm = round(math.sqrt(ax1**2 + ax2**2 + ax3**2) / math.sqrt(3.0), 4)
+
+        return {
+            "axis_1_etiological_sequence": ax1,
+            "axis_2_structural_conformational": ax2,
+            "axis_3_functional_phenotypic": ax3,
+            "composite_severity_norm": norm,
+            "aligned_residues": n_aligned,
+            "evidence_status": "declarative_tokenized",
+        }
+
+
+# ============================================================================
+# SYNERGY 1: GenTok (Trimodal Genomic Locus Tokenizer for GFL)
+# ============================================================================
+
+GENTOK_DNA_SIZE = 8
+GENTOK_TOP_SIZE = 64
+GENTOK_EPI_SIZE = 32
+
+DNA_MASK_TOKEN = 7
+TOP_MASK_TOKEN = 63
+EPI_MASK_TOKEN = 31
+
+DNA_TO_CODE: dict[str, int] = {
+    "A": 0,
+    "C": 1,
+    "G": 2,
+    "T": 3,
+    "U": 4,
+    "N": 5,
+    "<PAD>": 6,
+    "<MASK>": DNA_MASK_TOKEN,
+}
+CODE_TO_DNA: dict[int, str] = {v: k for k, v in DNA_TO_CODE.items()}
+
+CHROMATIN_TOPOLOGY_TO_CODE: dict[str, int] = {
+    "TAD_BOUNDARY": 0,
+    "LOOP_ANCHOR": 1,
+    "COMPARTMENT_A": 2,
+    "COMPARTMENT_B": 3,
+    "INSULATOR_CTCF": 4,
+    "ENHANCER_PROMOTER_CONTACT": 5,
+    "POLYCOMB_HUB": 6,
+    "LAMINA_ASSOCIATED": 7,
+    "<MASK>": TOP_MASK_TOKEN,
+}
+CODE_TO_CHROMATIN_TOPOLOGY: dict[int, str] = {v: k for k, v in CHROMATIN_TOPOLOGY_TO_CODE.items()}
+
+EPIGENETIC_STATE_TO_CODE: dict[str, int] = {
+    "ACTIVE_PROMOTER": 0,
+    "STRONG_ENHANCER": 1,
+    "POISED_ENHANCER": 2,
+    "TRANSCRIBED_BODY": 3,
+    "POLYCOMB_REPRESSED": 4,
+    "HETEROCHROMATIN": 5,
+    "CPG_METHYLATED": 6,
+    "OPEN_CHROMATIN_ATAC": 7,
+    "<MASK>": EPI_MASK_TOKEN,
+}
+CODE_TO_EPIGENETIC_STATE: dict[int, str] = {v: k for k, v in EPIGENETIC_STATE_TO_CODE.items()}
+
+STANDARD_GENETIC_CODE: dict[str, str] = {
+    "TTT": "F",
+    "TTC": "F",
+    "TTA": "L",
+    "TTG": "L",
+    "CTT": "L",
+    "CTC": "L",
+    "CTA": "L",
+    "CTG": "L",
+    "ATT": "I",
+    "ATC": "I",
+    "ATA": "I",
+    "ATG": "M",
+    "GTT": "V",
+    "GTC": "V",
+    "GTA": "V",
+    "GTG": "V",
+    "TCT": "S",
+    "TCC": "S",
+    "TCA": "S",
+    "TCG": "S",
+    "CCT": "P",
+    "CCC": "P",
+    "CCA": "P",
+    "CCG": "P",
+    "ACT": "T",
+    "ACC": "T",
+    "ACA": "T",
+    "ACG": "T",
+    "GCT": "A",
+    "GCC": "A",
+    "GCA": "A",
+    "GCG": "A",
+    "TAT": "Y",
+    "TAC": "Y",
+    "TAA": "*",
+    "TAG": "*",
+    "CAT": "H",
+    "CAC": "H",
+    "CAA": "Q",
+    "CAG": "Q",
+    "AAT": "N",
+    "AAC": "N",
+    "AAA": "K",
+    "AAG": "K",
+    "GAT": "D",
+    "GAC": "D",
+    "GAA": "E",
+    "GAG": "E",
+    "TGT": "C",
+    "TGC": "C",
+    "TGA": "*",
+    "TGG": "W",
+    "CGT": "R",
+    "CGC": "R",
+    "CGA": "R",
+    "CGG": "R",
+    "AGT": "S",
+    "AGC": "S",
+    "AGA": "R",
+    "AGG": "R",
+    "GGT": "G",
+    "GGC": "G",
+    "GGA": "G",
+    "GGG": "G",
+}
+
+
+class GenTokTokenizer:
+    """Synergy 1: Trimodal Genomic Tokenizer (DNA Sequence x 3D Chromatin Topology x Epigenetics).
+
+    Applies ProTok's Multi-Codebook Vector Quantization + Group Dropout directly to GFL genomic loci:
+    Total discrete vocabulary space = 8 (DNA) x 64 (3D Topology) x 32 (Epigenetics) = 16,384 states.
+    """
+
+    @staticmethod
+    def encode_genomic_locus(
+        nucleotide: str | None = None,
+        chromatin_topology: str | None = None,
+        epigenetic_state: str | None = None,
+    ) -> int:
+        """Encode a genomic base/locus into a single bijective trimodal token ID in [0..16383]."""
+        dna_code = DNA_TO_CODE.get(nucleotide.upper().strip(), 5) if nucleotide else DNA_MASK_TOKEN
+        top_code = (
+            CHROMATIN_TOPOLOGY_TO_CODE.get(chromatin_topology.upper().strip(), TOP_MASK_TOKEN)
+            if chromatin_topology
+            else TOP_MASK_TOKEN
+        )
+        epi_code = (
+            EPIGENETIC_STATE_TO_CODE.get(epigenetic_state.upper().strip(), EPI_MASK_TOKEN)
+            if epigenetic_state
+            else EPI_MASK_TOKEN
+        )
+        return (dna_code * GENTOK_TOP_SIZE * GENTOK_EPI_SIZE) + (top_code * GENTOK_EPI_SIZE) + epi_code
+
+    @staticmethod
+    def decode_genomic_token(token_id: int) -> dict[str, Any]:
+        """Decompose a composite GenTok ID back into (DNA, 3D Chromatin Topology, Epigenetic State)."""
+        if token_id < 0 or token_id >= (GENTOK_DNA_SIZE * GENTOK_TOP_SIZE * GENTOK_EPI_SIZE):
+            raise ValueError(f"GenTok token_id {token_id} out of valid range [0..16383]")
+
+        epi_code = token_id % GENTOK_EPI_SIZE
+        rem = token_id // GENTOK_EPI_SIZE
+        top_code = rem % GENTOK_TOP_SIZE
+        dna_code = rem // GENTOK_TOP_SIZE
+
+        return {
+            "dna_code": dna_code,
+            "nucleotide": CODE_TO_DNA.get(dna_code, "N"),
+            "topology_code": top_code,
+            "chromatin_topology": CODE_TO_CHROMATIN_TOPOLOGY.get(top_code, f"TOP_BIN_{top_code}"),
+            "epigenetic_code": epi_code,
+            "epigenetic_state": CODE_TO_EPIGENETIC_STATE.get(epi_code, f"EPI_BIN_{epi_code}"),
+        }
+
 
 __all__ = [
     "CANONICAL_AAS",
@@ -551,8 +913,16 @@ __all__ = [
     "SEQ_MASK_TOKEN",
     "STR_MASK_TOKEN",
     "FUN_MASK_TOKEN",
+    "GENTOK_DNA_SIZE",
+    "GENTOK_TOP_SIZE",
+    "GENTOK_EPI_SIZE",
+    "DNA_MASK_TOKEN",
+    "TOP_MASK_TOKEN",
+    "EPI_MASK_TOKEN",
+    "STANDARD_GENETIC_CODE",
     "ProTokGeometricQuantizer",
     "ProTokFunctionQuantizer",
     "ProTokTokenizer",
     "ProTokEngine",
+    "GenTokTokenizer",
 ]

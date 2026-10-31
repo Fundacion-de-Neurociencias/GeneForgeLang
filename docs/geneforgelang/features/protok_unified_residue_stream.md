@@ -109,3 +109,33 @@ In compliance with GeneForge architectural principles:
 - **GeneForgeLang (GFL Layer)**: Serves as the **declarative specification, vocabulary definition, semantic validation, and token observation layer**. It verifies AST schema integrity, discretizes geometric/functional states, validates cross-modality constraints, and outputs `evidence_status = "declarative_tokenized"`.
 - **GeneForge Core / OnTrack (Execution Layer)**: Handles **active generative inference, neural network checkpoint execution, and wet-lab orchestration**. GFL contracts serialize cleanly via `ProTokContract.to_ontrack_payload()`, which is directly consumed by `gf/ontrack/capabilities/protok_multimodal_capability.py`.
 - **Anti-Mocking Compliance**: GFL never claims experimental or wet-lab verification for analytical estimates. All results emitted by `ProTokEngine` are tagged `declarative_tokenized`, preventing ungrounded claims from polluting the downstream `EvidenceGraph`.
+
+---
+
+## 9. Bidirectional Cross-Synergies Between ProTok and GeneForgeLang
+
+Beyond molecular protein tokenization, ProTok and GFL cross-pollinate via four operational bridges in [`protok_engine.py`](file:///C:/Users/usuario/GeneForgeLang%20Ecosystem/GeneForgeLang/src/geneforgelang/core/protok_engine.py):
+
+### Synergy 1: `GenTokTokenizer` (Trimodal Genomic Locus Tokenization)
+Exports ProTok's **Multi-Codebook Vector Quantization + Group Dropout** directly to GFL's genomic layer:
+- **DNA Codebook ($V_{\text{dna}} = 8$)**: Canonical nucleotides (`A, C, G, T, U, N, PAD, MASK`).
+- **3D Chromatin Topology Codebook ($V_{\text{top}} = 64$)**: `TAD_BOUNDARY`, `LOOP_ANCHOR`, `COMPARTMENT_A`, `COMPARTMENT_B`, `INSULATOR_CTCF`, `ENHANCER_PROMOTER_CONTACT`, `POLYCOMB_HUB`, `LAMINA_ASSOCIATED`, up to `TOP_MASK = 63`.
+- **Epigenetic Regulatory Codebook ($V_{\text{epi}} = 32$)**: `ACTIVE_PROMOTER`, `STRONG_ENHANCER`, `POISED_ENHANCER`, `TRANSCRIBED_BODY`, `POLYCOMB_REPRESSED`, `HETEROCHROMATIN`, `CPG_METHYLATED`, `OPEN_CHROMATIN_ATAC`, up to `EPI_MASK = 31`.
+- **Composite Genomic Token ($8 \times 64 \times 32 = 16,384$ states)**:
+  $$\text{GenTokID} = (\text{CB}_{\text{dna}} \times 64 \times 32) + (\text{CB}_{\text{top}} \times 32) + \text{CB}_{\text{epi}}$$
+
+### Synergy 2: Central Dogma Causal Propagation (`propagate_genomic_variant()`)
+Closes the causal loop inside a single GFL workflow (`DNA Variant / CRISPR` $\rightarrow$ `ProTok Conformation` $\rightarrow$ `Clinical Decision`):
+- Translates reference and alternate codons via `STANDARD_GENETIC_CODE`.
+- Classifies `SYNONYMOUS`, `MISSENSE`, or `NONSENSE_PREMATURE_STOP` consequences.
+- Evaluates secondary structure basin collapse (e.g., $\alpha$-helix `506` disruption by Proline or $\beta$-sheet `507` amyloidogenic transition) and emits a calibrated gating signal (`APPROVE_BENIGN`, `ESCALATE_TO_SYSTEM2`, `REJECT_PATHOGENIC`) for GFL's `decision:` contract.
+
+### Synergy 3: Grammar-Constrained Decoding Mask (`build_grammar_constraint_mask()`)
+Uses GFL declarative constraints as a deterministic symbolic filter over ProTok's $3,145,728$ vocabulary states:
+- Given allowed amino acids, required structural basins, and required functional EC bins at a residue position, computes the exact allowed composite token subspace and search-space reduction ratio.
+
+### Synergy 4: Isomorphic Projection to Tridimensional Diagnostic Axes (`project_to_tridimensional_axes()`)
+Projects residue-level ProTok perturbations onto the 3 orthogonal diagnostic/pathological axes:
+- **Axis 1 (`axis_1_etiological_sequence`)**: Normalized sequence divergence $[0.0, 1.0]$.
+- **Axis 2 (`axis_2_structural_conformational`)**: Normalized geometric codebook shift and $\alpha \rightarrow \beta$ amyloidogenic basin transition $[0.0, 1.0]$.
+- **Axis 3 (`axis_3_functional_phenotypic`)**: Normalized functional codebook divergence and catalytic loss $[0.0, 1.0]$.

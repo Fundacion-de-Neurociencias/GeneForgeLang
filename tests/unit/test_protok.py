@@ -16,8 +16,11 @@ from geneforgelang.core.gftypes import (
     ProTokVerificationResult,
 )
 from geneforgelang.core.protok_engine import (
+    EPI_MASK_TOKEN,
     FUN_MASK_TOKEN,
     STR_MASK_TOKEN,
+    TOP_MASK_TOKEN,
+    GenTokTokenizer,
     ProTokEngine,
     ProTokFunctionQuantizer,
     ProTokGeometricQuantizer,
@@ -420,3 +423,93 @@ class TestProTokValidator:
         )
         assert res8.is_valid is False
         assert any("Residue mismatch at pos 1" in e.message for e in res8.errors)
+
+
+class TestBidirectionalCrossSynergies:
+    """Test the 4 bidirectional cross-synergies between ProTok and GeneForgeLang."""
+
+    def test_synergy_1_gentok_trimodal_genomic_tokenizer(self) -> None:
+        # Full trimodal genomic locus encoding (DNA + 3D Chromatin Topology + Epigenetic State)
+        token_id = GenTokTokenizer.encode_genomic_locus(
+            nucleotide="G",
+            chromatin_topology="LOOP_ANCHOR",
+            epigenetic_state="STRONG_ENHANCER",
+        )
+        assert 0 <= token_id < 16384
+        decoded = GenTokTokenizer.decode_genomic_token(token_id)
+        assert decoded["nucleotide"] == "G"
+        assert decoded["chromatin_topology"] == "LOOP_ANCHOR"
+        assert decoded["epigenetic_state"] == "STRONG_ENHANCER"
+
+        # Codebook Group Dropout on genomic locus (missing 3D chromatin & epigenetics)
+        token_dropout = GenTokTokenizer.encode_genomic_locus(
+            nucleotide="A",
+            chromatin_topology=None,
+            epigenetic_state=None,
+        )
+        dec_drop = GenTokTokenizer.decode_genomic_token(token_dropout)
+        assert dec_drop["nucleotide"] == "A"
+        assert dec_drop["topology_code"] == TOP_MASK_TOKEN
+        assert dec_drop["epigenetic_code"] == EPI_MASK_TOKEN
+
+    def test_synergy_2_central_dogma_variant_propagation(self) -> None:
+        engine = ProTokEngine()
+        contract = ProTokContract(
+            name="central_dogma_test",
+            sequence_payload="MQIFVKTLTG",
+            target_ec_classification="EC:2.3.2.27",
+        )
+        engine.execute(contract)
+
+        # 1. Synonymous variant (CAA -> CAG, both encode Q)
+        syn = engine.propagate_genomic_variant(contract, residue_pos=2, ref_codon="CAA", alt_codon="CAG")
+        assert syn["molecular_consequence"] == "SYNONYMOUS"
+        assert syn["delta_lddt"] == 0.0
+        assert syn["recommended_decision"] == "APPROVE_BENIGN"
+
+        # 2. Missense helix-breaker variant (CAA -> CCA, Q -> P in alpha-helix 506)
+        mis = engine.propagate_genomic_variant(contract, residue_pos=2, ref_codon="CAA", alt_codon="CCA")
+        assert mis["molecular_consequence"] == "MISSENSE"
+        assert mis["alt_aa"] == "P"
+        assert mis["delta_lddt"] < -0.10
+        assert mis["recommended_decision"] == "REJECT_PATHOGENIC"
+
+        # 3. Nonsense premature stop variant (CAA -> TAA, Q -> *)
+        stop = engine.propagate_genomic_variant(contract, residue_pos=2, ref_codon="CAA", alt_codon="TAA")
+        assert stop["molecular_consequence"] == "NONSENSE_PREMATURE_STOP"
+        assert stop["recommended_decision"] == "REJECT_PATHOGENIC"
+
+    def test_synergy_3_grammar_constrained_decoding_mask(self) -> None:
+        mask = ProTokEngine.build_grammar_constraint_mask(
+            allowed_amino_acids=["M", "Q"],
+            allowed_structure_codes=[506],
+            allowed_function_codes=[45],
+        )
+        assert mask["total_vocabulary_size"] == 3145728
+        assert mask["allowed_state_count"] == 2  # 2 AAs x 1 structure x 1 function
+        assert mask["search_space_reduction_ratio"] > 0.99999
+        assert len(mask["sample_valid_composite_tokens"]) == 2
+
+    def test_synergy_4_tridimensional_diagnostic_axes_projection(self) -> None:
+        wt_tokens = [
+            ProTokResidueToken(pos=1, amino_acid="M", structure_code=506, function_code=45),
+            ProTokResidueToken(pos=2, amino_acid="Q", structure_code=506, function_code=45),
+        ]
+        # Identical stream -> zero perturbation on all 3 axes
+        zero_proj = ProTokEngine.project_to_tridimensional_axes(wt_tokens, wt_tokens)
+        assert zero_proj["axis_1_etiological_sequence"] == 0.0
+        assert zero_proj["axis_2_structural_conformational"] == 0.0
+        assert zero_proj["axis_3_functional_phenotypic"] == 0.0
+        assert zero_proj["composite_severity_norm"] == 0.0
+
+        # Pathogenic variant stream (Q -> V, alpha-helix 506 -> beta-sheet 507, function masked 255)
+        mut_tokens = [
+            ProTokResidueToken(pos=1, amino_acid="M", structure_code=506, function_code=45),
+            ProTokResidueToken(pos=2, amino_acid="V", structure_code=507, function_code=FUN_MASK_TOKEN),
+        ]
+        mut_proj = ProTokEngine.project_to_tridimensional_axes(wt_tokens, mut_tokens)
+        assert mut_proj["axis_1_etiological_sequence"] == 0.5
+        assert mut_proj["axis_2_structural_conformational"] == 0.5
+        assert mut_proj["axis_3_functional_phenotypic"] == 0.5
+        assert mut_proj["composite_severity_norm"] == 0.5
+        assert mut_proj["evidence_status"] == "declarative_tokenized"
