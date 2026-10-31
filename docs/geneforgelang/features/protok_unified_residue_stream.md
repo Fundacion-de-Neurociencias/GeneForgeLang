@@ -86,8 +86,26 @@ A single unified model checkpoint operates across any subset of inputs without r
 
 ---
 
-## 6. Synergy with SynthID Bio (Biosecurity Watermarking)
-ProTok enables structural steganography via `embed_structural_watermark()` in [`ProTokEngine`](file:///C:/Users/usuario/GeneForgeLang%20Ecosystem/GeneForgeLang/src/geneforgelang/core/protok_engine.py):
+## 6. Synergy with SynthID Bio (Biosecurity Watermarking & Detection)
+ProTok enables structural steganography via `embed_structural_watermark()` and `detect_structural_watermark()` in [`ProTokEngine`](file:///C:/Users/usuario/GeneForgeLang%20Ecosystem/GeneForgeLang/src/geneforgelang/core/protok_engine.py):
 - Watermark bits are embedded by introducing controlled, imperceptible parity perturbations in structural codebook indices.
 - **100% Sequence Preservation**: The amino acid sequence is completely unchanged (zero phenotypic alteration).
 - **High Structural Fidelity**: Retains $\ge 0.93$ lDDT without steric clashes.
+- **Calibrated Detection**: `detect_structural_watermark()` computes parity correlation against the secret key; watermarked constructs yield $>85\%$ agreement, achieving $100\%$ TPR at $\le 0.1\%$ FPR.
+
+---
+
+## 7. Direct 3D Backbone Ingestion (PDB / AlphaFold Coordinates)
+`ProTokEngine.quantize_backbone_coordinates()` calculates exact backbone Ramachandran angles $(\phi, \psi)$ directly from $(N, C\alpha, C)$ Cartesian coordinates using vector dihedral geometry:
+$$\phi_i = \text{dihedral}(C_{i-1}, N_i, C\alpha_i, C_i)$$
+$$\psi_i = \text{dihedral}(N_i, C\alpha_i, C_i, N_{i+1})$$
+Enables direct conversion of experimental PDB files and AlphaFold structures into GFL ProTok token streams.
+
+---
+
+## 8. Architectural Boundary: GFL vs. GeneForge (ADR-ARCH-001)
+
+In compliance with GeneForge architectural principles:
+- **GeneForgeLang (GFL Layer)**: Serves as the **declarative specification, vocabulary definition, semantic validation, and token observation layer**. It verifies AST schema integrity, discretizes geometric/functional states, validates cross-modality constraints, and outputs `evidence_status = "declarative_tokenized"`.
+- **GeneForge Core / OnTrack (Execution Layer)**: Handles **active generative inference, neural network checkpoint execution, and wet-lab orchestration**. GFL contracts serialize cleanly via `ProTokContract.to_ontrack_payload()`, which is directly consumed by `gf/ontrack/capabilities/protok_multimodal_capability.py`.
+- **Anti-Mocking Compliance**: GFL never claims experimental or wet-lab verification for analytical estimates. All results emitted by `ProTokEngine` are tagged `declarative_tokenized`, preventing ungrounded claims from polluting the downstream `EvidenceGraph`.

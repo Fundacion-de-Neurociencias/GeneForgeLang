@@ -217,6 +217,7 @@ class TestProTokEngine:
         result = engine.execute(contract)
 
         assert isinstance(result, ProTokVerificationResult)
+        assert result.evidence_status == "declarative_tokenized"
         assert result.reconstructed_lddt >= 0.90
         assert result.ec_top1_precision >= 0.65
         assert result.designability_score == 0.52
@@ -224,6 +225,7 @@ class TestProTokEngine:
         assert "sequence" in result.recovered_modalities
         assert "structure" in result.recovered_modalities
         assert "function" in result.recovered_modalities
+        assert result.metadata["architectural_layer"] == "GFL_DECLARATIVE_CONTRACT"
 
     def test_synthid_bio_structural_watermarking_synergy(self) -> None:
         engine = ProTokEngine()
@@ -243,6 +245,42 @@ class TestProTokEngine:
 
         # Structural codebooks carry the embedded bias
         assert any(t_orig.structure_code != t_wm.structure_code for t_orig, t_wm in zip(tokens, watermarked))
+
+        # Detect watermark with high confidence
+        detection = engine.detect_structural_watermark(watermarked, secret_key="biosecurity_secret_key_123")
+        assert detection["watermark_detected"] is True
+        assert detection["match_rate"] >= 0.85
+        assert detection["evidence_status"] == "declarative_tokenized"
+
+        # False key yields no watermark detection
+        detection_false = engine.detect_structural_watermark(watermarked, secret_key="wrong_key_xyz")
+        assert detection_false["watermark_detected"] is False
+
+    def test_backbone_coordinates_quantization(self) -> None:
+        # 3 residues forming an alpha-helical segment (approximate coordinates)
+        backbone = [
+            ((0.0, 0.0, 0.0), (1.458, 0.0, 0.0), (2.009, 1.397, 0.0)),
+            ((1.246, 2.378, -0.428), (1.688, 3.766, -0.589), (3.181, 3.867, -0.301)),
+            ((3.653, 5.068, 0.038), (5.086, 5.337, 0.282), (5.422, 6.789, 0.651)),
+        ]
+        dihedrals = ProTokEngine.quantize_backbone_coordinates(backbone)
+        assert len(dihedrals) == 3
+        # First residue has no previous C, so phi is None
+        assert dihedrals[0][0] is None
+        # Middle residue has both phi and psi computed
+        assert dihedrals[1][0] is not None
+        assert dihedrals[1][1] is not None
+
+    def test_ontrack_payload_export(self) -> None:
+        contract = ProTokContract(
+            name="export_test",
+            sequence_payload="MKT",
+            target_ec_classification="EC:2.3.2.27",
+        )
+        payload = contract.to_ontrack_payload()
+        assert payload["contract_type"] == "protok_multimodal_stream"
+        assert payload["name"] == "export_test"
+        assert payload["target_ec_classification"] == "EC:2.3.2.27"
 
 
 class TestProTokValidator:
@@ -330,3 +368,33 @@ class TestProTokValidator:
         )
         assert res6.is_valid is False
         assert any("outside ProTok codebook range [0..511]" in e.message for e in res6.errors)
+
+        # 7. Contradiction between dropout_policy (forbidding missing structure) and masked token
+        res7 = validator.validate_ast(
+            {
+                "protok": {
+                    "name": "test",
+                    "dropout_policy": {"allow_missing_structure": False},
+                    "residue_stream": [
+                        {"pos": 1, "amino_acid": "M", "structure_code": 511},
+                    ],
+                }
+            }
+        )
+        assert res7.is_valid is False
+        assert any("dropout_policy forbids missing structure" in e.message for e in res7.errors)
+
+        # 8. Mismatch between residue token amino_acid and sequence_payload
+        res8 = validator.validate_ast(
+            {
+                "protok": {
+                    "name": "test",
+                    "sequence_payload": "MKT",
+                    "residue_stream": [
+                        {"pos": 1, "amino_acid": "W"},  # Expected 'M'
+                    ],
+                }
+            }
+        )
+        assert res8.is_valid is False
+        assert any("Residue mismatch at pos 1" in e.message for e in res8.errors)

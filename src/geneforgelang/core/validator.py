@@ -1862,8 +1862,38 @@ class EnhancedSemanticValidator:
                     ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                 ).add_fix("Set expected_lddt_min to a threshold between 0.0 and 1.0 (e.g. 0.90)")
 
-        # Residue stream validation
+        # Dropout policy validation
+        dropout_pol = block.get("dropout_policy")
+        allow_missing_str = False
+        if isinstance(dropout_pol, dict):
+            rate = dropout_pol.get("dropout_rate")
+            if rate is not None and (not isinstance(rate, (int, float)) or not (0.0 <= rate <= 1.0)):
+                self.result.add_error(
+                    f"dropout_rate must be a float between 0.0 and 1.0, got {rate}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set dropout_rate between 0.0 and 1.0 (e.g. 0.15)")
+            allow_missing_str = bool(dropout_pol.get("allow_missing_structure", False))
+
+        # Residue stream sequence alignment check
+        seq_payload = block.get("sequence_payload")
         residue_stream = block.get("residue_stream", [])
+        if isinstance(residue_stream, list) and isinstance(seq_payload, str) and seq_payload.strip():
+            for res in residue_stream:
+                if hasattr(res, "to_dict"):
+                    res = res.to_dict()
+                if not isinstance(res, dict):
+                    continue
+                pos = res.get("pos")
+                aa = res.get("amino_acid")
+                if isinstance(pos, int) and 1 <= pos <= len(seq_payload) and isinstance(aa, str) and aa:
+                    expected_aa = seq_payload[pos - 1]
+                    if aa != expected_aa:
+                        self.result.add_error(
+                            f"Residue mismatch at pos {pos}: token has '{aa}' but sequence_payload has '{expected_aa}'",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix(f"Align residue token amino_acid with sequence_payload ('{expected_aa}')")
+
+        # Residue stream validation
         if isinstance(residue_stream, list):
             for i, res in enumerate(residue_stream):
                 if hasattr(res, "to_dict"):
@@ -1889,11 +1919,17 @@ class EnhancedSemanticValidator:
 
                 # Codebook range checks
                 str_code = res.get("structure_code")
-                if str_code is not None and isinstance(str_code, int) and not (0 <= str_code <= 511):
-                    self.result.add_error(
-                        f"structure_code ({str_code}) outside ProTok codebook range [0..511] at pos {pos}",
-                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
-                    ).add_fix("Ensure structure_code is an integer in [0..511]")
+                if str_code is not None and isinstance(str_code, int):
+                    if not (0 <= str_code <= 511):
+                        self.result.add_error(
+                            f"structure_code ({str_code}) outside ProTok codebook range [0..511] at pos {pos}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Ensure structure_code is an integer in [0..511]")
+                    elif not allow_missing_str and str_code == 511:
+                        self.result.add_error(
+                            f"structure_code is masked (511) at pos {pos}, but dropout_policy forbids missing structure (allow_missing_structure=false)",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Provide valid structure_code or set allow_missing_structure: true")
 
                 fun_code = res.get("function_code")
                 if fun_code is not None and isinstance(fun_code, int) and not (0 <= fun_code <= 255):

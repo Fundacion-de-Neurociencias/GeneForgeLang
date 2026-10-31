@@ -3159,6 +3159,28 @@ class ProTokContract:
             "metadata": dict(self.metadata),
         }
 
+    def to_ontrack_payload(self) -> dict[str, Any]:
+        """Export serialized contract payload for GeneForge OnTrack execution (ADR-ARCH-001)."""
+        return {
+            "contract_type": "protok_multimodal_stream",
+            "name": self.name,
+            "target_protein": self.target_protein,
+            "conditioning_mode": self.conditioning_mode.value
+            if hasattr(self.conditioning_mode, "value")
+            else str(self.conditioning_mode),
+            "target_modality": self.target_modality.value
+            if hasattr(self.target_modality, "value")
+            else str(self.target_modality),
+            "dropout_policy": self.dropout_policy.to_dict(),
+            "sequence_payload": self.sequence_payload,
+            "target_ec_classification": self.target_ec_classification,
+            "target_go_terms": list(self.target_go_terms),
+            "expected_lddt_min": self.expected_lddt_min,
+            "token_ids": [t.composite_token_id for t in self.residue_stream if t.composite_token_id is not None],
+            "raw_stream": [t.to_dict() for t in self.residue_stream],
+            "metadata": dict(self.metadata),
+        }
+
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> ProTokContract:
         cond_raw = data.get("conditioning_mode", ProTokConditioningMode.STRUCTURE_TO_FUNCTION)
