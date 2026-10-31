@@ -356,6 +356,7 @@ class GFLAST:
     perturbation_atlas: Any | None = None
     biosecurity_watermark: Any | None = None
     genomic_llm: Any | None = None
+    protok: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -437,6 +438,8 @@ class GFLAST:
             result["genomic_llm"] = (
                 self.genomic_llm.to_dict() if hasattr(self.genomic_llm, "to_dict") else self.genomic_llm
             )
+        if self.protok is not None:
+            result["protok"] = self.protok.to_dict() if hasattr(self.protok, "to_dict") else self.protok
         if self.metadata:
             result["metadata"] = self.metadata
         return result
@@ -699,6 +702,19 @@ class GFLAST:
                 ast.genomic_llm = gl_data
             elif isinstance(gl_data, dict):
                 ast.genomic_llm = GenomicLLMContract.from_dict(gl_data)
+
+        if "protok" in data:
+            pk_data = data["protok"]
+            if isinstance(pk_data, ProTokContract):
+                ast.protok = pk_data
+            elif isinstance(pk_data, dict):
+                ast.protok = ProTokContract.from_dict(pk_data)
+        elif "unified_protein_stream" in data:
+            pk_data = data["unified_protein_stream"]
+            if isinstance(pk_data, ProTokContract):
+                ast.protok = pk_data
+            elif isinstance(pk_data, dict):
+                ast.protok = ProTokContract.from_dict(pk_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -2976,6 +2992,230 @@ class GenomicLLMContract:
         )
 
 
+class ProTokModality(str, Enum):
+    """Biological modalities unified by the ProTok discrete vocabulary."""
+
+    SEQUENCE = "sequence"
+    STRUCTURE = "structure"
+    FUNCTION = "function"
+    TRIMODAL = "trimodal"
+
+
+class ProTokConditioningMode(str, Enum):
+    """Conditioning directionalities supported by ProTok Codebook Group Dropout."""
+
+    UNCONDITIONAL = "unconditional"
+    SEQUENCE_TO_STRUCTURE = "sequence_to_structure"
+    STRUCTURE_TO_FUNCTION = "structure_to_function"
+    FUNCTION_TO_ALL = "function_to_all"
+    SEQUENCE_TO_FUNCTION = "sequence_to_function"
+
+
+@dataclass
+class ProTokResidueToken:
+    """Unified composite token representing a single residue across sequence, structure, and function."""
+
+    pos: int
+    amino_acid: str = "A"
+    structure_code: int = 0  # Geometric codebook index (0..511)
+    function_code: int = 0  # Functional codebook index (0..255)
+    dihedral_phi: float | None = None
+    dihedral_psi: float | None = None
+    ec_classification: str | None = None
+    go_term: str | None = None
+    composite_token_id: int = 0
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "pos": self.pos,
+            "amino_acid": self.amino_acid,
+            "structure_code": self.structure_code,
+            "function_code": self.function_code,
+            "dihedral_phi": self.dihedral_phi,
+            "dihedral_psi": self.dihedral_psi,
+            "ec_classification": self.ec_classification,
+            "go_term": self.go_term,
+            "composite_token_id": self.composite_token_id,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ProTokResidueToken:
+        return cls(
+            pos=int(data.get("pos", 1)),
+            amino_acid=str(data.get("amino_acid", "A")),
+            structure_code=int(data.get("structure_code", 0)),
+            function_code=int(data.get("function_code", 0)),
+            dihedral_phi=float(data["dihedral_phi"])
+            if "dihedral_phi" in data and data["dihedral_phi"] is not None
+            else None,
+            dihedral_psi=float(data["dihedral_psi"])
+            if "dihedral_psi" in data and data["dihedral_psi"] is not None
+            else None,
+            ec_classification=str(data["ec_classification"])
+            if "ec_classification" in data and data["ec_classification"] is not None
+            else None,
+            go_term=str(data["go_term"]) if "go_term" in data and data["go_term"] is not None else None,
+            composite_token_id=int(data.get("composite_token_id", 0)),
+        )
+
+
+@dataclass
+class ProTokDropoutPolicy:
+    """Codebook Group Dropout parameters allowing inference from any modality subset."""
+
+    allow_missing_sequence: bool = False
+    allow_missing_structure: bool = False
+    allow_missing_function: bool = True
+    dropout_rate: float = 0.15
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "allow_missing_sequence": self.allow_missing_sequence,
+            "allow_missing_structure": self.allow_missing_structure,
+            "allow_missing_function": self.allow_missing_function,
+            "dropout_rate": self.dropout_rate,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ProTokDropoutPolicy:
+        return cls(
+            allow_missing_sequence=bool(data.get("allow_missing_sequence", False)),
+            allow_missing_structure=bool(data.get("allow_missing_structure", False)),
+            allow_missing_function=bool(data.get("allow_missing_function", True)),
+            dropout_rate=float(data.get("dropout_rate", 0.15)),
+        )
+
+
+@dataclass
+class ProTokVerificationResult:
+    """Biophysical and downstream performance evaluation metrics for ProTok."""
+
+    reconstructed_lddt: float = 0.939  # Baseline CATH 4.2 lDDT
+    ec_top1_precision: float = 0.695  # Baseline EC level 1 top-1 retrieval precision
+    recovered_modalities: list[str] = field(default_factory=list)
+    designability_score: float = 0.52  # Baseline backbone designability
+    token_count: int = 0
+    evidence_status: str = "protok_reconstruction_verified"
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "reconstructed_lddt": self.reconstructed_lddt,
+            "ec_top1_precision": self.ec_top1_precision,
+            "recovered_modalities": list(self.recovered_modalities),
+            "designability_score": self.designability_score,
+            "token_count": self.token_count,
+            "evidence_status": self.evidence_status,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ProTokVerificationResult:
+        return cls(
+            reconstructed_lddt=float(data.get("reconstructed_lddt", 0.939)),
+            ec_top1_precision=float(data.get("ec_top1_precision", 0.695)),
+            recovered_modalities=list(data.get("recovered_modalities", [])),
+            designability_score=float(data.get("designability_score", 0.52)),
+            token_count=int(data.get("token_count", 0)),
+            evidence_status=str(data.get("evidence_status", "protok_reconstruction_verified")),
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
+@dataclass
+class ProTokContract:
+    """Formal GFL contract for ProTok unified multimodal residue token stream."""
+
+    name: str
+    target_protein: str | None = None
+    conditioning_mode: ProTokConditioningMode = ProTokConditioningMode.STRUCTURE_TO_FUNCTION
+    target_modality: ProTokModality = ProTokModality.TRIMODAL
+    dropout_policy: ProTokDropoutPolicy = field(default_factory=ProTokDropoutPolicy)
+    residue_stream: list[ProTokResidueToken] = field(default_factory=list)
+    sequence_payload: str | None = None
+    target_ec_classification: str | None = None
+    target_go_terms: list[str] = field(default_factory=list)
+    expected_lddt_min: float = 0.90
+    verified_result: ProTokVerificationResult | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "name": self.name,
+            "target_protein": self.target_protein,
+            "conditioning_mode": self.conditioning_mode.value
+            if hasattr(self.conditioning_mode, "value")
+            else str(self.conditioning_mode),
+            "target_modality": self.target_modality.value
+            if hasattr(self.target_modality, "value")
+            else str(self.target_modality),
+            "dropout_policy": self.dropout_policy.to_dict(),
+            "residue_stream": [t.to_dict() for t in self.residue_stream],
+            "sequence_payload": self.sequence_payload,
+            "target_ec_classification": self.target_ec_classification,
+            "target_go_terms": list(self.target_go_terms),
+            "expected_lddt_min": self.expected_lddt_min,
+            "verified_result": self.verified_result.to_dict() if self.verified_result else None,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ProTokContract:
+        cond_raw = data.get("conditioning_mode", ProTokConditioningMode.STRUCTURE_TO_FUNCTION)
+        if isinstance(cond_raw, ProTokConditioningMode):
+            cond_enum = cond_raw
+        else:
+            s_cond = str(cond_raw).lower()
+            if "." in s_cond:
+                s_cond = s_cond.split(".")[-1]
+            cond_enum = ProTokConditioningMode(s_cond)
+
+        mod_raw = data.get("target_modality", ProTokModality.TRIMODAL)
+        if isinstance(mod_raw, ProTokModality):
+            mod_enum = mod_raw
+        else:
+            s_mod = str(mod_raw).lower()
+            if "." in s_mod:
+                s_mod = s_mod.split(".")[-1]
+            mod_enum = ProTokModality(s_mod)
+
+        dp_raw = data.get("dropout_policy", {})
+        dp = (
+            dp_raw
+            if isinstance(dp_raw, ProTokDropoutPolicy)
+            else ProTokDropoutPolicy.from_dict(dp_raw if isinstance(dp_raw, dict) else {})
+        )
+
+        stream_raw = data.get("residue_stream", [])
+        stream = [t if isinstance(t, ProTokResidueToken) else ProTokResidueToken.from_dict(t) for t in stream_raw]
+
+        res_raw = data.get("verified_result")
+        res = (
+            res_raw
+            if isinstance(res_raw, ProTokVerificationResult)
+            else ProTokVerificationResult.from_dict(res_raw)
+            if isinstance(res_raw, dict)
+            else None
+        )
+
+        return cls(
+            name=str(data.get("name", "protok_analysis")),
+            target_protein=str(data["target_protein"])
+            if "target_protein" in data and data["target_protein"] is not None
+            else None,
+            conditioning_mode=cond_enum,
+            target_modality=mod_enum,
+            dropout_policy=dp,
+            residue_stream=stream,
+            sequence_payload=data.get("sequence_payload", data.get("sequence")),
+            target_ec_classification=data.get("target_ec_classification"),
+            target_go_terms=list(data.get("target_go_terms", [])),
+            expected_lddt_min=float(data.get("expected_lddt_min", 0.90)),
+            verified_result=res,
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 class ForceFieldFamily(str, Enum):
     """Molecular mechanics all-atom force field families."""
 
@@ -4411,6 +4651,12 @@ __all__ = [
     "CarbonXQuery",
     "CarbonXReasoningResult",
     "GenomicLLMContract",
+    "ProTokModality",
+    "ProTokConditioningMode",
+    "ProTokResidueToken",
+    "ProTokDropoutPolicy",
+    "ProTokVerificationResult",
+    "ProTokContract",
     "PhysicsRefinementPolicy",
     "MegasynthaseDomain",
     "MegasynthaseModule",

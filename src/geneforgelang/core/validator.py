@@ -152,6 +152,8 @@ class EnhancedSemanticValidator:
             "synth_provenance",
             "genomic_llm",
             "carbonx",
+            "protok",
+            "unified_protein_stream",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -248,6 +250,8 @@ class EnhancedSemanticValidator:
                 self._validate_biosecurity_watermark_block(block_content)
             elif block_name in ("genomic_llm", "carbonx"):
                 self._validate_genomic_llm_block(block_content)
+            elif block_name in ("protok", "unified_protein_stream"):
+                self._validate_protok_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -1795,6 +1799,108 @@ class EnhancedSemanticValidator:
                     f"Sequence contains invalid IUPAC nucleotide characters: {sorted(list(invalid_nucleotides))}",
                     ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                 ).add_fix("Ensure sequence contains only standard DNA bases ('A', 'C', 'G', 'T', 'N')")
+
+    def _validate_protok_block(self, block: Any) -> None:
+        """Validate protok / unified_protein_stream block according to ProTok specifications."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "protok block must be a dictionary or ProTokContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format protok as a dictionary with name, conditioning_mode, etc.")
+            return
+
+        # Name is required
+        if "name" not in block or not str(block["name"]).strip():
+            self.result.add_error(
+                "protok block missing required 'name' identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'name: <protok_id>' to protok block")
+
+        # Conditioning mode check
+        valid_modes = {
+            "unconditional",
+            "sequence_to_structure",
+            "structure_to_function",
+            "function_to_all",
+            "sequence_to_function",
+        }
+        mode = block.get("conditioning_mode", "structure_to_function")
+        if str(mode).lower() not in valid_modes:
+            self.result.add_error(
+                f"Unknown conditioning_mode '{mode}' in protok",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Select a valid conditioning mode from: {sorted(list(valid_modes))}")
+
+        # Modality check
+        valid_modalities = {"sequence", "structure", "function", "trimodal"}
+        mod = block.get("target_modality", "trimodal")
+        if str(mod).lower() not in valid_modalities:
+            self.result.add_error(
+                f"Unknown target_modality '{mod}' in protok",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Select a valid modality from: {sorted(list(valid_modalities))}")
+
+        # Target EC format check
+        target_ec = block.get("target_ec_classification")
+        if target_ec is not None and str(target_ec).strip():
+            ec_str = str(target_ec).strip()
+            if not re.match(r"^(?:EC:)?\d+(\.\d+)*$", ec_str, re.IGNORECASE):
+                self.result.add_error(
+                    f"Invalid Enzyme Commission syntax '{target_ec}' in protok",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Format EC classification as 'EC:X.Y.Z.W' (e.g. 'EC:2.3.2.27')")
+
+        # expected_lddt_min check
+        if "expected_lddt_min" in block and block["expected_lddt_min"] is not None:
+            lddt = block["expected_lddt_min"]
+            if not isinstance(lddt, (int, float)) or not (0.0 <= lddt <= 1.0):
+                self.result.add_error(
+                    f"expected_lddt_min must be a float between 0.0 and 1.0, got {lddt}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set expected_lddt_min to a threshold between 0.0 and 1.0 (e.g. 0.90)")
+
+        # Residue stream validation
+        residue_stream = block.get("residue_stream", [])
+        if isinstance(residue_stream, list):
+            for i, res in enumerate(residue_stream):
+                if hasattr(res, "to_dict"):
+                    res = res.to_dict()
+                if not isinstance(res, dict):
+                    continue
+
+                pos = res.get("pos", i + 1)
+                if not isinstance(pos, int) or pos <= 0:
+                    self.result.add_error(
+                        f"Residue token position must be a positive integer, got {pos}",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix(f"Set pos to {i + 1}")
+
+                # Dihedral angle checks
+                for angle_name in ("dihedral_phi", "dihedral_psi"):
+                    angle = res.get(angle_name)
+                    if angle is not None and (not isinstance(angle, (int, float)) or not (-180.0 <= angle <= 180.0)):
+                        self.result.add_error(
+                            f"{angle_name} must be within [-180.0, 180.0] degrees, got {angle} at pos {pos}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Normalize dihedral angles to [-180.0, 180.0]")
+
+                # Codebook range checks
+                str_code = res.get("structure_code")
+                if str_code is not None and isinstance(str_code, int) and not (0 <= str_code <= 511):
+                    self.result.add_error(
+                        f"structure_code ({str_code}) outside ProTok codebook range [0..511] at pos {pos}",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Ensure structure_code is an integer in [0..511]")
+
+                fun_code = res.get("function_code")
+                if fun_code is not None and isinstance(fun_code, int) and not (0 <= fun_code <= 255):
+                    self.result.add_error(
+                        f"function_code ({fun_code}) outside ProTok codebook range [0..255] at pos {pos}",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Ensure function_code is an integer in [0..255]")
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""

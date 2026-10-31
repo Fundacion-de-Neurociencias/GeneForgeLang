@@ -1,0 +1,50 @@
+# GeneForgeLang Protocol: ProTok Unified Multimodal Residue Vocabulary
+# Grounded in Harvard Medical School / Pranav Rajpurkar Lab (Hardy et al., arXiv:2610.18481)
+# Target: De Novo Ubiquitin-Protein Transferase (EC:2.3.2.27) for Motor Neuron Proteostasis in ALS/FTD
+
+protok:
+  name: "ubiquitin_ligase_trimodal_stream"
+  target_protein: "UBQLN2_CHAPERONE_MIMETIC"
+  conditioning_mode: "structure_to_function"
+  target_modality: "trimodal"
+  target_ec_classification: "EC:2.3.2.27"
+  expected_lddt_min: 0.92
+  sequence_payload: "MQIFVKTLTGKTITLEVEPSDTIENVKAKIQDKEGIPPDQQRLIFAGKQLEDGRTLSDYNIQKESTLHLVLRLRGG"
+  dropout_policy:
+    allow_missing_sequence: false
+    allow_missing_structure: false
+    allow_missing_function: true
+    dropout_rate: 0.15
+  residue_stream:
+    - pos: 1
+      amino_acid: "M"
+      structure_code: 506
+      function_code: 45
+      dihedral_phi: -60.0
+      dihedral_psi: -45.0
+      ec_classification: "EC:2.3.2.27"
+    - pos: 2
+      amino_acid: "Q"
+      structure_code: 506
+      function_code: 45
+      dihedral_phi: -62.5
+      dihedral_psi: -42.0
+      ec_classification: "EC:2.3.2.27"
+    - pos: 3
+      amino_acid: "I"
+      structure_code: 507
+      function_code: 45
+      dihedral_phi: -120.0
+      dihedral_psi: 135.0
+      ec_classification: "EC:2.3.2.27"
+    - pos: 4
+      amino_acid: "F"
+      structure_code: 507
+      function_code: 45
+      dihedral_phi: -118.0
+      dihedral_psi: 130.0
+      ec_classification: "EC:2.3.2.27"
+  metadata:
+    organism: "Homo sapiens"
+    disease_context: "Amyotrophic Lateral Sclerosis / Frontotemporal Dementia"
+    benchmark: "ProTok StructTokenBench (CATH 4.2 / EC Level 1)"
