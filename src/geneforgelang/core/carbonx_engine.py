@@ -198,6 +198,8 @@ class CarbonXPromptCompiler:
 class CarbonXEngine:
     """Computational execution and reasoning engine for Carbon-X."""
 
+    MAC_STUDIO_OLLAMA_ENDPOINT: str = "http://10.48.3.222:11434/v1"
+
     def __init__(self, default_endpoint: str | None = None) -> None:
         """Initialize engine with optional remote endpoint."""
         self.default_endpoint = default_endpoint or "http://10.48.3.222:8000/v1"
@@ -270,8 +272,12 @@ class CarbonXEngine:
 
         compiled_prompt = CarbonXPromptCompiler.compile_chatml(query)
 
+        model_name = str(contract.model.value)
+        if ":11434" in endpoint and model_name in {"carbonx-14b", "carbon-x-14b"}:
+            model_name = "carbon-x:14b"
+
         payload = {
-            "model": str(contract.model.value),
+            "model": model_name,
             "messages": [
                 {"role": "user", "content": compiled_prompt},
             ],
