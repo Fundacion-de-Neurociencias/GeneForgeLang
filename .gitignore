@@ -190,3 +190,7 @@ test_failures.txt
 test_sem_error*.txt
 test_reg_error.txt
 representational_audit_report.json
+
+# Graphify / Codebase Graph artifacts
+graphify-out/
+.codebase-graph/
