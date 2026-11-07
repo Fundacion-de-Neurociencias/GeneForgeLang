@@ -12,7 +12,6 @@ from pathlib import Path
 
 import pytest
 import yaml
-
 from geneforgelang.core.gftypes import (
     GFLAST,
     CellAbundanceQTLContract,
