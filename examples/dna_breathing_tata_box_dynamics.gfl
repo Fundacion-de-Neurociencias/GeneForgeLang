@@ -1,0 +1,26 @@
+# ==============================================================================
+# GeneForgeLang Protocol: Mesoscopic DNA Breathing & TF Binding Coupling
+# Grounded in Chiu et al., Bioinformatics Advances, 2026 (USC / Rohs Lab)
+# Target: DCTN1 Core Promoter TATA-Box Thermal Dynamics and TBP Affinity Shift
+# ==============================================================================
+
+dna_dynamics:
+  contract_id: "dyn_dctn1_tata_promoter"
+  sequence: "GGGCGGCCGCTATAAAGCGTGGTGC"
+  temperature_kelvin: 310.15
+  model: "pbd_mesoscopic"
+  displacement_threshold_angstrom: 1.5
+  include_static_shape: true
+  target_tf_coupling:
+    tf_name: "TBP"
+    coupling_mode: "breathing_assisted"
+    shape_weight: 0.4
+    breathing_weight: 0.6
+    target_motif: "TATAAA"
+  variant_delta:
+    pos: 10
+    ref: "T"
+    alt: "G"
+  metadata:
+    study_source: "Chiu et al., Bioinformatics Advances, 2026"
+    rationale: "Quantifies thermal opening bubble dynamics and pioneer factor affinity shift"

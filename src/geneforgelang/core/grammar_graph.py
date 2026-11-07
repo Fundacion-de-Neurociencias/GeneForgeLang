@@ -42,6 +42,8 @@ BLOCK_TO_CONTRACT_MAP: dict[str, str] = {
     "somatic_instability": "src_geneforgelang_core_gftypes_somaticinstabilitycontract",
     "ensemble": "src_geneforgelang_core_gftypes_boltzmannensemblecontract",
     "tape_recorder": "src_geneforgelang_core_gftypes_taperecordercontract",
+    "dna_dynamics": "src_geneforgelang_core_gftypes_dnadynamicscontract",
+    "breathing": "src_geneforgelang_core_gftypes_dnadynamicscontract",
 }
 
 

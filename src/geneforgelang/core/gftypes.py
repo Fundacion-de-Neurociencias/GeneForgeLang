@@ -357,6 +357,7 @@ class GFLAST:
     biosecurity_watermark: Any | None = None
     genomic_llm: Any | None = None
     protok: Any | None = None
+    dna_dynamics: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -440,6 +441,10 @@ class GFLAST:
             )
         if self.protok is not None:
             result["protok"] = self.protok.to_dict() if hasattr(self.protok, "to_dict") else self.protok
+        if self.dna_dynamics is not None:
+            result["dna_dynamics"] = (
+                self.dna_dynamics.to_dict() if hasattr(self.dna_dynamics, "to_dict") else self.dna_dynamics
+            )
         if self.metadata:
             result["metadata"] = self.metadata
         return result
@@ -715,6 +720,19 @@ class GFLAST:
                 ast.protok = pk_data
             elif isinstance(pk_data, dict):
                 ast.protok = ProTokContract.from_dict(pk_data)
+
+        if "dna_dynamics" in data:
+            dd_data = data["dna_dynamics"]
+            if isinstance(dd_data, DNADynamicsContract):
+                ast.dna_dynamics = dd_data
+            elif isinstance(dd_data, dict):
+                ast.dna_dynamics = DNADynamicsContract.from_dict(dd_data)
+        elif "breathing" in data:
+            dd_data = data["breathing"]
+            if isinstance(dd_data, DNADynamicsContract):
+                ast.dna_dynamics = dd_data
+            elif isinstance(dd_data, dict):
+                ast.dna_dynamics = DNADynamicsContract.from_dict(dd_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -4589,6 +4607,196 @@ class ViralInteractomeComplexContract:
         }
 
 
+class DNABreathingModel(str, Enum):
+    """Mesoscopic and statistical mechanics models for DNA breathing and base-pair opening."""
+
+    PBD_MESOSCOPIC = "pbd_mesoscopic"
+    EPBD_STOCHASTIC = "epbd_stochastic"
+    THERMODYNAMIC_MELTING = "thermodynamic_melting"
+
+    def __str__(self) -> str:
+        """Return enum value."""
+        return self.value
+
+
+class TFBindingCouplingMode(str, Enum):
+    """Transcription factor binding coupling mode relative to DNA breathing dynamics.
+
+    Grounded in Chiu et al. (Bioinformatics Advances, 2026 / Rohs Lab):
+    - RIGID_SHAPE_DOMINATED: TF relies on equilibrium double-helix shape (MGW, Roll);
+      transient base opening disrupts hydrogen bonds (e.g. Homeodomains, bHLH).
+    - BREATHING_ASSISTED: TF binding is enhanced by transient local opening/bubbles,
+      intercalation, or severe DNA bending (e.g. TBP, pioneer factors, Cas9 unwinding).
+    - BIFUNCTIONAL_BALANCED: Requires equilibrium shape for core contact and local
+      thermal opening flexibility at flanking regions.
+    """
+
+    RIGID_SHAPE_DOMINATED = "rigid_shape_dominated"
+    BREATHING_ASSISTED = "breathing_assisted"
+    BIFUNCTIONAL_BALANCED = "bifunctional_balanced"
+
+    def __str__(self) -> str:
+        """Return enum value."""
+        return self.value
+
+
+@dataclass
+class DNABreathingProfile:
+    """Quantitative physical profile of DNA breathing and static shape.
+
+    Grounded in Peyrard-Bishop-Dauxois (PBD) mesoscopic dynamics and DNAshape
+    (Chiu, Tang, Butt, Lai, Qian, Alexandrov, Duan, He, Rohs; Bioinformatics Advances 2026).
+    """
+
+    sequence: str
+    temperature_kelvin: float = 310.15  # 37°C physiological
+    displacement_threshold_angstrom: float = 1.5
+    mean_displacements: list[float] = field(default_factory=list)  # <y_n> in Angstroms
+    opening_probabilities: list[float] = field(default_factory=list)  # P(y_n > threshold)
+    local_melting_energies: list[float] = field(default_factory=list)  # Delta G_open in kcal/mol
+    bubble_prone_regions: list[tuple[int, int]] = field(default_factory=list)  # (start, end) 0-indexed
+    static_shape_mgw: list[float] = field(default_factory=list)  # Minor Groove Width (Angstroms)
+    static_shape_roll: list[float] = field(default_factory=list)  # Roll (degrees)
+    static_shape_helt: list[float] = field(default_factory=list)  # Helical Twist (degrees)
+    static_shape_prot: list[float] = field(default_factory=list)  # Propeller Twist (degrees)
+    evidence_status: str = "analytical_mesoscopic"
+    source_citation: str = (
+        "Chiu TP, Tang WY, Butt W, Lai B, Qian S, Alexandrov BS, Duan J, He X, Rohs R. "
+        "DNA breathing and shape encode distinct mechanisms of transcription factor binding. "
+        "Bioinformatics Advances, 2026."
+    )
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "sequence": self.sequence,
+            "temperature_kelvin": self.temperature_kelvin,
+            "displacement_threshold_angstrom": self.displacement_threshold_angstrom,
+            "mean_displacements": list(self.mean_displacements),
+            "opening_probabilities": list(self.opening_probabilities),
+            "local_melting_energies": list(self.local_melting_energies),
+            "bubble_prone_regions": [list(r) for r in self.bubble_prone_regions],
+            "static_shape_mgw": list(self.static_shape_mgw),
+            "static_shape_roll": list(self.static_shape_roll),
+            "static_shape_helt": list(self.static_shape_helt),
+            "static_shape_prot": list(self.static_shape_prot),
+            "evidence_status": self.evidence_status,
+            "source_citation": self.source_citation,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> DNABreathingProfile:
+        """Create DNABreathingProfile from dictionary representation."""
+        return cls(
+            sequence=str(data.get("sequence", "")),
+            temperature_kelvin=float(data.get("temperature_kelvin", 310.15)),
+            displacement_threshold_angstrom=float(data.get("displacement_threshold_angstrom", 1.5)),
+            mean_displacements=[float(x) for x in data.get("mean_displacements", [])],
+            opening_probabilities=[float(x) for x in data.get("opening_probabilities", [])],
+            local_melting_energies=[float(x) for x in data.get("local_melting_energies", [])],
+            bubble_prone_regions=[(int(r[0]), int(r[1])) for r in data.get("bubble_prone_regions", [])],
+            static_shape_mgw=[float(x) for x in data.get("static_shape_mgw", [])],
+            static_shape_roll=[float(x) for x in data.get("static_shape_roll", [])],
+            static_shape_helt=[float(x) for x in data.get("static_shape_helt", [])],
+            static_shape_prot=[float(x) for x in data.get("static_shape_prot", [])],
+            evidence_status=str(data.get("evidence_status", "analytical_mesoscopic")),
+            source_citation=str(data.get("source_citation", "")),
+        )
+
+
+@dataclass
+class TFBreathingCouplingContract:
+    """Coupling specification between transcription factor binding affinity and DNA physical dynamics."""
+
+    tf_name: str
+    coupling_mode: TFBindingCouplingMode = TFBindingCouplingMode.BIFUNCTIONAL_BALANCED
+    shape_weight: float = 0.5
+    breathing_weight: float = 0.5
+    target_motif: str | None = None
+    binding_affinity_delta_kcal: float | None = None  # Delta Delta G predicted
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "tf_name": self.tf_name,
+            "coupling_mode": str(self.coupling_mode),
+            "shape_weight": self.shape_weight,
+            "breathing_weight": self.breathing_weight,
+            "target_motif": self.target_motif,
+            "binding_affinity_delta_kcal": self.binding_affinity_delta_kcal,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> TFBreathingCouplingContract:
+        """Create TFBreathingCouplingContract from dictionary representation."""
+        raw_mode = data.get("coupling_mode", TFBindingCouplingMode.BIFUNCTIONAL_BALANCED)
+        mode = TFBindingCouplingMode(raw_mode) if not isinstance(raw_mode, TFBindingCouplingMode) else raw_mode
+        return cls(
+            tf_name=str(data.get("tf_name", "unspecified_tf")),
+            coupling_mode=mode,
+            shape_weight=float(data.get("shape_weight", 0.5)),
+            breathing_weight=float(data.get("breathing_weight", 0.5)),
+            target_motif=data.get("target_motif"),
+            binding_affinity_delta_kcal=float(data["binding_affinity_delta_kcal"])
+            if data.get("binding_affinity_delta_kcal") is not None
+            else None,
+        )
+
+
+@dataclass
+class DNADynamicsContract:
+    """Formal GFL IO Contract for DNA Breathing and Mesoscopic Physical Code."""
+
+    contract_id: str
+    sequence: str
+    temperature_kelvin: float = 310.15
+    model: DNABreathingModel = DNABreathingModel.PBD_MESOSCOPIC
+    displacement_threshold_angstrom: float = 1.5
+    include_static_shape: bool = True
+    target_tf_coupling: TFBreathingCouplingContract | None = None
+    variant_delta: dict[str, Any] | None = None  # e.g. {"ref": "C", "alt": "T", "pos": 15}
+    verified_profile: DNABreathingProfile | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "contract_id": self.contract_id,
+            "sequence": self.sequence,
+            "temperature_kelvin": self.temperature_kelvin,
+            "model": str(self.model),
+            "displacement_threshold_angstrom": self.displacement_threshold_angstrom,
+            "include_static_shape": self.include_static_shape,
+            "target_tf_coupling": self.target_tf_coupling.to_dict() if self.target_tf_coupling else None,
+            "variant_delta": dict(self.variant_delta) if self.variant_delta else None,
+            "verified_profile": self.verified_profile.to_dict() if self.verified_profile else None,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> DNADynamicsContract:
+        """Create DNADynamicsContract from dictionary representation."""
+        raw_model = data.get("model", DNABreathingModel.PBD_MESOSCOPIC)
+        model = DNABreathingModel(raw_model) if not isinstance(raw_model, DNABreathingModel) else raw_model
+        tf_data = data.get("target_tf_coupling")
+        tf_coupling = TFBreathingCouplingContract.from_dict(tf_data) if isinstance(tf_data, dict) else tf_data
+        prof_data = data.get("verified_profile")
+        prof = DNABreathingProfile.from_dict(prof_data) if isinstance(prof_data, dict) else prof_data
+
+        return cls(
+            contract_id=str(data.get("contract_id", data.get("name", "dna_dynamics_contract"))),
+            sequence=str(data.get("sequence", data.get("dna_sequence", ""))),
+            temperature_kelvin=float(data.get("temperature_kelvin", 310.15)),
+            model=model,
+            displacement_threshold_angstrom=float(data.get("displacement_threshold_angstrom", 1.5)),
+            include_static_shape=bool(data.get("include_static_shape", True)),
+            target_tf_coupling=tf_coupling,
+            variant_delta=data.get("variant_delta"),
+            verified_profile=prof,
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -4720,6 +4928,11 @@ __all__ = [
     "RegulatoryProfileContract",
     "SomaticDriftSimulationContract",
     "SomaticInstabilityContract",
+    "DNABreathingModel",
+    "TFBindingCouplingMode",
+    "DNABreathingProfile",
+    "TFBreathingCouplingContract",
+    "DNADynamicsContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

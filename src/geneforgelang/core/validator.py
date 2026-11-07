@@ -154,6 +154,8 @@ class EnhancedSemanticValidator:
             "carbonx",
             "protok",
             "unified_protein_stream",
+            "dna_dynamics",
+            "breathing",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -252,6 +254,8 @@ class EnhancedSemanticValidator:
                 self._validate_genomic_llm_block(block_content)
             elif block_name in ("protok", "unified_protein_stream"):
                 self._validate_protok_block(block_content)
+            elif block_name in ("dna_dynamics", "breathing"):
+                self._validate_dna_dynamics_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -1961,6 +1965,110 @@ class EnhancedSemanticValidator:
                         f"function_code ({fun_code}) outside ProTok codebook range [0..255] at pos {pos}",
                         ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                     ).add_fix("Ensure function_code is an integer in [0..255]")
+
+    def _validate_dna_dynamics_block(self, block: Any) -> None:
+        """Validate dna_dynamics / breathing block according to mesoscopic PBD specifications."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "dna_dynamics block must be a dictionary or DNADynamicsContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format dna_dynamics as a dictionary with sequence, temperature_kelvin, etc.")
+            return
+
+        # Sequence is required
+        seq = block.get("sequence") or block.get("dna_sequence")
+        if not seq or not str(seq).strip():
+            self.result.add_error(
+                "dna_dynamics block missing required 'sequence' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'sequence: <IUPAC_DNA_STRING>' to dna_dynamics block")
+            return
+
+        clean_seq = re.sub(r"\s+", "", str(seq).upper())
+        invalid_chars = set(clean_seq) - {"A", "C", "G", "T", "N"}
+        if invalid_chars:
+            self.result.add_error(
+                f"Invalid nucleotide characters in dna_dynamics sequence: {sorted(list(invalid_chars))}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Ensure sequence contains only standard IUPAC DNA characters (A, C, G, T, N)")
+
+        # Temperature check (Kelvin)
+        temp_k = block.get("temperature_kelvin")
+        if temp_k is not None and (not isinstance(temp_k, (int, float)) or not (270.0 <= float(temp_k) <= 373.15)):
+            self.result.add_error(
+                f"temperature_kelvin ({temp_k}) outside biophysical range [270.0, 373.15] K in dna_dynamics",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set temperature_kelvin between 270.0 (near freezing) and 373.15 (boiling)")
+
+        # Displacement threshold check (Angstroms)
+        thresh = block.get("displacement_threshold_angstrom")
+        if thresh is not None and (not isinstance(thresh, (int, float)) or not (0.5 <= float(thresh) <= 5.0)):
+            self.result.add_error(
+                f"displacement_threshold_angstrom ({thresh}) outside valid range [0.5, 5.0] A in dna_dynamics",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set displacement_threshold_angstrom between 0.5 and 5.0 Angstroms (default 1.5)")
+
+        # Model check
+        model = block.get("model")
+        if model is not None:
+            valid_models = {"pbd_mesoscopic", "epbd_stochastic", "thermodynamic_melting"}
+            if str(model).lower() not in valid_models:
+                self.result.add_error(
+                    f"Unknown model '{model}' in dna_dynamics",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix(f"Select a valid model from: {sorted(list(valid_models))}")
+
+        # TF coupling check
+        tf_coupling = block.get("target_tf_coupling")
+        if tf_coupling is not None and isinstance(tf_coupling, dict):
+            tf_name = tf_coupling.get("tf_name")
+            if not tf_name or not str(tf_name).strip():
+                self.result.add_error(
+                    "target_tf_coupling missing required 'tf_name' in dna_dynamics",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix("Specify 'tf_name: <TF_IDENTIFIER>' in target_tf_coupling")
+
+            mode = tf_coupling.get("coupling_mode")
+            if mode is not None:
+                valid_modes = {"rigid_shape_dominated", "breathing_assisted", "bifunctional_balanced"}
+                if str(mode).lower() not in valid_modes:
+                    self.result.add_error(
+                        f"Unknown coupling_mode '{mode}' in target_tf_coupling",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix(f"Select a valid coupling_mode from: {sorted(list(valid_modes))}")
+
+        # Variant delta check
+        v_delta = block.get("variant_delta")
+        if v_delta is not None and isinstance(v_delta, dict):
+            pos = v_delta.get("pos")
+            ref = v_delta.get("ref")
+            alt = v_delta.get("alt")
+            if pos is None or ref is None or alt is None:
+                self.result.add_error(
+                    "variant_delta requires 'pos', 'ref', and 'alt' fields in dna_dynamics",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix("Format variant_delta as {'pos': <int>, 'ref': <str>, 'alt': <str>}")
+            else:
+                try:
+                    p_int = int(pos)
+                    if not (0 <= p_int < len(clean_seq)):
+                        self.result.add_error(
+                            f"variant_delta pos ({p_int}) out of sequence bounds [0, {len(clean_seq) - 1}] in dna_dynamics",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix(f"Ensure variant_delta pos is within [0, {len(clean_seq) - 1}]")
+                    elif clean_seq and clean_seq[p_int] != str(ref).upper().strip():
+                        self.result.add_error(
+                            f"variant_delta ref '{ref}' does not match sequence base '{clean_seq[p_int]}' at pos {p_int}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix(f"Update ref to '{clean_seq[p_int]}' or correct variant coordinate")
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        f"variant_delta pos '{pos}' must be an integer",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
