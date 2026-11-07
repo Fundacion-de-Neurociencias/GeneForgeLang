@@ -1,0 +1,51 @@
+# GeneForgeLang Protocol: Single-Cell Immune Regulation & Dynamic Cell States
+# Grounded in TenK10K Phase 1 (Cuomo et al., Nature 2026, DOI: 10.1038/s41586-026-10721-2)
+#
+# Profiles multiscale, cell-type specific eQTLs, state-dependent activation gradients,
+# and cell-abundance QTLs (caQTLs) across 28 immune cell lineages.
+
+metadata:
+  author: "GeneForge Synthetic Biology Core"
+  study: "TenK10K Population Single-Cell Functional Genomics"
+  source_citation: "Cuomo, Spenceley, Tanudisastro et al., Nature 2026"
+  target_organism: "Homo sapiens"
+  tissue_source: "PBMC"
+
+single_cell_regulation:
+  contract_id: "tenk10k_nk_gzmb_cytotoxicity_circuit"
+  target_gene: "GZMB"
+  variant: "chr19:45823101:A>G"
+  variant_type: "snv"
+  cell_type: "CL:0000938"  # NK CD56-dim mature cytotoxic cell
+  qtl_type: "cell_state_interaction"
+  is_cell_type_specific: true
+  is_distal_enhancer: false
+  distance_to_tss_bp: 1250
+  beta_marginal: 0.28
+  standard_error: 0.035
+  p_value_empirical: 2.4e-12
+
+  state_interaction:
+    state_axis: "cytotoxicity"
+    beta_baseline: 0.14
+    gamma_interaction: 0.52
+    state_range: [0.10, 0.95]
+    p_value_interaction: 4.1e-8
+    fdr: 0.01
+
+  abundance_qtl:
+    target_cell_type: "CL:0000860"  # Classical Monocyte
+    effect_size_delta: -0.18
+    baseline_fraction: 0.12
+    driver_gene: "LYZ"
+    differentiation_mechanism: "monocyte_subpopulation_fate_bias"
+    p_value: 3.2e-14
+
+  colocalization_gate:
+    gwas_trait_id: "EFO:0003885"  # Multiple Sclerosis
+    gwas_trait_name: "Multiple Sclerosis Susceptibility"
+    candidate_gene: "GZMB"
+    posterior_prob_h4: 0.92
+    pp4_threshold: 0.80
+    credible_set_size: 2
+    lead_variant_rsid: "rs11586201"

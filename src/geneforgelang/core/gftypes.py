@@ -358,6 +358,8 @@ class GFLAST:
     genomic_llm: Any | None = None
     protok: Any | None = None
     dna_dynamics: Any | None = None
+    single_cell_regulation: Any | None = None
+    verifiable_dna: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -444,6 +446,16 @@ class GFLAST:
         if self.dna_dynamics is not None:
             result["dna_dynamics"] = (
                 self.dna_dynamics.to_dict() if hasattr(self.dna_dynamics, "to_dict") else self.dna_dynamics
+            )
+        if self.single_cell_regulation is not None:
+            result["single_cell_regulation"] = (
+                self.single_cell_regulation.to_dict()
+                if hasattr(self.single_cell_regulation, "to_dict")
+                else self.single_cell_regulation
+            )
+        if self.verifiable_dna is not None:
+            result["verifiable_dna"] = (
+                self.verifiable_dna.to_dict() if hasattr(self.verifiable_dna, "to_dict") else self.verifiable_dna
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -733,6 +745,38 @@ class GFLAST:
                 ast.dna_dynamics = dd_data
             elif isinstance(dd_data, dict):
                 ast.dna_dynamics = DNADynamicsContract.from_dict(dd_data)
+
+        if "single_cell_regulation" in data:
+            sc_data = data["single_cell_regulation"]
+            if isinstance(sc_data, SingleCellRegulatoryContract):
+                ast.single_cell_regulation = sc_data
+            elif isinstance(sc_data, dict):
+                ast.single_cell_regulation = SingleCellRegulatoryContract.from_dict(sc_data)
+        elif "sc_regulation" in data:
+            sc_data = data["sc_regulation"]
+            if isinstance(sc_data, SingleCellRegulatoryContract):
+                ast.single_cell_regulation = sc_data
+            elif isinstance(sc_data, dict):
+                ast.single_cell_regulation = SingleCellRegulatoryContract.from_dict(sc_data)
+        elif "cellular_context" in data:
+            sc_data = data["cellular_context"]
+            if isinstance(sc_data, SingleCellRegulatoryContract):
+                ast.single_cell_regulation = sc_data
+            elif isinstance(sc_data, dict):
+                ast.single_cell_regulation = SingleCellRegulatoryContract.from_dict(sc_data)
+
+        if "verifiable_dna" in data:
+            vd_data = data["verifiable_dna"]
+            if isinstance(vd_data, VerifiableRewardContract):
+                ast.verifiable_dna = vd_data
+            elif isinstance(vd_data, dict):
+                ast.verifiable_dna = VerifiableRewardContract.from_dict(vd_data)
+        elif "rlvr_verifier" in data:
+            vd_data = data["rlvr_verifier"]
+            if isinstance(vd_data, VerifiableRewardContract):
+                ast.verifiable_dna = vd_data
+            elif isinstance(vd_data, dict):
+                ast.verifiable_dna = VerifiableRewardContract.from_dict(vd_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -4797,6 +4841,976 @@ class DNADynamicsContract:
         )
 
 
+# ============================================================================
+# Single-Cell Immune Regulation & Cell-State Dynamics Layer
+# Grounded in TenK10K Phase 1 (Cuomo et al., Nature 2026, DOI: 10.1038/s41586-026-10721-2)
+# ============================================================================
+
+
+class TenK10KImmuneCellType(str, Enum):
+    """Canonical PBMC immune cell types profiled in TenK10K mapped to Cell Ontology (CL)."""
+
+    # CD4+ T cell lineages
+    CD4_NAIVE = "CL:0000895"
+    CD4_CENTRAL_MEMORY = "CL:0000897"
+    CD4_EFFECTOR_MEMORY = "CL:0000905"
+    CD4_TEMRA = "CL:0001084"
+    CD4_TREG = "CL:0000815"
+    CD4_FOLLICULAR_HELPER = "CL:0002038"
+
+    # CD8+ T cell lineages
+    CD8_NAIVE = "CL:0000900"
+    CD8_CENTRAL_MEMORY = "CL:0000907"
+    CD8_EFFECTOR_MEMORY = "CL:0000910"
+    CD8_TEMRA = "CL:0001085"
+    CD8_CYTOTOXIC = "CL:0000911"
+    CD8_EXHAUSTED = "CL:0002047"
+    GAMMA_DELTA_T = "CL:0000798"
+    MAIT_CELL = "CL:0000940"
+
+    # B cell lineages
+    B_NAIVE = "CL:0000788"
+    B_SWITCHED_MEMORY = "CL:0000972"
+    B_UNSWITCHED_MEMORY = "CL:0000970"
+    PLASMA_CELL = "CL:0000786"
+
+    # Natural Killer (NK) cell lineages
+    NK_CD56_DIM = "CL:0000938"
+    NK_CD56_BRIGHT = "CL:0000939"
+
+    # Monocyte lineages
+    MONOCYTE_CLASSICAL = "CL:0000860"
+    MONOCYTE_NON_CLASSICAL = "CL:0000875"
+    MONOCYTE_INTERMEDIATE = "CL:0002396"
+
+    # Dendritic cell lineages
+    DC_CONVENTIONAL_1 = "CL:0000990"
+    DC_CONVENTIONAL_2 = "CL:0002399"
+    DC_PLASMACYTOID = "CL:0000784"
+
+    # Innate Lymphoid & Platelet lineages
+    ILC_UNCOMMITTED = "CL:0001065"
+    PLATELET = "CL:0000233"
+
+    def __str__(self) -> str:
+        """Return the CL CURIE string value."""
+        return self.value
+
+
+class RegulatoryQTLType(str, Enum):
+    """Modes of single-cell expression and cell-state regulation."""
+
+    COMMON_CIS_EQTL = "common_cis_eqtl"
+    RARE_VARIANT_COLLAPSE = "rare_variant_collapse"
+    SECONDARY_INDEPENDENT_SIGNAL = "secondary_independent_signal"
+    CELL_STATE_INTERACTION = "cell_state_interaction"
+    CELL_ABUNDANCE_QTL = "cell_abundance_qtl"
+    TANDEM_REPEAT_EQTL = "tandem_repeat_eqtl"
+    CHROMATIN_ACCESSIBILITY_CAQTL = "chromatin_accessibility_caqtl"
+
+    def __str__(self) -> str:
+        """Return the enum string value."""
+        return self.value
+
+
+class CellStateAxis(str, Enum):
+    """Dynamic cellular activation/functional axes."""
+
+    CYTOTOXICITY = "cytotoxicity"
+    INTERFERON_STIMULATION = "interferon_stimulation"
+    EXHAUSTION = "exhaustion"
+    PROLIFERATION = "proliferation"
+    INFLAMMATORY_SIGNALING = "inflammatory_signaling"
+    DIFFERENTIATION = "differentiation"
+    CUSTOM = "custom"
+
+    def __str__(self) -> str:
+        """Return the enum string value."""
+        return self.value
+
+
+@dataclass
+class CellStateInteractionContract:
+    """Contract for dynamic eQTLs modulated along a continuous cellular state axis."""
+
+    state_axis: CellStateAxis | str = CellStateAxis.CYTOTOXICITY
+    beta_baseline: float = 0.0
+    gamma_interaction: float = 0.0
+    state_range: tuple[float, float] = (0.0, 1.0)
+    p_value_interaction: float = 1e-6
+    fdr: float = 0.05
+
+    def effective_beta(self, state_value: float) -> float:
+        """Compute beta_eff = beta_0 + gamma * state_value."""
+        clamped_state = max(self.state_range[0], min(self.state_range[1], state_value))
+        return self.beta_baseline + self.gamma_interaction * clamped_state
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "state_axis": str(self.state_axis),
+            "beta_baseline": self.beta_baseline,
+            "gamma_interaction": self.gamma_interaction,
+            "state_range": list(self.state_range),
+            "p_value_interaction": self.p_value_interaction,
+            "fdr": self.fdr,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> CellStateInteractionContract:
+        """Create from dictionary representation."""
+        axis_raw = data.get("state_axis", CellStateAxis.CYTOTOXICITY)
+        axis = CellStateAxis(axis_raw) if axis_raw in CellStateAxis._value2member_map_ else axis_raw
+        raw_range = data.get("state_range", (0.0, 1.0))
+        state_range = (float(raw_range[0]), float(raw_range[1])) if len(raw_range) >= 2 else (0.0, 1.0)
+
+        return cls(
+            state_axis=axis,
+            beta_baseline=float(data.get("beta_baseline", 0.0)),
+            gamma_interaction=float(data.get("gamma_interaction", 0.0)),
+            state_range=state_range,
+            p_value_interaction=float(data.get("p_value_interaction", 1e-6)),
+            fdr=float(data.get("fdr", 0.05)),
+        )
+
+
+@dataclass
+class CellAbundanceQTLContract:
+    """Contract for genetic variants modulating proportional cell type abundance (caQTLs)."""
+
+    target_cell_type: str = "CL:0000860"  # e.g. Monocytes classical
+    effect_size_delta: float = 0.0  # Proportional fraction delta [-1.0, 1.0]
+    baseline_fraction: float = 0.10
+    driver_gene: str = "LYZ"
+    differentiation_mechanism: str = "lineage_fate_bias"
+    p_value: float = 1e-8
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "target_cell_type": self.target_cell_type,
+            "effect_size_delta": self.effect_size_delta,
+            "baseline_fraction": self.baseline_fraction,
+            "driver_gene": self.driver_gene,
+            "differentiation_mechanism": self.differentiation_mechanism,
+            "p_value": self.p_value,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> CellAbundanceQTLContract:
+        """Create from dictionary representation."""
+        return cls(
+            target_cell_type=str(data.get("target_cell_type", "CL:0000860")),
+            effect_size_delta=float(data.get("effect_size_delta", 0.0)),
+            baseline_fraction=float(data.get("baseline_fraction", 0.10)),
+            driver_gene=str(data.get("driver_gene", "LYZ")),
+            differentiation_mechanism=str(data.get("differentiation_mechanism", "lineage_fate_bias")),
+            p_value=float(data.get("p_value", 1e-8)),
+        )
+
+
+@dataclass
+class ColocalizationGateContract:
+    """Bayesian colocalization contract between GWAS complex traits and single-cell eQTLs."""
+
+    gwas_trait_id: str = ""
+    gwas_trait_name: str = ""
+    candidate_gene: str = ""
+    posterior_prob_h4: float = 0.85  # PP4: shared causal variant
+    pp4_threshold: float = 0.80
+    credible_set_size: int = 1
+    lead_variant_rsid: str = ""
+
+    @property
+    def is_colocalized(self) -> bool:
+        """Return True if posterior probability H4 exceeds gating threshold."""
+        return self.posterior_prob_h4 >= self.pp4_threshold
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "gwas_trait_id": self.gwas_trait_id,
+            "gwas_trait_name": self.gwas_trait_name,
+            "candidate_gene": self.candidate_gene,
+            "posterior_prob_h4": self.posterior_prob_h4,
+            "pp4_threshold": self.pp4_threshold,
+            "credible_set_size": self.credible_set_size,
+            "lead_variant_rsid": self.lead_variant_rsid,
+            "is_colocalized": self.is_colocalized,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ColocalizationGateContract:
+        """Create from dictionary representation."""
+        return cls(
+            gwas_trait_id=str(data.get("gwas_trait_id", "")),
+            gwas_trait_name=str(data.get("gwas_trait_name", "")),
+            candidate_gene=str(data.get("candidate_gene", "")),
+            posterior_prob_h4=float(data.get("posterior_prob_h4", 0.85)),
+            pp4_threshold=float(data.get("pp4_threshold", 0.80)),
+            credible_set_size=int(data.get("credible_set_size", 1)),
+            lead_variant_rsid=str(data.get("lead_variant_rsid", "")),
+        )
+
+
+@dataclass
+class TandemRepeatContract:
+    """Tandem repeat / VNTR variation shaping single-cell expression."""
+
+    repeat_unit_motif: str = "CAG"
+    reference_copy_number: int = 10
+    alternate_copy_number: int = 15
+    delta_copies: int = 5
+    expansion_risk_category: str = "normal"  # "normal", "pre_mutation", "full_expansion"
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "repeat_unit_motif": self.repeat_unit_motif,
+            "reference_copy_number": self.reference_copy_number,
+            "alternate_copy_number": self.alternate_copy_number,
+            "delta_copies": self.delta_copies,
+            "expansion_risk_category": self.expansion_risk_category,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> TandemRepeatContract:
+        """Create from dictionary representation."""
+        ref_n = int(data.get("reference_copy_number", 10))
+        alt_n = int(data.get("alternate_copy_number", ref_n))
+        delta = int(data.get("delta_copies", alt_n - ref_n))
+
+        return cls(
+            repeat_unit_motif=str(data.get("repeat_unit_motif", "CAG")),
+            reference_copy_number=ref_n,
+            alternate_copy_number=alt_n,
+            delta_copies=delta,
+            expansion_risk_category=str(data.get("expansion_risk_category", "normal")),
+        )
+
+
+@dataclass
+class SingleCellRegulatoryContract:
+    """Formal GFL contract for cell-type-specific and cell-state-dynamic immune regulation.
+
+    Grounded in the TenK10K Phase 1 landmark dataset (Cuomo, Spenceley, Tanudisastro et al.,
+    Powell & MacArthur, Nature 2026, DOI: 10.1038/s41586-026-10721-2).
+    """
+
+    contract_id: str
+    target_gene: str
+    variant: str
+    variant_type: str = "snv"  # "snv", "indel", "tandem_repeat", "structural_variant"
+    cell_type: TenK10KImmuneCellType | str = TenK10KImmuneCellType.NK_CD56_DIM
+    qtl_type: RegulatoryQTLType = RegulatoryQTLType.COMMON_CIS_EQTL
+    is_cell_type_specific: bool = False
+    is_distal_enhancer: bool = False
+    distance_to_tss_bp: int = 0
+    beta_marginal: float = 0.0
+    standard_error: float = 0.02
+    p_value_empirical: float = 1e-7
+    state_interaction: CellStateInteractionContract | None = None
+    abundance_qtl: CellAbundanceQTLContract | None = None
+    colocalization_gate: ColocalizationGateContract | None = None
+    tandem_repeat: TandemRepeatContract | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "contract_id": self.contract_id,
+            "target_gene": self.target_gene,
+            "variant": self.variant,
+            "variant_type": self.variant_type,
+            "cell_type": str(self.cell_type),
+            "qtl_type": str(self.qtl_type),
+            "is_cell_type_specific": self.is_cell_type_specific,
+            "is_distal_enhancer": self.is_distal_enhancer,
+            "distance_to_tss_bp": self.distance_to_tss_bp,
+            "beta_marginal": self.beta_marginal,
+            "standard_error": self.standard_error,
+            "p_value_empirical": self.p_value_empirical,
+            "state_interaction": self.state_interaction.to_dict() if self.state_interaction else None,
+            "abundance_qtl": self.abundance_qtl.to_dict() if self.abundance_qtl else None,
+            "colocalization_gate": self.colocalization_gate.to_dict() if self.colocalization_gate else None,
+            "tandem_repeat": self.tandem_repeat.to_dict() if self.tandem_repeat else None,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> SingleCellRegulatoryContract:
+        """Create SingleCellRegulatoryContract from dictionary representation."""
+        raw_ct = data.get("cell_type", TenK10KImmuneCellType.NK_CD56_DIM)
+        cell_type = TenK10KImmuneCellType(raw_ct) if raw_ct in TenK10KImmuneCellType._value2member_map_ else raw_ct
+
+        raw_qtl = data.get("qtl_type", RegulatoryQTLType.COMMON_CIS_EQTL)
+        qtl_type = (
+            RegulatoryQTLType(raw_qtl)
+            if raw_qtl in RegulatoryQTLType._value2member_map_
+            else RegulatoryQTLType.COMMON_CIS_EQTL
+        )
+
+        si_data = data.get("state_interaction")
+        state_interaction = CellStateInteractionContract.from_dict(si_data) if isinstance(si_data, dict) else si_data
+
+        ab_data = data.get("abundance_qtl")
+        abundance_qtl = CellAbundanceQTLContract.from_dict(ab_data) if isinstance(ab_data, dict) else ab_data
+
+        coloc_data = data.get("colocalization_gate")
+        colocalization_gate = (
+            ColocalizationGateContract.from_dict(coloc_data) if isinstance(coloc_data, dict) else coloc_data
+        )
+
+        tr_data = data.get("tandem_repeat")
+        tandem_repeat = TandemRepeatContract.from_dict(tr_data) if isinstance(tr_data, dict) else tr_data
+
+        return cls(
+            contract_id=str(data.get("contract_id", data.get("name", "sc_regulatory_contract"))),
+            target_gene=str(data.get("target_gene", "")),
+            variant=str(data.get("variant", "")),
+            variant_type=str(data.get("variant_type", "snv")),
+            cell_type=cell_type,
+            qtl_type=qtl_type,
+            is_cell_type_specific=bool(data.get("is_cell_type_specific", False)),
+            is_distal_enhancer=bool(data.get("is_distal_enhancer", False)),
+            distance_to_tss_bp=int(data.get("distance_to_tss_bp", 0)),
+            beta_marginal=float(data.get("beta_marginal", 0.0)),
+            standard_error=float(data.get("standard_error", 0.02)),
+            p_value_empirical=float(data.get("p_value_empirical", 1e-7)),
+            state_interaction=state_interaction,
+            abundance_qtl=abundance_qtl,
+            colocalization_gate=colocalization_gate,
+            tandem_repeat=tandem_repeat,
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
+# ============================================================================
+# Verifiable DNA Computation & RLVR Verification Layer (FineDNA Synergy)
+# Grounded in FineDNA (Mid-training, SFT, and RLVR for genomic foundation models)
+# ============================================================================
+
+
+class DNAComputationType(str, Enum):
+    """Formal DNA computational primitives inspired by FineDNA multi-stage tasks."""
+
+    TRANSLATION = "translation"
+    TRANSCRIPTION = "transcription"
+    REVERSE_COMPLEMENT = "reverse_complement"
+    ORF_DETECTION = "orf_detection"
+    RESTRICTION_DIGEST = "restriction_digest"
+    GC_SKEW_WINDOW = "gc_skew_window"
+    CODON_OPTIMIZATION = "codon_optimization"
+    KMER_FREQUENCY = "kmer_frequency"
+    IUPAC_DEGENERATE_MATCH = "iupac_degenerate_match"
+
+    def __str__(self) -> str:
+        """Return the string value."""
+        return self.value
+
+
+class SequenceLocalizationMode(str, Enum):
+    """Localization strategy for mapping DNA strands within large genomic sequences."""
+
+    EXACT_MATCH = "exact_match"
+    HAMMING_DISTANCE = "hamming_distance"
+    LEVENSHTEIN_DISTANCE = "levenshtein_distance"
+    IUPAC_PATTERN = "iupac_pattern"
+    HOMOLOGY_FUZZY = "homology_fuzzy"
+
+    def __str__(self) -> str:
+        """Return the string value."""
+        return self.value
+
+
+class CoordinateSystem(str, Enum):
+    """Coordinate convention for genomic interval representation."""
+
+    ONE_BASED_CLOSED = "1_based_closed"  # Genomic convention: [start, end]
+    ZERO_BASED_HALF_OPEN = "0_based_half_open"  # BED / Python convention: [start, end)
+
+    def __str__(self) -> str:
+        """Return the string value."""
+        return self.value
+
+
+class StrandOrientation(str, Enum):
+    """Strand search orientation for DNA sequence localization."""
+
+    FORWARD = "forward"
+    REVERSE_COMPLEMENT = "reverse_complement"
+    DUAL_STRAND = "dual_strand"
+
+    def __str__(self) -> str:
+        """Return the string value."""
+        return self.value
+
+
+class RLVRTaskDomain(str, Enum):
+    """Domain of verifiable genomic reasoning for RLVR reward contracts."""
+
+    SEQUENCE_LOCALIZATION = "sequence_localization"
+    DNA_COMPUTATION = "dna_computation"
+    VARIANT_EFFECT_GROUNDING = "variant_effect_grounding"
+    FRAME_PRESERVATION = "frame_preservation"
+    MOTIF_DISCOVERY = "motif_discovery"
+
+    def __str__(self) -> str:
+        """Return the string value."""
+        return self.value
+
+
+@dataclass
+class SequenceLocalizationContract:
+    """Formal contract for deterministically localizing DNA strands in massive sequences.
+
+    Grounded in the FineDNA RLVR benchmark for sequence localization,
+    formalizing exact start/end intervals, strand orientation, and mismatch tolerances.
+    """
+
+    contract_id: str
+    query_pattern: str  # Subsequence or IUPAC motif to locate
+    target_sequence: str = ""  # Full target sequence or accession reference
+    mode: SequenceLocalizationMode = SequenceLocalizationMode.EXACT_MATCH
+    coordinate_system: CoordinateSystem = CoordinateSystem.ONE_BASED_CLOSED
+    strand_orientation: StrandOrientation = StrandOrientation.DUAL_STRAND
+    max_mismatches: int = 0
+    expected_coordinates: list[tuple[int, int, str]] = field(default_factory=list)  # (start, end, strand)
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    @staticmethod
+    def reverse_complement(seq: str) -> str:
+        """Compute reverse complement supporting canonical and degenerate IUPAC nucleotide codes."""
+        complement_map = {
+            "A": "T",
+            "T": "A",
+            "C": "G",
+            "G": "C",
+            "U": "A",
+            "a": "t",
+            "t": "a",
+            "c": "g",
+            "g": "c",
+            "u": "a",
+            "R": "Y",
+            "Y": "R",
+            "S": "S",
+            "W": "W",
+            "K": "M",
+            "M": "K",
+            "B": "V",
+            "D": "H",
+            "H": "D",
+            "V": "B",
+            "N": "N",
+            "r": "y",
+            "y": "r",
+            "s": "s",
+            "w": "w",
+            "k": "m",
+            "m": "k",
+            "b": "v",
+            "d": "h",
+            "h": "d",
+            "v": "b",
+            "n": "n",
+        }
+        return "".join(complement_map.get(base, base) for base in reversed(seq))
+
+    def find_matches(self, target: str | None = None) -> list[tuple[int, int, str]]:
+        """Search target sequence for matches according to contract mode and coordinate system.
+
+        Returns a list of tuples: (start, end, strand)
+        """
+        import re
+
+        seq = (target if target is not None else self.target_sequence).upper()
+        pat = self.query_pattern.upper()
+        if not seq or not pat:
+            return []
+
+        hits: list[tuple[int, int, str]] = []
+        is_one_based = self.coordinate_system == CoordinateSystem.ONE_BASED_CLOSED
+
+        def _iupac_to_regex(p: str) -> str:
+            iupac_map = {
+                "A": "A",
+                "C": "C",
+                "G": "G",
+                "T": "[TU]",
+                "U": "[TU]",
+                "R": "[AG]",
+                "Y": "[CTU]",
+                "S": "[CG]",
+                "W": "[ATU]",
+                "K": "[GTU]",
+                "M": "[AC]",
+                "B": "[CGTU]",
+                "D": "[AGTU]",
+                "H": "[ACTU]",
+                "V": "[ACG]",
+                "N": "[ACGTU]",
+            }
+            return "".join(iupac_map.get(c, re.escape(c)) for c in p)
+
+        # Forward strand search
+        if self.strand_orientation in [StrandOrientation.FORWARD, StrandOrientation.DUAL_STRAND]:
+            if self.mode == SequenceLocalizationMode.IUPAC_PATTERN:
+                regex_pat = _iupac_to_regex(pat)
+                for m in re.finditer(f"(?={regex_pat})", seq):
+                    s = m.start()
+                    m_full = re.match(regex_pat, seq[s:])
+                    if m_full:
+                        e = s + m_full.end()
+                        start_coord = s + 1 if is_one_based else s
+                        end_coord = e if is_one_based else e
+                        hits.append((start_coord, end_coord, "+"))
+            elif self.mode == SequenceLocalizationMode.EXACT_MATCH or self.max_mismatches == 0:
+                idx = seq.find(pat)
+                while idx != -1:
+                    s = idx
+                    e = s + len(pat)
+                    start_coord = s + 1 if is_one_based else s
+                    end_coord = e if is_one_based else e
+                    hits.append((start_coord, end_coord, "+"))
+                    idx = seq.find(pat, idx + 1)
+            else:
+                plen = len(pat)
+                for s in range(len(seq) - plen + 1):
+                    window = seq[s : s + plen]
+                    mismatches = sum(1 for a, b in zip(window, pat) if a != b)
+                    if mismatches <= self.max_mismatches:
+                        start_coord = s + 1 if is_one_based else s
+                        end_coord = s + plen if is_one_based else s + plen
+                        hits.append((start_coord, end_coord, "+"))
+
+        # Reverse complement strand search
+        if self.strand_orientation in [StrandOrientation.REVERSE_COMPLEMENT, StrandOrientation.DUAL_STRAND]:
+            rc_pat = self.reverse_complement(pat)
+            if self.mode == SequenceLocalizationMode.IUPAC_PATTERN:
+                regex_rc = _iupac_to_regex(rc_pat)
+                for m in re.finditer(f"(?={regex_rc})", seq):
+                    s = m.start()
+                    m_full = re.match(regex_rc, seq[s:])
+                    if m_full:
+                        e = s + m_full.end()
+                        start_coord = s + 1 if is_one_based else s
+                        end_coord = e if is_one_based else e
+                        hits.append((start_coord, end_coord, "-"))
+            elif self.mode == SequenceLocalizationMode.EXACT_MATCH or self.max_mismatches == 0:
+                idx = seq.find(rc_pat)
+                while idx != -1:
+                    s = idx
+                    e = s + len(rc_pat)
+                    start_coord = s + 1 if is_one_based else s
+                    end_coord = e if is_one_based else e
+                    hits.append((start_coord, end_coord, "-"))
+                    idx = seq.find(rc_pat, idx + 1)
+            else:
+                plen = len(rc_pat)
+                for s in range(len(seq) - plen + 1):
+                    window = seq[s : s + plen]
+                    mismatches = sum(1 for a, b in zip(window, rc_pat) if a != b)
+                    if mismatches <= self.max_mismatches:
+                        start_coord = s + 1 if is_one_based else s
+                        end_coord = s + plen if is_one_based else s + plen
+                        hits.append((start_coord, end_coord, "-"))
+
+        return hits
+
+    def verify_coordinates(self, candidate_start: int, candidate_end: int, strand: str = "+") -> bool:
+        """Verify whether candidate coordinates match expected ground-truth coordinates."""
+        targets = self.expected_coordinates if self.expected_coordinates else self.find_matches()
+        for exp_s, exp_e, exp_str in targets:
+            if candidate_start == exp_s and candidate_end == exp_e and (strand == exp_str or not exp_str):
+                return True
+        return False
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "contract_id": self.contract_id,
+            "query_pattern": self.query_pattern,
+            "target_sequence": self.target_sequence,
+            "mode": str(self.mode),
+            "coordinate_system": str(self.coordinate_system),
+            "strand_orientation": str(self.strand_orientation),
+            "max_mismatches": self.max_mismatches,
+            "expected_coordinates": [list(item) for item in self.expected_coordinates],
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> SequenceLocalizationContract:
+        """Create from dictionary representation."""
+        raw_mode = data.get("mode", SequenceLocalizationMode.EXACT_MATCH)
+        mode = (
+            SequenceLocalizationMode(raw_mode)
+            if raw_mode in SequenceLocalizationMode._value2member_map_
+            else SequenceLocalizationMode.EXACT_MATCH
+        )
+
+        raw_cs = data.get("coordinate_system", CoordinateSystem.ONE_BASED_CLOSED)
+        cs = (
+            CoordinateSystem(raw_cs)
+            if raw_cs in CoordinateSystem._value2member_map_
+            else CoordinateSystem.ONE_BASED_CLOSED
+        )
+
+        raw_so = data.get("strand_orientation", StrandOrientation.DUAL_STRAND)
+        so = (
+            StrandOrientation(raw_so)
+            if raw_so in StrandOrientation._value2member_map_
+            else StrandOrientation.DUAL_STRAND
+        )
+
+        raw_coords = data.get("expected_coordinates", [])
+        expected_coordinates = [
+            (int(c[0]), int(c[1]), str(c[2]) if len(c) > 2 else "+") for c in raw_coords if len(c) >= 2
+        ]
+
+        return cls(
+            contract_id=str(data.get("contract_id", data.get("name", "seq_localization_contract"))),
+            query_pattern=str(data.get("query_pattern", "")),
+            target_sequence=str(data.get("target_sequence", "")),
+            mode=mode,
+            coordinate_system=cs,
+            strand_orientation=so,
+            max_mismatches=int(data.get("max_mismatches", 0)),
+            expected_coordinates=expected_coordinates,
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
+@dataclass
+class DNAComputationContract:
+    """Contract for deterministic DNA transformations and sequence analytics.
+
+    Formalizes the FineDNA SFT / RLVR computational categories:
+    translation (6-frame), transcription, reverse complement, ORF detection,
+    restriction enzyme digest, and GC skew profiles.
+    """
+
+    contract_id: str
+    computation_type: DNAComputationType = DNAComputationType.TRANSLATION
+    input_dna: str = ""
+    genetic_code_table: int = 1  # 1: Standard, 2: Vertebrate Mito, etc.
+    reading_frame: int = 1  # 1, 2, 3 (forward) or -1, -2, -3 (reverse)
+    expected_output: str = ""
+    orf_min_len_nt: int = 75
+    restriction_enzyme: str | None = None
+    gc_window_size: int = 100
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    STANDARD_CODON_TABLE = {
+        "TTT": "F",
+        "TTC": "F",
+        "TTA": "L",
+        "TTG": "L",
+        "TCT": "S",
+        "TCC": "S",
+        "TCA": "S",
+        "TCG": "S",
+        "TAT": "Y",
+        "TAC": "Y",
+        "TAA": "*",
+        "TAG": "*",
+        "TGT": "C",
+        "TGC": "C",
+        "TGA": "*",
+        "TGG": "W",
+        "CTT": "L",
+        "CTC": "L",
+        "CTA": "L",
+        "CTG": "L",
+        "CCT": "P",
+        "CCC": "P",
+        "CCA": "P",
+        "CCG": "P",
+        "CAT": "H",
+        "CAC": "H",
+        "CAA": "Q",
+        "CAG": "Q",
+        "CGT": "R",
+        "CGC": "R",
+        "CGA": "R",
+        "CGG": "R",
+        "ATT": "I",
+        "ATC": "I",
+        "ATA": "I",
+        "ATG": "M",
+        "ACT": "T",
+        "ACC": "T",
+        "ACA": "T",
+        "ACG": "T",
+        "AAT": "N",
+        "AAC": "N",
+        "AAA": "K",
+        "AAG": "K",
+        "AGT": "S",
+        "AGC": "S",
+        "AGA": "R",
+        "AGG": "R",
+        "GTT": "V",
+        "GTC": "V",
+        "GTA": "V",
+        "GTG": "V",
+        "GCT": "A",
+        "GCC": "A",
+        "GCA": "A",
+        "GCG": "A",
+        "GAT": "D",
+        "GAC": "D",
+        "GAA": "E",
+        "GAG": "E",
+        "GGT": "G",
+        "GGC": "G",
+        "GGA": "G",
+        "GGG": "G",
+    }
+
+    RESTRICTION_SITES = {
+        "EcoRI": "GAATTC",
+        "BamHI": "GGATCC",
+        "HindIII": "AAGCTT",
+        "NotI": "GCGGCCGC",
+        "XhoI": "CTCGAG",
+        "PstI": "CTGCAG",
+        "SmaI": "CCCGGG",
+    }
+
+    def execute_computation(self) -> str | list[Any]:
+        """Execute deterministic computation on input_dna."""
+        dna = self.input_dna.upper().replace(" ", "").replace("\n", "")
+        ctype = self.computation_type
+
+        if ctype == DNAComputationType.TRANSCRIPTION:
+            return dna.replace("T", "U")
+
+        if ctype == DNAComputationType.REVERSE_COMPLEMENT:
+            return SequenceLocalizationContract.reverse_complement(dna)
+
+        if ctype == DNAComputationType.TRANSLATION:
+            seq = dna
+            frame = self.reading_frame
+            if frame < 0:
+                seq = SequenceLocalizationContract.reverse_complement(seq)
+                offset = abs(frame) - 1
+            else:
+                offset = max(0, frame - 1)
+            pep = []
+            for i in range(offset, len(seq) - 2, 3):
+                codon = seq[i : i + 3]
+                pep.append(self.STANDARD_CODON_TABLE.get(codon, "X"))
+            return "".join(pep)
+
+        if ctype == DNAComputationType.GC_SKEW_WINDOW:
+            w = self.gc_window_size if self.gc_window_size > 0 else len(dna)
+            if len(dna) < w:
+                w = len(dna)
+            if w <= 0:
+                return [0.0]
+            skews: list[float] = []
+            for i in range(0, len(dna) - w + 1, w):
+                sub = dna[i : i + w]
+                g = sub.count("G")
+                c = sub.count("C")
+                skew = (g - c) / (g + c) if (g + c) > 0 else 0.0
+                skews.append(round(skew, 4))
+            return skews
+
+        if ctype == DNAComputationType.RESTRICTION_DIGEST:
+            enzyme = self.restriction_enzyme or "EcoRI"
+            site = self.RESTRICTION_SITES.get(enzyme, "GAATTC")
+            fragments = []
+            start = 0
+            idx = dna.find(site)
+            while idx != -1:
+                cut = idx + 1
+                fragments.append(dna[start:cut])
+                start = cut
+                idx = dna.find(site, start)
+            fragments.append(dna[start:])
+            return fragments
+
+        if ctype == DNAComputationType.ORF_DETECTION:
+            min_len = max(9, self.orf_min_len_nt)
+            orfs: list[dict[str, Any]] = []
+            for frame in (1, 2, 3):
+                offset = frame - 1
+                i = offset
+                while i < len(dna) - 2:
+                    if dna[i : i + 3] == "ATG":
+                        start_pos = i + 1
+                        for j in range(i + 3, len(dna) - 2, 3):
+                            if dna[j : j + 3] in ["TAA", "TAG", "TGA"]:
+                                end_pos = j + 3
+                                length_nt = end_pos - start_pos + 1
+                                if length_nt >= min_len:
+                                    orfs.append(
+                                        {
+                                            "start": start_pos,
+                                            "end": end_pos,
+                                            "strand": "+",
+                                            "frame": frame,
+                                            "length_nt": length_nt,
+                                            "orf_sequence": dna[start_pos - 1 : end_pos],
+                                        }
+                                    )
+                                i = j
+                                break
+                    i += 3
+            return orfs
+
+        return dna
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "contract_id": self.contract_id,
+            "computation_type": str(self.computation_type),
+            "input_dna": self.input_dna,
+            "genetic_code_table": self.genetic_code_table,
+            "reading_frame": self.reading_frame,
+            "expected_output": self.expected_output,
+            "orf_min_len_nt": self.orf_min_len_nt,
+            "restriction_enzyme": self.restriction_enzyme,
+            "gc_window_size": self.gc_window_size,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> DNAComputationContract:
+        """Create from dictionary representation."""
+        raw_type = data.get("computation_type", DNAComputationType.TRANSLATION)
+        ctype = (
+            DNAComputationType(raw_type)
+            if raw_type in DNAComputationType._value2member_map_
+            else DNAComputationType.TRANSLATION
+        )
+
+        return cls(
+            contract_id=str(data.get("contract_id", data.get("name", "dna_computation_contract"))),
+            computation_type=ctype,
+            input_dna=str(data.get("input_dna", data.get("sequence", ""))),
+            genetic_code_table=int(data.get("genetic_code_table", 1)),
+            reading_frame=int(data.get("reading_frame", 1)),
+            expected_output=str(data.get("expected_output", "")),
+            orf_min_len_nt=int(data.get("orf_min_len_nt", 75)),
+            restriction_enzyme=data.get("restriction_enzyme"),
+            gc_window_size=int(data.get("gc_window_size", 100)),
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
+@dataclass
+class VerifiableRewardContract:
+    """Formal verifiable reward contract for Reinforcement Learning with Verifiable Rewards (RLVR).
+
+    Directly models FineDNA RLVR verifier architectures, providing deterministic
+    grading, mathematical/biochemical truth verification, and cryptographic evaluation proofs.
+    """
+
+    task_id: str
+    domain: RLVRTaskDomain = RLVRTaskDomain.SEQUENCE_LOCALIZATION
+    ground_truth_reference: str = ""
+    tolerance: float = 0.0
+    reward_success: float = 1.0
+    reward_failure: float = 0.0
+    deterministic_evaluator: str = "gfl_deterministic_reward_oracle"
+    localization_contract: SequenceLocalizationContract | None = None
+    computation_contract: DNAComputationContract | None = None
+    verification_hash: str = ""
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def evaluate_reward(self, candidate_answer: str) -> tuple[float, bool]:
+        """Evaluate candidate answer deterministically against ground truth contract.
+
+        Returns (reward_value, is_verified).
+        """
+        clean_candidate = candidate_answer.strip().upper()
+        clean_truth = self.ground_truth_reference.strip().upper()
+
+        if clean_candidate == clean_truth and clean_truth != "":
+            return (self.reward_success, True)
+
+        # If localization contract attached, check coordinates
+        if self.localization_contract:
+            try:
+                parts = clean_candidate.replace(" ", "").split(":")
+                coords = parts[0].split("-")
+                strand = parts[1] if len(parts) > 1 else "+"
+                if len(coords) == 2:
+                    c_start, c_end = int(coords[0]), int(coords[1])
+                    if self.localization_contract.verify_coordinates(c_start, c_end, strand):
+                        return (self.reward_success, True)
+            except (ValueError, IndexError):
+                pass
+
+        # If computation contract attached, check direct execution
+        if self.computation_contract:
+            res = self.computation_contract.execute_computation()
+            if isinstance(res, str) and clean_candidate == res.strip().upper():
+                return (self.reward_success, True)
+
+        return (self.reward_failure, False)
+
+    def generate_verification_proof(self, candidate_answer: str) -> str:
+        """Generate deterministic cryptographic proof for verified reward."""
+        import hashlib
+
+        payload = f"{self.task_id}:{self.domain}:{candidate_answer.strip()}".encode()
+        return hashlib.sha256(payload).hexdigest()
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "task_id": self.task_id,
+            "domain": str(self.domain),
+            "ground_truth_reference": self.ground_truth_reference,
+            "tolerance": self.tolerance,
+            "reward_success": self.reward_success,
+            "reward_failure": self.reward_failure,
+            "deterministic_evaluator": self.deterministic_evaluator,
+            "localization_contract": self.localization_contract.to_dict() if self.localization_contract else None,
+            "computation_contract": self.computation_contract.to_dict() if self.computation_contract else None,
+            "verification_hash": self.verification_hash,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> VerifiableRewardContract:
+        """Create from dictionary representation."""
+        raw_dom = data.get("domain", RLVRTaskDomain.SEQUENCE_LOCALIZATION)
+        domain = (
+            RLVRTaskDomain(raw_dom)
+            if raw_dom in RLVRTaskDomain._value2member_map_
+            else RLVRTaskDomain.SEQUENCE_LOCALIZATION
+        )
+
+        loc_data = data.get("localization_contract")
+        localization_contract = (
+            SequenceLocalizationContract.from_dict(loc_data) if isinstance(loc_data, dict) else loc_data
+        )
+
+        comp_data = data.get("computation_contract")
+        computation_contract = DNAComputationContract.from_dict(comp_data) if isinstance(comp_data, dict) else comp_data
+
+        return cls(
+            task_id=str(data.get("task_id", data.get("name", "rlvr_reward_contract"))),
+            domain=domain,
+            ground_truth_reference=str(data.get("ground_truth_reference", "")),
+            tolerance=float(data.get("tolerance", 0.0)),
+            reward_success=float(data.get("reward_success", 1.0)),
+            reward_failure=float(data.get("reward_failure", 0.0)),
+            deterministic_evaluator=str(data.get("deterministic_evaluator", "gfl_deterministic_reward_oracle")),
+            localization_contract=localization_contract,
+            computation_contract=computation_contract,
+            verification_hash=str(data.get("verification_hash", "")),
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -4833,6 +5847,11 @@ __all__ = [
     "HelixConformation",
     "ViewerTrackType",
     "VariantPathogenicity",
+    "DNAComputationType",
+    "SequenceLocalizationMode",
+    "CoordinateSystem",
+    "StrandOrientation",
+    "RLVRTaskDomain",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -4933,6 +5952,17 @@ __all__ = [
     "DNABreathingProfile",
     "TFBreathingCouplingContract",
     "DNADynamicsContract",
+    "TenK10KImmuneCellType",
+    "RegulatoryQTLType",
+    "CellStateAxis",
+    "CellStateInteractionContract",
+    "CellAbundanceQTLContract",
+    "ColocalizationGateContract",
+    "TandemRepeatContract",
+    "SingleCellRegulatoryContract",
+    "SequenceLocalizationContract",
+    "DNAComputationContract",
+    "VerifiableRewardContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

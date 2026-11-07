@@ -156,6 +156,11 @@ class EnhancedSemanticValidator:
             "unified_protein_stream",
             "dna_dynamics",
             "breathing",
+            "single_cell_regulation",
+            "sc_regulation",
+            "cellular_context",
+            "verifiable_dna",
+            "rlvr_verifier",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -256,6 +261,10 @@ class EnhancedSemanticValidator:
                 self._validate_protok_block(block_content)
             elif block_name in ("dna_dynamics", "breathing"):
                 self._validate_dna_dynamics_block(block_content)
+            elif block_name in ("single_cell_regulation", "sc_regulation", "cellular_context"):
+                self._validate_single_cell_regulation_block(block_content)
+            elif block_name in ("verifiable_dna", "rlvr_verifier"):
+                self._validate_verifiable_dna_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -2070,6 +2079,220 @@ class EnhancedSemanticValidator:
                         ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
                     )
 
+    def _validate_single_cell_regulation_block(self, block: Any) -> None:
+        """Validate single_cell_regulation / sc_regulation / cellular_context block (TenK10K specifications)."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "single_cell_regulation block must be a dictionary or SingleCellRegulatoryContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format single_cell_regulation as a dictionary with target_gene, variant, cell_type, etc.")
+            return
+
+        # target_gene is required
+        gene = block.get("target_gene")
+        if not gene or not str(gene).strip():
+            self.result.add_error(
+                "single_cell_regulation block missing required 'target_gene' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Specify 'target_gene: <GENE_SYMBOL>' in single_cell_regulation block")
+
+        # variant is required
+        variant = block.get("variant")
+        if not variant or not str(variant).strip():
+            self.result.add_error(
+                "single_cell_regulation block missing required 'variant' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Specify 'variant: <chr:pos:ref>alt | rsID>' in single_cell_regulation block")
+
+        # cell_type validation
+        cell_type = block.get("cell_type")
+        if not cell_type or not str(cell_type).strip():
+            self.result.add_error(
+                "single_cell_regulation block missing required 'cell_type' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix(
+                "Specify 'cell_type: CL:XXXXXXX' or a valid TenK10K cell type (e.g. 'NK_CD56_DIM', 'MONOCYTE_CLASSICAL')"
+            )
+        else:
+            ct_str = str(cell_type).strip()
+            # Must be either valid CL CURIE (e.g. CL:0000938) or non-empty identifier
+            if ct_str.startswith("CL:") and not re.match(r"^CL:\d{7}$", ct_str):
+                self.result.add_error(
+                    f"Malformed Cell Ontology CURIE '{ct_str}' in single_cell_regulation",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Use canonical 7-digit Cell Ontology format, e.g. 'CL:0000938'")
+
+        # distance_to_tss_bp check
+        dist = block.get("distance_to_tss_bp")
+        if dist is not None:
+            try:
+                dist_val = int(dist)
+                if dist_val < 0:
+                    self.result.add_error(
+                        f"distance_to_tss_bp ({dist_val}) cannot be negative in single_cell_regulation",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Ensure distance_to_tss_bp is a non-negative integer")
+            except (ValueError, TypeError):
+                self.result.add_error(
+                    f"distance_to_tss_bp '{dist}' must be an integer",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                )
+
+        # state_interaction check
+        interaction = block.get("state_interaction")
+        if interaction is not None and isinstance(interaction, dict):
+            s_range = interaction.get("state_range")
+            if s_range is not None and (
+                not isinstance(s_range, (list, tuple))
+                or len(s_range) != 2
+                or not (0.0 <= float(s_range[0]) <= float(s_range[1]) <= 1.0)
+            ):
+                self.result.add_error(
+                    f"state_range '{s_range}' must be a 2-tuple [min, max] bounded in [0.0, 1.0]",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set state_range within [0.0, 1.0], e.g. [0.0, 1.0] or [0.2, 0.8]")
+
+            p_val = interaction.get("p_value_interaction")
+            if p_val is not None:
+                try:
+                    p_num = float(p_val)
+                    if not (0.0 < p_num <= 1.0):
+                        self.result.add_error(
+                            f"p_value_interaction ({p_num}) outside (0.0, 1.0] in state_interaction",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        f"p_value_interaction '{p_val}' must be a float",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
+
+        # abundance_qtl check
+        abundance = block.get("abundance_qtl")
+        if abundance is not None and isinstance(abundance, dict):
+            delta = abundance.get("effect_size_delta")
+            if delta is not None:
+                try:
+                    d_val = float(delta)
+                    if not (-1.0 <= d_val <= 1.0):
+                        self.result.add_error(
+                            f"abundance_qtl effect_size_delta ({d_val}) must be in [-1.0, 1.0]",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Specify fractional shift delta between -1.0 (total depletion) and +1.0 (doubling)")
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        f"abundance_qtl effect_size_delta '{delta}' must be a float",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
+
+            base_frac = abundance.get("baseline_fraction")
+            if base_frac is not None:
+                try:
+                    bf_val = float(base_frac)
+                    if not (0.0 <= bf_val <= 1.0):
+                        self.result.add_error(
+                            f"abundance_qtl baseline_fraction ({bf_val}) must be in [0.0, 1.0]",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        f"abundance_qtl baseline_fraction '{base_frac}' must be a float",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
+
+        # colocalization_gate check
+        coloc = block.get("colocalization_gate")
+        if coloc is not None and isinstance(coloc, dict):
+            pp4 = coloc.get("posterior_prob_h4")
+            if pp4 is not None:
+                try:
+                    pp4_val = float(pp4)
+                    if not (0.0 <= pp4_val <= 1.0):
+                        self.result.add_error(
+                            f"colocalization_gate posterior_prob_h4 ({pp4_val}) must be in [0.0, 1.0]",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        f"colocalization_gate posterior_prob_h4 '{pp4}' must be a float",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
+
+            thresh = coloc.get("pp4_threshold")
+            if thresh is not None:
+                try:
+                    th_val = float(thresh)
+                    if not (0.0 <= th_val <= 1.0):
+                        self.result.add_error(
+                            f"colocalization_gate pp4_threshold ({th_val}) must be in [0.0, 1.0]",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        f"colocalization_gate pp4_threshold '{thresh}' must be a float",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
+
+        # tandem_repeat check
+        tr = block.get("tandem_repeat")
+        if tr is not None and isinstance(tr, dict):
+            motif = tr.get("repeat_unit_motif")
+            if motif is not None:
+                clean_motif = re.sub(r"\s+", "", str(motif).upper())
+                invalid_chars = set(clean_motif) - {"A", "C", "G", "T"}
+                if invalid_chars:
+                    self.result.add_error(
+                        f"tandem_repeat repeat_unit_motif '{motif}' contains non-DNA characters: {sorted(list(invalid_chars))}",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Ensure repeat_unit_motif only contains standard DNA nucleotides: A, C, G, T")
+
+    def _validate_verifiable_dna_block(self, block: Any) -> None:
+        """Validate verifiable_dna / rlvr_verifier block (FineDNA RLVR specifications)."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "verifiable_dna block must be a dictionary or VerifiableRewardContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format verifiable_dna as a dictionary with task_id, domain, etc.")
+            return
+
+        task_id = block.get("task_id")
+        if not task_id or not str(task_id).strip():
+            self.result.add_error(
+                "verifiable_dna block must define a non-empty 'task_id'",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Provide a unique identifier string for task_id")
+
+        domain = block.get("domain")
+        if domain:
+            from geneforgelang.core.gftypes import RLVRTaskDomain
+
+            valid_domains = {d.value for d in RLVRTaskDomain}
+            if isinstance(domain, str) and domain.lower() not in valid_domains:
+                self.result.add_error(
+                    f"Invalid domain '{domain}' in verifiable_dna block. Must be one of {valid_domains}",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Use a valid RLVRTaskDomain")
+
+        loc = block.get("localization_contract")
+        if loc and isinstance(loc, dict) and not loc.get("query_pattern"):
+            self.result.add_error(
+                "localization_contract must define 'query_pattern'",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Provide query_pattern sequence in localization_contract")
+
+        comp = block.get("computation_contract")
+        if comp and isinstance(comp, dict) and not comp.get("input_dna"):
+            self.result.add_error(
+                "computation_contract must define 'input_dna'",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Provide input_dna sequence in computation_contract")
+
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
         self.symbol_table[block_name] = {"contract": contract}
@@ -2418,6 +2641,9 @@ class EnhancedSemanticValidator:
             "gromacs",
             "amber",
             "geneforge_helix_view",
+            "finedna",
+            "finedna_verifier",
+            "finedna_oracle",
         }
 
         if tool not in known_tools:
@@ -2541,6 +2767,9 @@ class EnhancedSemanticValidator:
             "pleiades-biodecision": ["analysis", "validation", "simulation"],
             "pleiades-7b": ["analysis", "validation", "simulation"],
             "prompteina": ["design", "simulation", "analysis", "validation"],
+            "finedna": ["analysis", "validation", "simulation"],
+            "finedna_verifier": ["analysis", "validation", "simulation"],
+            "finedna_oracle": ["analysis", "validation", "simulation"],
             "dna_typewriter": ["gene_editing", "sequencing", "analysis", "simulation"],
             "targeted_amplicon_dna_seq": ["sequencing", "analysis", "validation"],
             "bioemu2": [
@@ -2652,6 +2881,9 @@ class EnhancedSemanticValidator:
             "longitudinal",
             "epigenetic_deconvolution",
             "fragmentomics",
+            "deterministic",
+            "rlvr",
+            "dna_computation",
         }
 
         if strategy not in valid_strategies:
@@ -2853,6 +3085,9 @@ class EnhancedSemanticValidator:
             "BindCraft",
             "Prompteina",
             "prompteina",
+            "finedna",
+            "finedna_rlvr_oracle",
+            "FineDNA",
         }
 
         if model not in known_models:
@@ -2916,6 +3151,8 @@ class EnhancedSemanticValidator:
             "selectivity",
             "permeability",
             "expression_level",
+            "reward_score",
+            "verification_rate",
         }
 
         if metric not in valid_metrics:
