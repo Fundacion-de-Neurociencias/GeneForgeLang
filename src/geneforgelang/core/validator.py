@@ -161,6 +161,9 @@ class EnhancedSemanticValidator:
             "cellular_context",
             "verifiable_dna",
             "rlvr_verifier",
+            "autonomous_execution",
+            "wet_lab_dispatch",
+            "laboratory_protocol",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -265,6 +268,8 @@ class EnhancedSemanticValidator:
                 self._validate_single_cell_regulation_block(block_content)
             elif block_name in ("verifiable_dna", "rlvr_verifier"):
                 self._validate_verifiable_dna_block(block_content)
+            elif block_name in ("autonomous_execution", "wet_lab_dispatch", "laboratory_protocol"):
+                self._validate_autonomous_execution_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -2292,6 +2297,164 @@ class EnhancedSemanticValidator:
                 "computation_contract must define 'input_dna'",
                 ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
             ).add_fix("Provide input_dna sequence in computation_contract")
+
+    def _validate_autonomous_execution_block(self, block: Any) -> None:
+        """Validate autonomous_execution / wet_lab_dispatch / laboratory_protocol block (AutoDNA specifications)."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "autonomous_execution block must be a dictionary or AutonomousExecutionContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format autonomous_execution as a dictionary with protocol_id, target_sequence, steps, etc.")
+            return
+
+        protocol_id = block.get("protocol_id", block.get("name"))
+        if not protocol_id or not str(protocol_id).strip():
+            self.result.add_error(
+                "autonomous_execution block must define a non-empty 'protocol_id'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide a unique identifier string for protocol_id")
+
+        seq = block.get("target_sequence")
+        if not seq or not str(seq).strip():
+            self.result.add_error(
+                "autonomous_execution block must define a non-empty 'target_sequence'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide target biomolecular sequence (DNA/RNA) in target_sequence")
+        else:
+            clean_seq = str(seq).upper().replace(" ", "").replace("\n", "")
+            invalid_chars = set(clean_seq) - set("ACGTURYKMSWBDHVN")
+            if invalid_chars:
+                self.result.add_error(
+                    f"target_sequence contains invalid non-IUPAC characters: {sorted(list(invalid_chars))}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Ensure target_sequence contains valid IUPAC nucleotide characters")
+
+        # Synthesizability gate validation
+        synth = block.get("synthesizability")
+        if synth and isinstance(synth, dict):
+            chem = synth.get("chemistry")
+            if chem:
+                from geneforgelang.core.gftypes import SynthesisChemistry
+
+                valid_chemistries = {c.value for c in SynthesisChemistry}
+                if str(chem).lower() not in valid_chemistries:
+                    self.result.add_error(
+                        f"Invalid synthesis chemistry '{chem}' in synthesizability gate. Must be one of {valid_chemistries}",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    ).add_fix("Select a valid SynthesisChemistry (e.g. 'enzymatic_tdt', 'chemical_phosphoramidite')")
+
+            min_gc = synth.get("min_gc_content", 0.40)
+            max_gc = synth.get("max_gc_content", 0.60)
+            try:
+                min_gc_val = float(min_gc)
+                max_gc_val = float(max_gc)
+                if not (0.0 <= min_gc_val <= max_gc_val <= 1.0):
+                    self.result.add_error(
+                        f"Invalid GC content bounds [{min_gc_val}, {max_gc_val}]. Must satisfy 0.0 <= min <= max <= 1.0",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Set valid GC content bounds in range [0.0, 1.0]")
+            except (ValueError, TypeError):
+                self.result.add_error(
+                    "GC content bounds must be numeric floats between 0.0 and 1.0",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                )
+
+            max_homopolymer = synth.get("max_homopolymer", 4)
+            try:
+                if int(max_homopolymer) < 1:
+                    self.result.add_error(
+                        f"max_homopolymer ({max_homopolymer}) must be >= 1",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Set max_homopolymer to an integer >= 1 (default 4 for enzymatic TdT)")
+            except (ValueError, TypeError):
+                self.result.add_error(
+                    "max_homopolymer must be an integer",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                )
+
+        # Biosecurity validation
+        bio = block.get("biosecurity")
+        if bio and isinstance(bio, dict):
+            risk_tier = bio.get("risk_tier")
+            if risk_tier:
+                from geneforgelang.core.gftypes import BiosecurityRiskTier
+
+                valid_tiers = {t.value for t in BiosecurityRiskTier}
+                if str(risk_tier).lower() not in valid_tiers:
+                    self.result.add_error(
+                        f"Invalid biosecurity risk_tier '{risk_tier}'. Must be one of {valid_tiers}",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    ).add_fix("Select a valid BiosecurityRiskTier (e.g. 'benign_research', 'prohibited_toxin')")
+
+            if bio.get("screening_passed") is False:
+                self.result.add_error(
+                    "Biosecurity screening failed: target sequence matches regulated dual-use pathogen or toxin signature",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Review sequence against biosecurity select agent guidelines before wet-lab dispatch")
+
+        # Steps validation
+        steps = block.get("steps")
+        if steps is not None:
+            if not isinstance(steps, list):
+                self.result.add_error(
+                    "steps must be a list of WetLabStepContract objects or dictionaries",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format steps as a YAML list of instrument operations")
+            elif len(steps) == 0:
+                self.result.add_error(
+                    "autonomous_execution protocol must define at least one hardware step in 'steps'",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix("Add at least one instrument operation (e.g. synthesis, thermocycling, sequencing)")
+            else:
+                from geneforgelang.core.gftypes import WetLabInstrumentType
+
+                valid_instruments = {i.value for i in WetLabInstrumentType}
+                for idx, step in enumerate(steps):
+                    if isinstance(step, dict):
+                        inst = step.get("instrument")
+                        if not inst or str(inst).lower() not in valid_instruments:
+                            self.result.add_error(
+                                f"Invalid instrument '{inst}' in step {idx + 1}. Must be one of {valid_instruments}",
+                                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                            ).add_fix("Select a valid WetLabInstrumentType")
+                        op = step.get("operation")
+                        if not op or not str(op).strip():
+                            self.result.add_error(
+                                f"Step {idx + 1} must define a non-empty 'operation'",
+                                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                            ).add_fix(f"Specify operation name for step {idx + 1}")
+
+        # Telemetry validation
+        telem = block.get("telemetry")
+        if telem and isinstance(telem, dict):
+            readout = telem.get("readout_type")
+            if readout:
+                from geneforgelang.core.gftypes import TelemetryReadoutType
+
+                valid_readouts = {r.value for r in TelemetryReadoutType}
+                if str(readout).lower() not in valid_readouts:
+                    self.result.add_error(
+                        f"Invalid telemetry readout_type '{readout}'. Must be one of {valid_readouts}",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    ).add_fix("Select a valid TelemetryReadoutType")
+
+            conc = telem.get("concordance_rate")
+            if conc is not None:
+                try:
+                    conc_val = float(conc)
+                    if not (0.0 <= conc_val <= 1.0):
+                        self.result.add_error(
+                            f"concordance_rate ({conc_val}) must be in range [0.0, 1.0]",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Provide concordance_rate as a float between 0.0 and 1.0")
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        "concordance_rate must be a numeric float",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    )
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""

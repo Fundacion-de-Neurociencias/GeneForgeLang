@@ -360,6 +360,7 @@ class GFLAST:
     dna_dynamics: Any | None = None
     single_cell_regulation: Any | None = None
     verifiable_dna: Any | None = None
+    autonomous_execution: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -456,6 +457,12 @@ class GFLAST:
         if self.verifiable_dna is not None:
             result["verifiable_dna"] = (
                 self.verifiable_dna.to_dict() if hasattr(self.verifiable_dna, "to_dict") else self.verifiable_dna
+            )
+        if self.autonomous_execution is not None:
+            result["autonomous_execution"] = (
+                self.autonomous_execution.to_dict()
+                if hasattr(self.autonomous_execution, "to_dict")
+                else self.autonomous_execution
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -777,6 +784,25 @@ class GFLAST:
                 ast.verifiable_dna = vd_data
             elif isinstance(vd_data, dict):
                 ast.verifiable_dna = VerifiableRewardContract.from_dict(vd_data)
+
+        if "autonomous_execution" in data:
+            ae_data = data["autonomous_execution"]
+            if isinstance(ae_data, AutonomousExecutionContract):
+                ast.autonomous_execution = ae_data
+            elif isinstance(ae_data, dict):
+                ast.autonomous_execution = AutonomousExecutionContract.from_dict(ae_data)
+        elif "wet_lab_dispatch" in data:
+            ae_data = data["wet_lab_dispatch"]
+            if isinstance(ae_data, AutonomousExecutionContract):
+                ast.autonomous_execution = ae_data
+            elif isinstance(ae_data, dict):
+                ast.autonomous_execution = AutonomousExecutionContract.from_dict(ae_data)
+        elif "laboratory_protocol" in data:
+            ae_data = data["laboratory_protocol"]
+            if isinstance(ae_data, AutonomousExecutionContract):
+                ast.autonomous_execution = ae_data
+            elif isinstance(ae_data, dict):
+                ast.autonomous_execution = AutonomousExecutionContract.from_dict(ae_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -5811,6 +5837,312 @@ class VerifiableRewardContract:
         )
 
 
+# ============================================================================
+# Autonomous Wet-Lab Execution, Synthesizability & Epistemic Closed-Loop
+# Grounded in AutoDNA (Nature 2026; Heidi Ledford; Chen, Wu et al., SJTU)
+# DOI: 10.1038/d41586-026-03552-8
+# ============================================================================
+
+
+class SynthesisChemistry(str, Enum):
+    """Supported biomolecular synthesis chemistry modes."""
+
+    ENZYMATIC_TDT = "enzymatic_tdt"  # Terminal deoxynucleotidyl transferase (aqueous, green synthesis)
+    CHEMICAL_PHOSPHORAMIDITE = "chemical_phosphoramidite"  # Solid-phase chemical phosphoramidite chemistry
+    CELL_FREE_CLONING = "cell_free_cloning"  # Isothermal assembly / rolling circle cell-free synthesis
+
+
+class WetLabInstrumentType(str, Enum):
+    """Categorized laboratory instrument types in an autonomous self-driving laboratory."""
+
+    SYNTHESIZER = "synthesizer"
+    THERMOCYCLER = "thermocycler"
+    LIQUID_HANDLER = "liquid_handler"
+    CENTRIFUGE = "centrifuge"
+    ELECTROPHORESIS = "electrophoresis"
+    SEQUENCER = "sequencer"
+    ROBOTIC_ARM = "robotic_arm"
+    INCUBATOR = "incubator"
+
+
+class BiosecurityRiskTier(str, Enum):
+    """Risk stratification tiers for autonomous wet-lab synthesis dispatch."""
+
+    BENIGN_RESEARCH = "benign_research"  # Standard non-pathogenic DNA/RNA construct
+    MONITORED_GENE = "monitored_gene"  # Housekeeping or regulated gene requiring audit logging
+    RESTRICTED_AGENT = "restricted_agent"  # Controlled dual-use pathogen or virulence factor
+    PROHIBITED_TOXIN = "prohibited_toxin"  # Regulated select agent toxin (strict dispatch block)
+
+
+class TelemetryReadoutType(str, Enum):
+    """Empirical assay readout modalities for closed-loop telemetry reconciliation."""
+
+    NGS_FASTQ_READS = "ngs_fastq_reads"
+    SANGER_CHROMATOGRAM = "sanger_chromatogram"
+    STEPWISE_SYNTHESIS_YIELD = "stepwise_synthesis_yield"
+    GEL_ELECTROPHORESIS_BAND = "gel_electrophoresis_band"
+    MASS_SPECTROMETRY = "mass_spectrometry"
+
+
+@dataclass
+class SynthesizabilityGateContract:
+    """Biophysical manufacturability and synthesizability contract for wet-lab fabrication.
+
+    Enforces kinetic, thermodynamic, and sequence complexity constraints:
+    - Homopolymer runs (TdT enzymatic slipping threshold <= 4 bp)
+    - GC content window [40%, 60%]
+    - Hairpin secondary structure delta G (> -8.0 kcal/mol)
+    - Linguistic sequence complexity (> 0.45)
+    """
+
+    chemistry: SynthesisChemistry = SynthesisChemistry.ENZYMATIC_TDT
+    max_homopolymer: int = 4
+    min_gc_content: float = 0.40
+    max_gc_content: float = 0.60
+    min_hairpin_free_energy: float = -8.0
+    min_complexity: float = 0.45
+    target_length_limit: int = 2000
+    passed: bool = True
+    calculated_metrics: dict[str, Any] = field(default_factory=dict)
+    issues: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "chemistry": str(self.chemistry),
+            "max_homopolymer": self.max_homopolymer,
+            "min_gc_content": self.min_gc_content,
+            "max_gc_content": self.max_gc_content,
+            "min_hairpin_free_energy": self.min_hairpin_free_energy,
+            "min_complexity": self.min_complexity,
+            "target_length_limit": self.target_length_limit,
+            "passed": self.passed,
+            "calculated_metrics": dict(self.calculated_metrics),
+            "issues": list(self.issues),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> SynthesizabilityGateContract:
+        """Create from dictionary representation."""
+        raw_chem = data.get("chemistry", SynthesisChemistry.ENZYMATIC_TDT)
+        chemistry = (
+            SynthesisChemistry(raw_chem)
+            if raw_chem in SynthesisChemistry._value2member_map_
+            else SynthesisChemistry.ENZYMATIC_TDT
+        )
+        return cls(
+            chemistry=chemistry,
+            max_homopolymer=int(data.get("max_homopolymer", 4)),
+            min_gc_content=float(data.get("min_gc_content", 0.40)),
+            max_gc_content=float(data.get("max_gc_content", 0.60)),
+            min_hairpin_free_energy=float(data.get("min_hairpin_free_energy", -8.0)),
+            min_complexity=float(data.get("min_complexity", 0.45)),
+            target_length_limit=int(data.get("target_length_limit", 2000)),
+            passed=bool(data.get("passed", True)),
+            calculated_metrics=dict(data.get("calculated_metrics", {})),
+            issues=[str(i) for i in data.get("issues", [])],
+        )
+
+
+@dataclass
+class BiosecurityClearanceContract:
+    """Pre-dispatch biosecurity screening and cryptographic authorization contract."""
+
+    risk_tier: BiosecurityRiskTier = BiosecurityRiskTier.BENIGN_RESEARCH
+    screening_passed: bool = True
+    watermark_verified: bool = True
+    clearance_hash: str = ""
+    authorization_token: str = ""
+    operator_id: str = "autodna_planner_agent"
+    matched_signatures: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "risk_tier": str(self.risk_tier),
+            "screening_passed": self.screening_passed,
+            "watermark_verified": self.watermark_verified,
+            "clearance_hash": self.clearance_hash,
+            "authorization_token": self.authorization_token,
+            "operator_id": self.operator_id,
+            "matched_signatures": list(self.matched_signatures),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> BiosecurityClearanceContract:
+        """Create from dictionary representation."""
+        raw_tier = data.get("risk_tier", BiosecurityRiskTier.BENIGN_RESEARCH)
+        risk_tier = (
+            BiosecurityRiskTier(raw_tier)
+            if raw_tier in BiosecurityRiskTier._value2member_map_
+            else BiosecurityRiskTier.BENIGN_RESEARCH
+        )
+        return cls(
+            risk_tier=risk_tier,
+            screening_passed=bool(data.get("screening_passed", True)),
+            watermark_verified=bool(data.get("watermark_verified", True)),
+            clearance_hash=str(data.get("clearance_hash", "")),
+            authorization_token=str(data.get("authorization_token", "")),
+            operator_id=str(data.get("operator_id", "autodna_planner_agent")),
+            matched_signatures=[str(s) for s in data.get("matched_signatures", [])],
+        )
+
+
+@dataclass
+class WetLabStepContract:
+    """Single instrument execution instruction within an autonomous laboratory workflow."""
+
+    step_id: str
+    instrument: WetLabInstrumentType
+    operation: str
+    parameters: dict[str, Any] = field(default_factory=dict)
+    duration_seconds: int = 0
+    temperature_celsius: float | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "step_id": self.step_id,
+            "instrument": str(self.instrument),
+            "operation": self.operation,
+            "parameters": dict(self.parameters),
+            "duration_seconds": self.duration_seconds,
+            "temperature_celsius": self.temperature_celsius,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> WetLabStepContract:
+        """Create from dictionary representation."""
+        raw_inst = data.get("instrument", WetLabInstrumentType.SYNTHESIZER)
+        instrument = (
+            WetLabInstrumentType(raw_inst)
+            if raw_inst in WetLabInstrumentType._value2member_map_
+            else WetLabInstrumentType.SYNTHESIZER
+        )
+        temp = data.get("temperature_celsius")
+        return cls(
+            step_id=str(data.get("step_id", "step_01")),
+            instrument=instrument,
+            operation=str(data.get("operation", "")),
+            parameters=dict(data.get("parameters", {})),
+            duration_seconds=int(data.get("duration_seconds", 0)),
+            temperature_celsius=float(temp) if temp is not None else None,
+        )
+
+
+@dataclass
+class ExperimentalTelemetryContract:
+    """Empirical assay readout container for closed-loop telemetry reconciliation."""
+
+    readout_type: TelemetryReadoutType = TelemetryReadoutType.STEPWISE_SYNTHESIS_YIELD
+    observed_yield: float | None = None
+    observed_sequence: str = ""
+    concordance_rate: float = 1.0
+    raw_telemetry_uri: str = ""
+    quality_qscore: float = 38.0
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "readout_type": str(self.readout_type),
+            "observed_yield": self.observed_yield,
+            "observed_sequence": self.observed_sequence,
+            "concordance_rate": self.concordance_rate,
+            "raw_telemetry_uri": self.raw_telemetry_uri,
+            "quality_qscore": self.quality_qscore,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ExperimentalTelemetryContract:
+        """Create from dictionary representation."""
+        raw_readout = data.get("readout_type", TelemetryReadoutType.STEPWISE_SYNTHESIS_YIELD)
+        readout_type = (
+            TelemetryReadoutType(raw_readout)
+            if raw_readout in TelemetryReadoutType._value2member_map_
+            else TelemetryReadoutType.STEPWISE_SYNTHESIS_YIELD
+        )
+        yield_val = data.get("observed_yield")
+        return cls(
+            readout_type=readout_type,
+            observed_yield=float(yield_val) if yield_val is not None else None,
+            observed_sequence=str(data.get("observed_sequence", "")),
+            concordance_rate=float(data.get("concordance_rate", 1.0)),
+            raw_telemetry_uri=str(data.get("raw_telemetry_uri", "")),
+            quality_qscore=float(data.get("quality_qscore", 38.0)),
+        )
+
+
+@dataclass
+class AutonomousExecutionContract:
+    """Formal GFL Root Contract for Autonomous Wet-Lab Protocol Dispatch & Closed-Loop Execution.
+
+    Grounded in AutoDNA (Nature 2026; Heidi Ledford; Chen, Wu et al., SJTU; DOI: 10.1038/d41586-026-03552-8):
+    - Validates biophysical manufacturability and synthesizability gates before robotic actuation.
+    - Enforces biosecurity air-gap verification and SHA-256 cryptographic authorization.
+    - Compiles declarative multi-instrument sequences into SiLA 2 / AutoDNA JSON IR.
+    - Ingests empirical assay telemetry, reconciling physical sequencing reads with in silico claims.
+    """
+
+    protocol_id: str
+    target_sequence: str
+    target_entity: str = ""
+    synthesizability: SynthesizabilityGateContract | None = None
+    biosecurity: BiosecurityClearanceContract | None = None
+    steps: list[WetLabStepContract] = field(default_factory=list)
+    telemetry: ExperimentalTelemetryContract | None = None
+    evidence_promotion: str = "EMPIRICAL_VERIFIED"
+    execution_status: str = "QUEUED"
+    export_format: str = "sila2_json"
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "protocol_id": self.protocol_id,
+            "target_sequence": self.target_sequence,
+            "target_entity": self.target_entity,
+            "synthesizability": self.synthesizability.to_dict() if self.synthesizability else None,
+            "biosecurity": self.biosecurity.to_dict() if self.biosecurity else None,
+            "steps": [s.to_dict() for s in self.steps],
+            "telemetry": self.telemetry.to_dict() if self.telemetry else None,
+            "evidence_promotion": self.evidence_promotion,
+            "execution_status": self.execution_status,
+            "export_format": self.export_format,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> AutonomousExecutionContract:
+        """Create from dictionary representation."""
+        synth_data = data.get("synthesizability")
+        synthesizability = (
+            SynthesizabilityGateContract.from_dict(synth_data) if isinstance(synth_data, dict) else synth_data
+        )
+
+        bio_data = data.get("biosecurity")
+        biosecurity = BiosecurityClearanceContract.from_dict(bio_data) if isinstance(bio_data, dict) else bio_data
+
+        raw_steps = data.get("steps", [])
+        steps = [WetLabStepContract.from_dict(s) if isinstance(s, dict) else s for s in raw_steps]
+
+        telem_data = data.get("telemetry")
+        telemetry = ExperimentalTelemetryContract.from_dict(telem_data) if isinstance(telem_data, dict) else telem_data
+
+        return cls(
+            protocol_id=str(data.get("protocol_id", data.get("name", "autodna_protocol"))),
+            target_sequence=str(data.get("target_sequence", "")),
+            target_entity=str(data.get("target_entity", "")),
+            synthesizability=synthesizability,
+            biosecurity=biosecurity,
+            steps=steps,
+            telemetry=telemetry,
+            evidence_promotion=str(data.get("evidence_promotion", "EMPIRICAL_VERIFIED")),
+            execution_status=str(data.get("execution_status", "QUEUED")),
+            export_format=str(data.get("export_format", "sila2_json")),
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -5852,6 +6184,10 @@ __all__ = [
     "CoordinateSystem",
     "StrandOrientation",
     "RLVRTaskDomain",
+    "SynthesisChemistry",
+    "WetLabInstrumentType",
+    "BiosecurityRiskTier",
+    "TelemetryReadoutType",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -5963,6 +6299,11 @@ __all__ = [
     "SequenceLocalizationContract",
     "DNAComputationContract",
     "VerifiableRewardContract",
+    "SynthesizabilityGateContract",
+    "BiosecurityClearanceContract",
+    "WetLabStepContract",
+    "ExperimentalTelemetryContract",
+    "AutonomousExecutionContract",
     # Validation types
     "ValidationError",
     "ValidationResult",
