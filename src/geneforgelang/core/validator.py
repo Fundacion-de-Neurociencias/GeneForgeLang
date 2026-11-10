@@ -164,6 +164,9 @@ class EnhancedSemanticValidator:
             "autonomous_execution",
             "wet_lab_dispatch",
             "laboratory_protocol",
+            "bioc_reference",
+            "lakehouse_reference",
+            "bioc_on_ice",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -270,6 +273,8 @@ class EnhancedSemanticValidator:
                 self._validate_verifiable_dna_block(block_content)
             elif block_name in ("autonomous_execution", "wet_lab_dispatch", "laboratory_protocol"):
                 self._validate_autonomous_execution_block(block_content)
+            elif block_name in ("bioc_reference", "lakehouse_reference", "bioc_on_ice"):
+                self._validate_bioc_reference_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -2455,6 +2460,162 @@ class EnhancedSemanticValidator:
                         "concordance_rate must be a numeric float",
                         ErrorCodes.SEMANTIC_INVALID_PARAMETER,
                     )
+
+    def _validate_bioc_reference_block(self, block: Any) -> None:
+        """Validate bioc_reference / lakehouse_reference / bioc_on_ice block.
+
+        Grounded in Bioconductor on Ice (Sean Davis, 2026):
+        - Validates release_id pinning (e.g. 'latest' or 'YYYY-MM-DD').
+        - Validates genome_build against ReferenceGenomeBuild.
+        - Validates query_backend against LakehouseQueryBackend.
+        - Validates lakehouse queries (schemas, tables, columns, limits).
+        """
+        import re
+
+        from geneforgelang.core.gftypes import (
+            BiocSchemaType,
+            LakehouseQueryBackend,
+            ReferenceGenomeBuild,
+        )
+
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "bioc_reference block must be a dictionary or BiocIceContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format bioc_reference as a dictionary with release_id, genome_build, queries, etc.")
+            return
+
+        # 1. release_id validation
+        release_id = block.get("release_id", "latest")
+        if not release_id or not isinstance(release_id, str):
+            self.result.add_error(
+                "bioc_reference must define a non-empty string for 'release_id'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Specify 'release_id: latest' or a dated release such as '2026-11-08'")
+        else:
+            rel_str = release_id.strip()
+            if rel_str.lower() != "latest" and not re.match(r"^(v)?\d{4}-\d{2}(-\d{2})?$", rel_str):
+                self.result.add_error(
+                    f"Invalid release_id '{release_id}'. Must be 'latest' or a date format YYYY-MM-DD",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Use 'latest' or a valid frozen date snapshot format like '2026-11-08'")
+
+        # 2. genome_build validation
+        genome_build = block.get("genome_build")
+        if genome_build is not None:
+            build_str = str(genome_build.value if hasattr(genome_build, "value") else genome_build).strip().lower()
+            valid_builds = {b.value.lower(): b for b in ReferenceGenomeBuild}
+            if build_str not in valid_builds:
+                self.result.add_error(
+                    f"Invalid genome_build '{genome_build}'. Supported builds: {[b.value for b in ReferenceGenomeBuild]}",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Set genome_build to 'GRCh38', 'GRCh37', 'T2T-CHM13', or 'GRCm39'")
+
+        # 3. query_backend validation
+        backend = block.get("query_backend")
+        if backend is not None:
+            backend_str = str(backend.value if hasattr(backend, "value") else backend).strip().lower()
+            valid_backends = {b.value.lower(): b for b in LakehouseQueryBackend}
+            backend_aliases = {
+                "duckdb": "duckdb_httpfs",
+                "arrow": "arrow_streaming",
+                "polars": "arrow_streaming",
+                "manifest": "manifest_index",
+                "index": "manifest_index",
+            }
+            if backend_str not in valid_backends and backend_str not in backend_aliases:
+                self.result.add_error(
+                    f"Invalid query_backend '{backend}'. Supported backends: {[b.value for b in LakehouseQueryBackend]} (or aliases 'duckdb', 'arrow')",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Set query_backend to 'duckdb_httpfs' (or 'duckdb'), 'arrow_streaming', or 'manifest_index'")
+
+        # 4. base_url validation
+        base_url = block.get("base_url")
+        if base_url is not None and (
+            not isinstance(base_url, str)
+            or not any(base_url.startswith(proto) for proto in ("http://", "https://", "s3://", "gs://"))
+        ):
+            self.result.add_error(
+                f"Invalid base_url '{base_url}'. Must start with http://, https://, s3://, or gs://",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Provide a valid base URL for the lakehouse bucket")
+
+        # 5. queries validation
+        queries = block.get("queries")
+        if queries is not None:
+            if not isinstance(queries, list):
+                self.result.add_error(
+                    "queries in bioc_reference must be a list of LakehouseQueryContract objects or dictionaries",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format queries as a YAML list of query specifications")
+            else:
+                valid_schemas = {s.value.lower(): s for s in BiocSchemaType}
+                for idx, q in enumerate(queries):
+                    if hasattr(q, "to_dict"):
+                        q = q.to_dict()
+                    if not isinstance(q, dict):
+                        self.result.add_error(
+                            f"Query at index {idx} must be a dictionary",
+                            ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                        )
+                        continue
+
+                    # Validate schema
+                    schema = q.get("schema")
+                    if schema is not None:
+                        schema_str = str(schema.value if hasattr(schema, "value") else schema).strip().lower()
+                        if schema_str not in valid_schemas:
+                            self.result.add_error(
+                                f"Invalid schema '{schema}' in query {idx + 1}. Must be one of {[s.value for s in BiocSchemaType]}",
+                                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                            ).add_fix(
+                                "Use one of 'annotation', 'clinical', 'ontology', 'provenance', 'raw', 'reference', 'resource'"
+                            )
+
+                    # Validate table
+                    table = q.get("table")
+                    if not table or not str(table).strip():
+                        self.result.add_error(
+                            f"Query {idx + 1} must specify a non-empty 'table' name",
+                            ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                        ).add_fix("Specify table name (e.g. 'gene', 'transcript', 'terms')")
+
+                    # Validate limit
+                    limit = q.get("limit")
+                    if limit is not None:
+                        try:
+                            lim_val = int(limit)
+                            if lim_val < 1:
+                                self.result.add_error(
+                                    f"limit ({lim_val}) in query {idx + 1} must be an integer >= 1",
+                                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                                ).add_fix("Set limit to an integer >= 1")
+                        except (ValueError, TypeError):
+                            self.result.add_error(
+                                f"limit in query {idx + 1} must be an integer",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            )
+
+                    # Validate columns
+                    cols = q.get("columns")
+                    if cols is not None and not isinstance(cols, list):
+                        self.result.add_error(
+                            f"columns in query {idx + 1} must be a list of column names",
+                            ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                        )
+
+        # 6. pinned_tables validation
+        pinned_tables = block.get("pinned_tables")
+        if pinned_tables is not None and not isinstance(pinned_tables, list):
+            self.result.add_error(
+                "pinned_tables must be a list of table identifiers (e.g. 'annotation.gene')",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            )
+
+        self._store_block_contract("bioc_reference", block)
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""

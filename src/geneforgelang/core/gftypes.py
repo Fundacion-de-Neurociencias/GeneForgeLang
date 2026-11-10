@@ -361,6 +361,7 @@ class GFLAST:
     single_cell_regulation: Any | None = None
     verifiable_dna: Any | None = None
     autonomous_execution: Any | None = None
+    bioc_reference: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -463,6 +464,10 @@ class GFLAST:
                 self.autonomous_execution.to_dict()
                 if hasattr(self.autonomous_execution, "to_dict")
                 else self.autonomous_execution
+            )
+        if self.bioc_reference is not None:
+            result["bioc_reference"] = (
+                self.bioc_reference.to_dict() if hasattr(self.bioc_reference, "to_dict") else self.bioc_reference
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -803,6 +808,25 @@ class GFLAST:
                 ast.autonomous_execution = ae_data
             elif isinstance(ae_data, dict):
                 ast.autonomous_execution = AutonomousExecutionContract.from_dict(ae_data)
+
+        if "bioc_reference" in data:
+            br_data = data["bioc_reference"]
+            if isinstance(br_data, BiocIceContract):
+                ast.bioc_reference = br_data
+            elif isinstance(br_data, dict):
+                ast.bioc_reference = BiocIceContract.from_dict(br_data)
+        elif "lakehouse_reference" in data:
+            br_data = data["lakehouse_reference"]
+            if isinstance(br_data, BiocIceContract):
+                ast.bioc_reference = br_data
+            elif isinstance(br_data, dict):
+                ast.bioc_reference = BiocIceContract.from_dict(br_data)
+        elif "bioc_on_ice" in data:
+            br_data = data["bioc_on_ice"]
+            if isinstance(br_data, BiocIceContract):
+                ast.bioc_reference = br_data
+            elif isinstance(br_data, dict):
+                ast.bioc_reference = BiocIceContract.from_dict(br_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -6143,6 +6167,243 @@ class AutonomousExecutionContract:
         )
 
 
+# ============================================================================
+# Cloud-Native Biological Lakehouse & Frozen Annotation Engine (bioc-on-ice)
+# Grounded in Bioconductor on Ice (Sean Davis, Cloudflare R2 / Apache Parquet + DuckDB)
+# Manifest: https://bioconice.cancerdatasci.org/data/latest/manifest.json
+# ============================================================================
+
+
+class BiocSchemaType(str, Enum):
+    """Canonical database schemas in the bioc-on-ice biological lakehouse."""
+
+    ANNOTATION = "annotation"  # Genes, transcripts, exons, identifier mappings
+    CLINICAL = "clinical"  # Clinical associations, GWAS catalog, traits
+    ONTOLOGY = "ontology"  # Cell Ontology (CL), Gene Ontology (GO), Human Phenotype (HP), DOID
+    PROVENANCE = "provenance"  # Release snapshots, file SHA-256 hashes, source versions
+    RAW = "raw"  # Direct NCBI gene2ensembl, gene_info, Ensembl GTF dumps
+    REFERENCE = "reference"  # Reference genomes, chromosome maps
+    RESOURCE = "resource"  # Catalogs and external curated assets
+
+
+class LakehouseQueryBackend(str, Enum):
+    """Execution backend for lakehouse Parquet queries."""
+
+    DUCKDB_HTTPFS = "duckdb_httpfs"  # High-performance zero-download DuckDB pushdown SQL
+    ARROW_STREAMING = "arrow_streaming"  # PyArrow streaming dataset scanner
+    MANIFEST_INDEX = "manifest_index"  # Fast offline/online manifest metadata index
+
+
+class ReferenceGenomeBuild(str, Enum):
+    """Supported reference genome builds for lakehouse coordinates."""
+
+    GRCH38 = "GRCh38"
+    GRCH37 = "GRCh37"
+    T2T_CHM13 = "T2T-CHM13"
+    GRCM39 = "GRCm39"
+
+
+@dataclass
+class LakehouseTableMetadata:
+    """Metadata and cryptographic checksum for a single table in the biological lakehouse."""
+
+    schema: BiocSchemaType
+    table: str
+    path: str
+    row_count: int
+    bytes_size: int
+    sha256: str = ""
+    comment: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "schema": self.schema.value if hasattr(self.schema, "value") else str(self.schema),
+            "table": self.table,
+            "path": self.path,
+            "row_count": self.row_count,
+            "bytes_size": self.bytes_size,
+            "sha256": self.sha256,
+            "comment": self.comment,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> LakehouseTableMetadata:
+        """Create from dictionary representation."""
+        raw_schema = data.get("schema", BiocSchemaType.ANNOTATION)
+        schema = (
+            BiocSchemaType(raw_schema) if raw_schema in BiocSchemaType._value2member_map_ else BiocSchemaType.ANNOTATION
+        )
+        return cls(
+            schema=schema,
+            table=str(data.get("table", "")),
+            path=str(data.get("path", "")),
+            row_count=int(data.get("row_count", 0)),
+            bytes_size=int(data.get("bytes", data.get("bytes_size", 0))),
+            sha256=str(data.get("sha256", "")),
+            comment=str(data.get("comment", "")),
+        )
+
+
+@dataclass
+class BiocReleaseMetadata:
+    """Full snapshot release manifest metadata from bioc-on-ice."""
+
+    manifest_version: int = 1
+    release_id: str = "latest"
+    published_at: str = ""
+    git_sha: str = ""
+    base_url: str = "https://data.bioconice.cancerdatasci.org/latest"
+    tables: list[LakehouseTableMetadata] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "manifest_version": self.manifest_version,
+            "release_id": self.release_id,
+            "published_at": self.published_at,
+            "git_sha": self.git_sha,
+            "base_url": self.base_url,
+            "tables": [t.to_dict() for t in self.tables],
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> BiocReleaseMetadata:
+        """Create from dictionary representation."""
+        raw_tables = data.get("tables", [])
+        tables = [LakehouseTableMetadata.from_dict(t) if isinstance(t, dict) else t for t in raw_tables]
+        return cls(
+            manifest_version=int(data.get("manifest_version", 1)),
+            release_id=str(data.get("release", data.get("release_id", "latest"))),
+            published_at=str(data.get("published_at", "")),
+            git_sha=str(data.get("git_sha", "")),
+            base_url=str(data.get("base_url", "https://data.bioconice.cancerdatasci.org/latest")),
+            tables=tables,
+        )
+
+
+@dataclass
+class LakehouseQueryContract:
+    """Declarative query contract over a bioc-on-ice lakehouse table."""
+
+    schema: BiocSchemaType = BiocSchemaType.ANNOTATION
+    table: str = "gene"
+    columns: list[str] = field(default_factory=list)
+    filter_sql: str = ""
+    limit: int = 50
+    parameters: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "schema": self.schema.value if hasattr(self.schema, "value") else str(self.schema),
+            "table": self.table,
+            "columns": list(self.columns),
+            "filter_sql": self.filter_sql,
+            "limit": self.limit,
+            "parameters": dict(self.parameters),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> LakehouseQueryContract:
+        """Create from dictionary representation."""
+        raw_schema = data.get("schema", BiocSchemaType.ANNOTATION)
+        schema = (
+            BiocSchemaType(raw_schema) if raw_schema in BiocSchemaType._value2member_map_ else BiocSchemaType.ANNOTATION
+        )
+        return cls(
+            schema=schema,
+            table=str(data.get("table", "gene")),
+            columns=[str(c) for c in data.get("columns", [])],
+            filter_sql=str(data.get("filter_sql", "")),
+            limit=int(data.get("limit", 50)),
+            parameters=dict(data.get("parameters", {})),
+        )
+
+
+@dataclass
+class BiocIceContract:
+    """Formal GFL Root Contract for Cloud-Native Biological Lakehouse & Frozen Annotations.
+
+    Grounded in bioc-on-ice (Bioconductor on Ice; Sean Davis; 100GB, 4B rows, 81 tables):
+    - Epistemic Pinning: Binds analysis to frozen release snapshots (e.g. '2026-11-08' or 'latest').
+    - Pushdown Execution: Zero-download HTTP range queries via DuckDB / Parquet streaming.
+    - Lakehouse Validation: Ground truth resolution for genes, transcripts, and ontologies.
+    """
+
+    release_id: str = "latest"
+    genome_build: ReferenceGenomeBuild = ReferenceGenomeBuild.GRCH38
+    base_url: str = "https://data.bioconice.cancerdatasci.org/latest"
+    query_backend: LakehouseQueryBackend = LakehouseQueryBackend.MANIFEST_INDEX
+    queries: list[LakehouseQueryContract] = field(default_factory=list)
+    pinned_tables: list[str] = field(default_factory=list)
+    verified_manifest_sha: str = ""
+    cache_dir: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "release_id": self.release_id,
+            "genome_build": self.genome_build.value if hasattr(self.genome_build, "value") else str(self.genome_build),
+            "base_url": self.base_url,
+            "query_backend": self.query_backend.value
+            if hasattr(self.query_backend, "value")
+            else str(self.query_backend),
+            "queries": [q.to_dict() for q in self.queries],
+            "pinned_tables": list(self.pinned_tables),
+            "verified_manifest_sha": self.verified_manifest_sha,
+            "cache_dir": self.cache_dir,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> BiocIceContract:
+        """Create from dictionary representation."""
+        raw_build = data.get("genome_build", ReferenceGenomeBuild.GRCH38)
+        genome_build = (
+            ReferenceGenomeBuild(raw_build)
+            if raw_build in ReferenceGenomeBuild._value2member_map_
+            else ReferenceGenomeBuild.GRCH38
+        )
+
+        raw_backend = data.get("query_backend", LakehouseQueryBackend.MANIFEST_INDEX)
+        backend_aliases = {
+            "duckdb": LakehouseQueryBackend.DUCKDB_HTTPFS,
+            "duckdb_httpfs": LakehouseQueryBackend.DUCKDB_HTTPFS,
+            "arrow": LakehouseQueryBackend.ARROW_STREAMING,
+            "arrow_streaming": LakehouseQueryBackend.ARROW_STREAMING,
+            "polars": LakehouseQueryBackend.ARROW_STREAMING,
+            "manifest_index": LakehouseQueryBackend.MANIFEST_INDEX,
+            "manifest": LakehouseQueryBackend.MANIFEST_INDEX,
+            "index": LakehouseQueryBackend.MANIFEST_INDEX,
+        }
+        if isinstance(raw_backend, str) and raw_backend.lower() in backend_aliases:
+            query_backend = backend_aliases[raw_backend.lower()]
+        elif raw_backend in LakehouseQueryBackend._value2member_map_:
+            query_backend = LakehouseQueryBackend(raw_backend)
+        else:
+            query_backend = LakehouseQueryBackend.MANIFEST_INDEX
+
+        raw_queries = data.get("queries", [])
+        queries = [LakehouseQueryContract.from_dict(q) if isinstance(q, dict) else q for q in raw_queries]
+
+        raw_pinned = data.get("pinned_tables", [])
+        pinned_tables = [str(p) for p in raw_pinned] if isinstance(raw_pinned, list) else []
+
+        return cls(
+            release_id=str(data.get("release_id", data.get("release", "latest"))),
+            genome_build=genome_build,
+            base_url=str(data.get("base_url", "https://data.bioconice.cancerdatasci.org/latest")),
+            query_backend=query_backend,
+            queries=queries,
+            pinned_tables=pinned_tables,
+            verified_manifest_sha=str(data.get("verified_manifest_sha", "")),
+            cache_dir=str(data["cache_dir"]) if data.get("cache_dir") else None,
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -6188,6 +6449,9 @@ __all__ = [
     "WetLabInstrumentType",
     "BiosecurityRiskTier",
     "TelemetryReadoutType",
+    "BiocSchemaType",
+    "LakehouseQueryBackend",
+    "ReferenceGenomeBuild",
     # Dataclasses
     "IOContract",
     "TensorContract",
@@ -6304,6 +6568,10 @@ __all__ = [
     "WetLabStepContract",
     "ExperimentalTelemetryContract",
     "AutonomousExecutionContract",
+    "LakehouseTableMetadata",
+    "BiocReleaseMetadata",
+    "LakehouseQueryContract",
+    "BiocIceContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

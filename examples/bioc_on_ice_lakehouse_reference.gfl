@@ -1,0 +1,53 @@
+# GeneForgeLang Protocol: Cloud-Native Biological Lakehouse & Frozen Annotations
+# Grounded in bioc-on-ice (Bioconductor on Ice; Sean Davis, 2026; https://bioconice.cancerdatasci.org)
+#
+# Connects GFL directly to 100GB, 4B rows of frozen biological lakehouse tables
+# (NCBI/Ensembl annotations, ontologies, GWASCatalog, Cellosaurus, WikiPathways)
+# executing zero-download DuckDB pushdown queries and cryptographic manifest verification.
+
+metadata:
+  author: "GeneForge Synthetic Biology Core"
+  study: "Bioconductor on Ice Cloud-Native Biological Lakehouse Integration"
+  source_citation: "Davis S., Bioconductor on Ice (bioc-on-ice) 2026, https://bioconice.cancerdatasci.org"
+  target_organism: "Homo sapiens"
+  reference_release: "2026-11-08"
+
+bioc_reference:
+  release_id: "2026-11-08"
+  genome_build: "GRCh38"
+  base_url: "https://data.bioconice.cancerdatasci.org/latest"
+  query_backend: "duckdb"
+  pinned_tables:
+    - "annotation.gene"
+    - "annotation.transcript"
+    - "ontology.term"
+    - "clinical.gwas_catalog__study"
+  queries:
+    - schema: "annotation"
+      table: "gene"
+      columns:
+        - "gene_id"
+        - "symbol"
+        - "chromosome"
+        - "start"
+        - "end"
+        - "biotype"
+      filter_sql: "symbol IN ('GZMB', 'KRAS', 'TP53', 'TREM2', 'IL2RA')"
+      limit: 10
+    - schema: "annotation"
+      table: "transcript"
+      columns:
+        - "transcript_id"
+        - "gene_id"
+        - "transcript_name"
+        - "biotype"
+      filter_sql: "gene_id = 'ENSG00000100453'"
+      limit: 5
+    - schema: "ontology"
+      table: "term"
+      columns:
+        - "curie"
+        - "label"
+        - "definition"
+      filter_sql: "curie IN ('CL:0000938', 'GO:0006955', 'DOID:14330')"
+      limit: 10
