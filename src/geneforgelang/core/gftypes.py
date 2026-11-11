@@ -363,6 +363,7 @@ class GFLAST:
     autonomous_execution: Any | None = None
     bioc_reference: Any | None = None
     alphagenome2: Any | None = None
+    finedna: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -474,6 +475,8 @@ class GFLAST:
             result["alphagenome2"] = (
                 self.alphagenome2.to_dict() if hasattr(self.alphagenome2, "to_dict") else self.alphagenome2
             )
+        if self.finedna is not None:
+            result["finedna"] = self.finedna.to_dict() if hasattr(self.finedna, "to_dict") else self.finedna
         if self.metadata:
             result["metadata"] = self.metadata
         return result
@@ -851,6 +854,25 @@ class GFLAST:
                 ast.alphagenome2 = ag2_data
             elif isinstance(ag2_data, dict):
                 ast.alphagenome2 = AlphaGenome2Contract.from_dict(ag2_data)
+
+        if "finedna" in data:
+            fd_data = data["finedna"]
+            if isinstance(fd_data, FineDNAContract):
+                ast.finedna = fd_data
+            elif isinstance(fd_data, dict):
+                ast.finedna = FineDNAContract.from_dict(fd_data)
+        elif "finedna_task" in data:
+            fd_data = data["finedna_task"]
+            if isinstance(fd_data, FineDNAContract):
+                ast.finedna = fd_data
+            elif isinstance(fd_data, dict):
+                ast.finedna = FineDNAContract.from_dict(fd_data)
+        elif "finedna_circuit" in data:
+            fd_data = data["finedna_circuit"]
+            if isinstance(fd_data, FineDNAContract):
+                ast.finedna = fd_data
+            elif isinstance(fd_data, dict):
+                ast.finedna = FineDNAContract.from_dict(fd_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -6659,6 +6681,164 @@ class AlphaGenome2Contract:
         )
 
 
+# ============================================================================
+# FineDNA Frontier Biological Foundation Model & Sovereign RLVR Contracts
+# Grounded in FineDNA (Qwen3-14B backbone, 514B biological mid-training tokens,
+# 200k SFT conversations, 100k RL tasks for environments, reaching GPT-Sol 6.1 tier)
+# ============================================================================
+
+
+class FineDNATaskType(str, Enum):
+    """Categorized task types for FineDNA biological reasoning and GFL synthesis."""
+
+    GFL_CODE_SYNTHESIS = "gfl_code_synthesis"
+    SEQUENCE_LOCALIZATION = "sequence_localization"
+    CRISPR_CIRCUIT_DESIGN = "crispr_circuit_design"
+    VARIANT_EFFECT_REASONING = "variant_effect_reasoning"
+    ENZYME_MUTAGENESIS = "enzyme_mutagenesis"
+    RLVR_BENCHMARK_TASK = "rlvr_benchmark_task"
+
+
+@dataclass
+class FineDNAInferenceConfig:
+    """Configuration for local or on-premise FineDNA inference."""
+
+    endpoint_url: str = "http://localhost:8000/v1"
+    model_name: str = "FineDNA-14B"
+    temperature: float = 0.2
+    max_tokens: int = 4096
+    air_gapped: bool = True
+    timeout_seconds: float = 30.0
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "endpoint_url": self.endpoint_url,
+            "model_name": self.model_name,
+            "temperature": self.temperature,
+            "max_tokens": self.max_tokens,
+            "air_gapped": self.air_gapped,
+            "timeout_seconds": self.timeout_seconds,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> FineDNAInferenceConfig:
+        """Create from dictionary representation."""
+        return cls(
+            endpoint_url=str(data.get("endpoint_url", "http://localhost:8000/v1")),
+            model_name=str(data.get("model_name", "FineDNA-14B")),
+            temperature=float(data.get("temperature", 0.2)),
+            max_tokens=int(data.get("max_tokens", 4096)),
+            air_gapped=bool(data.get("air_gapped", True)),
+            timeout_seconds=float(data.get("timeout_seconds", 30.0)),
+        )
+
+
+@dataclass
+class RLVREnvironmentTrace:
+    """Diagnostic trace of an interactive RLVR compiler closed-loop evaluation."""
+
+    iteration_count: int = 1
+    successful: bool = True
+    reward_score: float = 1.0
+    verification_proof: str = ""
+    error_history: list[str] = field(default_factory=list)
+    final_gfl_code: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "iteration_count": self.iteration_count,
+            "successful": self.successful,
+            "reward_score": self.reward_score,
+            "verification_proof": self.verification_proof,
+            "error_history": list(self.error_history),
+            "final_gfl_code": self.final_gfl_code,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> RLVREnvironmentTrace:
+        """Create from dictionary representation."""
+        return cls(
+            iteration_count=int(data.get("iteration_count", 1)),
+            successful=bool(data.get("successful", True)),
+            reward_score=float(data.get("reward_score", 1.0)),
+            verification_proof=str(data.get("verification_proof", "")),
+            error_history=list(data.get("error_history", [])),
+            final_gfl_code=str(data.get("final_gfl_code", "")),
+        )
+
+
+@dataclass
+class FineDNAContract:
+    """Formal contract for FineDNA sovereign biological reasoning and GFL synthesis."""
+
+    contract_id: str
+    task_type: FineDNATaskType
+    prompt: str
+    inference_config: FineDNAInferenceConfig = field(default_factory=FineDNAInferenceConfig)
+    target_locus: str | None = None
+    verifiable_reward_contract: VerifiableRewardContract | None = None
+    generated_gfl: str = ""
+    execution_trace: RLVREnvironmentTrace | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "contract_id": self.contract_id,
+            "task_type": str(self.task_type.value if hasattr(self.task_type, "value") else self.task_type),
+            "prompt": self.prompt,
+            "inference_config": self.inference_config.to_dict(),
+            "target_locus": self.target_locus,
+            "verifiable_reward_contract": (
+                self.verifiable_reward_contract.to_dict() if self.verifiable_reward_contract else None
+            ),
+            "generated_gfl": self.generated_gfl,
+            "execution_trace": self.execution_trace.to_dict() if self.execution_trace else None,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> FineDNAContract:
+        """Create from dictionary representation."""
+        contract_id = str(data.get("contract_id", data.get("name", "finedna_task")))
+        raw_tt = data.get("task_type", FineDNATaskType.GFL_CODE_SYNTHESIS)
+        task_type = (
+            FineDNATaskType(raw_tt)
+            if raw_tt in FineDNATaskType._value2member_map_
+            else FineDNATaskType.GFL_CODE_SYNTHESIS
+        )
+        prompt = str(data.get("prompt", ""))
+
+        inf_data = data.get("inference_config", {})
+        inference_config = (
+            FineDNAInferenceConfig.from_dict(inf_data) if isinstance(inf_data, dict) else FineDNAInferenceConfig()
+        )
+
+        target_locus = str(data["target_locus"]) if data.get("target_locus") else None
+
+        vrc_data = data.get("verifiable_reward_contract")
+        verifiable_reward_contract = (
+            VerifiableRewardContract.from_dict(vrc_data) if isinstance(vrc_data, dict) else vrc_data
+        )
+
+        trace_data = data.get("execution_trace")
+        execution_trace = RLVREnvironmentTrace.from_dict(trace_data) if isinstance(trace_data, dict) else trace_data
+
+        return cls(
+            contract_id=contract_id,
+            task_type=task_type,
+            prompt=prompt,
+            inference_config=inference_config,
+            target_locus=target_locus,
+            verifiable_reward_contract=verifiable_reward_contract,
+            generated_gfl=str(data.get("generated_gfl", "")),
+            execution_trace=execution_trace,
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -6832,6 +7012,10 @@ __all__ = [
     "AG2CellularContextContract",
     "AG2EnhancerGeneLinkContract",
     "AlphaGenome2Contract",
+    "FineDNATaskType",
+    "FineDNAInferenceConfig",
+    "RLVREnvironmentTrace",
+    "FineDNAContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

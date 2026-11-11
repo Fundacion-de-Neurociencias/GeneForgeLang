@@ -11,6 +11,7 @@ from typing import Any, Optional, Union, cast
 
 from geneforgelang.core.errors import (
     EnhancedValidationResult,
+    ErrorCategory,
     ErrorCodes,
     ErrorSeverity,
     SourceLocation,
@@ -170,6 +171,9 @@ class EnhancedSemanticValidator:
             "alphagenome2",
             "ag2_locus",
             "cellular_regulation_1mb",
+            "finedna",
+            "finedna_task",
+            "finedna_circuit",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -280,6 +284,8 @@ class EnhancedSemanticValidator:
                 self._validate_bioc_reference_block(block_content)
             elif block_name in ("alphagenome2", "ag2_locus", "cellular_regulation_1mb"):
                 self._validate_alphagenome2_block(block_content)
+            elif block_name in ("finedna", "finedna_task", "finedna_circuit"):
+                self._validate_finedna_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -2822,6 +2828,116 @@ class EnhancedSemanticValidator:
                         )
 
         self._store_block_contract("alphagenome2", block)
+
+    def _validate_finedna_block(self, block: Any) -> None:
+        """Validate finedna / finedna_task / finedna_circuit block.
+
+        Grounded in FineDNA (Qwen3-14B backbone, 514B biological mid-training tokens,
+        200k SFT conversations, 100k RL tasks for environments, reaching GPT-Sol 6.1 tier):
+        - Enforces sovereign air-gapped endpoints (prohibits external cloud leakage when air_gapped=True).
+        - Validates task types (GFL code synthesis, sequence localization, CRISPR design).
+        - Verifies linked RLVR verifiable reward contracts and parameters.
+        """
+        from urllib.parse import urlparse
+
+        from geneforgelang.core.gftypes import FineDNATaskType
+
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "finedna block must be a dictionary or FineDNAContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format finedna as a dictionary with contract_id, task_type, and prompt")
+            return
+
+        # 1. contract_id validation
+        contract_id = block.get("contract_id", block.get("name"))
+        if not contract_id or not str(contract_id).strip():
+            self.result.add_error(
+                "finedna block must define a non-empty 'contract_id' (or 'name')",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide a unique identifier string for contract_id")
+
+        # 2. task_type validation
+        task_type = block.get("task_type")
+        if task_type:
+            valid_tasks = {t.value for t in FineDNATaskType}
+            tt_str = str(task_type.value if hasattr(task_type, "value") else task_type).strip().lower()
+            if tt_str not in valid_tasks:
+                self.result.add_error(
+                    f"Invalid task_type '{task_type}' in finedna block. Must be one of {sorted(valid_tasks)}",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Use a valid FineDNATaskType")
+
+        # 3. prompt validation
+        prompt = block.get("prompt")
+        if prompt is not None and not str(prompt).strip():
+            self.result.add_error(
+                "finedna block prompt cannot be empty string when provided",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Provide a descriptive biological reasoning or GFL synthesis prompt")
+
+        # 4. inference_config and air-gapped security validation
+        inf_cfg = block.get("inference_config")
+        if isinstance(inf_cfg, dict):
+            air_gapped = inf_cfg.get("air_gapped", True)
+            endpoint = str(inf_cfg.get("endpoint_url", "")).strip()
+            if air_gapped and endpoint:
+                parsed = urlparse(endpoint)
+                hostname = (parsed.hostname or "").lower()
+                is_local = (
+                    hostname in {"localhost", "127.0.0.1", "::1"}
+                    or hostname.startswith("10.")
+                    or hostname.startswith("192.168.")
+                    or (
+                        hostname.startswith("172.")
+                        and len(hostname.split(".")) == 4
+                        and 16 <= int(hostname.split(".")[1]) <= 31
+                    )
+                )
+                if not is_local:
+                    self.result.add_error(
+                        f"Air-gapped sovereign inference violation: Public external endpoint '{endpoint}' "
+                        f"detected while air_gapped=True. Client IP confidentiality requires local/on-premise endpoint.",
+                        ErrorCodes.SECURITY_UNSAFE_OPERATION,
+                        severity=ErrorSeverity.CRITICAL,
+                        category=ErrorCategory.SECURITY,
+                    ).add_fix(
+                        "Set endpoint_url to a local loopback (e.g. http://localhost:8000/v1) or set air_gapped=False"
+                    )
+
+            temp = inf_cfg.get("temperature")
+            if temp is not None:
+                try:
+                    temp_f = float(temp)
+                    if not (0.0 <= temp_f <= 2.0):
+                        self.result.add_error(
+                            f"temperature ({temp_f}) must be between 0.0 and 2.0",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                except (ValueError, TypeError):
+                    self.result.add_error("temperature must be numeric", ErrorCodes.SEMANTIC_INVALID_PARAMETER)
+
+            max_tok = inf_cfg.get("max_tokens")
+            if max_tok is not None:
+                try:
+                    tok_i = int(max_tok)
+                    if tok_i <= 0:
+                        self.result.add_error(
+                            f"max_tokens ({tok_i}) must be a positive integer",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                except (ValueError, TypeError):
+                    self.result.add_error("max_tokens must be an integer", ErrorCodes.SEMANTIC_INVALID_PARAMETER)
+
+        # 5. verifiable_reward_contract validation
+        vrc = block.get("verifiable_reward_contract")
+        if vrc is not None:
+            self._validate_verifiable_dna_block(vrc)
+
+        self._store_block_contract("finedna", block)
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
