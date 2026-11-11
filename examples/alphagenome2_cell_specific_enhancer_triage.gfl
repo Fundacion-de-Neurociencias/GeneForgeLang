@@ -1,0 +1,40 @@
+# GeneForgeLang Protocol: AlphaGenome 2 Cell-Type Specific Gene Regulation & Distal Enhancer Triage
+# Grounded in Google DeepMind AlphaGenome 2 (Gayoso, Mottram et al., November 2026)
+#
+# Dedicated 1 Mb sequence context window with single-cell state conditioning (CL:0000938 NK cell),
+# zero-shot cross-modality epigenetic imputation (ATAC + 5mC DNA methylation + H3K27ac),
+# and distal enhancer-to-gene mapping (~2x variant recall over bulk models).
+
+metadata:
+  author: "GeneForge Immuno-Genomics Core"
+  study: "AlphaGenome 2 Single-Cell Dedicated 1 Mb Locus Triage"
+  source_citation: "Gayoso, Mottram et al., Google DeepMind (2026), https://deepmind.google.com/science/alphagenome"
+  target_organism: "Homo sapiens"
+  reference_build: "GRCh38"
+
+alphagenome2:
+  contract_id: "ag2_gzmb_cytotoxic_enhancer_triage"
+  locus_window_1mb: "chr14:24100000-25100000"
+  genome_build: "GRCh38"
+
+  cellular_context:
+    cell_type_curie: "CL:0000938"  # Natural killer CD56-dim mature cytotoxic cell
+    cell_type_name: "NK_CD56_dim_cytotoxic"
+    conditioning_mode: "cell_ontology_curie"
+    continuous_state_value: 0.85
+
+  impute_modalities:
+    - "chromatin_accessibility"
+    - "dna_methylation_5mc"
+    - "histone_h3k27ac"
+
+  variant: "chr14:24598100:C>T"
+
+  enhancer_gene_linking:
+    target_gene_id: "ENSG00000100453"  # GZMB
+    promoter_tss_bp: 24597470
+    max_distance_bp: 500000
+    min_contact_probability: 0.60
+
+  min_avi_phred_threshold: 15.0
+  evidence_promotion: "IN_SILICO_PERTURBATION_VALIDATED"

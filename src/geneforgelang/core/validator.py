@@ -167,6 +167,9 @@ class EnhancedSemanticValidator:
             "bioc_reference",
             "lakehouse_reference",
             "bioc_on_ice",
+            "alphagenome2",
+            "ag2_locus",
+            "cellular_regulation_1mb",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -275,6 +278,8 @@ class EnhancedSemanticValidator:
                 self._validate_autonomous_execution_block(block_content)
             elif block_name in ("bioc_reference", "lakehouse_reference", "bioc_on_ice"):
                 self._validate_bioc_reference_block(block_content)
+            elif block_name in ("alphagenome2", "ag2_locus", "cellular_regulation_1mb"):
+                self._validate_alphagenome2_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -2616,6 +2621,207 @@ class EnhancedSemanticValidator:
             )
 
         self._store_block_contract("bioc_reference", block)
+
+    def _validate_alphagenome2_block(self, block: Any) -> None:
+        """Validate alphagenome2 / ag2_locus / cellular_regulation_1mb block.
+
+        Grounded in Google DeepMind AlphaGenome 2 (Gayoso, Mottram et al., November 2026):
+        - Enforces 1 Mb maximum sequence context window (GRCh38).
+        - Validates dedicated cellular state conditioning (Cell Ontology CL: CURIE, continuous axis, or scRNA-seq profile).
+        - Validates cross-modality epigenetic targets (chromatin accessibility, 5mC DNA methylation, histone marks).
+        - Validates distal enhancer-to-gene mapping (distance <= 1 Mb, contact probability in [0, 1]).
+        - Validates 1-based IUPAC variant format (chrN:pos:ref>alt).
+        """
+        import re
+
+        from geneforgelang.core.gftypes import (
+            AG2ConditioningMode,
+            AG2EpigeneticModality,
+            ReferenceGenomeBuild,
+        )
+
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "alphagenome2 block must be a dictionary or AlphaGenome2Contract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format alphagenome2 as a dictionary with contract_id, locus_1mb, cellular_context, etc.")
+            return
+
+        # 1. contract_id validation
+        contract_id = block.get("contract_id", block.get("name"))
+        if not contract_id or not str(contract_id).strip():
+            self.result.add_error(
+                "alphagenome2 block must define a non-empty 'contract_id'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide a unique identifier string for contract_id")
+
+        # 2. locus_window_1mb validation
+        locus = block.get("locus_window_1mb", block.get("locus_1mb", block.get("locus")))
+        if not locus or not str(locus).strip():
+            self.result.add_error(
+                "alphagenome2 block must define a 1 Mb sequence window in 'locus_window_1mb' (or 'locus_1mb')",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Specify genomic locus window in 'chrN:start-end' format (e.g. 'chr14:24100000-25100000')")
+        else:
+            clean_locus = str(locus).strip()
+            m = re.match(r"^(chr[0-9XYM]+):(\d+)-(\d+)$", clean_locus, re.IGNORECASE)
+            if not m:
+                self.result.add_error(
+                    f"Invalid locus format '{locus}'. Expected 'chrN:start-end' (e.g. 'chr14:24100000-25100000')",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Format locus as 'chrN:start-end'")
+            else:
+                start_bp = int(m.group(2))
+                end_bp = int(m.group(3))
+                if start_bp >= end_bp:
+                    self.result.add_error(
+                        f"Start coordinate ({start_bp}) must be strictly less than end coordinate ({end_bp}) in locus_window_1mb",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    )
+                else:
+                    span_bp = end_bp - start_bp
+                    if span_bp > 1_000_000:
+                        self.result.add_error(
+                            f"locus_window_1mb span ({span_bp:,} bp) exceeds maximum AlphaGenome 2 window limit of 1,000,000 bp (1 Mb)",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Limit genomic locus window to at most 1,000,000 bp (1 Mb)")
+
+        # 3. genome_build validation
+        genome_build = block.get("genome_build")
+        if genome_build is not None:
+            build_str = str(genome_build.value if hasattr(genome_build, "value") else genome_build).strip().lower()
+            valid_builds = {b.value.lower(): b for b in ReferenceGenomeBuild}
+            if build_str not in valid_builds:
+                self.result.add_error(
+                    f"Invalid genome_build '{genome_build}' in alphagenome2 block. Supported builds: {[b.value for b in ReferenceGenomeBuild]}",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Set genome_build to 'GRCh38', 'GRCh37', or 'T2T-CHM13'")
+
+        # 4. cellular_context validation
+        cell_ctx = block.get("cellular_context")
+        if cell_ctx is not None:
+            if hasattr(cell_ctx, "to_dict"):
+                cell_ctx = cell_ctx.to_dict()
+            if not isinstance(cell_ctx, dict):
+                self.result.add_error(
+                    "cellular_context must be a dictionary or AG2CellularContextContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                )
+            else:
+                cell_type = str(cell_ctx.get("cell_type_curie", cell_ctx.get("cell_type", ""))).strip()
+                if cell_type and not re.match(r"^[A-Za-z0-9_-]+:[A-Za-z0-9_.-]+$", cell_type):
+                    self.result.add_error(
+                        f"Invalid cell_type CURIE '{cell_type}' in cellular_context. Expected format 'CL:XXXXXXX' or 'UBERON:XXXXXXX'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Provide a valid Cell Ontology or Uberon CURIE (e.g. 'CL:0000938')")
+
+                mode = cell_ctx.get("conditioning_mode")
+                if mode is not None:
+                    mode_str = str(mode.value if hasattr(mode, "value") else mode).strip().lower()
+                    valid_modes = {m.value.lower() for m in AG2ConditioningMode}
+                    if mode_str not in valid_modes:
+                        self.result.add_error(
+                            f"Invalid conditioning_mode '{mode}' in cellular_context. Supported modes: {[m.value for m in AG2ConditioningMode]}",
+                            ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                        )
+
+                state_val = cell_ctx.get("continuous_state_value", cell_ctx.get("state_value"))
+                if state_val is not None:
+                    try:
+                        s_float = float(state_val)
+                        if not (0.0 <= s_float <= 1.0):
+                            self.result.add_error(
+                                f"continuous_state_value ({s_float}) must be in range [0.0, 1.0]",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ).add_fix("Set continuous_state_value to a float between 0.0 and 1.0")
+                    except (ValueError, TypeError):
+                        self.result.add_error(
+                            "continuous_state_value must be a numeric float",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+
+        # 5. impute_modalities validation
+        modalities = block.get("impute_modalities", block.get("modalities"))
+        if modalities is not None:
+            if not isinstance(modalities, list):
+                self.result.add_error(
+                    "impute_modalities must be a list of epigenetic modalities",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                )
+            else:
+                valid_mods = {m.value.lower() for m in AG2EpigeneticModality}
+                for idx, mod in enumerate(modalities):
+                    mod_str = str(mod.value if hasattr(mod, "value") else mod).strip().lower()
+                    if mod_str not in valid_mods:
+                        self.result.add_error(
+                            f"Invalid modality '{mod}' at index {idx}. Supported modalities: {[m.value for m in AG2EpigeneticModality]}",
+                            ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                        ).add_fix(
+                            "Select valid AG2 modalities (e.g. 'chromatin_accessibility', 'dna_methylation_5mc', 'histone_h3k27ac')"
+                        )
+
+        # 6. variant format validation
+        variant = block.get("variant")
+        if variant is not None and str(variant).strip():
+            var_str = str(variant).strip()
+            if not re.match(r"^chr[0-9XYM]+:\d+:[ACGTURYKMSWBDHVN]+>[ACGTURYKMSWBDHVN]+$", var_str, re.IGNORECASE):
+                self.result.add_error(
+                    f"Invalid variant format '{var_str}' in alphagenome2 block. Expected IUPAC format 'chrN:pos:ref>alt' (e.g. 'chr14:24598100:C>T')",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Format variant as 'chrN:pos:ref>alt'")
+
+        # 7. enhancer_gene_linking validation
+        eg_link = block.get("enhancer_gene_linking", block.get("enhancer_gene_link"))
+        if eg_link is not None:
+            if hasattr(eg_link, "to_dict"):
+                eg_link = eg_link.to_dict()
+            if not isinstance(eg_link, dict):
+                self.result.add_error(
+                    "enhancer_gene_linking must be a dictionary or AG2EnhancerGeneLinkContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                )
+            else:
+                target_gene = eg_link.get("target_gene_id", eg_link.get("target_promoter", eg_link.get("target_gene")))
+                if not target_gene or not str(target_gene).strip():
+                    self.result.add_error(
+                        "enhancer_gene_linking must specify a non-empty 'target_gene_id' (or 'target_promoter')",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    ).add_fix("Provide Ensembl ID or gene symbol in target_gene_id")
+
+                max_dist = eg_link.get("max_distance_bp", eg_link.get("max_interaction_distance_bp"))
+                if max_dist is not None:
+                    try:
+                        dist_val = int(max_dist)
+                        if dist_val < 0 or dist_val > 1_000_000:
+                            self.result.add_error(
+                                f"max_distance_bp ({dist_val:,} bp) must be between 0 and 1,000,000 bp (1 Mb window)",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            )
+                    except (ValueError, TypeError):
+                        self.result.add_error(
+                            "max_distance_bp must be an integer",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+
+                min_prob = eg_link.get("min_contact_probability")
+                if min_prob is not None:
+                    try:
+                        prob_val = float(min_prob)
+                        if not (0.0 <= prob_val <= 1.0):
+                            self.result.add_error(
+                                f"min_contact_probability ({prob_val}) must be in range [0.0, 1.0]",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            )
+                    except (ValueError, TypeError):
+                        self.result.add_error(
+                            "min_contact_probability must be a numeric float",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+
+        self._store_block_contract("alphagenome2", block)
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""

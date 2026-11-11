@@ -362,6 +362,7 @@ class GFLAST:
     verifiable_dna: Any | None = None
     autonomous_execution: Any | None = None
     bioc_reference: Any | None = None
+    alphagenome2: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -468,6 +469,10 @@ class GFLAST:
         if self.bioc_reference is not None:
             result["bioc_reference"] = (
                 self.bioc_reference.to_dict() if hasattr(self.bioc_reference, "to_dict") else self.bioc_reference
+            )
+        if self.alphagenome2 is not None:
+            result["alphagenome2"] = (
+                self.alphagenome2.to_dict() if hasattr(self.alphagenome2, "to_dict") else self.alphagenome2
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -827,6 +832,25 @@ class GFLAST:
                 ast.bioc_reference = br_data
             elif isinstance(br_data, dict):
                 ast.bioc_reference = BiocIceContract.from_dict(br_data)
+
+        if "alphagenome2" in data:
+            ag2_data = data["alphagenome2"]
+            if isinstance(ag2_data, AlphaGenome2Contract):
+                ast.alphagenome2 = ag2_data
+            elif isinstance(ag2_data, dict):
+                ast.alphagenome2 = AlphaGenome2Contract.from_dict(ag2_data)
+        elif "ag2_locus" in data:
+            ag2_data = data["ag2_locus"]
+            if isinstance(ag2_data, AlphaGenome2Contract):
+                ast.alphagenome2 = ag2_data
+            elif isinstance(ag2_data, dict):
+                ast.alphagenome2 = AlphaGenome2Contract.from_dict(ag2_data)
+        elif "cellular_regulation_1mb" in data:
+            ag2_data = data["cellular_regulation_1mb"]
+            if isinstance(ag2_data, AlphaGenome2Contract):
+                ast.alphagenome2 = ag2_data
+            elif isinstance(ag2_data, dict):
+                ast.alphagenome2 = AlphaGenome2Contract.from_dict(ag2_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -6404,6 +6428,237 @@ class BiocIceContract:
         )
 
 
+# AlphaGenome 2 (DeepMind 2026) 1 Mb Cell-Specific Gene Regulation & Epigenetic Imputation
+class AG2ConditioningMode(str, Enum):
+    """Conditioning modes for AlphaGenome 2 dedicated cell state representation."""
+
+    CELL_ONTOLOGY_CURIE = "cell_ontology_curie"  # CURIE lookup (e.g. CL:0000938)
+    SCRNA_PROFILE = "scrna_profile"  # Zero-shot profile from scarce single cells
+    CELL_STATE_AXIS = "cell_state_axis"  # Continuous activation gradient (TenK10K synergy)
+
+    def __str__(self) -> str:
+        """Return string value."""
+        return self.value
+
+
+class AG2EpigeneticModality(str, Enum):
+    """Output assay and cross-modality imputation targets for AlphaGenome 2."""
+
+    CHROMATIN_ACCESSIBILITY = "chromatin_accessibility"  # ATAC/DNase
+    DNA_METHYLATION_5MC = "dna_methylation_5mc"  # CpG methylation at cell-type resolution
+    HISTONE_H3K27AC = "histone_h3k27ac"  # Active enhancer mark
+    HISTONE_H3K4ME3 = "histone_h3k4me3"  # Promoter activation mark
+    HISTONE_H3K27ME3 = "histone_h3k27me3"  # Polycomb repression mark
+    CAGE_TSS = "cage_tss"  # Transcription start site activity
+    RNA_EXPRESSION = "rna_expression"  # Quantitative transcript/gene level
+
+    def __str__(self) -> str:
+        """Return string value."""
+        return self.value
+
+
+@dataclass
+class AG2CellularContextContract:
+    """Dedicated cellular state specification for AlphaGenome 2 (1 Mb conditioning)."""
+
+    cell_type_curie: str = "CL:0000000"
+    cell_type_name: str = ""
+    conditioning_mode: AG2ConditioningMode = AG2ConditioningMode.CELL_ONTOLOGY_CURIE
+    profile_vector_or_uri: str | None = None
+    continuous_state_value: float = 0.5
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "cell_type_curie": self.cell_type_curie,
+            "cell_type_name": self.cell_type_name,
+            "conditioning_mode": (
+                self.conditioning_mode.value
+                if hasattr(self.conditioning_mode, "value")
+                else str(self.conditioning_mode)
+            ),
+            "profile_vector_or_uri": self.profile_vector_or_uri,
+            "continuous_state_value": self.continuous_state_value,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> AG2CellularContextContract:
+        """Create from dictionary representation."""
+        raw_mode = data.get("conditioning_mode", AG2ConditioningMode.CELL_ONTOLOGY_CURIE)
+        mode = (
+            AG2ConditioningMode(raw_mode)
+            if raw_mode in AG2ConditioningMode._value2member_map_
+            else AG2ConditioningMode.CELL_ONTOLOGY_CURIE
+        )
+        return cls(
+            cell_type_curie=str(data.get("cell_type_curie", data.get("cell_type", "CL:0000000"))),
+            cell_type_name=str(data.get("cell_type_name", "")),
+            conditioning_mode=mode,
+            profile_vector_or_uri=(
+                str(data["profile_vector_or_uri"])
+                if data.get("profile_vector_or_uri")
+                else (str(data["profile_ref"]) if data.get("profile_ref") else None)
+            ),
+            continuous_state_value=float(data.get("continuous_state_value", 0.5)),
+        )
+
+
+@dataclass
+class AG2EnhancerGeneLinkContract:
+    """Distal enhancer-to-target-gene contact and regulatory coupling across up to 1 Mb."""
+
+    target_gene_id: str
+    promoter_tss_bp: int = 0
+    max_distance_bp: int = 1_000_000
+    min_contact_probability: float = 0.50
+    predicted_contact_probability: float = 0.0
+    expression_fold_change: float = 0.0
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "target_gene_id": self.target_gene_id,
+            "promoter_tss_bp": self.promoter_tss_bp,
+            "max_distance_bp": self.max_distance_bp,
+            "min_contact_probability": self.min_contact_probability,
+            "predicted_contact_probability": self.predicted_contact_probability,
+            "expression_fold_change": self.expression_fold_change,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> AG2EnhancerGeneLinkContract:
+        """Create from dictionary representation."""
+        return cls(
+            target_gene_id=str(data.get("target_gene_id", data.get("target_promoter", ""))),
+            promoter_tss_bp=int(data.get("promoter_tss_bp", 0)),
+            max_distance_bp=int(data.get("max_distance_bp", data.get("max_interaction_distance_bp", 1_000_000))),
+            min_contact_probability=float(data.get("min_contact_probability", 0.50)),
+            predicted_contact_probability=float(data.get("predicted_contact_probability", 0.0)),
+            expression_fold_change=float(data.get("expression_fold_change", 0.0)),
+        )
+
+
+@dataclass
+class AlphaGenome2Contract:
+    """Formal GFL AST Contract for AlphaGenome 2 (DeepMind, November 2026).
+
+    Models 1 Mb sequence context with dedicated single-cell state representation,
+    zero-shot scRNA-seq conditioning, cross-modality imputation (including 5mC DNA methylation),
+    and long-range enhancer-to-gene mapping.
+    """
+
+    contract_id: str
+    locus_window_1mb: str
+    genome_build: ReferenceGenomeBuild = ReferenceGenomeBuild.GRCH38
+    chromosome: str = ""
+    start_bp: int = 0
+    end_bp: int = 0
+    cellular_context: AG2CellularContextContract = field(default_factory=AG2CellularContextContract)
+    variant: str | None = None
+    impute_modalities: list[AG2EpigeneticModality] = field(default_factory=list)
+    enhancer_gene_linking: AG2EnhancerGeneLinkContract | None = None
+    min_avi_phred_threshold: float = 15.0
+    evidence_promotion: str = "IN_SILICO_PERTURBATION_VALIDATED"
+    atlas_url: str = ""
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        """Parse coordinates and construct Atlas URL if missing."""
+        if self.locus_window_1mb and not (self.chromosome and self.start_bp and self.end_bp):
+            import re
+
+            m = re.match(r"^(chr[0-9XYM]+):(\d+)-(\d+)$", self.locus_window_1mb.strip(), re.IGNORECASE)
+            if m:
+                self.chromosome = m.group(1)
+                self.start_bp = int(m.group(2))
+                self.end_bp = int(m.group(3))
+
+        if not self.atlas_url and self.variant:
+            self.atlas_url = f"https://deepmind.google.com/science/alphagenome/atlas/variant/{self.variant}"
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "contract_id": self.contract_id,
+            "locus_window_1mb": self.locus_window_1mb,
+            "genome_build": (
+                self.genome_build.value if hasattr(self.genome_build, "value") else str(self.genome_build)
+            ),
+            "chromosome": self.chromosome,
+            "start_bp": self.start_bp,
+            "end_bp": self.end_bp,
+            "cellular_context": self.cellular_context.to_dict(),
+            "variant": self.variant,
+            "impute_modalities": [m.value if hasattr(m, "value") else str(m) for m in self.impute_modalities],
+            "enhancer_gene_linking": (self.enhancer_gene_linking.to_dict() if self.enhancer_gene_linking else None),
+            "min_avi_phred_threshold": self.min_avi_phred_threshold,
+            "evidence_promotion": self.evidence_promotion,
+            "atlas_url": self.atlas_url,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> AlphaGenome2Contract:
+        """Create from dictionary representation."""
+        contract_id = str(data.get("contract_id", data.get("name", "ag2_unnamed")))
+        locus = str(data.get("locus_window_1mb", data.get("locus_1mb", data.get("locus", ""))))
+
+        raw_build = data.get("genome_build", ReferenceGenomeBuild.GRCH38)
+        genome_build = (
+            ReferenceGenomeBuild(raw_build)
+            if raw_build in ReferenceGenomeBuild._value2member_map_
+            else ReferenceGenomeBuild.GRCH38
+        )
+
+        raw_cell = data.get("cellular_context", {})
+        cellular_context = (
+            AG2CellularContextContract.from_dict(raw_cell)
+            if isinstance(raw_cell, dict)
+            else (raw_cell if isinstance(raw_cell, AG2CellularContextContract) else AG2CellularContextContract())
+        )
+
+        raw_modalities = data.get("impute_modalities", data.get("modalities", []))
+        modalities: list[AG2EpigeneticModality] = []
+        for m in raw_modalities:
+            if isinstance(m, AG2EpigeneticModality):
+                modalities.append(m)
+            elif isinstance(m, str) and m.lower() in AG2EpigeneticModality._value2member_map_:
+                modalities.append(AG2EpigeneticModality(m.lower()))
+
+        raw_eg = data.get("enhancer_gene_linking", data.get("enhancer_gene_link"))
+        eg_link = (
+            AG2EnhancerGeneLinkContract.from_dict(raw_eg)
+            if isinstance(raw_eg, dict)
+            else (raw_eg if isinstance(raw_eg, AG2EnhancerGeneLinkContract) else None)
+        )
+
+        gates = data.get("gates", {})
+        min_phred = float(data.get("min_avi_phred_threshold", gates.get("min_avi_phred", 15.0)))
+        evidence = str(
+            data.get(
+                "evidence_promotion",
+                gates.get("evidence_promotion", "IN_SILICO_PERTURBATION_VALIDATED"),
+            )
+        )
+
+        return cls(
+            contract_id=contract_id,
+            locus_window_1mb=locus,
+            genome_build=genome_build,
+            chromosome=str(data.get("chromosome", "")),
+            start_bp=int(data.get("start_bp", 0)),
+            end_bp=int(data.get("end_bp", 0)),
+            cellular_context=cellular_context,
+            variant=str(data["variant"]) if data.get("variant") else None,
+            impute_modalities=modalities,
+            enhancer_gene_linking=eg_link,
+            min_avi_phred_threshold=min_phred,
+            evidence_promotion=evidence,
+            atlas_url=str(data.get("atlas_url", "")),
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -6572,6 +6827,11 @@ __all__ = [
     "BiocReleaseMetadata",
     "LakehouseQueryContract",
     "BiocIceContract",
+    "AG2ConditioningMode",
+    "AG2EpigeneticModality",
+    "AG2CellularContextContract",
+    "AG2EnhancerGeneLinkContract",
+    "AlphaGenome2Contract",
     # Validation types
     "ValidationError",
     "ValidationResult",
