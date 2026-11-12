@@ -88,14 +88,16 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 
 ## Key Features
 
-- **Declarative Syntax**: Clean, readable YAML-based workflow definitions
-- **Type Safety**: Strong typing system with comprehensive validation
-- **Interactive Multi-Omic Visualizer**: Real-time dynamic B-DNA helix scanner with reading frame translation, frameshift alerts, ClinVar variant tracks, and CRISPR PAM detection (`gfl view dna`)
-- **Plugin Architecture**: Extensible system for custom tools and algorithms
-- **Web Interface**: Modern web UI for workflow creation and management
-- **CLI Tools**: Comprehensive command-line interface for automation
-- **API Integration**: RESTful API for programmatic access
-- **Container Execution**: Reproducible execution using Docker containers
+- **Declarative Genetic Syntax**: Clean, readable, mathematically sound YAML-based biological workflow definitions with strict 2-space indentation.
+- **Sovereign Biological AI & Air-Gapped Compliance**: Native on-premise execution with FineDNA-14B and Carbon-X 14.8B on local workstations (Apple Silicon Mac Studio / NVIDIA GPUs), strictly rejecting public cloud egress when `air_gapped: true`.
+- **Closed-Loop RLVR Verification & Proofs**: Interactive compiler self-correction emitting deterministic reward scores and cryptographic SHA-256 verification tokens.
+- **Dedicated Locus-Scale (1 Mb) Regulation**: AlphaGenome 2 integration dedicating 100% of transformer context to a single cell state, cross-modal 5mC methylation imputation, and distal enhancer-promoter contact modeling.
+- **Cloud-Native Biological Lakehouse**: Bioconductor on Ice (`bioc-on-ice`) integration querying 81 frozen Parquet tables (~4B rows, 100 GB) via DuckDB HTTPFS pushdown without multi-gigabyte local downloads.
+- **Physical DNA Mechanics & Breathing**: Mesoscopic Peyrard-Bishop-Dauxois (PBD) thermal bubble opening dynamics and pioneer transcription factor binding prediction.
+- **Autonomous Wet-Lab Dispatch & Synthesizability Gates**: AutoDNA SiLA 2 multi-instrument compilation, automated enzymatic TdT homopolymer checks, and biosecurity screening.
+- **Multimodal Protein & Residue Tokenization**: ProTok unified 1D sequence, 3D Cartesian geometry, and functional ontology codebooks with Central Dogma causal propagation.
+- **Interactive Multi-Omic Visualizer (`GF-HelixView`)**: Real-time dynamic B-DNA 2.5D helix scanner with 3-frame translation, frameshift alerts, ClinVar variant tracks, and CRISPR PAM detection (`gfl view dna`).
+- **Extensible Plugin Ecosystem**: Interoperable plugins for BioPython, BLAST, GATK, Samtools, and custom analytical pipelines.
 
 ## 🧪 **Scientific Validation - BRCA1 gRNA Discovery**
 
@@ -228,7 +230,7 @@ gfl -h
 
 ### CRISPR Gene Editing
 
-```
+```yaml
 experiment:
   tool: CRISPR_cas9
   type: gene_editing
@@ -249,9 +251,72 @@ validation:
   controls: [negative, positive]
 ```
 
+### Sovereign Biocomputing & RLVR Verification (FineDNA-14B)
+
+```yaml
+finedna_circuit:
+  contract_id: "FineDNA-TREM2-Microglia-Rescue-01"
+  task_type: "crispr_circuit_design"
+  prompt: "Synthesize an HDR repair construct to rescue loss-of-function TREM2 variant R47H in human microglia."
+  target_locus: "chr6:41126000-41131000"
+  inference_config:
+    endpoint_url: "http://localhost:8000/v1"
+    model_name: "FineDNA-14B"
+    air_gapped: true
+
+verifiable_dna:
+  task_id: "TREM2-RLVR-Verification-01"
+  domain: "sequence_localization"
+  ground_truth_reference: "12-35:+"
+  reward_success: 1.0
+  localization_contract:
+    contract_id: "loc_trem2_exon2_hdr"
+    query_pattern: "GAATTCATGCGATCG"
+    target_sequence: "NNNNNNNNNNNGAATTCATGCGATCGNNNNNNNNNN"
+    mode: "exact_match"
+```
+
+### Cell-Specific 1 Mb Epigenetic Regulation & Enhancer Triage (AlphaGenome 2)
+
+```yaml
+alphagenome2:
+  contract_id: "ag2_microglia_trem2_1mb"
+  locus_window_1mb: "chr6:40626000-41626000"
+  genome_build: "GRCh38"
+  cellular_context:
+    cell_type_curie: "CL:0000129"
+    cell_type_name: "microglial cell"
+    conditioning_mode: "cell_ontology_curie"
+  impute_modalities:
+    - "chromatin_accessibility"
+    - "dna_methylation_5mc"
+  enhancer_gene_linking:
+    target_gene_id: "ENSG00000095977"
+    enhancer_locus: "chr6:41129500-41130500"
+    min_contact_probability: 0.75
+    max_distance_bp: 150000
+```
+
+### Cloud-Native Lakehouse Query (Bioconductor on Ice / DuckDB)
+
+```yaml
+bioc_reference:
+  contract_id: "bioc_gzmb_grch38_lakehouse"
+  release_version: "2026-11-08"
+  genome_build: "GRCh38"
+  backend: "duckdb_httpfs"
+  query:
+    schema_name: "annotation"
+    table_name: "ensembl_genes"
+    filter_criteria:
+      gene_symbol: "GZMB"
+    limit: 10
+  target_gene_symbol: "GZMB"
+```
+
 ### Protein Design
 
-```
+```yaml
 design:
   entity: ProteinSequence
   objective:
@@ -343,21 +408,30 @@ Explore the compiled human *DMD* reference visualization in [`visualizations/dmd
 
 ## Architecture
 
-GFL follows a modular architecture:
+GFL follows a modular, capability-driven compiler architecture:
 
 ```
 src/geneforgelang/
-├── core/           # Core language functionality
-│   ├── parser.py   # YAML/GFL parser
-│   ├── validator.py # Semantic validation
-│   ├── gftypes.py    # Type system
-│   └── api.py      # Public API
-├── visualization/  # Interactive visualization instruments (GF-HelixView)
+├── core/                       # Core language and specialized domain engines
+│   ├── parser.py               # YAML/GFL AST parser
+│   ├── validator.py            # Enhanced semantic validation & security gates
+│   ├── gftypes.py              # Domain type system & AST contract definitions
+│   ├── finedna_engine.py       # FineDNA sovereign inference & RLVR compiler environment
+│   ├── alphagenome2_engine.py  # AlphaGenome 2 dedicated 1 Mb regulation & 5mC imputation
+│   ├── bioc_ice_engine.py      # Bioconductor on Ice DuckDB HTTPFS lakehouse client
+│   ├── wet_lab_engine.py       # AutoDNA SiLA 2 dispatch & enzymatic TdT synthesis gates
+│   ├── dna_breathing_engine.py # Peyrard-Bishop-Dauxois mesoscopic DNA breathing solver
+│   ├── protok_engine.py        # ProTok unified multimodal residue vocabulary
+│   ├── carbonx_engine.py       # Carbon-X 14.8B genomic LLM & 6-mer tokenizer
+│   ├── single_cell_engine.py   # TenK10K continuous cell-state kinetics & caQTLs
+│   ├── watermark_engine.py     # SynthID Bio biological watermarking engine
+│   └── api.py                  # Public programmatic Python API
+├── visualization/              # Interactive visualization instruments (GF-HelixView)
 │   └── dna_helix_viewer.py
-├── plugins/        # Plugin system
-├── web/           # Web interface
-├── cli/           # Command-line tools
-└── utils/         # Shared utilities
+├── plugins/                    # Extensible plugin architecture (BioPython, BLAST, GATK)
+├── web/                        # Web visualization interface
+├── cli/                        # Command-line interface (`gfl parse`, `gfl view dna`)
+└── utils/                      # Shared schema registries and lakehouse utilities
 ```
 
 ## Plugin System
@@ -451,6 +525,25 @@ GFL/
 - [API Reference](docs/geneforgelang/api.md) - Detailed API documentation
 - [Architecture](docs/dev/decisions/organization.md) - System design and decisions
 - [Examples](examples/) - Practical workflow examples
+
+### Feature Guides & Technical Specifications
+
+| Category | Capability | Specification & Guide |
+| :--- | :--- | :--- |
+| **Foundation Models & Reasoning** | FineDNA Sovereign Biocomputing & RLVR | [`finedna_sovereign_biocomputing.md`](docs/geneforgelang/features/finedna_sovereign_biocomputing.md) |
+| | Carbon-X 14.8B Genomic Foundation LLM | [`carbonx_genomic_llm.md`](docs/geneforgelang/features/carbonx_genomic_llm.md) |
+| | ProTok Unified Multimodal Residue Vocabulary | [`protok_unified_residue_stream.md`](docs/geneforgelang/features/protok_unified_residue_stream.md) |
+| | Distributed Perturbation & Reasoning Atlas | [`perturbation_atlas.md`](docs/geneforgelang/features/perturbation_atlas.md) |
+| **Regulation & Dynamics** | AlphaGenome 2 Dedicated 1 Mb Cell-Specific Regulation | [`alphagenome2_cellular_regulation_1mb.md`](docs/geneforgelang/features/alphagenome2_cellular_regulation_1mb.md) |
+| | Mesoscopic DNA Breathing & PBD Dynamics | [`dna_breathing_mesoscopic_dynamics.md`](docs/geneforgelang/features/dna_breathing_mesoscopic_dynamics.md) |
+| | Single-Cell Immune Regulation (TenK10K) | [`single_cell_immune_regulation_tenk10k.md`](docs/geneforgelang/features/single_cell_immune_regulation_tenk10k.md) |
+| | Tangermeme Cis-Regulatory Logic & Seqlets | [`tangermeme_cis_regulatory_logic.md`](docs/geneforgelang/features/tangermeme_cis_regulatory_logic.md) |
+| **Lakehouse & Big Data** | Bioconductor on Ice (`bioc-on-ice`) Lakehouse | [`bioc_on_ice_lakehouse_reference.md`](docs/geneforgelang/features/bioc_on_ice_lakehouse_reference.md) |
+| **Wet-Lab & Biosecurity** | Autonomous Wet-Lab Protocol Execution (AutoDNA) | [`autonomous_wet_lab_autodna_synergy.md`](docs/geneforgelang/features/autonomous_wet_lab_autodna_synergy.md) |
+| | Verifiable DNA Computation & RLVR Oracles | [`verifiable_dna_computation.md`](docs/geneforgelang/features/verifiable_dna_computation.md) |
+| | Multi-Modal SynthID Bio Watermarking | [`biosecurity_watermark.md`](docs/geneforgelang/features/biosecurity_watermark.md) |
+| **Tooling & Visualization** | GF-HelixView Dynamic 2.5D DNA Helix Explorer | [`dna_helix_viewer.md`](docs/geneforgelang/features/dna_helix_viewer.md) |
+| | Graphify Static AST & Grammar Knowledge Graph | [`graphify_static_grammar_index.md`](docs/geneforgelang/features/graphify_static_grammar_index.md) |
 
 ## License
 
