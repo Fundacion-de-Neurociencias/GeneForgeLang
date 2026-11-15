@@ -1,27 +1,122 @@
 {
   "feature": "F021",
   "verdict": "PASS",
-  "head": "e778929",
+  "commit": "e778929",
   "range": "autodev/integration...HEAD",
-  "date": "2026-11-15",
-  "criteria": {
-    "contract_generated_from_code": {"result": "PASS", "evidence": ["verify-check.txt", "verify-mutation.txt", "verify-py39-check.txt", "verify-py312-check.txt"]},
-    "contract_test_requires_bump_and_changelog": {"result": "PASS", "evidence": ["verify-against.txt"]},
-    "tag_matches_metadata_in_ci": {"result": "PASS", "evidence": ["verify-tag.txt"], "owner_gate": "first GitHub Actions run of contract.yml needs push and merge"},
-    "evidence_labels": {"result": "PASS", "evidence": ["verify-labels.txt"]}
-  },
-  "checks": {
-    "lint": "pass (verify-lint.txt)",
-    "suite": "1026 passed, 22 skipped, 10 xfailed; baseline 986/22/10 (verify-suite.txt)",
-    "theater_scan": "0 findings (verify-theater.txt)",
-    "language_check": "0 non-en segments (verify-language.txt)",
-    "obligations_check": "3 pre-existing R1 findings in files outside the diff (verify-obligations.txt)"
-  },
-  "governance_audit": {"blocking": 0, "advisory": [
-    "full-suite .log evidence is gitignored; summary kept in tracked verify-suite.txt",
-    "actionlint not run; workflow not yet run on GitHub",
-    "d1-mutation.txt noisy due to NameError from rename (explained in file)",
-    "contracts/F021-review.md is in Spanish; .autodev/ is not published"
-  ]},
-  "not_proved": ["GitHub Actions execution", "actionlint", "external consumers (F014)", "--against positive case via CLI (tests only)"]
+  "acceptance": [
+    {
+      "item": "A written public API contract (module paths, functions, grammar version, error types) lives in the repository and is generated or checked from the code, not hand-maintained.",
+      "result": "PASS",
+      "evidence": [
+        ".autodev/evidence/F021/verify-check.txt",
+        ".autodev/evidence/F021/verify-mutation.txt",
+        ".autodev/evidence/F021/verify-py39-check.txt",
+        ".autodev/evidence/F021/verify-py312-check.txt"
+      ]
+    },
+    {
+      "item": "A contract test fails when a public name, signature or grammar construct in the contract changes without a version bump and a changelog entry.",
+      "result": "PASS",
+      "evidence": [
+        ".autodev/evidence/F021/verify-against.txt",
+        ".autodev/evidence/F021/verify-suite.txt"
+      ]
+    },
+    {
+      "item": "The release process produces a tagged version whose number matches the package metadata; the tag and the metadata cannot disagree (check in CI).",
+      "result": "OWNER_GATE",
+      "evidence": [
+        ".autodev/evidence/F021/verify-tag.txt",
+        ".github/workflows/contract.yml",
+        ".autodev/contracts/F021-pr.md"
+      ],
+      "note": "--check-tag verified locally (match exit 0, two mismatches exit 1); the first GitHub Actions run needs push and owner merge"
+    },
+    {
+      "item": "No simulated or stubbed behaviour is exposed through the contract without an evidence label.",
+      "result": "PASS",
+      "evidence": [
+        ".autodev/evidence/F021/verify-labels.txt"
+      ]
+    }
+  ],
+  "rubric": [
+    {
+      "check": "lint",
+      "result": "PASS",
+      "evidence": ".autodev/evidence/F021/verify-lint.txt"
+    },
+    {
+      "check": "full suite (1026/22/10 vs baseline 986/22/10)",
+      "result": "PASS",
+      "evidence": ".autodev/evidence/F021/verify-suite.txt"
+    },
+    {
+      "check": "G9 theater_scan",
+      "result": "PASS",
+      "evidence": ".autodev/evidence/F021/verify-theater.txt"
+    },
+    {
+      "check": "G10 language_check",
+      "result": "PASS",
+      "evidence": ".autodev/evidence/F021/verify-language.txt"
+    },
+    {
+      "check": "obligations_check (3 pre-existing R1 findings outside the diff)",
+      "result": "PASS",
+      "evidence": ".autodev/evidence/F021/verify-obligations.txt"
+    },
+    {
+      "check": "governance auditor (0 blocking, 4 advisory)",
+      "result": "PASS",
+      "evidence": "governance-auditor report in this session"
+    },
+    {
+      "check": "UI",
+      "result": "N/A",
+      "evidence": "no UI in diff"
+    }
+  ],
+  "feedback": [
+    "Run actionlint on contract.yml before push",
+    "Track the suite summary, not only the gitignored .log",
+    "Translate .autodev/contracts/F021-review.md to English",
+    "CLI prints Windows backslash paths (cosmetic)"
+  ],
+  "claims": [
+    {
+      "claim": "contract snapshot matches code on py3.9/3.11/3.12",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "signature change breaks --check",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "removal without bump/changelog breaks --against",
+      "class": "OBSERVED"
+    },
+    {
+      "claim": "contract.yml will pass on GitHub",
+      "class": "INFERRED"
+    }
+  ],
+  "proved": [
+    "snapshot bound to code on 3 Python versions",
+    "signature mutation detected",
+    "name removal without bump/changelog detected",
+    "three --check-tag cases",
+    "10/10 evidence labels"
+  ],
+  "not_proved": [
+    "GitHub Actions execution",
+    "actionlint",
+    "external consumers (F014)",
+    "--against positive case via CLI (tests only)",
+    "default-value and enum mutations via CLI"
+  ],
+  "would_be_wrong_if": [
+    "a surface change goes undetected by --check: looked for it with a signature mutation, detected",
+    "annotations differ across Python versions: looked on 3.9 and 3.12, none"
+  ]
 }
