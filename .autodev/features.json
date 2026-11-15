@@ -373,7 +373,8 @@
         "The release process produces a tagged version whose number matches the package metadata; the tag and the metadata cannot disagree (check in CI).",
         "No simulated or stubbed behaviour is exposed through the contract without an evidence label."
       ],
-      "passes": false,
+      "passes": true,
+      "evidence": ".autodev/evidence/F021/verdict.json",
       "category": "contract"
     }
   ]

@@ -1,0 +1,5 @@
+note: no registry configured ([ecosystem] registries); every watched dataset is unregistered
+[R1 blocking] ALPHAGENOME: used in 2 file(s) but not in the DUA registry -> src/geneforgelang/plugins/alpha_genome.py, src/geneforgelang/plugins/alphafold.py
+[R1 blocking] ENSEMBL: used in 4 file(s) but not in the DUA registry -> docs/geneforgelang/features/spatial_genomic_capabilities.md, examples/real_project/GFL_GENESIS_FINAL_REPORT.md, examples/real_project/Manuscript_GeneForge_v2_Beta.md
+[R1 blocking] UNIPROT: used in 4 file(s) but not in the DUA registry -> README.md, examples/real_project/GFL_GENESIS_FINAL_REPORT.md, examples/real_project/Manuscript_GeneForge_v2_Beta.md
+3 finding(s)

@@ -1,0 +1,17 @@
+== baseline = real snapshot
+OK: docs\spec\public_contract.json follows the bump rules against HEAD
+exit=0
+['classes', 'contract_version', 'functions', 'generated', 'grammar', 'grammar_version', 'module']
+== baseline has extra legacy_fn (removed in current code, no bump)
+NOTICE: no baseline snapshot at HEAD:docs/spec/public_contract.json; nothing to compare
+exit=0
+== ref without snapshot
+NOTICE: no baseline snapshot at 4b825dc642cb6eb9a060e54bf8d69288fbee4904:docs/spec/public_contract.json; nothing to compare
+exit=0
+== (retry) baseline has extra legacy_fn, no bump
+OK: docs\spec\public_contract.json follows the bump rules against HEAD
+exit=0
+== baseline commit has legacy_fn; working-tree snapshot = real (legacy_fn removed), no bump, no changelog
+FAIL: the surface changed ([breaking] function legacy_fn removed): contract_version needs a MAJOR bump from 1.0.0, found 1.0.0
+FAIL: CHANGELOG has no 'Contract 1.0.0' entry for the change
+exit=1

@@ -1,0 +1,3 @@
+0.22s setup    tests/contract/test_public_contract.py::test_against_rejects_a_removal_without_bump
+0.20s call     tests/unit/test_grammar_parser.py::TestGrammarParserIntegration::test_performance_caching
+[32m================ [32m[1m1026 passed[0m, [33m22 skipped[0m, [33m10 xfailed[0m[32m in 9.98s[0m[32m =================[0m

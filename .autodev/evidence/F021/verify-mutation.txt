@@ -1,0 +1,17 @@
+76:def parse(source: str, use_grammar: bool = False, filename: str = "<input>") -> dict[str, Any]:
+C:\Users\usuario\.autodev\tmp\geneforgelang\20261115-214420-verify\tmp.vOgw439fY3\geneforgelang\__init__.py
+FAIL: docs\spec\public_contract.json differs from the code. Changes since the snapshot:
+  [breaking] function parse: parameter 0 changed from 'text' (POSITIONAL_OR_KEYWORD) to 'source' (POSITIONAL_OR_KEYWORD)
+  [breaking] grammar construct 'complexes' is no longer parsed
+  [breaking] grammar construct 'design' is no longer parsed
+  [breaking] grammar construct 'experiment' is no longer parsed
+  [breaking] grammar construct 'hypothesis' is no longer parsed
+  [breaking] grammar construct 'optimize' is no longer parsed
+  [breaking] grammar construct 'pathways' is no longer parsed
+  [breaking] grammar construct 'rules' is no longer parsed
+  [breaking] grammar construct 'timeline' is no longer parsed
+  [breaking] conformance sample tests/conformance_suite/v1.2.0/contracts_and_schemas/01_entity_resolution.gfl: parsed keys changed from ['analyze', 'pathways'] to ['!error:NameError']
+  [breaking] conformance sample tests/conformance_suite/v1.2.0/rules_and_hypothesis/01_hypothesis_link.gfl: parsed keys changed from ['experiment', 'hypothesis'] to ['!error:NameError']
+  [breaking] conformance sample tests/conformance_suite/v1.2.0/timeline/01_simple_chronology.gfl: parsed keys changed from ['timeline'] to ['!error:NameError']
+Bump CONTRACT_VERSION, add a 'Contract X.Y.Z' CHANGELOG line, then run --write.
+exit=1

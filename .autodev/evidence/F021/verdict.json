@@ -1,0 +1,27 @@
+{
+  "feature": "F021",
+  "verdict": "PASS",
+  "head": "e778929",
+  "range": "autodev/integration...HEAD",
+  "date": "2026-11-15",
+  "criteria": {
+    "contract_generated_from_code": {"result": "PASS", "evidence": ["verify-check.txt", "verify-mutation.txt", "verify-py39-check.txt", "verify-py312-check.txt"]},
+    "contract_test_requires_bump_and_changelog": {"result": "PASS", "evidence": ["verify-against.txt"]},
+    "tag_matches_metadata_in_ci": {"result": "PASS", "evidence": ["verify-tag.txt"], "owner_gate": "first GitHub Actions run of contract.yml needs push and merge"},
+    "evidence_labels": {"result": "PASS", "evidence": ["verify-labels.txt"]}
+  },
+  "checks": {
+    "lint": "pass (verify-lint.txt)",
+    "suite": "1026 passed, 22 skipped, 10 xfailed; baseline 986/22/10 (verify-suite.txt)",
+    "theater_scan": "0 findings (verify-theater.txt)",
+    "language_check": "0 non-en segments (verify-language.txt)",
+    "obligations_check": "3 pre-existing R1 findings in files outside the diff (verify-obligations.txt)"
+  },
+  "governance_audit": {"blocking": 0, "advisory": [
+    "full-suite .log evidence is gitignored; summary kept in tracked verify-suite.txt",
+    "actionlint not run; workflow not yet run on GitHub",
+    "d1-mutation.txt noisy due to NameError from rename (explained in file)",
+    "contracts/F021-review.md is in Spanish; .autodev/ is not published"
+  ]},
+  "not_proved": ["GitHub Actions execution", "actionlint", "external consumers (F014)", "--against positive case via CLI (tests only)"]
+}

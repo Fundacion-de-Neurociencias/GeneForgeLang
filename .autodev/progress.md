@@ -296,3 +296,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Not done, with reason: `actionlint` was not run (downloading and running it was denied by the permission classifier); only YAML syntax was checked (`d3-workflow-yaml.txt`). The workflow has not run on GitHub: that needs the push and the owner's merge.
 - Owner gates: PR approval (sensitive paths: `.github/workflows/**`, `core/api.py`); PR text ready in `contracts/F021-pr.md`.
 - Next: `/autodev:verify F021` in a separate session.
+
+## 2026-11-15: verify, F021 - PASS
+- Independent evaluator at e778929. Verdict: `.autodev/evidence/F021/verdict.json`.
+- Green: ruff, full suite (1026 passed, 22 skipped, 10 xfailed vs baseline 986/22/10), contract `--check` on Python 3.9/3.11/3.12, signature mutation caught, `--against` catches removal without bump/changelog, `--check-tag` 3 cases, 10/10 labels, theater 0, language 0, governance auditor 0 blocking.
+- Not proved: GitHub Actions run of `contract.yml` (owner gate: push and merge), `actionlint`.
