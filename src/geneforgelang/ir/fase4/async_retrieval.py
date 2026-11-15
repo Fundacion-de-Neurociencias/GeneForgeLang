@@ -73,7 +73,7 @@ class AsyncRetrievalService:
         """
         import time
 
-        start = time.time()
+        start = time.perf_counter()
 
         # Check cache first
         if use_cache and objective.target_entity:
@@ -82,7 +82,7 @@ class AsyncRetrievalService:
             if cached and "context_data" in cached:
                 # Reconstruct context from cache
                 context = self._reconstruct_context(cached["context_data"], objective)
-                elapsed = (time.time() - start) * 1000
+                elapsed = (time.perf_counter() - start) * 1000
                 return AsyncRetrievalResult(
                     context=context,
                     elapsed_ms=elapsed,
@@ -99,7 +99,7 @@ class AsyncRetrievalService:
                 state,
             )
 
-            elapsed = (time.time() - start) * 1000
+            elapsed = (time.perf_counter() - start) * 1000
 
             # Cache result
             if use_cache:
@@ -116,7 +116,7 @@ class AsyncRetrievalService:
             )
 
         except Exception as e:
-            elapsed = (time.time() - start) * 1000
+            elapsed = (time.perf_counter() - start) * 1000
             logger.error(f"Async retrieval failed: {e}")
             return AsyncRetrievalResult(
                 error=str(e),
