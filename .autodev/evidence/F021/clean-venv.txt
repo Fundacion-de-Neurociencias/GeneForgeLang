@@ -1,0 +1,6 @@
+== python 3.9 (runtime dependencies only, PYTHONPATH=src)
+OK: docs\spec\public_contract.json matches the code (contract 1.0.0)
+exit=0
+== python 3.12 (runtime dependencies only, PYTHONPATH=src)
+OK: docs\spec\public_contract.json matches the code (contract 1.0.0)
+exit=0

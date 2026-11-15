@@ -282,3 +282,17 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Upstream `630059c` -> `91030e6`: 31 files (4.6% of 680 tracked), no architecture change. Incremental review. Report: `reviews/2026-11-15-delta.md`.
 - Green: pytest 986 passed, 22 skipped, 10 xfailed. Theater scan on the delta: 0 findings. Governance audit: no blocking.
 - Open: 3 R1 obligations (ALPHAGENOME, ENSEMBL, UNIPROT) without data-use terms; `.devcontainer/.env` still in history (owner decision). Merge markers left by the F002 merge removed from this file.
+
+## 2026-11-15: build, F021 (published contract for clients)
+- Changed: new `src/geneforgelang/public_contract.py` (builds the contract from the code; `--write|--check|--against REF|--check-tag TAG`), generated `docs/spec/public_contract.json`, `docs/spec/API_CONTRACT.md`, `.github/workflows/contract.yml`, `tests/contract/test_public_contract.py` (39 tests), `CHANGELOG.md` entry `Contract 1.0.0`. `core/api.py::get_api_info` now reports `CONTRACT_VERSION` / `GRAMMAR_VERSION` (was fixed `0.1.0`). Commits `d580ccf`, `7be9d86`. Contract and review: `contracts/F021.md`, `F021-review.md`.
+- Verified (evidence in `evidence/F021/`): `--check` exit 0 (`d1-check.txt`); a package copy with `parse` parameter renamed makes it exit 1 naming the change (`d1-mutation.txt`); tag check passes for `v1.0.0`, fails for `v9.9.9` and `v2025.06-initial-stable` (`d3-tag.txt`); `--against` through a temp git repo and the bump/changelog rules, evidence labels and grammar tie (`d2-d5-contract-tests.txt`, 39 passed); snapshot identical on Python 3.9 and 3.12 with runtime deps only (`clean-venv.txt`); full suite 1026 passed, 22 skipped, 10 xfailed (baseline 986/22/10, `baseline.log`, `d6-suite.log`); ruff clean; language check 0 (`checks.txt`).
+- Contract decision: `GRAMMAR_VERSION = 1.2.0`, not the highest suite directory, because the validator has no support for `loci`/`haplotype_panel` (v1.3.0 to v1.5.0 are listed as `unimplemented_suites`).
+- Scope addition: `ir/fase4/async_retrieval.py` timer fix (the suite was red 4 runs in 6 on Windows; same root cause family as F018).
+- Findings for later features (not fixed here):
+  - `execute(ast)` with `registry=None` raises `AttributeError` although the docstring says it uses the default registry (`core/execution.py:103`). The built-in `SimpleProteinGenerator.generate()` does not accept the keyword `entity` the engine passes (`TypeError`). Candidate for F013 (plugin interface).
+  - `validate()` returns errors (2, 1, 0) for the three "valid" conformance samples of v1.2.0. Relevant to F006 (real conformance runner).
+  - `parse()` prints diagnostics to stdout (`AST keys: ...`); the contract CLI silences it. QB-11 (F010/F015).
+  - `contract.yml` uses version tags for actions like `ci-pipeline.yml`; F003 pins them by SHA and should make this workflow a required check on `main`.
+- Not done, with reason: `actionlint` was not run (downloading and running it was denied by the permission classifier); only YAML syntax was checked (`d3-workflow-yaml.txt`). The workflow has not run on GitHub: that needs the push and the owner's merge.
+- Owner gates: PR approval (sensitive paths: `.github/workflows/**`, `core/api.py`); PR text ready in `contracts/F021-pr.md`.
+- Next: `/autodev:verify F021` in a separate session.
