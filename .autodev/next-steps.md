@@ -10,7 +10,7 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 
 ## Next
 - F003: one CI that gates PRs; one lint config; branch-protection settings for main (owner applies or approves).
-- F004: provenance contract; label and disconnect simulated components on main.
+- F004: provenance contract; label and disconnect simulated components on main. Scope from the 2026-11-15 delta: `OpenMedConnector` mock behind a real-looking endpoint, `llm_planner.py:64` entity-keyed branch, unsourced MYC figures and the "ensures reliable execution in production" sentence in the manuscript (`.autodev/reviews/2026-11-15-delta.md`).
 - F005: reconcile main's 31 commits with the chain; integration plan by slices.
 - F006: honest conformance runner.
 
@@ -23,6 +23,8 @@ This is an endless cycle, so the list is never empty. Keep it ranked and short.
 - Phase 3: specification and conformance work backed by real code.
 
 ## Needs owner
+- **Upstream delta 2026-11-15: data-use terms.** ALPHAGENOME, ENSEMBL and UNIPROT are used in code and docs with no data-use registry (`project.toml` `[ecosystem] registries = []`). Provide the terms for each, or confirm that no shipped path uses them. Agents cannot supply legal terms. Details: `.autodev/reviews/2026-11-15-delta.md`.
+- **Upstream delta 2026-11-15: history and rotation.** `.devcontainer/.env` is still in history (removed from tracking upstream). Confirm rotation of anything it held, then decide the purge (see the history purge item below).
 - **F001 hosted CI run (owner gate, does not block verification).** Approve publishing a PR branch cut from `origin/main` with `e793288 2cec236 11b9118` (draft in `contracts/F001-pr.md`), so the hosted `secret-scan.yml` run exists and proves the workflow itself.
 - **Red baseline (lesson 19).** The 2 baseline failures below still make the Stop gate block every session. Recommendation: add the baseline-fix feature (under "Next") at the top of the backlog, coordinated with María. The 2 red baseline tests do not block F001 (item 13 allows them); their fix stays the separate proposed feature under "Next".
 - **Guard requests 20261019-054021-32d1c2 and 20261019-054350-fb3e87.** Reject both: the first is a cleanup of a throwaway clone that is not needed; the second is a false positive on text inside a JSON file.
