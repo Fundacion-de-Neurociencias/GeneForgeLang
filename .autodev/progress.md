@@ -9,7 +9,6 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Not run: the test suite and ruff (running them would write caches into the read-only worktree). Test and lint counts are the scout's.
 - Next: owner reviews and approves the plan; then F001 (secrets) and F002 (public claims).
 
-<<<<<<< HEAD
 ## 2026-10-19: build, F001 (secrets, pickle, gitleaks)
 - Branch `autodev/F001` from `autodev/integration` @ 164e7df. Contract `contracts/F001.md`, reviewed by the evaluator (`contracts/F001-review.md`, ACCEPT WITH CHANGES; all 13 changes folded in), plus one amendment during build.
 - Product commits (no `.autodev/` path; the PR branch can be cut from `origin/main` by cherry-picking them): `e793288` untrack `.devcontainer/.env` (via `git rm --cached`, never opened), add `.env.example` with names only, ignore rules, delete the `.pkl` and its loader/generator, ADR `docs/decisions/20261019-no-pickle-artifacts.md`; `2cec236` `.gitleaks.toml`, pre-commit hook gitleaks v8.24.3, `.github/workflows/secret-scan.yml` (checkout pinned by SHA, binary checked by a literal SHA-256, config read from the PR base), `tests/security/test_repository_hygiene.py` (16 tests); `11b9118` allowlist the exact public value `nferruz/ProtGPT2`.
@@ -188,7 +187,6 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Hygiene tests re-run: 16 passed. Evidence: `evidence/F001/verify13/reconfirm.txt`. Verdict file unchanged.
 - Runner keeps re-invoking F001; it should move to F002. Baseline failures (`test_lru_eviction`, `test_find_similar_entities`) remain an owner decision in `next-steps.md`, "Needs owner".
 - Stop gate (verify, re-confirmation 8): blocked by the same 2 baseline failures (873 passed): `test_find_similar_entities`, `test_lru_eviction`. Not fixed: the evaluator must not write product code, the failures are out of F001 scope, and they sit in sensitive `core/**` files. Ended under "When stuck"; owner decision in `next-steps.md`, "Needs owner".
-=======
 ## 2026-10-19: build, F002 (public claims)
 - Baseline was red (2 failed, 857 passed): LRU tie on the Windows clock and a cosine rounding error. Fixed in 0a7a97b by applying the identical hunks from `origin/feature/PDN_feature-GFP` (María Alonso Vega); ruff I001 import order also fixed. Suite then green.
 - Contract `.autodev/contracts/F002.md` drafted, reviewed by the evaluator (`F002-review.md`, 14 remarks, all folded in), committed in 3c96d54.
@@ -233,7 +231,6 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - FAIL only on acceptance items 1 (inventory: 12 fixed, 4 prevented, 6 open; wording not amended) and 6 (no owner approval). See contracts/F002-feedback-3.md.
 - Governance auditor: nothing blocking. `.autodev/` must stay out of any PR to public main.
 - Next: owner decisions; no further sprint or verify until they are recorded.
->>>>>>> autodev/F002
 ## 2026-10-19: build, F018 (restore a truthful green suite)
 - Baseline at cf67007: 2 failed, 857 passed, 22 skipped, 5 xfailed (`.autodev/evidence/F018/baseline-before.log`).
 - Root causes and fixes (contract `.autodev/contracts/F018.md`, evaluator review `F018-review.md`):
@@ -253,12 +250,10 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Governance auditor: 0 blocking. Notes: publish only the product/test commits, never `.autodev/`; `core/performance.py` is a sensitive path (owner review gate).
 - Next: F001.
 
-<<<<<<< HEAD
 ## 2026-10-19: verify, F001 - PASS stands (re-confirmation 9)
 - At eea1260, after the F018 merge. Full suite in `.venv`: 887 passed, 0 failed. The baseline failures are fixed by F018. ruff clean. Governance audit: no blocking findings.
 - Evidence: `evidence/F001/verify14/`. Verdict file unchanged.
 - Environment note: the global Python resolves `geneforgelang` to the main checkout (editable install). Always use the `.venv` command from project.toml.
-=======
 ## 2026-10-19: build, F002 attempt 3 (amended acceptance item 1)
 - The planner amended item 1: in-scope rows `fixed`; rows owned by later features `prevented` and naming the feature. C15-C20 were still `open`.
 - `tests/docs/test_public_claims.py`: new `test_owned_claim_absent`, one guard per C15-C20 claim. Absent claims (C15 version drift, C16, C20 truth-audit doc) are plain guards; present claims (C15 1.0.0 vs Beta, C17 privacy flag, C18 mocked conformance, C19 readthedocs URL, C20 PR description doc) are strict xfails naming F011/F004/F006/F011/F009, so they fail the suite when the owner removes the claim until the marker is dropped.
@@ -282,4 +277,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Green: ruff, full suite (969 passed, 22 skipped, 10 xfailed), guard on origin/main (29 failed), cffconvert, Zenodo DOI 302, language check 0, inventory 0 rows `open`, governance auditor 0 blocking.
 - Feedback 4 resolved: deleted connector -> C17 `XPASS(strict)` FAILED; undecodable C18 runner -> FAILED; meta-test bites without `raises` (`verify5-owned-guards.log`).
 - Owner gates: PR approval (exclude `.autodev/`) and the Zenodo DOI (A2). Advisories: C17 guard is path-based (F004); "v2.0" print literals in execute_genesis_real.py (F011).
->>>>>>> autodev/F002
+
+## 2026-11-15: delta review of upstream changes since 2026-10-19
+- Upstream `630059c` -> `91030e6`: 31 files (4.6% of 680 tracked), no architecture change. Incremental review. Report: `reviews/2026-11-15-delta.md`.
+- Green: pytest 986 passed, 22 skipped, 10 xfailed. Theater scan on the delta: 0 findings. Governance audit: no blocking.
+- Open: 3 R1 obligations (ALPHAGENOME, ENSEMBL, UNIPROT) without data-use terms; `.devcontainer/.env` still in history (owner decision). Merge markers left by the F002 merge removed from this file.
