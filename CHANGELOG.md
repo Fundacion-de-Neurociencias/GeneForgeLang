@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- Raised the minimum versions of optional dependencies that had known HIGH or CRITICAL advisories (OSV.dev scan of 2026-10-21):
+  - `ml` extra: `torch>=2.10.0`, `transformers>=5.10.0`
+  - `web` extra: `fastapi>=0.133.0`, `starlette>=1.3.1`, `aiohttp>=3.14.4`
+  - `dev` extra: `black>=26.10.1`
+  - The `web` extra now declares `python-multipart>=0.0.31`, which `web/server.py` needs for `UploadFile` and which was missing
+  - These releases require Python 3.10 or newer, so the pins carry the marker `python_version >= '3.10'`. The core library still installs on Python 3.9; the `web`, `ml` and `dev` extras add these packages only on 3.10+
+
 ### Added
 - Published API contract for clients (Contract 1.0.0, grammar 1.2.0):
   - `docs/spec/public_contract.json` is generated from the code by `python -m geneforgelang.public_contract --write`

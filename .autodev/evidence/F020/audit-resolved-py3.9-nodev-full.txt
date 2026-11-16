@@ -1,0 +1,10 @@
+[now    ] CRITICAL PyPI:anyio==4.12.1 (pinned, runtime, service, not imported) GHSA-82r6-8w77-94w6 fixed in 4.14.2  [requirements.txt]  AnyIO: TLSStream IDNA 2003 host name encoding enables potential TLS certificate 
+[planned] HIGH     PyPI:urllib3==2.6.3 (pinned, runtime, service, not imported) GHSA-8988-9cw3-xx77 fixed in 2.8.0  [requirements.txt]  urllib3: HTTPS proxy TLS configuration may be ignored or overridden
+[planned] HIGH     PyPI:urllib3==2.6.3 (pinned, runtime, service, not imported) GHSA-mf9v-mfxr-j63j fixed in 2.7.0  [requirements.txt]  urllib3: Decompression-bomb safeguards bypassed in parts of the streaming API
+[planned] HIGH     PyPI:urllib3==2.6.3 (pinned, runtime, service, not imported) GHSA-qccp-gfcp-xxvc fixed in 2.7.0  [requirements.txt]  urllib3: Sensitive headers forwarded across origins in proxied low-level redirec
+[planned] HIGH     PyPI:urllib3==2.6.3 (pinned, runtime, service, not imported) GHSA-vxq7-64xx-v4gw fixed in 2.8.0  [requirements.txt]  urllib3: HTTPResponse.stream()/read_chunked() buffers an unbounded chunk-size li
+[planned] MODERATE PyPI:anyio==4.12.1 (pinned, runtime, service, not imported) GHSA-5p39-cfhj-2xmp fixed in 4.14.2  [requirements.txt]  AnyIO process-pool workers can block indefinitely on undrained stderr
+[planned] MODERATE PyPI:python-dotenv==1.2.1 (pinned, runtime, service, not imported) GHSA-mf9w-mj56-hr94 fixed in 1.2.2  [requirements.txt]  python-dotenv: Symlink following in set_key allows arbitrary file overwrite via 
+[planned] MODERATE PyPI:requests==2.32.5 (pinned, runtime, service, not imported) GHSA-gc5v-m9x4-r6x2 fixed in 2.33.0  [requirements.txt]  Requests has Insecure Temp File Reuse in its extract_zipped_paths() utility func
+[planned] MODERATE PyPI:urllib3==2.6.3 (pinned, runtime, service, not imported) GHSA-gh4c-6fx4-qh6g fixed in 2.8.0  [requirements.txt]  urllib3: Chunked Deflate streaming can enter an infinite loop
+9 finding(s) across 41 dependencies

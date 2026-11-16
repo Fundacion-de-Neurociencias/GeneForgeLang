@@ -1,0 +1,112 @@
+annotated-doc==0.0.5
+    # via typer
+annotated-types==0.7.0
+    # via pydantic
+anyio==4.12.1
+    # via
+    #   httpx
+    #   watchfiles
+certifi==2026.10.23
+    # via
+    #   httpcore
+    #   httpx
+    #   requests
+charset-normalizer==3.5.2
+    # via requests
+click==8.1.8
+    # via
+    #   geneforgelang (pyproject.toml)
+    #   typer
+    #   uvicorn
+colorama==0.4.6
+    # via
+    #   click
+    #   uvicorn
+deprecated==1.3.1
+    # via limits
+exceptiongroup==1.3.1
+    # via anyio
+h11==0.16.0
+    # via
+    #   httpcore
+    #   uvicorn
+httpcore==1.0.9
+    # via httpx
+httptools==0.9.0
+    # via uvicorn
+httpx==0.28.1
+    # via geneforgelang (pyproject.toml)
+idna==3.20
+    # via
+    #   anyio
+    #   httpx
+    #   requests
+joblib==1.5.3
+    # via scikit-learn
+limits==4.2
+    # via slowapi
+markdown-it-py==3.0.0
+    # via rich
+mdurl==0.1.2
+    # via markdown-it-py
+numpy==2.0.2
+    # via
+    #   geneforgelang (pyproject.toml)
+    #   scikit-learn
+    #   scipy
+packaging==24.2
+    # via limits
+ply==3.11
+    # via geneforgelang (pyproject.toml)
+pydantic==2.13.5
+    # via geneforgelang (pyproject.toml)
+pydantic-core==2.46.5
+    # via pydantic
+pygments==2.21.0
+    # via rich
+python-dotenv==1.2.1
+    # via uvicorn
+pyyaml==6.0.3
+    # via
+    #   geneforgelang (pyproject.toml)
+    #   uvicorn
+requests==2.32.5
+    # via geneforgelang (pyproject.toml)
+rich==15.0.0
+    # via
+    #   geneforgelang (pyproject.toml)
+    #   typer
+scikit-learn==1.6.1
+    # via geneforgelang (pyproject.toml)
+scipy==1.13.1
+    # via scikit-learn
+shellingham==1.5.4
+    # via typer
+slowapi==0.1.10
+    # via geneforgelang (pyproject.toml)
+threadpoolctl==3.7.0
+    # via scikit-learn
+typer==0.23.2
+    # via geneforgelang (pyproject.toml)
+typing-extensions==4.16.0
+    # via
+    #   geneforgelang (pyproject.toml)
+    #   anyio
+    #   exceptiongroup
+    #   limits
+    #   pydantic
+    #   pydantic-core
+    #   typing-inspection
+    #   uvicorn
+typing-inspection==0.4.2
+    # via pydantic
+urllib3==2.6.3
+    # via requests
+uvicorn==0.39.0
+    # via geneforgelang (pyproject.toml)
+watchfiles==1.1.1
+    # via uvicorn
+websockets==15.0.1
+    # via uvicorn
+wrapt==2.5.2
+    # via deprecated

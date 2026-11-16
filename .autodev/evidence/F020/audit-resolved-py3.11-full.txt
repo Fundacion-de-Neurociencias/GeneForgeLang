@@ -1,0 +1,14 @@
+[planned] HIGH     PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-v4x8-3wr5-3wq8 fixed in 4.2.1  [requirements.txt]  filelock ReadWriteLock: SQLite reopens the lock database by name, so a planted s
+[planned] MODERATE PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-6627-m3xw-93mp fixed in 4.2.1  [requirements.txt]  filelock: StrictSoftFileLock creates its claim directories without the lock mode
+[planned] MODERATE PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-69hj-f68j-2879 fixed in 4.2.1  [requirements.txt]  filelock: UnixFileLock truncates and chmods any regular file another user rename
+[planned] MODERATE PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-8mx5-7m5m-r77g fixed in 4.2.1  [requirements.txt]  filelock: WindowsFileLock ignores mode: a 0o600 lock file and the ReadWriteLock 
+[planned] MODERATE PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-9c4x-gm8v-wgc4 fixed in 4.2.1  [requirements.txt]  filelock: StrictSoftFileLock and SoftReadWriteLock adopt a protocol directory an
+[planned] MODERATE PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-cwqr-hh33-gh44 fixed in 4.2.1  [requirements.txt]  filelock ReadWriteLock: a crafted lock database makes every acquire stall or han
+[planned] MODERATE PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-fq56-3cx3-fjxp fixed in 4.2.1  [requirements.txt]  filelock: SoftFileLock stale-lock break removes a live lock file on a reused ino
+[planned] MODERATE PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-j8f7-rjxc-mr56 fixed in 4.0.9  [requirements.txt]  filelock: ReadWriteLock follows a symlink at the lock path into SQLite
+[planned] MODERATE PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-m462-7rxw-wvpg fixed in 4.2.1  [requirements.txt]  filelock: StrictSoftFileLock follows a symbolic link swapped in at <path>.filelo
+[planned] MODERATE PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-rfpc-qcw5-3pc4 fixed in 4.2.1  [requirements.txt]  filelock: SoftFileLock removes a live holder's marker when another user forges t
+[planned] LOW      PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-567q-5qvw-pf92 fixed in 4.2.1  [requirements.txt]  filelock: On Windows an oplock on a soft lock's marker holds SoftFileLock.acquir
+[planned] LOW      PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-9j6q-wvj5-jgjg fixed in 4.2.1  [requirements.txt]  filelock: Symlink swap during SoftFileLock's writability check leaks whether a p
+[planned] LOW      PyPI:filelock==3.32.7 (pinned, runtime, service, not imported) GHSA-9vhv-jxww-xfm5 fixed in 4.2.1  [requirements.txt]  filelock: ReadWriteLock on Windows acts on SQLite side files another local user 
+13 finding(s) across 111 dependencies

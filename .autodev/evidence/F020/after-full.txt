@@ -1,0 +1,10 @@
+[planned] MODERATE PyPI:pydantic==2.0.0 (range-allows, runtime, service, imported) GHSA-mr82-8j83-vxmv fixed in 2.4.0  [pyproject.toml]  Pydantic regular expression denial of service
+[planned] MODERATE PyPI:pytest==7.0 (range-allows, dev, service, not imported) GHSA-6w46-j5rx-g56g fixed in 9.0.3  [pyproject.toml]  pytest has vulnerable tmpdir handling
+[planned] MODERATE PyPI:requests==2.25.0 (range-allows, runtime, service, imported) GHSA-9hjg-9r4m-mvj7 fixed in 2.32.4  [pyproject.toml]  Requests vulnerable to .netrc credentials leak via malicious URLs
+[planned] MODERATE PyPI:requests==2.25.0 (range-allows, runtime, service, imported) GHSA-9wx4-h78v-vm56 fixed in 2.32.0  [pyproject.toml]  Requests `Session` object does not verify requests after making first request wi
+[planned] MODERATE PyPI:requests==2.25.0 (range-allows, runtime, service, imported) GHSA-gc5v-m9x4-r6x2 fixed in 2.33.0  [pyproject.toml]  Requests has Insecure Temp File Reuse in its extract_zipped_paths() utility func
+[planned] MODERATE PyPI:requests==2.25.0 (range-allows, runtime, service, imported) GHSA-j8r2-6x86-q33q fixed in 2.31.0  [pyproject.toml]  Unintended leak of Proxy-Authorization header in requests
+[planned] MODERATE PyPI:scikit-learn==1.3.0 (range-allows, runtime, service, imported) GHSA-jw8x-6495-233v fixed in 1.5.0  [pyproject.toml]  scikit-learn sensitive data leakage vulnerability
+[planned] LOW      PyPI:torch==2.10.0 (range-allows, runtime, service, imported) GHSA-rrmf-rvhw-rf47 fixed in 2.13.0  [pyproject.toml]  PyTorch is vulnerable to memory corruption through its torch.jit.script function
+[planned] UNKNOWN  PyPI:torch==2.10.0 (range-allows, runtime, service, imported) PYSEC-2026-139 fixed in ?  [pyproject.toml]  A vulnerability was identified in PyTorch 2.10.0. The affected element is an unk
+9 finding(s) across 31 dependencies
