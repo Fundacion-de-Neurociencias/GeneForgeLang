@@ -321,3 +321,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Pre-existing, not fixed (unrelated): `gfl --help` fails ("No module named src"); `examples/basic/basic_syntax.gfl` fails YAML parsing. Candidates for the CLI/examples features.
 - Decision: git history keeps the old links (a local account name, no secret); rewriting history of a remote branch is irreversible, so it is left for the owner (see contract R5).
 - Next: `/autodev:verify F019`.
+
+## 2026-11-16: verify, F019 - PASS
+- Independent evaluator at a2be33f5814f16836d09e16d40e0eaded97fc745. Verdict: `.autodev/evidence/F019/verdict.json`.
+- Green: ruff, suite (1035 passed, 23 skipped, 10 xfailed), independent grep (only generic paths), guard mutation caught, theater 0, language 0, governance auditor 0 blocking.
+- Not proved: LSP runtime; remote publish branch (owner gate: integrate and push); old history keeps the links (decision recorded).

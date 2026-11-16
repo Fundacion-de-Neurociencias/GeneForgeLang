@@ -1,0 +1,10 @@
+.devcontainer/docker-compose.yml:10:      - ~/.gitconfig:/home/vscode/.gitconfig:ro
+.devcontainer/setup.bat:11:copy initialize.bat C:\Users\Public\Documents\gfl-init.bat
+.devcontainer/setup.bat:12:copy run-tests.bat C:\Users\Public\Documents\gfl-test.bat
+tests/security/test_repository_hygiene.py:253:        "file:///C:/Users/someone/project/x.py",
+tests/security/test_repository_hygiene.py:254:        r"C:\Users\someone\project",
+tests/security/test_repository_hygiene.py:255:        "/c/Users/someone/project",
+tests/security/test_repository_hygiene.py:256:        "/home/someone/project",
+tests/security/test_repository_hygiene.py:257:        "/Users/someone/project",
+tests/security/test_repository_hygiene.py:267:        "~/.gitconfig:/home/vscode/.gitconfig:ro",
+tests/security/test_repository_hygiene.py:268:        r"copy a.bat C:\Users\Public\Documents\a.bat",

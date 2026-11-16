@@ -1,0 +1,1 @@
+publish_check HEAD: 43 local-path findings in total, 0 outside .autodev/ (stripped from publish branch)

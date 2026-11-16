@@ -1,0 +1,80 @@
+{
+ "feature": "F019",
+ "verdict": "PASS",
+ "commit": "a2be33f5814f16836d09e16d40e0eaded97fc745",
+ "acceptance": [
+  {
+   "item": "Grep of tracked files for home-directory paths finds nothing outside fixtures",
+   "result": "PASS",
+   "evidence": ".autodev/evidence/F019/v/grep.txt (only /home/vscode, C:/Users/Public, and the test's own example paths)"
+  },
+  {
+   "item": "Code needing paths uses relative paths; examples and LSP still run",
+   "result": "PASS",
+   "evidence": "No code needed them (diff touches one doc and one test); suite 1035 passed (v/checks.txt). LSP not started: pygls not installed, pre-existing"
+  },
+  {
+   "item": "publish_check reports no home-path findings",
+   "result": "PASS",
+   "evidence": "v/publish-check.txt: 0 outside .autodev/. origin/autodev/publish still has 10 until integrated: OWNER_GATE (push/merge)"
+  }
+ ],
+ "rubric": [
+  {
+   "check": "deterministic: ruff",
+   "result": "PASS",
+   "evidence": "v/checks.txt"
+  },
+  {
+   "check": "deterministic: full suite",
+   "result": "PASS",
+   "evidence": "v/checks.txt: 1035 passed, 23 skipped, 10 xfailed"
+  },
+  {
+   "check": "G9 theater scan",
+   "result": "PASS",
+   "evidence": "v/theater.txt: 0 findings"
+  },
+  {
+   "check": "G10 language",
+   "result": "PASS",
+   "evidence": "v/language.txt: 0 segments not in en"
+  },
+  {
+   "check": "governance-auditor",
+   "result": "PASS",
+   "evidence": "0 blocking, 2 advisory"
+  },
+  {
+   "check": "guard mutation",
+   "result": "PASS",
+   "evidence": "v/mutation.txt: injected path in README made the test fail; reverted"
+  }
+ ],
+ "feedback": [],
+ "claims": [
+  {
+   "claim": "No developer home paths remain in tracked files outside .autodev/",
+   "class": "OBSERVED"
+  },
+  {
+   "claim": "Relative links resolve to the intended files",
+   "class": "INFERRED"
+  }
+ ],
+ "proved": [
+  "Pattern scan of tracked non-.autodev files is clean",
+  "The guard test fails when a path is introduced",
+  "Suite and lint green"
+ ],
+ "not_proved": [
+  "Git history still holds the old links (decision recorded, not rewritten)",
+  "LSP runtime not started",
+  "Remote publish branch not re-checked after integration",
+  "Other path forms, e.g. URL-encoded user names"
+ ],
+ "would_be_wrong_if": [
+  "A home path in a form the regex misses: searched case-insensitive for users/usuario, AppData, file:///X: and found none",
+  "The guard not catching a new path: mutated, caught"
+ ]
+}
