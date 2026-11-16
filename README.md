@@ -81,6 +81,8 @@ pip install -e .
 pip install -e ".[cli]"
 ```
 
+The core library runs on Python 3.9 or newer. The `web`, `ml` and `dev` extras pin releases with security fixes (`torch`, `transformers`, `fastapi`, `starlette`, `aiohttp`, `black`), and those releases need Python 3.10 or newer: on Python 3.9 these extras install none of them.
+
 ### Basic Usage - Protein Design and Optimization
 
 This is the target Python API. The top-level import below does not work in this version; feature F010 adds it. The workflow text itself parses and validates with the current parser.

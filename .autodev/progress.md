@@ -301,3 +301,14 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Independent evaluator at e778929. Verdict: `.autodev/evidence/F021/verdict.json`.
 - Green: ruff, full suite (1026 passed, 22 skipped, 10 xfailed vs baseline 986/22/10), contract `--check` on Python 3.9/3.11/3.12, signature mutation caught, `--against` catches removal without bump/changelog, `--check-tag` 3 cases, 10/10 labels, theater 0, language 0, governance auditor 0 blocking.
 - Not proved: GitHub Actions run of `contract.yml` (owner gate: push and merge), `actionlint`.
+
+## 2026-11-16: build, F020 (patch HIGH/CRITICAL dependency vulnerabilities)
+- Changed: `pyproject.toml` extras only. `ml`: `torch>=2.10.0`, `transformers>=5.10.0`; `web`: `fastapi>=0.133.0`, `starlette>=1.3.1`, `aiohttp>=3.14.4`, new `python-multipart>=0.0.31` (needed by `web/server.py`, was missing); `dev`: `black>=26.10.1`. All carry `python_version >= '3.10'` because every fixed release needs 3.10. Also `CHANGELOG.md` (Security), a README note on Python 3.9 and the extras, new `tests/test_transformers_model_real.py`, `contracts/F020.md` and `F020-review.md`.
+- Decisions: markers instead of raising `requires-python`; `fastapi>=0.133.0` instead of the 0.109.1 in the feature text (0.109.1 needs `starlette<0.36`); `black>=26.10.1` instead of 26.3.1 (GHSA-cg8m-r9f2-5wm2).
+- Verified (evidence in `evidence/F020/`): scanner 26 HIGH/CRITICAL before (`before.txt`), 0 after (`after.txt`); base `.venv` suite 1026 passed, 23 skipped, 10 xfailed; venv with `web,ml,cli,dev` (torch 2.15.0, transformers 5.23.0, fastapi 0.163.1, starlette 1.10.0, aiohttp 3.14.5) 1028 passed, 22 skipped, 10 xfailed; real GPT-2 and BERT tiny models load and predict; `/health` answers 200; wheel builds with the markers; ruff clean; language check 0. The scanner tool crashes on a cp1252 console, so it was run with `PYTHONIOENCODING=utf-8`.
+- Resolved-set audit (the scanner only reads manifest floors): Python 3.11 end-user extras 0 findings. Left vulnerable and recorded in the contract: `anyio`, `urllib3` on Python 3.9 (fixed releases need 3.10), and `filelock` through the `dev` tool `safety`. Decision: not dropping Python 3.9 here; it belongs with F003/F011 (CI matrix and package metadata). Evolve should groom it into a feature.
+- Findings for later features (not fixed here): `web/server.py` and `models/advanced_models.py` import a package `gfl` that does not exist (all endpoints except `/health` answer 503; F013); `vuln_watch.py` crashes on cp1252 consoles.
+- Not proved: endpoints other than `/health`; GPU branch; test run on Python 3.10.
+- Next: `/autodev:verify F020` in a separate session.
+
+- 2026-11-16 verify F020: PASS (evaluator). vuln_watch 0 HIGH/CRITICAL, suite/lint green, fresh web venv /health 200, wheel markers OK. Evidence: .autodev/evidence/F020/verdict.json

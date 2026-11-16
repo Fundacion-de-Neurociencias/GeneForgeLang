@@ -1,0 +1,17 @@
+{"feature":"F020","verdict":"PASS","commit":"1b6e5824898b5d1d694022ee4931b8bf17fad624",
+"acceptance":[
+{"item":"vuln_watch no HIGH/CRITICAL for listed packages","result":"PASS","evidence":"before.txt 24-26 lines; evaluator re-run 0 lines (verify-independent.txt)"},
+{"item":"Manifests updated; suite and build pass","result":"PASS","evidence":"checks.txt: ruff clean, 1026 passed/23 skipped/10 xfailed; uv build wheel OK; no lockfile exists"},
+{"item":"Breaking upgrades handled with tests; residual risk mitigated in contract","result":"PASS","evidence":"fresh web venv /health 200; tests/test_transformers_model_real.py + suite-extras-venv-final.log (builder run); contract R4 documents py3.9 transitive residue"},
+{"item":"Listed packages raised to fixed releases","result":"PASS","evidence":"pyproject diff; fastapi 0.133.0 and black 26.10.1 deviations justified (D-fastapi, D-black)"}],
+"rubric":[
+{"check":"deterministic checks","result":"PASS","evidence":"checks.txt"},
+{"check":"G9 quality/theater","result":"PASS","evidence":"theater_scan 0 findings"},
+{"check":"G10 language","result":"PASS","evidence":"language_check 0"},
+{"check":"ecosystem obligations","result":"PASS","evidence":"3 R1 pre-existing, none introduced"},
+{"check":"governance audit","result":"PASS","evidence":"single conventional commit; sensitive path pyproject.toml needs owner review at merge (OWNER_GATE)"}],
+"feedback":["Python 3.9 resolved set keeps CRITICAL anyio / HIGH urllib3 with no fix available; decide dropping 3.9 in F003/F011.","web/server.py imports nonexistent gfl package (503 on most endpoints); pre-existing, F013."],
+"claims":[{"claim":"0 HIGH/CRITICAL from vuln_watch","class":"OBSERVED"},{"claim":"suite and lint green on project venv","class":"OBSERVED"},{"claim":"web app /health 200 on fixed fastapi/starlette","class":"OBSERVED"},{"claim":"wheel carries markers","class":"OBSERVED"},{"claim":"py3.9 installs none of the pinned packages","class":"OBSERVED"},{"claim":"real torch/transformers model test passes","class":"INFERRED"}],
+"proved":["manifest floors clear the scanner","project suite/lint unaffected","web extra resolves to patched versions and app imports/serves /health","wheel metadata correct"],
+"not_proved":["ML extras suite not re-run by evaluator (relied on builder log)","endpoints other than /health","Python 3.10 test run","GPU path","transitive vulns on py3.9"],
+"would_be_wrong_if":["the real-model test fails on a fresh ml venv (not re-run; builder log shows 2 passed)","scanner reads resolved versions differently than floors (checked resolution audit evidence)"]}

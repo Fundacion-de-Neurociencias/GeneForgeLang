@@ -1,0 +1,6 @@
+WARNING:root:GFL API not available: No module named 'gfl'
+GET / 503 {"detail":"GFL API not available"}
+GET /health 200 {"success":true,"message":"Service is healthy","data":{"status":"healthy","uptime_seconds":0.63691,"
+POST /parse 503 {"detail":"GFL API not available"}
+POST /validate 503 {"detail":"GFL API not available"}
+GET /models 503 {"detail":"Inference engine not available"}
