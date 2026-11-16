@@ -125,7 +125,8 @@
         "Reconciliation uses merge commits only (no rewritten public history); every commit message follows Conventional Commits 1.0 (commitlint run over the PR range)."
       ],
       "passes": false,
-      "notes": "Depends on F001-F004. Blocked on the owner/María decision whether PDN lands before or after the chain (Needs owner). Never rewrites history on main; reconciliation is by merge. Quality bar: QB-12 (spec/quality-bar.md)."
+      "notes": "Depends on F001-F004. Blocked on the owner/María decision whether PDN lands before or after the chain (Needs owner). Never rewrites history on main; reconciliation is by merge. Quality bar: QB-12 (spec/quality-bar.md). | blocked by runner 2026-11-16: waiting for owner decisions only (every other acceptance item PASS); unblock with backlog.py once they are recorded",
+      "blocked": true
     },
     {
       "id": "F006",
