@@ -337,3 +337,6 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 
 ## 2026-11-16 verify F004: PASS
 - Suite 1078 passed/24 skipped/9 xfailed; ruff, mypy strict, contract check green; execute() refuses simulated plugins by default (observed). Evidence: .autodev/evidence/F004/. Pre-existing src. import in plugin_registry.py noted for F013.
+
+## 2026-11-16 delta
+- No external changes since 2026-11-15: origin/main is still 91030e6 (last reviewed in 7abe34d). The runner state file still shows the 630059c..91030e6 range because its last-visit marker was not advanced; the already-reviewed commit c2611fc is not new.
