@@ -1,10 +1,10 @@
-C:\Users\usuario\.autodev\scratch-F020\venv\Lib\site-packages\pytest_asyncio\plugin.py:306: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+<HOME>\.autodev\scratch-F020\venv\Lib\site-packages\pytest_asyncio\plugin.py:306: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
 The event loop scope for asynchronous fixtures will default to the fixture scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to "function" scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session". Set it to "fixture-scope" to keep the current behavior.
 
   warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
 [1m============================= test session starts =============================[0m
 platform win32 -- Python 3.11.15, pytest-9.2.0, pluggy-1.7.0
-rootdir: C:\Users\usuario\.autodev\workspaces\geneforgelang
+rootdir: <HOME>\.autodev\workspaces\geneforgelang
 configfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)
 plugins: anyio-4.16.0, platformdirs-4.14.5, asyncio-1.5.0, cov-7.1.0, mock-3.17.0
 asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
