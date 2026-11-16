@@ -1,0 +1,24 @@
+## ruff
+All checks passed!
+## format
+3 files already formatted
+## mypy
+mypy.ini: [mypy]: python_version: Python 3.9 is not supported (must be 3.10 or higher)
+mypy.ini: note: unused section(s): [mypy-gfl.models.*], [mypy-gfl.plugins.*], [mypy-gfl.nl.*], [mypy-gfl.execution.*], [mypy-gfl.execution_engine], [mypy-gfl.grammar_parser], [mypy-gfl.api], [mypy-applications.*], [mypy-tests.*]
+Success: no issues found in 1 source file
+## pytest
+    result = optimizer.optimize(params)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+============================ slowest 10 durations =============================
+31.04s call     tests/test_platform.py::test_cli_tools
+9.62s call     tests/unit/test_provenance.py::test_every_stochastic_or_hash_module_is_registered_or_allowlisted
+4.10s call     tests/unit/test_provenance.py::test_provenance_module_passes_mypy_strict
+2.43s call     tests/contract/test_public_contract.py::test_against_rejects_a_removal_without_bump
+0.75s call     tests/contract/test_public_contract.py::test_cli_check_passes_on_the_committed_snapshot
+0.72s call     tests/contract/test_public_contract.py::test_against_tolerates_a_ref_without_a_snapshot
+0.71s call     tests/contract/test_public_contract.py::test_against_accepts_a_removal_with_major_bump_and_changelog
+0.67s call     tests/unit/test_provenance.py::test_no_guarantee_key_is_hardcoded_true
+0.60s call     tests/conformance/test_conformance_runner.py::TestCommand::test_missing_suite_exits_two
+0.58s call     tests/conformance/test_conformance_runner.py::TestCommand::test_correct_expected_json_makes_the_command_exit_zero
+[33m===== [32m1120 passed[0m, [33m[1m24 skipped[0m, [33m[1m8 xfailed[0m, [33m[1m9 warnings[0m[33m in 71.48s (0:01:11)[0m[33m ======[0m

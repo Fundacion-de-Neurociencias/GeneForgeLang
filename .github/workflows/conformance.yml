@@ -1,0 +1,50 @@
+name: Conformance
+
+# Runs the real parser and validator over tests/conformance_suite and compares each result
+# with the case's expected.json. Known failures are listed in the report, never hidden.
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  conformance:
+    name: Conformance suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install the package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      # The command exits non-zero when a case fails, errors, or passes while listed as a known
+      # failure. The report is published first, then the exit code is returned.
+      - name: Run the conformance suite
+        run: |
+          status=0
+          python -m geneforgelang.conformance tests/conformance_suite --junit conformance-report.xml > conformance-report.txt || status=$?
+          cat conformance-report.txt
+          { echo '```'; cat conformance-report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
+
+      - name: Publish the conformance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-report
+          path: |
+            conformance-report.xml
+            conformance-report.txt
+          if-no-files-found: error

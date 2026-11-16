@@ -1,0 +1,30 @@
+{
+ "feature": "F006",
+ "verdict": "PASS",
+ "commit": "bc9514b53019212acd17cb1774df7091a373d2dd",
+ "acceptance": [
+  {"item": "grep for 'Mocking' or 'actual = expected' in the runner returns nothing", "result": "PASS", "evidence": "evidence/F006/verify-commands.txt (item1, grep exit 1)"},
+  {"item": "Meta-test proves a mismatching case fails (exit != 0, evidence log)", "result": "PASS", "evidence": "verify-commands.txt item3: FAIL 01_wrong.gfl, exit 1; TestCommand in tests/conformance passes"},
+  {"item": "CI publishes the conformance report; failing cases listed as known failures with issue links", "result": "OWNER_GATE", "evidence": ".github/workflows/conformance.yml parses, run step keeps the runner exit code, upload uses if: always(); known_failures.json lists 27 cases with reason and tracking. The real GitHub run and the GitHub issues need the owner (push, merge, issue creation)."},
+  {"item": "Runner is importable typed code under src/ with its own unit tests", "result": "PASS", "evidence": "src/geneforgelang/conformance.py; mypy --strict clean; 40 tests in tests/conformance (checks.txt)"}
+ ],
+ "rubric": [
+  {"check": "deterministic checks (ruff, format, mypy --strict, full pytest 1120 passed/24 skipped/8 xfailed, public_contract --check)", "result": "PASS", "evidence": "checks.txt, checks2.txt"},
+  {"check": "G9 theater_scan --verify-citations", "result": "PASS", "evidence": "checks2.txt: 0 findings"},
+  {"check": "G10 language_check", "result": "PASS", "evidence": "checks2.txt: 0 segments not in en"},
+  {"check": "governance-auditor", "result": "PASS", "evidence": "no blocking findings; two advisory wording items"},
+  {"check": "G1 mocks in verification", "result": "PASS", "evidence": "only a monkeypatch in a unit test of error handling; end-to-end evidence is the real CLI run"}
+ ],
+ "feedback": [
+  "Non-blocking: README.md:331 and CHANGELOG.md:27 say '9 of 36 cases pass'. Only 1 passes as a valid case; 8 are invalid cases that pass on status alone (stated in tests/conformance_suite/README.md and progress.md). Add '(8 of them on status only)' when the docs are next touched.",
+  "Non-blocking: contract F006.md Done-means item 1 still lists 'scripts', which does not exist."
+ ],
+ "claims": [
+  {"claim": "The runner runs the real validator and 9/36 pass, 27 known failures, exit 0", "class": "OBSERVED"},
+  {"claim": "A wrong expectation, a stale known-failure entry, a passing known failure, a missing, orphan or malformed expectation, and an empty suite each exit 1; a missing directory exits 2", "class": "OBSERVED"},
+  {"claim": "The CI job will publish the report on GitHub", "class": "INFERRED"}
+ ],
+ "proved": ["The CLI on this checkout compares real validator results with expectations and fails on each mutation tried", "Lint, format, strict typing and the full suite are green", "The JUnit file has tests=36, skipped=27"],
+ "not_proved": ["A real GitHub Actions run", "actionlint", "Python 3.9", "That the expected statuses of the 36 cases match the specification text (taken from case headers, not independently reviewed)", "Reason codes for the 8 status-only invalid cases"],
+ "would_be_wrong_if": ["The runner passed a case the validator rejects: looked for it with a wrong expectation, which failed correctly", "A stale known-failure was hidden: looked for it with both mutations, both failed correctly"]
+}

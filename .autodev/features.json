@@ -145,8 +145,9 @@
         "CI publishes the conformance report; failing cases are listed as known failures with issue links, not hidden.",
         "Runner is importable code under src/ or tools/ with type hints and its own unit tests (no logic in a top-level script only)."
       ],
-      "passes": false,
-      "notes": "Depends on F005 (runner location decided). Some conformance cases may fail once the runner is honest; that is the expected outcome and is reported, not masked. Quality bar: QB-4 (spec/quality-bar.md)."
+      "passes": true,
+      "notes": "Depends on F005 (runner location decided). Some conformance cases may fail once the runner is honest; that is the expected outcome and is reported, not masked. Quality bar: QB-4 (spec/quality-bar.md).",
+      "evidence": ".autodev/evidence/F006/verdict.json"
     },
     {
       "id": "F007",
