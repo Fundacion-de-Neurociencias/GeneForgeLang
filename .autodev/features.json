@@ -345,9 +345,10 @@
         "Code that needed those paths uses repo-relative paths or configuration; affected examples and the LSP still run (evidence: commands run).",
         "tools/publish_check.py on the publish branch reports no home-path findings, including pre-existing ones."
       ],
-      "passes": false,
+      "passes": true,
       "category": "hygiene",
-      "notes": "Found by publish_check on PR #22 (2026-10-19): src/gfl_lsp/gfl_lsp/server/main.py, docs/dev/decisions/ADR-001-*.md, docs/dev/reports/TICKET_SUMMARY_GF-163.1.md."
+      "notes": "Found by publish_check on PR #22 (2026-10-19): src/gfl_lsp/gfl_lsp/server/main.py, docs/dev/decisions/ADR-001-*.md, docs/dev/reports/TICKET_SUMMARY_GF-163.1.md.",
+      "evidence": ".autodev/evidence/F019/verdict.json"
     },
     {
       "id": "F020",

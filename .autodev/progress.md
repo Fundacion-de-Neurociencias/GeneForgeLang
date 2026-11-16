@@ -312,3 +312,17 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Next: `/autodev:verify F020` in a separate session.
 
 - 2026-11-16 verify F020: PASS (evaluator). vuln_watch 0 HIGH/CRITICAL, suite/lint green, fresh web venv /health 200, wheel markers OK. Evidence: .autodev/evidence/F020/verdict.json
+
+## 2026-11-16 F019 Remove machine-specific paths
+- Changed: `docs/dev/reports/TICKET_SUMMARY_GF-163.1.md` (10 `file:///C:/Users/<user>/...` links became repo-relative); new tests in `tests/security/test_repository_hygiene.py` (`test_no_home_directory_paths`, pattern match and allow cases).
+- Finding: the LSP (`gfl_lsp/server/main.py`) and `ADR-001` named in the feature notes were already clean; they only contain the Spanish word "usuario", which the `publish_check` name prefilter matches.
+- Verified: `evidence/F019/publish-check.txt` (HEAD~1: 10 local-path findings; HEAD: 0 outside `.autodev/`), `grep-home-paths.txt` (only `/home/vscode` and `C:\Users\Public`), `suite.txt` (1035 passed, 23 skipped, 10 xfailed; ruff clean), `language_check` 0 segments.
+- Not done: the LSP was not started. Installing `pygls`/`lsprotocol` was blocked by the guard, request `20261116-064507-4d9157` (owner approval). `origin/autodev/publish` still has the 10 findings until this branch is integrated.
+- Pre-existing, not fixed (unrelated): `gfl --help` fails ("No module named src"); `examples/basic/basic_syntax.gfl` fails YAML parsing. Candidates for the CLI/examples features.
+- Decision: git history keeps the old links (a local account name, no secret); rewriting history of a remote branch is irreversible, so it is left for the owner (see contract R5).
+- Next: `/autodev:verify F019`.
+
+## 2026-11-16: verify, F019 - PASS
+- Independent evaluator at a2be33f5814f16836d09e16d40e0eaded97fc745. Verdict: `.autodev/evidence/F019/verdict.json`.
+- Green: ruff, suite (1035 passed, 23 skipped, 10 xfailed), independent grep (only generic paths), guard mutation caught, theater 0, language 0, governance auditor 0 blocking.
+- Not proved: LSP runtime; remote publish branch (owner gate: integrate and push); old history keeps the links (decision recorded).

@@ -212,3 +212,62 @@ def test_precommit_has_gitleaks() -> None:
     assert len(repos) == 1
     assert repos[0]["rev"] == f"v{GITLEAKS_VERSION}"
     assert {hook["id"] for hook in repos[0]["hooks"]} & {"gitleaks", "gitleaks-system"}
+
+
+# Home-directory paths of a developer machine. Generic locations (a container user, the Windows
+# shared profile) are legitimate and are not matched.
+HOME_PATH = re.compile(
+    r"[A-Za-z]:[\\/]+Users[\\/]+(?!Public\b|Default\b|<)[^\\/\s]+"
+    r"|/[a-z]/Users/(?!Public\b)[^/\s]+"
+    r"|/home/(?!vscode\b|runner\b|user\b|<)[A-Za-z][\w.-]*"
+    r"|/Users/(?!Public\b|Shared\b|<)[A-Za-z][\w.-]*",
+    re.IGNORECASE,
+)
+
+
+# This module holds the pattern's own example paths.
+THIS_FILE = "tests/security/test_repository_hygiene.py"
+
+
+def test_no_home_directory_paths(tracked_files: list[str]) -> None:
+    offending = []
+    for path in tracked_files:
+        # .autodev/ is local planning state (never published) and quotes logs verbatim.
+        if path.startswith(".autodev/") or path == THIS_FILE:
+            continue
+        file_path = REPO_ROOT / path
+        if not file_path.is_file():
+            continue
+        data = file_path.read_bytes()
+        if b"\0" in data:
+            continue
+        for number, line in enumerate(data.decode("utf-8", errors="replace").splitlines(), start=1):
+            if HOME_PATH.search(line):
+                offending.append(f"{path}:{number}")
+    assert offending == [], f"home-directory paths are tracked: {offending}"
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        "file:///C:/Users/someone/project/x.py",
+        r"C:\Users\someone\project",
+        "/c/Users/someone/project",
+        "/home/someone/project",
+        "/Users/someone/project",
+    ],
+)
+def test_home_path_pattern_matches_developer_paths(line: str) -> None:
+    assert HOME_PATH.search(line)
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        "~/.gitconfig:/home/vscode/.gitconfig:ro",
+        r"copy a.bat C:\Users\Public\Documents\a.bat",
+        "El usuario pasa el ratón",
+    ],
+)
+def test_home_path_pattern_allows_generic_paths(line: str) -> None:
+    assert not HOME_PATH.search(line)
