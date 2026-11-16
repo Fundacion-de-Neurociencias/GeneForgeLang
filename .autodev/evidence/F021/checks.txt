@@ -1,0 +1,4 @@
+All checks passed!
+ruff exit=0
+0 segment(s) not in 'en'
+language_check exit=0

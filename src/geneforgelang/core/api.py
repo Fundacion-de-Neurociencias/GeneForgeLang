@@ -38,6 +38,7 @@ from geneforgelang.core.inference import InferenceEngine as _InferenceEngine
 from geneforgelang.core.performance import cached, get_monitor
 from geneforgelang.core.validator import validate as _validate
 from geneforgelang.plugins.plugin_registry import PluginRegistry
+from geneforgelang.public_contract import CONTRACT_VERSION, GRAMMAR_VERSION
 from geneforgelang.utils.prob_rules import default_rules
 
 # Optional execution engine import
@@ -583,8 +584,8 @@ def get_api_info() -> dict[str, Any]:
         Dictionary containing API version, available features, and system info.
     """
     info = {
-        "api_version": "0.1.0",
-        "gfl_version": "0.1.0",
+        "api_version": CONTRACT_VERSION,
+        "gfl_version": GRAMMAR_VERSION,
         "features": {
             "basic_parsing": True,
             "grammar_parsing": HAS_GRAMMAR_PARSER,

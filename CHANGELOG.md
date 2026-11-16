@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Published API contract for clients (Contract 1.0.0, grammar 1.2.0):
+  - `docs/spec/public_contract.json` is generated from the code by `python -m geneforgelang.public_contract --write`
+  - CI fails when a public name, signature, error code or grammar construct changes without a `CONTRACT_VERSION` bump and a `Contract X.Y.Z` line here
+  - Release tags `vX.Y.Z` must equal the `pyproject.toml` version and `geneforgelang.__version__`
+  - Every public function carries an evidence label (`computed` or `simulated`)
+  - `get_api_info()` now reports the contract and grammar versions instead of a fixed `0.1.0`
 - Container-Based Plugin Execution:
   - Implemented container image discovery through `gfl.plugin_containers` entry points
   - Added `ContainerExecutor` for Docker-based plugin execution

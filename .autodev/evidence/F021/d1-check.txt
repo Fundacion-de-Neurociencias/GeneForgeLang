@@ -1,0 +1,3 @@
+# D1: --check on the committed snapshot
+OK: docs\spec\public_contract.json matches the code (contract 1.0.0)
+exit=0

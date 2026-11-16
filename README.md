@@ -281,6 +281,10 @@ Features:
 - `execute(ast: Dict) -> Dict`: Execute workflow
 - `infer(model, ast: Dict) -> Dict`: Run ML inference
 
+### Public API contract
+
+Clients may rely on the surface declared in [`docs/spec/public_contract.json`](docs/spec/public_contract.json): the functions of `geneforgelang.core.api`, the error types and codes, the grammar version and an evidence label per function (`execute` and the `infer` functions are labelled `simulated`). It is generated from the code, versioned with SemVer, and checked in CI. See [`docs/spec/API_CONTRACT.md`](docs/spec/API_CONTRACT.md).
+
 ## Development
 
 ### Setup Development Environment

@@ -1,0 +1,15 @@
+# D1 mutation: copy of the package with parse(use_grammar) renamed to parse(strict); cwd = repo root
+FAIL: docs\spec\public_contract.json differs from the code. Changes since the snapshot:
+  [breaking] function parse: parameter 1 changed from 'use_grammar' (POSITIONAL_OR_KEYWORD) to 'strict' (POSITIONAL_OR_KEYWORD)
+  [breaking] grammar construct 'complexes' is no longer parsed
+  [breaking] grammar construct 'design' is no longer parsed
+  [breaking] grammar construct 'experiment' is no longer parsed
+  [breaking] grammar construct 'hypothesis' is no longer parsed
+  [breaking] grammar construct 'optimize' is no longer parsed
+  [breaking] grammar construct 'pathways' is no longer parsed
+  [breaking] grammar construct 'rules' is no longer parsed
+  [breaking] grammar construct 'timeline' is no longer parsed
+  [breaking] conformance sample tests/conformance_suite/v1.2.0/contracts_and_schemas/01_entity_resolution.gfl: parsed keys changed from ['analyze', 'pathways'] to ['!error:NameError']
+  [breaking] conformance sample tests/conformance_suite/v1.2.0/rules_and_hypothesis/01_hypothesis_link.gfl: parsed keys changed from ['experiment', 'hypothesis'] to ['!error:NameError']
+exit=1
+(extra 'no longer parsed' lines: the sed rename left the function body using the old name, so parse() raised NameError; the signature line is the intended detection)

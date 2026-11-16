@@ -1,0 +1,10 @@
+== v1.0.0
+OK: v1.0.0 matches pyproject.toml and geneforgelang.__version__
+exit=0
+== v9.9.9
+FAIL: tag v9.9.9 != pyproject.toml version 1.0.0
+FAIL: tag v9.9.9 != geneforgelang.__version__ 1.0.0
+exit=1
+== mismatch pyproject
+FAIL: tag v1.0.0 != pyproject.toml version 7.7.7
+exit=1

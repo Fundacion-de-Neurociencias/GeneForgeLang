@@ -1,0 +1,11 @@
+# D3: --check-tag
+$ --check-tag v1.0.0
+OK: v1.0.0 matches pyproject.toml and geneforgelang.__version__
+exit=0
+$ --check-tag v9.9.9
+FAIL: tag v9.9.9 != pyproject.toml version 1.0.0
+FAIL: tag v9.9.9 != geneforgelang.__version__ 1.0.0
+exit=1
+$ --check-tag v2025.06-initial-stable
+FAIL: tag 'v2025.06-initial-stable' is not a release tag of the form vX.Y.Z
+exit=1
