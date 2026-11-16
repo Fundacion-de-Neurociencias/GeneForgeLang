@@ -402,8 +402,8 @@ def test_simulated_label_on_execute_matches_the_behaviour() -> None:
 
     The default call refuses the simulated plugin; the caller opts in with ``allow_simulated``.
     """
-    from geneforgelang.provenance import SimulatedInputError, provenance_of
     from geneforgelang.plugins.plugin_registry import PluginRegistry
+    from geneforgelang.provenance import SimulatedInputError, provenance_of
     from geneforgelang.utils.example_implementations import ProteinVAEGenerator
 
     registry = PluginRegistry()

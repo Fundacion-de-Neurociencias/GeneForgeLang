@@ -1,0 +1,2 @@
+E   AssertionError: unregistered module with a stochastic or hash primitive, or a stale allowlist entry: ['_scratch_mutation.py']
+====================== 1 failed, 42 deselected in 0.49s =======================

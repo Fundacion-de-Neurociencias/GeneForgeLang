@@ -123,9 +123,10 @@ def _kind(result: Any) -> str:
         kind = result.provenance.kind
         for item in result:
             carried = getattr(item, "provenance", None)
-            if carried is None:
+            if carried is None and hasattr(item, "metadata"):
                 carried = Provenance(**item.metadata["provenance"])
-            assert carried.kind == kind
+            if carried is not None:  # plain values (an embedding's floats) carry the list's label only
+                assert carried.kind == kind
         return str(kind)
     return str(Provenance(**result.metadata["provenance"]).kind)
 
@@ -235,7 +236,10 @@ def test_registry_refuses_a_real_component() -> None:
         register_simulated_component("X", Provenance("computed", "s", "1"), "x.py", "oracle")
 
 
-def test_registry_refuses_a_name_registered_elsewhere() -> None:
+def test_registry_refuses_a_name_registered_elsewhere(monkeypatch: pytest.MonkeyPatch) -> None:
+    from geneforgelang import provenance
+
+    monkeypatch.setattr(provenance, "_components", dict(provenance._components))  # keep the real registry clean
     label = Provenance("stub", "s", "1")
     register_simulated_component("F004-twin", label, "a.py", "oracle")
     register_simulated_component("F004-twin", label, "a.py", "oracle")  # same location: idempotent
@@ -356,7 +360,7 @@ def _constant_guarantees(tree: ast.AST) -> list[int]:
                 for t in node.targets
                 if isinstance(t, ast.Subscript) and key_name(t.slice) in GUARANTEE_KEYS
             ]
-    return hits
+    return sorted(hits)
 
 
 def test_no_guarantee_key_is_hardcoded_true() -> None:

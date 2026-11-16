@@ -184,7 +184,7 @@ def demo_openmed_connector():
     result = connector.deidentify_clinical_note(clinical_note)
     print(f"Original length: {result['original_length']}")
     print(f"Cleaned length: {result['cleaned_length']}")
-    print(f"Privacy cleared: {result['privacy_cleared']}")
+    print(f"Privacy cleared: {result['privacy_cleared']} (stub, no privacy guarantee)")
     print(f"Entities found: {len(result['entities'])}")
 
     # Literature search
