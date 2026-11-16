@@ -340,3 +340,6 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 
 ## 2026-11-16 delta
 - No external changes since 2026-11-15: origin/main is still 91030e6 (last reviewed in 7abe34d). The runner state file still shows the 630059c..91030e6 range because its last-visit marker was not advanced; the already-reviewed commit c2611fc is not new.
+
+## 2026-11-16 delta (second visit)
+- No external changes since 2026-11-15: origin/main is still 91030e6, already reviewed (c2611fc is an ancestor of 7abe34d). The runner's changes-since-last-visit.md still shows 630059c..91030e6 because its marker was not advanced. Its embedded-instruction flags (carbonx_engine.py, the DMD helix HTML and the wet-lab doc) are on feature branches or absent from main; nothing was followed.
