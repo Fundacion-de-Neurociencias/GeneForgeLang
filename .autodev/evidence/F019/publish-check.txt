@@ -1,0 +1,15 @@
+## local-path findings (publish_check; .autodev/ lines omitted, that directory is stripped from the publish branch)
+## HEAD~1
+BLOCKING local path: docs/dev/reports/TICKET_SUMMARY_GF-163.1.md:10:- Modified [gfl/plugins/plugin_registry.py](file:///C:/Users/usuario/GeneForgeLang
+BLOCKING local path: docs/dev/reports/TICKET_SUMMARY_GF-163.1.md:16:- Created [gfl/container_executor.py](file:///C:/Users/usuario/GeneForgeLang/gfl/c
+BLOCKING local path: docs/dev/reports/TICKET_SUMMARY_GF-163.1.md:23:- Modified [gfl/execution_engine.py](file:///C:/Users/usuario/GeneForgeLang/gfl/ex
+BLOCKING local path: docs/dev/reports/TICKET_SUMMARY_GF-163.1.md:28:- Added `docker>=7.0.0` as optional dependency in [pyproject.toml](file:///C:/User
+BLOCKING local path: docs/dev/reports/TICKET_SUMMARY_GF-163.1.md:32:- Updated [gfl-plugin-samtools/pyproject.toml](file:///C:/Users/usuario/GeneForgeL
+BLOCKING local path: docs/dev/reports/TICKET_SUMMARY_GF-163.1.md:36:- Created [docs/container_execution.md](file:///C:/Users/usuario/GeneForgeLang/doc
+BLOCKING local path: docs/dev/reports/TICKET_SUMMARY_GF-163.1.md:37:- Added container execution example in [examples/container_execution_example.gfl](
+BLOCKING local path: docs/dev/reports/TICKET_SUMMARY_GF-163.1.md:38:- Updated [README.md](file:///C:/Users/usuario/GeneForgeLang/README.md) to mention
+BLOCKING local path: docs/dev/reports/TICKET_SUMMARY_GF-163.1.md:39:- Updated [CHANGELOG.md](file:///C:/Users/usuario/GeneForgeLang/CHANGELOG.md) to d
+BLOCKING local path: docs/dev/reports/TICKET_SUMMARY_GF-163.1.md:42:- Created [tests/test_container_execution.py](file:///C:/Users/usuario/GeneForgeLa
+count: 45
+## HEAD
+count: 35
