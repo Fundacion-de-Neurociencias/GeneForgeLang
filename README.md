@@ -81,6 +81,8 @@ pip install -e .
 pip install -e ".[cli]"
 ```
 
+The core library runs on Python 3.9 or newer. The `web`, `ml` and `dev` extras pin releases with security fixes (`torch`, `transformers`, `fastapi`, `starlette`, `aiohttp`, `black`), and those releases need Python 3.10 or newer: on Python 3.9 these extras install none of them.
+
 ### Basic Usage - Protein Design and Optimization
 
 This is the target Python API. The top-level import below does not work in this version; feature F010 adds it. The workflow text itself parses and validates with the current parser.
@@ -280,6 +282,12 @@ Features:
 - `validate(ast: Dict) -> List[str]`: Validate AST semantics
 - `execute(ast: Dict) -> Dict`: Execute workflow
 - `infer(model, ast: Dict) -> Dict`: Run ML inference
+
+### Public API contract
+
+Clients may rely on the surface declared in [`docs/spec/public_contract.json`](docs/spec/public_contract.json): the functions of `geneforgelang.core.api`, the error types and codes, the grammar version and an evidence label per function (`execute` and the `infer` functions are labelled `simulated`). It is generated from the code, versioned with SemVer, and checked in CI. See [`docs/spec/API_CONTRACT.md`](docs/spec/API_CONTRACT.md).
+
+Every plugin and connector shipped in this package is simulated or a stub (random or canned output). Their results carry a `provenance` label, they warn on first use, and `execute()` refuses them unless you pass `allow_simulated=True`. `OpenMedConnector` gives no privacy guarantee. `geneforgelang.provenance.list_simulated_components()` lists them.
 
 ## Development
 

@@ -93,7 +93,10 @@ class TestOpenMedConnector:
         note = "Patient: John Doe, DOB: 01/15/1980, Email: john@email.com"
         result = connector.deidentify_clinical_note(note)
 
-        assert result["privacy_cleared"] is True
+        # No privacy filter is connected, so the flag must never claim clearance.
+        assert result["privacy_cleared"] is False
+        assert result["provenance"]["kind"] == "stub"
+        assert result.provenance.kind == "stub"
         assert len(result["cleaned_text"]) < len(note) or "[PATIENT_NAME]" in result["cleaned_text"]
         assert "entities" in result
 
@@ -113,7 +116,7 @@ class TestOpenMedConnector:
 
         assert knowledge["entity_id"] == "TP53"
         assert "function" in knowledge
-        assert knowledge["source"] == "OpenMed"
+        assert knowledge["source"] == "OpenMed (stub)"
 
 
 class TestHuggingScienceConnector:

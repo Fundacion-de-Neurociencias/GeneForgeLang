@@ -434,7 +434,7 @@ OWNED_CLAIMS = [
     pytest.param(_c15_version_consistent, id="C15-citation-matches-pyproject-F011"),
     pytest.param(_c15_stable_major_not_beta, id="C15-version-vs-beta-F011", marks=_owned_xfail("C15", "F011")),
     pytest.param(_c16_no_calibration_claim, id="C16-calibration-claim-F008"),
-    pytest.param(_c17_no_unconditional_privacy_flag, id="C17-privacy-cleared-F004", marks=_owned_xfail("C17", "F004")),
+    pytest.param(_c17_no_unconditional_privacy_flag, id="C17-privacy-cleared-F004"),
     pytest.param(_c18_no_mocked_conformance, id="C18-mocked-conformance-F006", marks=_owned_xfail("C18", "F006")),
     pytest.param(_c19_no_dead_docs_url, id="C19-readthedocs-url-F011", marks=_owned_xfail("C19", "F011")),
     pytest.param(_c20_no_status_doc("END_TO_END_TRUTH_AUDIT.md"), id="C20-truth-audit-doc-F009"),

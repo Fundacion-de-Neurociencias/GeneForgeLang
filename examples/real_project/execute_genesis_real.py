@@ -20,9 +20,28 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from geneforgelang.provenance import (
+    Provenance,
+    ProvenancedDict,
+    register_simulated_component,
+    warn_first_use,
+)
+
+PROVENANCE = Provenance("simulated", "examples/real_project/execute_genesis_real.py", "1.0.0")
+register_simulated_component(
+    "execute_genesis_real",
+    PROVENANCE,
+    "examples/real_project/execute_genesis_real.py",
+    "A gRNA efficiency and off-target model with published validation, run through the GeneForge engine",
+)
+
 
 def simulate_geneforge_engine():
-    """Simulate the GeneForge engine with random scores (np.random.beta); not real predictions."""
+    """Simulate the GeneForge engine with random scores (np.random.beta); not real predictions.
+
+    The returned dictionary is labelled ``simulated`` (``result.provenance``).
+    """
+    warn_first_use("execute_genesis_real", PROVENANCE, stacklevel=2)
     print("🚀 Starting GeneForge v2.0 Engine...")
     print("📊 Initializing Multi-Omic Discovery Pipeline...")
 
@@ -45,6 +64,7 @@ def simulate_geneforge_engine():
                 "combined_score": 0.0,
                 "genomic_position": f"chr17:{43094495 + np.random.randint(0, 10000)}",
                 "efficiency_confidence": np.random.uniform(0.7, 0.95),
+                "provenance_kind": PROVENANCE.kind,
             }
             candidate["combined_score"] = (
                 candidate["on_target_score"] * 0.6 + (1 - candidate["off_target_score"]) * 0.4
@@ -83,7 +103,7 @@ def simulate_geneforge_engine():
     print(f"🏆 Best candidate: {results['final_rankings'][0]['id']}")
     print(f"⭐ Best score: {results['final_rankings'][0]['combined_score']:.4f}")
 
-    return results
+    return ProvenancedDict(results, PROVENANCE)
 
 
 def generate_realistic_grna_sequence():

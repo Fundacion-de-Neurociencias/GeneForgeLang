@@ -4,6 +4,24 @@ import random
 from typing import Any
 
 from geneforgelang.plugins.base import BaseGeneratorPlugin
+from geneforgelang.provenance import (
+    Provenance,
+    ProvenancedDict,
+    register_simulated_component,
+    warn_first_use,
+)
+
+PROVENANCE = Provenance(
+    "simulated",
+    "geneforgelang.plugins.builtin.protein_generator.SimpleProteinGenerator",
+    "1.0.0",
+)
+register_simulated_component(
+    "SimpleProteinGenerator",
+    PROVENANCE,
+    "src/geneforgelang/plugins/builtin/protein_generator.py",
+    "A generative model with a held-out benchmark of expressed, folded proteins",
+)
 
 
 class SimpleProteinGenerator(BaseGeneratorPlugin):
@@ -13,7 +31,12 @@ class SimpleProteinGenerator(BaseGeneratorPlugin):
     This is a basic implementation that generates random protein sequences
     based on amino acid frequency distributions. For production use,
     more sophisticated methods like VAEs or transformers would be used.
+
+    The sequences are random draws, not designs: the result is labelled
+    ``simulated`` and decision paths refuse it unless ``allow_simulated=True``.
     """
+
+    provenance = PROVENANCE
 
     def __init__(self):
         super().__init__()
@@ -46,6 +69,7 @@ class SimpleProteinGenerator(BaseGeneratorPlugin):
 
     def generate(self, params: dict[str, Any]) -> dict[str, Any]:
         """Generate protein sequences based on parameters."""
+        warn_first_use(self.name, PROVENANCE)
         count = params.get("count", 10)
         length = params.get("length", 100)
 
@@ -66,9 +90,12 @@ class SimpleProteinGenerator(BaseGeneratorPlugin):
                 }
             )
 
-        return {
-            "sequences": sequences,
-            "count": len(sequences),
-            "method": "SimpleProteinGenerator",
-            "parameters_used": params,
-        }
+        return ProvenancedDict(
+            {
+                "sequences": sequences,
+                "count": len(sequences),
+                "method": "SimpleProteinGenerator",
+                "parameters_used": params,
+            },
+            PROVENANCE,
+        )
