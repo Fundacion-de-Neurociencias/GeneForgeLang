@@ -334,3 +334,6 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Left as is, recorded: `tests/test_basic_functionality.py` and `tests/test_workflow.py` swallow exceptions, so they no longer exercise execution; `test_workflow.py` already never executed. Not done here: `llm_planner.py` and manuscript sentences (claims feature); type-level label for the rule-based inference path (propose to evolve); `gfl.plugins` auto-register path (F013).
 - Not proved: example-script test is skipped in the base `.venv` (no numpy); it passes only with the extra packages.
 - Next: `/autodev:verify F004` in a separate session.
+
+## 2026-11-16 verify F004: PASS
+- Suite 1078 passed/24 skipped/9 xfailed; ruff, mypy strict, contract check green; execute() refuses simulated plugins by default (observed). Evidence: .autodev/evidence/F004/. Pre-existing src. import in plugin_registry.py noted for F013.

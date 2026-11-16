@@ -1,0 +1,10 @@
+== theater
+0 finding(s)
+== language
+0 segment(s) not in 'en'
+== secrets
++4. **Completeness oracle (external, not written from the component list).** An AST scan of `src/geneforgelang` finds every module that, at any nesting level (including imports inside functions), imports `random`, `secrets`, `numpy.random` or `hashlib`, or uses the attribute `np.random` or `numpy.random`. The test asserts set equality between the modules found and `REGISTERED ∪ ALLOWLIST`, so a stale allowlist entry fails too. The allowlist is exactly these modules, each with a written reason: `core/parser.py`, `core/performance.py`, `core/enhanced_inference_engine.py`, `plugins/plugin_registry.py`, `governance/behavioral/semantic_hash.py`, `ir/fase4/cache_layer.py` and `ir/fase4/async_retrieval.py` (all use `hashlib` only to build cache or content keys; no output value derives from the hash). `ir/external/openmed_connector.py` is registered, not allowlisted, although it also uses `hashlib` (there the hash derives the returned vectors). Limit: components that return constants without importing a stochastic primitive (`AlphaGenomePlugin`, a stub) are not seen by this oracle; only the registry list covers them. Mutation: a copied tree with `import random` added to a scratch module makes the test fail; evidence saved.
++    ``api_key`` are stored but never used.
++_PRIMITIVE_ROOTS = {"random", "secrets", "hashlib"}
+== data files
+== mocks in tests
