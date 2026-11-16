@@ -1,0 +1,8 @@
+Evaluator re-run 2026-11-16 at 1b6e582
+vuln_watch (UTF-8): 0 HIGH/CRITICAL lines
+theater_scan --diff --verify-citations: 0 findings; language_check: 0
+obligations_check: 3 R1 (AlphaGenome, Ensembl, UniProt) pre-existing; diff adds none
+Fresh py3.11 venv .[web]: fastapi 0.163.1, starlette 1.10.0, aiohttp 3.14.5; web.server TestClient /health 200
+uv build --wheel: markers present for all 7 pins
+uv pip compile all extras py3.9: 0 of the 7 packages resolved
+Governance: 1 commit, conventional msg, no forbidden paths; touches sensitive pyproject.toml -> owner review at merge (owner gate)

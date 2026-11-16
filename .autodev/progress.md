@@ -310,3 +310,5 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Findings for later features (not fixed here): `web/server.py` and `models/advanced_models.py` import a package `gfl` that does not exist (all endpoints except `/health` answer 503; F013); `vuln_watch.py` crashes on cp1252 consoles.
 - Not proved: endpoints other than `/health`; GPU branch; test run on Python 3.10.
 - Next: `/autodev:verify F020` in a separate session.
+
+- 2026-11-16 verify F020: PASS (evaluator). vuln_watch 0 HIGH/CRITICAL, suite/lint green, fresh web venv /health 200, wheel markers OK. Evidence: .autodev/evidence/F020/verdict.json

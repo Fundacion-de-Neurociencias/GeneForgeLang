@@ -1,0 +1,7 @@
+== lint
+All checks passed!
+== test
+0.64s call     tests/unit/test_enhanced_cli.py::TestEnhancedCLI::test_invalid_file_handling
+0.60s call     tests/contract/test_public_contract.py::test_cli_check_tag_uses_the_real_metadata
+0.58s call     tests/docs/test_public_claims.py::test_owned_claim_absent[C18-mocked-conformance-F006]
+[32m================ [32m[1m1026 passed[0m, [33m23 skipped[0m, [33m10 xfailed[0m[32m in 27.20s[0m[32m ================[0m
