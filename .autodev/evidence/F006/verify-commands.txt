@@ -1,0 +1,44 @@
+## item1
+exit=1
+## item2
+KNOWN-FAILURE   v1.4.0/large_scale_editing/03_invert_operation.gfl: The document is not valid YAML (a call-style predicate 'expression_is(...)'); the parser raises.
+KNOWN-FAILURE   v1.5.0/locityper_haplotyping/01_loci_with_haplotype_panel.gfl: The validator does not recognise 'loci' as a main block (SEMANTIC006).
+KNOWN-FAILURE   v1.5.0/locityper_haplotyping/02_locityper_analyze_block.gfl: The validator cannot load schema/locityper_types.yml and rejects the document (SEMANTIC001, SEMANTICSCHEMA001).
+KNOWN-FAILURE   v1.5.0/locityper_haplotyping/03_genotype_result_schema.gfl: The validator cannot load schema/locityper_types.yml and rejects the document (SEMANTIC001, SEMANTICSCHEMA001).
+conformance: 36 cases: 9 pass, 0 fail, 0 error, 27 known-failure, 0 unexpected-pass
+exit=0
+{'name': 'gfl-conformance', 'tests': '36', 'failures': '0', 'errors': '0', 'skipped': '27'}
+## item3
+FAIL            01_wrong.gfl: expected valid, got invalid
+conformance: 1 cases: 0 pass, 1 fail, 0 error, 0 known-failure, 0 unexpected-pass
+exit=1
+## item4a
+dict ['core_semantics/adversarial/01_essential_gene_knockout.gfl', 'core_semantics/ambiguity/01_multiple_locus_match.gfl', 'core_semantics/invariants/01_iupac_violation.gfl']
+## item4a remove entry
+FAIL            v1.3.0/loci/01_valid_definition.gfl: expected valid, got invalid
+conformance: 36 cases: 9 pass, 1 fail, 0 error, 26 known-failure, 0 unexpected-pass
+exit=1
+## item4b add passing
+UNEXPECTED-PASS v1.2.0/timeline/01_simple_chronology.gfl: listed in known_failures.json but passes
+conformance: 36 cases: 8 pass, 0 fail, 0 error, 27 known-failure, 1 unexpected-pass
+exit=1
+## item5 missing expectation
+ERROR           v1.2.0/timeline/01_simple_chronology.gfl: missing 01_simple_chronology.expected.json
+conformance: 36 cases: 8 pass, 0 fail, 1 error, 27 known-failure, 0 unexpected-pass
+exit=1
+## item5 orphan
+ERROR           zz_orphan.expected.json: expectation without a .gfl input
+conformance: 37 cases: 9 pass, 0 fail, 1 error, 27 known-failure, 0 unexpected-pass
+exit=1
+## item5 malformed
+ERROR           v1.2.0/timeline/01_simple_chronology.gfl: 01_simple_chronology.expected.json: cannot read expectation: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+conformance: 36 cases: 8 pass, 0 fail, 1 error, 27 known-failure, 0 unexpected-pass
+exit=1
+## item5 empty/missing
+ERROR           .: the suite contains no .gfl case
+conformance: 1 cases: 0 pass, 0 fail, 1 error, 0 known-failure, 0 unexpected-pass
+exit=1
+conformance: suite directory not found: <tmp>/absent
+exit=2
+## from other dir
+/usr/bin/bash: line 23: .venv/Scripts/python.exe: No such file or directory

@@ -32,7 +32,7 @@ ERROR           v1.2.0/timeline/01_simple_chronology.gfl: missing 01_simple_chro
 KNOWN-FAILURE   v1.4.0/large_scale_editing/02_insert_operation.gfl: The validator reports a missing 'type' in the experiment block (SEMANTIC001); v1.4.0 editing operations are not supported.
 conformance: 36 cases: 8 pass, 0 fail, 1 error, 27 known-failure, 0 unexpected-pass
 missing expectation exit=1
-conformance: suite directory not found: C:\Users\usuario\.autodev\tmp\geneforgelang\20261116-192853-build\mut\absent
+conformance: suite directory not found: <tmp>/absent
 missing dir exit=2
 
 ## import

@@ -353,3 +353,8 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Findings for later features (not fixed here): `plugins/plugin_registry.py` imports `src.geneforgelang...`, so the runner only works with the repository root as the working directory (F013). The global Python has a broken torch stack (`libtorchaudio.pyd` missing); use `.venv`. The `v1.2.0` case descriptions are in Spanish (F017). Several cases use call-style predicates (`expression_is(...)`) that are not valid YAML.
 - Not proved: the GitHub run of `conformance.yml` (needs the push and the owner's merge; sensitive path `.github/workflows/**`); `actionlint` was not run (only YAML syntax was parsed); the job was not run on Python 3.9.
 - Next: `/autodev:verify F006` in a separate session.
+
+## 2026-11-16: verify, F006 PASS
+- Independent run: ruff, format, mypy --strict, full suite (1120 passed, 24 skipped, 8 xfailed), public contract, theater scan and language check are green. The CLI gave 9 pass / 27 known failure / exit 0 with JUnit tests=36, skipped=27; every mutation (wrong expectation, removed or wrongly added known failure, missing, orphan, malformed expectation, empty suite) exited 1; a missing directory exited 2. Governance auditor: no blocking findings. Evidence: `evidence/F006/verdict.json`.
+- Owner gate: the real GitHub run of `conformance.yml` and the GitHub issues for the 27 known failures.
+- Non-blocking, for the next docs change: README.md and CHANGELOG.md should say that 8 of the 9 passes are status-only invalid cases; contract item 1 lists a `scripts` path that does not exist.
