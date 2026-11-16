@@ -326,3 +326,14 @@ Append-only. One entry per session: date, phase, feature, what changed, what is 
 - Independent evaluator at a2be33f5814f16836d09e16d40e0eaded97fc745. Verdict: `.autodev/evidence/F019/verdict.json`.
 - Green: ruff, suite (1035 passed, 23 skipped, 10 xfailed), independent grep (only generic paths), guard mutation caught, theater 0, language 0, governance auditor 0 blocking.
 - Not proved: LSP runtime; remote publish branch (owner gate: integrate and push); old history keeps the links (decision recorded).
+
+## 2026-11-16: build, F004 (provenance contract for simulated output)
+- Changed: new `src/geneforgelang/provenance.py` (`Provenance`, warnings, registry, `require_real_inputs`); the seven shipped simulated or stub components are labelled and warn once; `plugins/alphafold.py` is now a re-export of `alpha_genome.py`; `execute_*` and `geneforgelang.execute` take `allow_simulated=False` and raise `SimulatedInputError` otherwise; `OpenMedConnector` `privacy_cleared` is `False`; contract 1.0.0 to 1.1.0 with CHANGELOG; README, API_CONTRACT, FASE3 and `demo_ir.py` text; `.autodev/system/components.md` (9 rows).
+- Verified (evidence in `evidence/F004/`): suite 1078 passed, 24 skipped, 9 xfailed (baseline 1035/23/10; C17 xfail gone); with numpy, pandas and matplotlib added ephemerally the example-script test runs and passes (43 passed); AST completeness scan fails when a scratch module imports `random` (`mutation.txt`); module imports on Python 3.9; `mypy --strict` test, ruff, `public_contract --check` and `--against autodev/integration`, language check 0 segments all green.
+- Fixed this session: a registry test leaked a fake component into the real registry (now isolated with `monkeypatch`); `_constant_guarantees` returned hits in AST order (now sorted); `_kind` helper assumed every list item carries metadata (embeddings are plain floats).
+- Left as is, recorded: `tests/test_basic_functionality.py` and `tests/test_workflow.py` swallow exceptions, so they no longer exercise execution; `test_workflow.py` already never executed. Not done here: `llm_planner.py` and manuscript sentences (claims feature); type-level label for the rule-based inference path (propose to evolve); `gfl.plugins` auto-register path (F013).
+- Not proved: example-script test is skipped in the base `.venv` (no numpy); it passes only with the extra packages.
+- Next: `/autodev:verify F004` in a separate session.
+
+## 2026-11-16 verify F004: PASS
+- Suite 1078 passed/24 skipped/9 xfailed; ruff, mypy strict, contract check green; execute() refuses simulated plugins by default (observed). Evidence: .autodev/evidence/F004/. Pre-existing src. import in plugin_registry.py noted for F013.

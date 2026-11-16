@@ -34,7 +34,7 @@ from pathlib import Path
 from typing import Any
 
 # SemVer of the client-visible surface. Bump it with every surface change (see compare()).
-CONTRACT_VERSION = "1.0.0"
+CONTRACT_VERSION = "1.1.0"
 
 # Version of the language the parser and validator implement. v1.3.0 to v1.5.0 conformance
 # directories describe constructs the validator does not implement yet (see "grammar").
@@ -63,7 +63,8 @@ EVIDENCE_LABELS: dict[str, tuple[str, str]] = {
     "execute": (
         "simulated",
         "returns what the registered plugins return; every plugin shipped with the "
-        "library generates random results",
+        "library generates random or placeholder results and is refused unless the "
+        "caller passes allow_simulated=True",
     ),
 }
 
@@ -76,6 +77,9 @@ PUBLIC_CLASSES: dict[str, str] = {
     "ErrorCodes": "geneforgelang.core.errors",
     "GFLSyntaxError": "geneforgelang.utils.grammar_parser",
     "ExecutionError": "geneforgelang.core.execution",
+    "Provenance": "geneforgelang.provenance",
+    "SimulatedComponentWarning": "geneforgelang.provenance",
+    "SimulatedInputError": "geneforgelang.provenance",
 }
 
 # One minimal sample per top-level construct of the grammar. parse() must return the

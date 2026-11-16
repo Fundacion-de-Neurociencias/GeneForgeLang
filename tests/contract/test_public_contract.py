@@ -39,6 +39,16 @@ def _changelog(version: str) -> str:
     return f"## [Unreleased]\n- Contract {version}: change.\n"
 
 
+def _next(version: str, level: str) -> str:
+    """The version one ``level`` bump above ``version``, so tests survive a contract bump."""
+    major, minor, patch = (int(part) for part in version.split("."))
+    if level == "major":
+        return f"{major + 1}.0.0"
+    if level == "minor":
+        return f"{major}.{minor + 1}.0"
+    return f"{major}.{minor}.{patch + 1}"
+
+
 def _bumped(contract: dict, version: str) -> dict:
     out = copy.deepcopy(contract)
     out["contract_version"] = version
@@ -119,9 +129,10 @@ def test_removed_function_without_bump_fails(baseline: dict) -> None:
 
 
 def test_removed_function_with_minor_bump_still_fails(baseline: dict) -> None:
-    current = _bumped(baseline, "1.1.0")
+    minor = _next(baseline["contract_version"], "minor")
+    current = _bumped(baseline, minor)
     del current["functions"]["get_api_info"]
-    assert any("MAJOR" in p for p in pc.compare(baseline, current, _changelog("1.1.0")))
+    assert any("MAJOR" in p for p in pc.compare(baseline, current, _changelog(minor)))
 
 
 def test_removed_function_with_major_bump_needs_a_changelog_entry(baseline: dict) -> None:
@@ -141,10 +152,12 @@ def test_changelog_entry_for_another_version_does_not_count(baseline: dict) -> N
 def test_added_function_needs_a_minor_bump(baseline: dict) -> None:
     current = copy.deepcopy(baseline)
     current["functions"]["new_one"] = copy.deepcopy(baseline["functions"]["parse"])
-    patch = _bumped(current, "1.0.1")
-    assert any("MINOR" in p for p in pc.compare(baseline, patch, _changelog("1.0.1")))
-    minor = _bumped(current, "1.1.0")
-    assert pc.compare(baseline, minor, _changelog("1.1.0")) == []
+    patch_version = _next(baseline["contract_version"], "patch")
+    patch = _bumped(current, patch_version)
+    assert any("MINOR" in p for p in pc.compare(baseline, patch, _changelog(patch_version)))
+    minor_version = _next(baseline["contract_version"], "minor")
+    minor = _bumped(current, minor_version)
+    assert pc.compare(baseline, minor, _changelog(minor_version)) == []
 
 
 def test_renamed_parameter_is_breaking(baseline: dict) -> None:
@@ -215,8 +228,8 @@ def test_grammar_version_bump_forces_a_contract_bump(baseline: dict) -> None:
     current["grammar_version"] = "1.3.0"
     problems = pc.compare(baseline, current, _changelog(current["contract_version"]))
     assert any("MINOR" in p for p in problems)
-    current["contract_version"] = "1.1.0"
-    assert pc.compare(baseline, current, _changelog("1.1.0")) == []
+    current["contract_version"] = _next(baseline["contract_version"], "minor")
+    assert pc.compare(baseline, current, _changelog(current["contract_version"])) == []
 
 
 def test_versions_cannot_go_backwards(baseline: dict) -> None:
@@ -385,8 +398,12 @@ def test_an_invalid_label_breaks_the_build(monkeypatch: pytest.MonkeyPatch) -> N
 
 
 def test_simulated_label_on_execute_matches_the_behaviour() -> None:
-    """Two runs of the same design block give different sequences: the output is simulated."""
+    """Two runs of the same design block give different sequences: the output is simulated.
+
+    The default call refuses the simulated plugin; the caller opts in with ``allow_simulated``.
+    """
     from geneforgelang.plugins.plugin_registry import PluginRegistry
+    from geneforgelang.provenance import SimulatedInputError, provenance_of
     from geneforgelang.utils.example_implementations import ProteinVAEGenerator
 
     registry = PluginRegistry()
@@ -397,8 +414,12 @@ def test_simulated_label_on_execute_matches_the_behaviour() -> None:
         "design:\n  entity: ProteinSequence\n  model: ProteinVAEGenerator\n"
         "  objective:\n    maximize: stability\n  count: 10\n  output: designed_proteins\n"
     )
-    first = [c.sequence for c in api.execute(ast, registry)["design"]]
-    second = [c.sequence for c in api.execute(ast, registry)["design"]]
+    with pytest.raises(SimulatedInputError):
+        api.execute(ast, registry)
+    run = api.execute(ast, registry, allow_simulated=True)
+    assert provenance_of(run).kind == "simulated"
+    first = [c.sequence for c in run["design"]]
+    second = [c.sequence for c in api.execute(ast, registry, allow_simulated=True)["design"]]
     assert len(first) == len(second) == 10
     assert first != second
     assert pc.EVIDENCE_LABELS["execute"][0] == "simulated"

@@ -1,0 +1,10 @@
+0.48s call     tests/contract/test_public_contract.py::test_against_rejects_a_removal_without_bump
+0.45s call     tests/docs/test_public_claims.py::test_readme_python_block_runs[README.md:239]
+0.41s call     tests/contract/test_public_contract.py::test_cli_check_passes_on_the_committed_snapshot
+0.40s call     tests/contract/test_public_contract.py::test_against_accepts_a_removal_with_major_bump_and_changelog
+[33m========== [32m1078 passed[0m, [33m[1m24 skipped[0m, [33m[1m9 xfailed[0m, [33m[1m9 warnings[0m[33m in 23.86s[0m[33m ===========[0m
+All checks passed!
+Success: no issues found in 1 source file
+OK: docs\spec\public_contract.json matches the code (contract 1.1.0)
+rc=0
+OK: docs\spec\public_contract.json follows the bump rules against autodev/integration

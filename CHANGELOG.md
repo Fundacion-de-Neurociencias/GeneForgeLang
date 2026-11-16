@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Contract 1.1.0: provenance contract for simulated output:
+  - New `geneforgelang.provenance` module: `Provenance` (`kind` of `measured`, `computed`, `simulated` or `stub`, plus `source` and `version`), `SimulatedComponentWarning`, `SimulatedInputError` and `list_simulated_components()`
+  - Every plugin and connector shipped with the library is labelled and warns on first use: `SimpleProteinGenerator`, `SimpleOptimizer`, `AlphaGenomePlugin`, `OpenMedConnector`, `ProteinVAEGenerator`, `MoleculeTransformerGenerator` and `BayesianOptimizer`
+  - `execute()` takes the optional parameter `allow_simulated` (default `False`). **Behaviour change:** without it, a plugin or intermediate result labelled `simulated` or `stub` raises `SimulatedInputError`. Every shipped plugin is one of these, so a default call that used one now raises. Pass `allow_simulated=True` to accept the output knowingly; the result then carries `provenance` with kind `simulated`
+  - `OpenMedConnector.deidentify_clinical_note()` returns `privacy_cleared: False`. The connector never applied a privacy filter, so the previous constant `True` was wrong. The result now says that no privacy guarantee is provided; `get_entity_knowledge()` reports its `source` as `OpenMed (stub)`
+  - `geneforgelang.plugins.alphafold` is now an alias of `geneforgelang.plugins.alpha_genome` (it held a diverging copy of the same stub)
+
 ### Security
 - Raised the minimum versions of optional dependencies that had known HIGH or CRITICAL advisories (OSV.dev scan of 2026-10-21):
   - `ml` extra: `torch>=2.10.0`, `transformers>=5.10.0`

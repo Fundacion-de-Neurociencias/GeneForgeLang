@@ -1,0 +1,25 @@
+[33mSKIPPED[0m [1] tests\unit\test_provenance.py:528: could not import 'numpy': No module named 'numpy'
+[33m================== [32m42 passed[0m, [33m[1m1 skipped[0m, [33m[1m5 warnings[0m[33m in 4.06s[0m[33m ==================[0m
+<string>:1: SimulatedComponentWarning: SimpleOptimizer returns simulated output (source: geneforgelang.plugins.builtin.simple_optimizer.SimpleOptimizer); it is not a measured or computed result and must not feed decisions or public text
+ProvenancedDict Provenance(kind='simulated', source='geneforgelang.plugins.builtin.simple_optimizer.SimpleOptimizer', version='1.0.0')
+<string>:7: SimulatedComponentWarning: OpenMedConnector returns stub output (source: geneforgelang.ir.external.openmed_connector.OpenMedConnector); it is not a measured or computed result and must not feed decisions or public text
+Traceback (most recent call last):
+  File "<string>", line 9, in <module>
+AttributeError: module 'geneforgelang' has no attribute 'execute'
+['AlphaGenomePlugin', 'BayesianOptimizer', 'MoleculeTransformerGenerator', 'OpenMedConnector', 'ProteinVAEGenerator', 'SimpleOptimizer', 'SimpleProteinGenerator']
+privacy_cleared False {'kind': 'stub', 'source': 'geneforgelang.ir.external.openmed_connector.OpenMedConnector', 'version': 'unversioned'}
+Traceback (most recent call last):
+  File "C:\Users\usuario\.autodev\tmp\geneforgelang\20261116-070913-verify\f004_exec.py", line 2, in <module>
+    from geneforgelang.core.api import execute, parse
+  File "C:\Users\usuario\.autodev\workspaces\geneforgelang\src\geneforgelang\core\api.py", line 40, in <module>
+    from geneforgelang.plugins.plugin_registry import PluginRegistry
+  File "C:\Users\usuario\.autodev\workspaces\geneforgelang\src\geneforgelang\plugins\plugin_registry.py", line 15, in <module>
+    from src.geneforgelang.plugins.base import BaseGeneratorPlugin, BaseOptimizerPlugin
+ModuleNotFoundError: No module named 'src'
+[32m====================== [32m[1m1 passed[0m, [33m42 deselected[0m[32m in 6.26s[0m[32m =======================[0m
+AST keys: ['design']
+Collected entity registry: {}
+{'entity': 'ProteinSequence', 'model': 'ProteinVAEGenerator', 'objective': {'maximize': 'stability'}, 'count': 2, 'output': 'c'}
+DEFAULT: refused: design block refuses simulated (geneforgelang.utils.example_implementations.ProteinVAEGenerator); pass allow_simulated=T
+{'entity': 'ProteinSequence', 'model': 'ProteinVAEGenerator', 'objective': {'maximize': 'stability'}, 'count': 2, 'output': 'c'}
+ALLOWED: ProvenancedDict Provenance(kind='simulated', source='geneforgelang.core.execution <- geneforgelang.core.execution.design <- geneforgelang.utils.example_implementations.ProteinVAEGenerator', version='1.0.0')

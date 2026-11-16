@@ -1,0 +1,8 @@
+0.59s call     tests/contract/test_public_contract.py::test_against_tolerates_a_ref_without_a_snapshot
+0.55s call     tests/contract/test_public_contract.py::test_against_accepts_a_removal_with_major_bump_and_changelog
+0.51s call     tests/contract/test_public_contract.py::test_against_rejects_a_removal_without_bump
+0.51s call     tests/contract/test_public_contract.py::test_cli_check_passes_on_the_committed_snapshot
+0.49s setup    tests/contract/test_public_contract.py::test_against_accepts_a_removal_with_major_bump_and_changelog
+0.48s call     tests/contract/test_public_contract.py::test_cli_check_tag_uses_the_real_metadata
+0.47s call     tests/unit/test_provenance.py::test_no_guarantee_key_is_hardcoded_true
+================ 1078 passed, 24 skipped, 9 xfailed in 25.63s =================

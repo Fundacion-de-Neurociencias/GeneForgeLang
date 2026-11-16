@@ -101,8 +101,9 @@
         "Provenance is typed (mypy --strict passes on the new module) and documented in the public API reference.",
         "A replacement with a real implementation is recorded as future work only; nothing is promoted without access to the real service and an oracle test (owner decision 4)."
       ],
-      "passes": false,
-      "notes": "Depends on F003 (CI gate). The chain adds more simulated components (BioDecision ECE from hash logits, DepMap 5 hardcoded pairs, AlphaGenome plugin package, conformance runner); each integration slice (F007-F009) must apply this same contract to the components it brings. Quality bar: QB-3, QB-6 (spec/quality-bar.md)."
+      "passes": true,
+      "notes": "Depends on F003 (CI gate). The chain adds more simulated components (BioDecision ECE from hash logits, DepMap 5 hardcoded pairs, AlphaGenome plugin package, conformance runner); each integration slice (F007-F009) must apply this same contract to the components it brings. Quality bar: QB-3, QB-6 (spec/quality-bar.md).",
+      "evidence": ".autodev/evidence/F004/verdict.json"
     },
     {
       "id": "F005",

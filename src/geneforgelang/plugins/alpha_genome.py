@@ -1,15 +1,41 @@
 import logging
 
+from geneforgelang.provenance import (
+    Provenance,
+    ProvenancedDict,
+    register_simulated_component,
+    warn_first_use,
+)
+
 logger = logging.getLogger(__name__)
+
+PROVENANCE = Provenance(
+    "stub",
+    "geneforgelang.plugins.alpha_genome.AlphaGenomePlugin",
+    "unversioned",
+)
+register_simulated_component(
+    "AlphaGenomePlugin",
+    PROVENANCE,
+    "src/geneforgelang/plugins/alpha_genome.py",
+    "Access to the real AlphaGenome service and a test against its published predictions",
+)
 
 
 class AlphaGenomePlugin:
     """Demo plugin that simulates AlphaGenome methods.
 
     Replace with a real integration when an external API is available.
+
+    Every value is a placeholder (text and constants), not a prediction: the
+    result is labelled ``stub`` and decision paths refuse it unless
+    ``allow_simulated=True``.
     """
 
+    provenance = PROVENANCE
+
     def execute(self, method_name: str, params: dict, symbol_table: dict):
+        warn_first_use("AlphaGenomePlugin", PROVENANCE)
         logger.info("AlphaGenomePlugin: %s(%s)", method_name, params)
 
         if method_name == "predict_functional_tracks":
@@ -43,7 +69,7 @@ class AlphaGenomePlugin:
                     "splicing_impact": "high",
                 }
 
-            return simulated_results
+            return ProvenancedDict(simulated_results, PROVENANCE)
 
         raise NotImplementedError(
             f"AlphaGenome method '{method_name}' not implemented in simulation."
