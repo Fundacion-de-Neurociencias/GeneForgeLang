@@ -79,8 +79,8 @@
         "The prepared PR text flags .github/workflows/** as sensitive and names carlosgoro as a non-blocking reviewer; Owner gate: the hosted CI run and the review request happen when the PR is published."
       ],
       "passes": false,
-      "notes": "Depends on F001 (gitleaks job). Changing branch protection is a permissions change: owner approval required (NeuroIA annex A.1, A.9). main has 1 ruff error and an unknown test status; fix only what is needed to get green, and record skips with a reason and an issue link. Quality bar: QB-4, QB-7, QB-12 (spec/quality-bar.md). | 2026-10-19: unblocked by Claude (planner). The 3 failed verifications were caused by a red baseline (2 pre-existing failing tests) and by acceptance items only the owner can satisfy; those are now owner gates (lessons 19-20). Old feedback archived in contracts/archive/.",
-      "blocked": false
+      "notes": "Depends on F001 (gitleaks job). Changing branch protection is a permissions change: owner approval required (NeuroIA annex A.1, A.9). main has 1 ruff error and an unknown test status; fix only what is needed to get green, and record skips with a reason and an issue link. Quality bar: QB-4, QB-7, QB-12 (spec/quality-bar.md). | 2026-10-19: unblocked by Claude (planner). The 3 failed verifications were caused by a red baseline (2 pre-existing failing tests) and by acceptance items only the owner can satisfy; those are now owner gates (lessons 19-20). Old feedback archived in contracts/archive/. | blocked by runner 2026-11-16: 3 failed verifications",
+      "blocked": true
     },
     {
       "id": "F004",
