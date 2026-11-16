@@ -13,7 +13,7 @@ permissions:
 jobs:
   contract:
     name: Contract and release tag
-    runs-on: ubuntu-24.04  # 3.9 is not published for newer images
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:

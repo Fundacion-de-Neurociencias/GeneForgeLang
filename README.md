@@ -320,6 +320,16 @@ GeneForgeLang/
 └── pyproject.toml        # Project configuration
 ```
 
+### Conformance suite
+
+`tests/conformance_suite/` holds `.gfl` cases with an `expected.json` each. Run them against the real parser and validator from the repository root:
+
+```bash
+python -m geneforgelang.conformance tests/conformance_suite
+```
+
+Today 9 of 36 cases pass and 27 are listed as known failures, because the validator does not implement those constructs yet. See [tests/conformance_suite/README.md](tests/conformance_suite/README.md).
+
 ### Contributing
 
 1. Fork the repository

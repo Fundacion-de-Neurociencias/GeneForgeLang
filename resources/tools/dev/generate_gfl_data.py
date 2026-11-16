@@ -96,8 +96,9 @@ def generate_analyze():
     elif selected_strategy == "clustering":
         if random.random() < 0.9:
             thresholds.append(f"resolution: {round(random.uniform(0.1, 1.5), 2)}")
-    elif selected_strategy == "survival_analysis" and random.random() < 0.9:
-        thresholds.append(f"hazard_ratio_threshold: {round(random.uniform(1.0, 3.0), 1)}")
+    elif selected_strategy == "survival_analysis":
+        if random.random() < 0.9:
+            thresholds.append(f"hazard_ratio_threshold: {round(random.uniform(1.0, 3.0), 1)}")
 
     thresholds_str = ",\n    ".join(thresholds)
     thresholds_block = f"\n  thresholds: {{\n    {thresholds_str}\n  }}" if thresholds_str else ""
