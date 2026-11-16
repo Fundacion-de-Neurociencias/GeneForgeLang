@@ -508,9 +508,62 @@
       ],
       "members": {},
       "module": "geneforgelang.utils.grammar_parser"
+    },
+    "Provenance": {
+      "bases": [],
+      "members": {
+        "is_unverified": {
+          "kind": "property"
+        },
+        "kind": {
+          "kind": "field",
+          "required": true,
+          "type": "ProvenanceKind"
+        },
+        "source": {
+          "kind": "field",
+          "required": true,
+          "type": "str"
+        },
+        "to_dict": {
+          "kind": "method",
+          "signature": {
+            "parameters": [
+              {
+                "annotation": null,
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "self",
+                "required": true
+              }
+            ],
+            "return": "dict[str, str]"
+          }
+        },
+        "version": {
+          "kind": "field",
+          "required": true,
+          "type": "str"
+        }
+      },
+      "module": "geneforgelang.provenance"
+    },
+    "SimulatedComponentWarning": {
+      "bases": [
+        "UserWarning"
+      ],
+      "members": {},
+      "module": "geneforgelang.provenance"
+    },
+    "SimulatedInputError": {
+      "bases": [
+        "ValueError"
+      ],
+      "members": {},
+      "module": "geneforgelang.provenance"
     }
   },
-  "contract_version": "1.0.0",
+  "contract_version": "1.1.0",
   "functions": {
     "compare_inference_models": {
       "evidence": {
@@ -540,7 +593,7 @@
     "execute": {
       "evidence": {
         "label": "simulated",
-        "reason": "returns what the registered plugins return; every plugin shipped with the library generates random results"
+        "reason": "returns what the registered plugins return; every plugin shipped with the library generates random or placeholder results and is refused unless the caller passes allow_simulated=True"
       },
       "signature": {
         "parameters": [
@@ -563,6 +616,13 @@
             "default": "True",
             "kind": "POSITIONAL_OR_KEYWORD",
             "name": "validate_first",
+            "required": false
+          },
+          {
+            "annotation": "bool",
+            "default": "False",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "allow_simulated",
             "required": false
           }
         ],

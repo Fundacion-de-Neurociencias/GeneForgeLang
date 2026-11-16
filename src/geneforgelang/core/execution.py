@@ -2,7 +2,13 @@
 
 from typing import Any
 
+from geneforgelang import __version__
 from geneforgelang.plugins.plugin_registry import PluginRegistry
+from geneforgelang.provenance import (
+    SimulatedInputError,
+    inherit_provenance,
+    require_real_inputs,
+)
 
 
 class ExecutionError(Exception):
@@ -16,9 +22,18 @@ class GFLExecutionEngine:
         self.workflow_state = {}
 
     def execute_design_block(
-        self, design_block: dict[str, Any], registry: PluginRegistry
+        self,
+        design_block: dict[str, Any],
+        registry: PluginRegistry,
+        allow_simulated: bool = False,
     ) -> dict[str, Any]:
-        """Execute a design block."""
+        """Execute a design block.
+
+        Raises:
+            SimulatedInputError: If the generator or the workflow state is labelled
+                ``simulated`` or ``stub`` and ``allow_simulated`` is not ``True``.
+                When it is, the result is labelled ``simulated``.
+        """
         print(design_block)
         model_name = design_block.get("model")
         if not model_name:
@@ -26,11 +41,26 @@ class GFLExecutionEngine:
 
         try:
             generator = registry.get_generator(model_name)
+            require_real_inputs(
+                generator,
+                design_block,
+                self.workflow_state,
+                consumer="design block",
+                allow_simulated=allow_simulated,
+            )
             result = generator.generate(
                 entity=design_block.get("entity", "ProteinSequence"),
                 objective=design_block.get("objective", {}),
                 constraints=design_block.get("constraints", []),
                 count=design_block.get("count", 10),
+            )
+            result = inherit_provenance(
+                result,
+                generator,
+                design_block,
+                self.workflow_state,
+                source="geneforgelang.core.execution.design",
+                version=__version__,
             )
 
             # Store in workflow state if output specified
@@ -40,6 +70,8 @@ class GFLExecutionEngine:
 
             return result
 
+        except SimulatedInputError:
+            raise
         except ValueError as e:
             available = registry.list_generators()
             raise ExecutionError(
@@ -47,9 +79,18 @@ class GFLExecutionEngine:
             )
 
     def execute_optimize_block(
-        self, optimize_block: dict[str, Any], registry: PluginRegistry
+        self,
+        optimize_block: dict[str, Any],
+        registry: PluginRegistry,
+        allow_simulated: bool = False,
     ) -> dict[str, Any]:
-        """Execute an optimize block."""
+        """Execute an optimize block.
+
+        Raises:
+            SimulatedInputError: If the optimizer or the workflow state is labelled
+                ``simulated`` or ``stub`` and ``allow_simulated`` is not ``True``.
+                When it is, the result is labelled ``simulated``.
+        """
         strategy = optimize_block.get("strategy", {})
         strategy_name = strategy.get("name") if isinstance(strategy, dict) else strategy
 
@@ -58,6 +99,13 @@ class GFLExecutionEngine:
 
         try:
             optimizer = registry.get_optimizer(strategy_name)
+            require_real_inputs(
+                optimizer,
+                optimize_block,
+                self.workflow_state,
+                consumer="optimize block",
+                allow_simulated=allow_simulated,
+            )
             params = {
                 "search_space": optimize_block.get("search_space", {}),
                 "objective": optimize_block.get("objective", {}),
@@ -66,8 +114,17 @@ class GFLExecutionEngine:
             }
 
             result = optimizer.optimize(params)
-            return result
+            return inherit_provenance(
+                result,
+                optimizer,
+                optimize_block,
+                self.workflow_state,
+                source="geneforgelang.core.execution.optimize",
+                version=__version__,
+            )
 
+        except SimulatedInputError:
+            raise
         except ValueError as e:
             available = registry.list_optimizers()
             raise ExecutionError(
@@ -75,21 +132,37 @@ class GFLExecutionEngine:
             )
 
 
-def execute_gfl_ast(ast: dict[str, Any], registry: PluginRegistry) -> dict[str, Any]:
-    """Execute a complete GFL AST."""
+def execute_gfl_ast(
+    ast: dict[str, Any], registry: PluginRegistry, allow_simulated: bool = False
+) -> dict[str, Any]:
+    """Execute a complete GFL AST.
+
+    Raises:
+        SimulatedInputError: If a plugin or an intermediate result is labelled
+            ``simulated`` or ``stub`` and ``allow_simulated`` is not ``True``. When it
+            is, the returned dictionary carries ``provenance`` with kind ``simulated``.
+    """
     engine = GFLExecutionEngine()
     results = {}
 
     # Execute design blocks
     if "design" in ast:
-        results["design"] = engine.execute_design_block(ast["design"], registry)
+        results["design"] = engine.execute_design_block(ast["design"], registry, allow_simulated)
 
     # Execute optimize blocks
     if "optimize" in ast:
-        results["optimize"] = engine.execute_optimize_block(ast["optimize"], registry)
+        results["optimize"] = engine.execute_optimize_block(
+            ast["optimize"], registry, allow_simulated
+        )
 
     results["workflow_state"] = engine.workflow_state
-    return results
+    return inherit_provenance(
+        results,
+        results.get("design"),
+        results.get("optimize"),
+        source="geneforgelang.core.execution",
+        version=__version__,
+    )
 
 
 def validate_execution_requirements(ast: dict[str, Any], registry: PluginRegistry) -> list[str]:
