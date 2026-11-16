@@ -1,0 +1,13 @@
+## geneforgelang.core.parser.parse_gfl on every examples/basic/*.gfl (project .venv)
+          ^
+examples/basic\basic_syntax.gfl FAIL ScannerError mapping values are not allowed here
+  in "<unicode string>", line 2, column 7:
+      tool: "CRISPR_c
+examples/basic\multiple_examples.gfl OK str
+examples/basic\simple_workflow.gfl OK str
+
+## gfl --help fails on the baseline too (pre-existing, unrelated to paths): 'No module named src'
+
+## LSP: not started. Installing pygls/lsprotocol was blocked by the autodev guard (request 20261116-064507-4d9157). The LSP source is unchanged by F019.
+
+## publish_check origin/autodev/publish: 10 local-path findings, all in TICKET_SUMMARY_GF-163.1.md, fixed on this branch; they clear when this branch is integrated.

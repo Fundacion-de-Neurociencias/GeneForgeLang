@@ -1,0 +1,5 @@
+0.28s setup    tests/contract/test_public_contract.py::test_against_tolerates_a_ref_without_a_snapshot
+0.24s call     tests/security/test_repository_hygiene.py::test_no_home_directory_paths
+0.23s setup    tests/contract/test_public_contract.py::test_against_accepts_a_removal_with_major_bump_and_changelog
+[32m================ [32m[1m1035 passed[0m, [33m23 skipped[0m, [33m10 xfailed[0m[32m in 12.41s[0m[32m ================[0m
+All checks passed!
