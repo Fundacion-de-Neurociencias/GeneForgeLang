@@ -1,0 +1,3 @@
+1120 passed, 24 skipped, 8 xfailed, 9 warnings in 74.94s (0:01:14)
+done exit=0
+0 segment(s) not in 'en'

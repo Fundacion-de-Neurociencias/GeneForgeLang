@@ -1,0 +1,41 @@
+## mypy
+mypy.ini: [mypy]: python_version: Python 3.9 is not supported (must be 3.10 or higher)
+mypy.ini: note: unused section(s): [mypy-gfl.models.*], [mypy-gfl.plugins.*], [mypy-gfl.nl.*], [mypy-gfl.execution.*], [mypy-gfl.execution_engine], [mypy-gfl.grammar_parser], [mypy-gfl.api], [mypy-applications.*], [mypy-tests.*]
+Success: no issues found in 1 source file
+
+## 1 grep (exit 1 = no match)
+grep: scripts: No such file or directory
+grep exit=2
+
+## 2 real run
+conformance: 36 cases: 9 pass, 0 fail, 0 error, 27 known-failure, 0 unexpected-pass
+exit=0
+junit {'name': 'gfl-conformance', 'tests': '36', 'failures': '0', 'errors': '0', 'skipped': '27'}
+
+## 3 meta: wrong expectation
+FAIL            01_wrong.gfl: expected valid, got invalid
+conformance: 1 cases: 0 pass, 1 fail, 0 error, 0 known-failure, 0 unexpected-pass
+exit=1
+
+## 4a mutation: drop one known failure
+FAIL            v1.3.0/loci/01_valid_definition.gfl: expected valid, got invalid
+conformance: 36 cases: 9 pass, 1 fail, 0 error, 26 known-failure, 0 unexpected-pass
+exit=1
+
+## 4b mutation: list a passing case
+UNEXPECTED-PASS v1.2.0/timeline/01_simple_chronology.gfl: listed in known_failures.json but passes
+conformance: 36 cases: 8 pass, 0 fail, 0 error, 27 known-failure, 1 unexpected-pass
+exit=1
+
+## 5 modes
+ERROR           v1.2.0/timeline/01_simple_chronology.gfl: missing 01_simple_chronology.expected.json
+KNOWN-FAILURE   v1.4.0/large_scale_editing/02_insert_operation.gfl: The validator reports a missing 'type' in the experiment block (SEMANTIC001); v1.4.0 editing operations are not supported.
+conformance: 36 cases: 8 pass, 0 fail, 1 error, 27 known-failure, 0 unexpected-pass
+missing expectation exit=1
+conformance: suite directory not found: C:\Users\usuario\.autodev\tmp\geneforgelang\20261116-192853-build\mut\absent
+missing dir exit=2
+
+## import
+main
+## 1 grep over existing dirs (exit 1 = no match)
+grep exit=1
