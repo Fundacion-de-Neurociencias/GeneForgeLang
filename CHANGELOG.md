@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - These releases require Python 3.10 or newer, so the pins carry the marker `python_version >= '3.10'`. The core library still installs on Python 3.9; the `web`, `ml` and `dev` extras add these packages only on 3.10+
 
 ### Added
+- Conformance runner that checks real results: `python -m geneforgelang.conformance <suite> [--junit FILE]` runs the real parser and validator on every case and compares the status and reason codes with the case's `expected.json`. It exits non-zero on a mismatch, a missing or malformed expectation, or a known failure that now passes. New `Conformance` CI workflow publishes the JUnit report. It replaces `resources/tools/dev/conformance_runner.py`, which printed `PASSED` for every case without running the validator. Current result: 9 of 36 cases pass, 27 are listed in `tests/conformance_suite/known_failures.json`
 - Published API contract for clients (Contract 1.0.0, grammar 1.2.0):
   - `docs/spec/public_contract.json` is generated from the code by `python -m geneforgelang.public_contract --write`
   - CI fails when a public name, signature, error code or grammar construct changes without a `CONTRACT_VERSION` bump and a `Contract X.Y.Z` line here
