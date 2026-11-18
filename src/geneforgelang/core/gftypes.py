@@ -364,6 +364,7 @@ class GFLAST:
     bioc_reference: Any | None = None
     alphagenome2: Any | None = None
     finedna: Any | None = None
+    permutation_baseline: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -477,6 +478,12 @@ class GFLAST:
             )
         if self.finedna is not None:
             result["finedna"] = self.finedna.to_dict() if hasattr(self.finedna, "to_dict") else self.finedna
+        if self.permutation_baseline is not None:
+            result["permutation_baseline"] = (
+                self.permutation_baseline.to_dict()
+                if hasattr(self.permutation_baseline, "to_dict")
+                else self.permutation_baseline
+            )
         if self.metadata:
             result["metadata"] = self.metadata
         return result
@@ -873,6 +880,19 @@ class GFLAST:
                 ast.finedna = fd_data
             elif isinstance(fd_data, dict):
                 ast.finedna = FineDNAContract.from_dict(fd_data)
+
+        if "permutation_baseline" in data:
+            pb_data = data["permutation_baseline"]
+            if isinstance(pb_data, SequencePermutationBaselineContract):
+                ast.permutation_baseline = pb_data
+            elif isinstance(pb_data, dict):
+                ast.permutation_baseline = SequencePermutationBaselineContract.from_dict(pb_data)
+        elif "sequence_signal_audit" in data:
+            pb_data = data["sequence_signal_audit"]
+            if isinstance(pb_data, SequencePermutationBaselineContract):
+                ast.permutation_baseline = pb_data
+            elif isinstance(pb_data, dict):
+                ast.permutation_baseline = SequencePermutationBaselineContract.from_dict(pb_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -5350,10 +5370,79 @@ class RLVRTaskDomain(str, Enum):
     VARIANT_EFFECT_GROUNDING = "variant_effect_grounding"
     FRAME_PRESERVATION = "frame_preservation"
     MOTIF_DISCOVERY = "motif_discovery"
+    PROTEIN_SEQUENCE_COMPLETION = "protein_sequence_completion"
+    PERMUTATION_BASELINE_GAP = "permutation_baseline_gap"
 
     def __str__(self) -> str:
         """Return the string value."""
         return self.value
+
+
+class PermutationControlMode(str, Enum):
+    """Control permutation modes for sequence signal vs. memorization auditing."""
+
+    UNIFORM_SHUFFLE = "uniform_shuffle"
+    DINUCLEOTIDE_SHUFFLE = "dinucleotide_shuffle"
+    DIPEPTIDE_SHUFFLE = "dipeptide_shuffle"
+
+    def __str__(self) -> str:
+        """Return the string value."""
+        return self.value
+
+
+@dataclass
+class SequencePermutationBaselineContract:
+    """Formal contract for Phylo-style Permutation Baseline Auditing (Tu & Chen, Nov 2026).
+
+    Measures genuine sequence-level biological knowledge by comparing next-residue
+    or continuation accuracy on a native biological sequence against a composition-
+    or 2-mer-preserving shuffled control copy.
+    """
+
+    contract_id: str
+    sequence_type: str = "protein"  # "protein" or "dna"
+    reference_prefix: str = ""
+    target_suffix: str = ""
+    control_mode: PermutationControlMode = PermutationControlMode.UNIFORM_SHUFFLE
+    seed: int = 42
+    min_permutation_gap: float = 0.15
+    model_id: str = ""
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "contract_id": self.contract_id,
+            "sequence_type": self.sequence_type,
+            "reference_prefix": self.reference_prefix,
+            "target_suffix": self.target_suffix,
+            "control_mode": str(self.control_mode),
+            "seed": self.seed,
+            "min_permutation_gap": self.min_permutation_gap,
+            "model_id": self.model_id,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> SequencePermutationBaselineContract:
+        """Create from dictionary representation."""
+        raw_mode = data.get("control_mode", PermutationControlMode.UNIFORM_SHUFFLE)
+        mode = (
+            PermutationControlMode(raw_mode)
+            if raw_mode in PermutationControlMode._value2member_map_
+            else PermutationControlMode.UNIFORM_SHUFFLE
+        )
+        return cls(
+            contract_id=str(data.get("contract_id", data.get("name", "perm_baseline_01"))),
+            sequence_type=str(data.get("sequence_type", "protein")).lower(),
+            reference_prefix=str(data.get("reference_prefix", "")),
+            target_suffix=str(data.get("target_suffix", "")),
+            control_mode=mode,
+            seed=int(data.get("seed", 42)),
+            min_permutation_gap=float(data.get("min_permutation_gap", 0.15)),
+            model_id=str(data.get("model_id", "")),
+            metadata=dict(data.get("metadata", {})),
+        )
 
 
 @dataclass
@@ -5816,6 +5905,7 @@ class VerifiableRewardContract:
     deterministic_evaluator: str = "gfl_deterministic_reward_oracle"
     localization_contract: SequenceLocalizationContract | None = None
     computation_contract: DNAComputationContract | None = None
+    permutation_baseline: SequencePermutationBaselineContract | None = None
     verification_hash: str = ""
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -5870,6 +5960,7 @@ class VerifiableRewardContract:
             "deterministic_evaluator": self.deterministic_evaluator,
             "localization_contract": self.localization_contract.to_dict() if self.localization_contract else None,
             "computation_contract": self.computation_contract.to_dict() if self.computation_contract else None,
+            "permutation_baseline": self.permutation_baseline.to_dict() if self.permutation_baseline else None,
             "verification_hash": self.verification_hash,
             "metadata": dict(self.metadata),
         }
@@ -5892,6 +5983,11 @@ class VerifiableRewardContract:
         comp_data = data.get("computation_contract")
         computation_contract = DNAComputationContract.from_dict(comp_data) if isinstance(comp_data, dict) else comp_data
 
+        pb_data = data.get("permutation_baseline")
+        permutation_baseline = (
+            SequencePermutationBaselineContract.from_dict(pb_data) if isinstance(pb_data, dict) else pb_data
+        )
+
         return cls(
             task_id=str(data.get("task_id", data.get("name", "rlvr_reward_contract"))),
             domain=domain,
@@ -5902,6 +5998,7 @@ class VerifiableRewardContract:
             deterministic_evaluator=str(data.get("deterministic_evaluator", "gfl_deterministic_reward_oracle")),
             localization_contract=localization_contract,
             computation_contract=computation_contract,
+            permutation_baseline=permutation_baseline,
             verification_hash=str(data.get("verification_hash", "")),
             metadata=dict(data.get("metadata", {})),
         )
@@ -7016,6 +7113,8 @@ __all__ = [
     "FineDNAInferenceConfig",
     "RLVREnvironmentTrace",
     "FineDNAContract",
+    "PermutationControlMode",
+    "SequencePermutationBaselineContract",
     # Validation types
     "ValidationError",
     "ValidationResult",
