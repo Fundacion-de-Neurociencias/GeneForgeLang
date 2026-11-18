@@ -412,8 +412,8 @@ def _c17_no_unconditional_privacy_flag() -> list[str]:
 
 def _c18_no_mocked_conformance() -> list[str]:
     hits = []
-    for base in ("resources", "scripts"):
-        for path in sorted((ROOT / base).rglob("conformance_runner.py")):
+    for base in ("resources", "scripts", "src"):
+        for path in sorted((ROOT / base).rglob("conformance*.py")):
             hits += [f"{_rel(path)}: {h}" for h in _find(_read(path), ("Mocking success",))]
     return hits
 
@@ -435,7 +435,7 @@ OWNED_CLAIMS = [
     pytest.param(_c15_stable_major_not_beta, id="C15-version-vs-beta-F011", marks=_owned_xfail("C15", "F011")),
     pytest.param(_c16_no_calibration_claim, id="C16-calibration-claim-F008"),
     pytest.param(_c17_no_unconditional_privacy_flag, id="C17-privacy-cleared-F004"),
-    pytest.param(_c18_no_mocked_conformance, id="C18-mocked-conformance-F006", marks=_owned_xfail("C18", "F006")),
+    pytest.param(_c18_no_mocked_conformance, id="C18-mocked-conformance-F006"),
     pytest.param(_c19_no_dead_docs_url, id="C19-readthedocs-url-F011", marks=_owned_xfail("C19", "F011")),
     pytest.param(_c20_no_status_doc("END_TO_END_TRUTH_AUDIT.md"), id="C20-truth-audit-doc-F009"),
     pytest.param(
