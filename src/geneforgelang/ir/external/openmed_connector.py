@@ -196,7 +196,9 @@ class OpenMedConnector:
             return 0.0
         # Cosine similarity is bounded by [-1, 1]; clamp to remove floating-point
         # rounding that can push it marginally outside (e.g. 1.0000000000000033).
-        return max(-1.0, min(1.0, dot / (norm_a * norm_b)))
+        # Round to 12 decimals so parallel vectors give exactly 1.0 instead of
+        # 0.9999999999999999 (float noise far below any meaningful resolution).
+        return max(-1.0, min(1.0, round(dot / (norm_a * norm_b), 12)))
 
     # ------------------------------------------------------------------
     # Named Entity Recognition (NER)
