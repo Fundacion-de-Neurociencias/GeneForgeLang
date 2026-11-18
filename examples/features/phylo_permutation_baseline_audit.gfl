@@ -1,0 +1,29 @@
+# Phylo Permutation Baseline Gate: Sequence Signal vs. Literature Memorization Audit
+# Grounded in Xinming Tu & Leo Chen (Phylo, November 2026)
+# Audits whether a candidate model encodes evolutionary sequence grammar on unstudied proteins
+
+permutation_baseline:
+  contract_id: "phylo_unstudied_bacterial_protein_audit_01"
+  sequence_type: "protein"
+  model_id: "claude-fable-5.2"
+  reference_prefix: "MKKLLVLSLVLAAGAVQADAKPGKTVVAYGTDQ"
+  target_suffix: "GKSFEVLKDR"
+  control_mode: "dipeptide_shuffle"
+  seed: 42
+  min_permutation_gap: 0.20
+
+verifiable_dna:
+  task_id: "phylo_rlvr_signal_gate_01"
+  domain: "permutation_baseline_gap"
+  ground_truth_reference: "GKSFEVLKDR"
+  reward_success: 1.0
+  reward_failure: 0.0
+  deterministic_evaluator: "gfl_deterministic_reward_oracle"
+  permutation_baseline:
+    contract_id: "phylo_nested_baseline_01"
+    sequence_type: "protein"
+    reference_prefix: "MKKLLVLSLVLAAGAVQADAKPGKTVVAYGTDQ"
+    target_suffix: "GKSFEVLKDR"
+    control_mode: "uniform_shuffle"
+    seed: 101
+    min_permutation_gap: 0.15

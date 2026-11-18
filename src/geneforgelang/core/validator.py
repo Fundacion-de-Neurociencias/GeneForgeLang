@@ -174,6 +174,8 @@ class EnhancedSemanticValidator:
             "finedna",
             "finedna_task",
             "finedna_circuit",
+            "permutation_baseline",
+            "sequence_signal_audit",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -286,6 +288,8 @@ class EnhancedSemanticValidator:
                 self._validate_alphagenome2_block(block_content)
             elif block_name in ("finedna", "finedna_task", "finedna_circuit"):
                 self._validate_finedna_block(block_content)
+            elif block_name in ("permutation_baseline", "sequence_signal_audit"):
+                self._validate_permutation_baseline_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -2314,6 +2318,10 @@ class EnhancedSemanticValidator:
                 ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
             ).add_fix("Provide input_dna sequence in computation_contract")
 
+        pb = block.get("permutation_baseline")
+        if pb is not None:
+            self._validate_permutation_baseline_block(pb)
+
     def _validate_autonomous_execution_block(self, block: Any) -> None:
         """Validate autonomous_execution / wet_lab_dispatch / laboratory_protocol block (AutoDNA specifications)."""
         if hasattr(block, "to_dict"):
@@ -2938,6 +2946,94 @@ class EnhancedSemanticValidator:
             self._validate_verifiable_dna_block(vrc)
 
         self._store_block_contract("finedna", block)
+
+    def _validate_permutation_baseline_block(self, block: Any) -> None:
+        """Validate permutation_baseline / sequence_signal_audit block (Phylo Shuffled-Control Gate).
+
+        Grounded in Tu & Chen (Phylo, Nov 2026):
+        - Enforces valid sequence_type ('protein' or 'dna') and IUPAC characters.
+        - Validates control_mode against PermutationControlMode.
+        - Validates min_permutation_gap in (0.0, 1.0] and non-negative integer seed.
+        """
+        from geneforgelang.core.gftypes import PermutationControlMode
+
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "permutation_baseline block must be a dictionary or SequencePermutationBaselineContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format permutation_baseline as a dictionary with contract_id, reference_prefix, target_suffix")
+            return
+
+        contract_id = block.get("contract_id", block.get("name"))
+        if not contract_id or not str(contract_id).strip():
+            self.result.add_error(
+                "permutation_baseline block must define a non-empty 'contract_id'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide a unique identifier string for contract_id")
+
+        seq_type = str(block.get("sequence_type", "protein")).strip().lower()
+        if seq_type not in {"protein", "dna"}:
+            self.result.add_error(
+                f"Invalid sequence_type '{seq_type}' in permutation_baseline. Must be 'protein' or 'dna'",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set sequence_type to 'protein' or 'dna'")
+
+        valid_alphabet = set("ACDEFGHIKLMNPQRSTVWY*XBZ") if seq_type == "protein" else set("ACGTNRYSWKMBDHV")
+
+        for field_name in ("reference_prefix", "target_suffix"):
+            val = block.get(field_name)
+            if not val or not str(val).strip():
+                self.result.add_error(
+                    f"permutation_baseline block must define a non-empty '{field_name}'",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix(f"Provide a valid {seq_type} sequence for '{field_name}'")
+            else:
+                clean_seq = str(val).strip().upper()
+                bad_chars = set(clean_seq) - valid_alphabet
+                if bad_chars:
+                    self.result.add_error(
+                        f"Invalid {seq_type} characters {sorted(bad_chars)} in '{field_name}'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix(f"Ensure '{field_name}' contains only valid {seq_type} IUPAC symbols")
+
+        mode = block.get("control_mode")
+        if mode is not None:
+            valid_modes = {m.value for m in PermutationControlMode}
+            mode_str = str(mode.value if hasattr(mode, "value") else mode).strip().lower()
+            if mode_str not in valid_modes:
+                self.result.add_error(
+                    f"Invalid control_mode '{mode}' in permutation_baseline. Must be one of {sorted(valid_modes)}",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Use 'uniform_shuffle', 'dinucleotide_shuffle', or 'dipeptide_shuffle'")
+
+        gap = block.get("min_permutation_gap")
+        if gap is not None:
+            try:
+                gap_f = float(gap)
+                if not (0.0 < gap_f <= 1.0):
+                    self.result.add_error(
+                        f"min_permutation_gap ({gap_f}) must be in (0.0, 1.0]",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    )
+            except (ValueError, TypeError):
+                self.result.add_error("min_permutation_gap must be numeric", ErrorCodes.SEMANTIC_INVALID_PARAMETER)
+
+        seed = block.get("seed")
+        if seed is not None:
+            try:
+                seed_i = int(seed)
+                if seed_i < 0:
+                    self.result.add_error(
+                        f"seed ({seed_i}) must be a non-negative integer",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    )
+            except (ValueError, TypeError):
+                self.result.add_error("seed must be an integer", ErrorCodes.SEMANTIC_INVALID_PARAMETER)
+
+        self._store_block_contract("permutation_baseline", block)
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
