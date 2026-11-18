@@ -57,7 +57,7 @@ Measured on 2026-11-16 with `python -m geneforgelang.conformance tests/conforman
 
 - 27 known failures. The validator does not implement `loci`, `simulate`, spatial predicates, large-scale editing operations or the Locityper schema, rejects the v1.2.0 `pathways` and `hypothesis` samples, and has no rule for the three core-semantics codes (`INVALID_SEQUENCE`, `VIABILITY_VIOLATION`, `AMBIGUOUS_TARGET`). Each entry in `known_failures.json` names the validator codes observed.
 - 9 passes, and only one of them is meaningful evidence of validation: `v1.2.0/timeline/01_simple_chronology.gfl` (valid). The other eight expect `invalid` without a reason code, and the validator rejects those documents for an unrelated reason (for example `SEMANTIC006`, no recognised main block). They pass on status alone and do not show that the intended rule exists.
-- The `tracking` field points to the log entry that records the gap. No GitHub issue exists yet for these gaps.
+- The `tracking` field points to this section. No GitHub issue exists yet for these gaps.
 
 ## Contributing
 
