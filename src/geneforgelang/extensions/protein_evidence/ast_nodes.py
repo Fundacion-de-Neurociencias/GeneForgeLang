@@ -7,7 +7,7 @@ from typing import Any
 IRREDUCIBILITY_JUSTIFICATION = {
     "ProteinNode": {
         "why_existing_primitives_fail": (
-            "Protein identifiers need validation separate from sequence strings and " "external reference handles."
+            "Protein identifiers need validation separate from sequence strings and external reference handles."
         ),
         "formal_loss_if_reduced": (
             "Reducing to a generic reference would lose the distinction between named "
@@ -40,7 +40,7 @@ IRREDUCIBILITY_JUSTIFICATION = {
             "disconnected from epistemic confidence."
         ),
         "formal_loss_if_reduced": (
-            "Reducing to untyped metadata would lose the no-score-promotion validation " "surface required by ADR-0002."
+            "Reducing to untyped metadata would lose the no-score-promotion validation surface required by ADR-0002."
         ),
     },
 }

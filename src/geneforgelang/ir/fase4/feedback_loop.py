@@ -144,8 +144,7 @@ class FeedbackStore:
 
         # Find similar past queries
         similar = [
-            r for r in self._feedback_cache
-            if r.query_type == query_type and self._similarity(r.query, query) > 0.7
+            r for r in self._feedback_cache if r.query_type == query_type and self._similarity(r.query, query) > 0.7
         ]
 
         if not similar:
@@ -213,9 +212,7 @@ class AdaptiveRetriever:
         self.feedback = feedback_store
         self._strategy_cache: dict[str, str] = {}
 
-    async def retrieve_with_adaptation(
-        self, query: str, query_type: str, **kwargs
-    ) -> tuple[Any, RetrievalFeedback]:
+    async def retrieve_with_adaptation(self, query: str, query_type: str, **kwargs) -> tuple[Any, RetrievalFeedback]:
         """Retrieve with automatic strategy adaptation."""
         import time
 

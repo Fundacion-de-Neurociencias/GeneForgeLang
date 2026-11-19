@@ -132,9 +132,7 @@ class EmbeddingCache:
 
         return True  # At least cached in memory
 
-    def get_similar(
-        self, embedding: list[float], n_results: int = 5, threshold: float = 0.9
-    ) -> list[dict[str, Any]]:
+    def get_similar(self, embedding: list[float], n_results: int = 5, threshold: float = 0.9) -> list[dict[str, Any]]:
         """Find similar cached entries by embedding similarity."""
         if not self._init_chromadb() or not self._collection:
             return []
@@ -292,4 +290,5 @@ class EmbeddingCache:
     def _now(self) -> str:
         """Current timestamp string."""
         from datetime import datetime
+
         return datetime.now().isoformat()

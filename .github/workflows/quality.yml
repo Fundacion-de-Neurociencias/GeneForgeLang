@@ -18,16 +18,15 @@ jobs:
 
       - name: Install tools
         run: |
-          pip install black isort flake8
+          pip install ruff
 
       - name: Check formatting
         run: |
-          black --check .
-          isort --check-only .
+          ruff format --check src/ tests/
 
       - name: Lint
         run: |
-          flake8 .
+          ruff check .
 
       # Guard: src/ must not introduce new hard references to the "GeneForge"
       # runtime (without "Lang"). The only allowed occurrences are the explicit

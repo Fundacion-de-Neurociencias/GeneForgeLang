@@ -122,7 +122,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e .
-          pip install -e ./gfl-plugin-causal-evidence -e ./gfl-plugin-clawbio
           pip install pytest
           pip install pytest-asyncio  # Si se usan pruebas asíncronas
 

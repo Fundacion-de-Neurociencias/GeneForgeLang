@@ -148,9 +148,7 @@ COMPONENTS: list[tuple[str, Callable[[], Any], str]] = [
     ),
     (
         "AlphaGenomePlugin",
-        lambda: AlphaGenomePlugin().execute(
-            "predict_functional_tracks", {"sequence": "ACGT", "tracks": ["ATAC"]}, {}
-        ),
+        lambda: AlphaGenomePlugin().execute("predict_functional_tracks", {"sequence": "ACGT", "tracks": ["ATAC"]}, {}),
         "stub",
     ),
     ("OpenMedConnector", lambda: OpenMedConnector().get_entity_knowledge("TP53"), "stub"),
@@ -294,10 +292,7 @@ _PRIMITIVE_ROOTS = {"random", "secrets", "hashlib"}
 def _uses_primitive(tree: ast.AST) -> bool:
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
-            if any(
-                a.name.split(".")[0] in _PRIMITIVE_ROOTS or a.name.startswith("numpy.random")
-                for a in node.names
-            ):
+            if any(a.name.split(".")[0] in _PRIMITIVE_ROOTS or a.name.startswith("numpy.random") for a in node.names):
                 return True
         elif isinstance(node, ast.ImportFrom):
             module = node.module or ""
@@ -324,9 +319,7 @@ def _modules_using_primitives(root: Path) -> set[str]:
 
 
 def test_every_stochastic_or_hash_module_is_registered_or_allowlisted() -> None:
-    registered = {
-        Path(c.location).relative_to("src/geneforgelang").as_posix() for c in list_simulated_components()
-    }
+    registered = {Path(c.location).relative_to("src/geneforgelang").as_posix() for c in list_simulated_components()}
     found = _modules_using_primitives(PACKAGE)
     assert found - registered == set(HASH_KEY_ALLOWLIST), (
         "unregistered module with a stochastic or hash primitive, or a stale allowlist entry: "
@@ -360,9 +353,7 @@ def _constant_guarantees(tree: ast.AST) -> list[int]:
     hits = []
     for node in ast.walk(tree):
         if isinstance(node, ast.Dict):
-            hits += [
-                v.lineno for k, v in zip(node.keys, node.values) if key_name(k) in GUARANTEE_KEYS and is_true(v)
-            ]
+            hits += [v.lineno for k, v in zip(node.keys, node.values) if key_name(k) in GUARANTEE_KEYS and is_true(v)]
         elif isinstance(node, ast.keyword) and node.arg in GUARANTEE_KEYS and is_true(node.value):
             hits.append(node.value.lineno)
         elif isinstance(node, ast.Assign) and is_true(node.value):
@@ -457,9 +448,7 @@ def test_design_block_refuses_a_simulated_generator() -> None:
 
 def test_allowed_decision_output_is_labelled_simulated() -> None:
     engine = GFLExecutionEngine()
-    result = engine.execute_optimize_block(
-        OPTIMIZE_BLOCK, _registry(optimizer=SimpleOptimizer()), allow_simulated=True
-    )
+    result = engine.execute_optimize_block(OPTIMIZE_BLOCK, _registry(optimizer=SimpleOptimizer()), allow_simulated=True)
     assert provenance_of(result).kind == "simulated"
     assert "SimpleOptimizer" in provenance_of(result).source
     design = GFLExecutionEngine().execute_design_block(
@@ -509,9 +498,7 @@ def test_a_simulated_workflow_state_taints_a_clean_decision() -> None:
     engine.workflow_state["earlier"] = ProvenancedDict({"x": 1}, Provenance("simulated", "tests", "1"))
     with pytest.raises(SimulatedInputError):
         engine.execute_optimize_block(OPTIMIZE_BLOCK, _registry(optimizer=_CleanOptimizer()))
-    result = engine.execute_optimize_block(
-        OPTIMIZE_BLOCK, _registry(optimizer=_CleanOptimizer()), allow_simulated=True
-    )
+    result = engine.execute_optimize_block(OPTIMIZE_BLOCK, _registry(optimizer=_CleanOptimizer()), allow_simulated=True)
     assert provenance_of(result).kind == "simulated"
 
 

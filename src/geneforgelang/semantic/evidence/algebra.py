@@ -162,7 +162,9 @@ class ContractAlgebra:
         )
 
     @staticmethod
-    def partition(prior: EvidenceContract, contextual_evidence: dict[str, EvidenceContract]) -> dict[str, EvidenceContract]:
+    def partition(
+        prior: EvidenceContract, contextual_evidence: dict[str, EvidenceContract]
+    ) -> dict[str, EvidenceContract]:
         """
         Operator ⫴ (Partition): Epistemic Context Partitioning.
         Partitions a general prior claim into conditional context-specific claims
@@ -188,4 +190,3 @@ class ContractAlgebra:
                 ),
             )
         return partitioned_contracts
-

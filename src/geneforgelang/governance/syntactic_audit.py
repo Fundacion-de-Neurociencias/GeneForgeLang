@@ -112,9 +112,7 @@ def audit_repository(root: Path) -> list[AuditViolation]:
             AuditViolation(
                 code="ADR0003_GOVERNANCE_SCORE_BELOW_THRESHOLD",
                 path=root,
-                message=(
-                    f"Governance compliance score {score.overall:.2f} is below " f"{GOVERNANCE_SCORE_THRESHOLD:.2f}."
-                ),
+                message=(f"Governance compliance score {score.overall:.2f} is below {GOVERNANCE_SCORE_THRESHOLD:.2f}."),
             )
         )
     return violations
@@ -369,7 +367,7 @@ def run(paths: Sequence[str] | None = None) -> int:
     violations = audit_repository(root)
     score = score_governance([v for v in violations if v.code != "ADR0003_GOVERNANCE_SCORE_BELOW_THRESHOLD"])
     if not violations:
-        print("ADR-0002/0003 governance audit passed " f"(score={score.overall:.2f}).")
+        print(f"ADR-0002/0003 governance audit passed (score={score.overall:.2f}).")
         return 0
 
     print("ADR-0002 syntactic minimality audit failed:")

@@ -40,7 +40,7 @@ def test_multi_model_consensus_pass_and_near_miss():
     # Near-miss candidate (sits close to decision boundary)
     near_cand = MultiModelConsensus(
         af3_iptm=0.76,  # Unsatisfied but >= 0.65
-        af3_ipae=2.8,   # Unsatisfied but <= 2.8
+        af3_ipae=2.8,  # Unsatisfied but <= 2.8
         rf3_confidence=0.79,
         boltz_confidence=0.78,
     )

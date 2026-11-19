@@ -27,14 +27,8 @@ def _make_state_with_derived():
             attrs={"status": "functional"},
         )
     )
-    state.add_relation(
-        Relation(source="TP53", target="TP53_transcript", type=RelationType.DERIVES_FROM)
-    )
-    state.add_relation(
-        Relation(
-            source="TP53_transcript", target="TP53_protein", type=RelationType.DERIVES_FROM
-        )
-    )
+    state.add_relation(Relation(source="TP53", target="TP53_transcript", type=RelationType.DERIVES_FROM))
+    state.add_relation(Relation(source="TP53_transcript", target="TP53_protein", type=RelationType.DERIVES_FROM))
     return state
 
 
@@ -48,12 +42,8 @@ def test_substitute_propagates_to_transcript_and_protein():
 
 def test_propagate_regulatory_loss():
     state = BiologicalState()
-    state.add_entity(
-        Entity(id="MDM2", type=EntityType.PROTEIN, attrs={"status": "functional"})
-    )
-    state.add_entity(
-        Entity(id="TP53", type=EntityType.GENE, attrs={"status": "wildtype"})
-    )
+    state.add_entity(Entity(id="MDM2", type=EntityType.PROTEIN, attrs={"status": "functional"}))
+    state.add_entity(Entity(id="TP53", type=EntityType.GENE, attrs={"status": "wildtype"}))
     state.add_relation(
         Relation(
             source="MDM2",

@@ -129,14 +129,10 @@ class AsyncRetrievalService:
         state: BiologicalState | None = None,
     ) -> list[AsyncRetrievalResult]:
         """Retrieve for multiple objectives concurrently."""
-        tasks = [
-            self.retrieve_for_objective_async(obj, state) for obj in objectives
-        ]
+        tasks = [self.retrieve_for_objective_async(obj, state) for obj in objectives]
         return await asyncio.gather(*tasks, return_exceptions=True)
 
-    async def get_entity_knowledge_async(
-        self, entity_id: str, use_cache: bool = True
-    ) -> dict[str, Any]:
+    async def get_entity_knowledge_async(self, entity_id: str, use_cache: bool = True) -> dict[str, Any]:
         """Async entity knowledge fetch."""
         # Check cache
         if use_cache:
@@ -213,9 +209,7 @@ class AsyncRetrievalService:
     def start_prefetching(self, prefetch_func: Callable[[str], Any] | None = None) -> None:
         """Start background prefetching task."""
         if self._prefetch_task is None:
-            self._prefetch_task = asyncio.create_task(
-                self._prefetch_loop(prefetch_func)
-            )
+            self._prefetch_task = asyncio.create_task(self._prefetch_loop(prefetch_func))
             logger.info("Started background prefetching")
 
     def stop_prefetching(self) -> None:
@@ -229,9 +223,7 @@ class AsyncRetrievalService:
         """Background loop for prefetching."""
         while True:
             try:
-                entity_id = await asyncio.wait_for(
-                    self._prefetch_queue.get(), timeout=1.0
-                )
+                entity_id = await asyncio.wait_for(self._prefetch_queue.get(), timeout=1.0)
                 # Prefetch knowledge
                 await self.get_entity_knowledge_async(entity_id)
                 logger.debug(f"Prefetched knowledge for {entity_id}")
@@ -324,17 +316,13 @@ class AsyncRetrievalService:
         """Serialize context for caching."""
         return {
             "target_entity": context.target_entity,
-            "similar_entities": [
-                {"id": e.entity_id, "sim": e.similarity} for e in context.similar_entities
-            ],
+            "similar_entities": [{"id": e.entity_id, "sim": e.similarity} for e in context.similar_entities],
             "literature_count": len(context.literature_evidence),
             "has_reasoning": context.reasoning_result is not None,
             "combined_confidence": context.combined_confidence,
         }
 
-    def _reconstruct_context(
-        self, data: dict[str, Any], objective: Objective
-    ) -> RetrievalContext:
+    def _reconstruct_context(self, data: dict[str, Any], objective: Objective) -> RetrievalContext:
         """Reconstruct context from cached data."""
         from geneforgelang.ir.external.openmed_connector import SimilarEntity
 
