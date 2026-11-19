@@ -1,5 +1,7 @@
 # Evidence Matrix (Neurodiagnoses Quality Standard)
 
+> **Scope & Legal Notice**: Internal research data-dictionary audit matrix only. Not a clinical or diagnostic product, and contains no patient-level records. Any downstream use of external cohort schemas (ADNI, NACC, gnomAD, AlphaGenome, 4D Nucleome) remains subject to each data provider's respective access agreements and terms of use (see [`docs/DATA_TERMS.md`](docs/DATA_TERMS.md)).
+
 > **Criterio de Calidad**: Ninguna variable entra en análisis, entrenamiento, validación o publicación mientras no exista trazabilidad completa entre definición clínica, diccionario oficial, unidad física, codificación de missing y transformación aplicada.
 
 Ninguna variable pasará a estado `VERIFIED` hasta que todas las columnas de esta matriz estén respaldadas por documentación oficial explícita, no por inferencia lógica.
