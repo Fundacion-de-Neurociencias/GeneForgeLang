@@ -14,8 +14,8 @@ Only the latest active minor release receives formal security patches and vulner
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 2.0.x   | :white_check_mark: |
-| < 2.0   | :x:                |
+| 1.0.x   | :white_check_mark: |
+| < 1.0   | :x:                |
 
 ---
 
@@ -48,12 +48,12 @@ When a security vulnerability report is received:
 
 ---
 
-## Automated Security Scanners & AI Research
+## Automated Security Scanning
 
-GeneForgeLang welcomes opt-in automated vulnerability analysis programs for open-source software, including:
-- **Automated Security Auditing**: Periodic, automated vulnerability scanning and empirical proof-of-concept (PoC) validation.
+GeneForgeLang welcomes opt-in automated vulnerability analysis of open-source software. The repository currently runs:
 - **GitHub Dependency Graph & Dependabot**: Automated CVE tracking for supply chain dependencies.
-- **Static Analysis Gates**: Ruff, Bandit, and Mypy integration configured on pull requests and pre-commit hooks.
+- **Secret scanning**: the `Secret scan` workflow runs gitleaks on pushes and pull requests.
+- **Static analysis**: Ruff runs in CI on every pull request; Bandit and Mypy run as pre-commit hooks.
 
 Automated scanning systems that discover valid vulnerabilities with verifiable PoCs are invited to submit reports directly through **GitHub Private Vulnerability Reporting** or submit non-destructive security pull requests addressing identified findings.
 

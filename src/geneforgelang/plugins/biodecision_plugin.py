@@ -1,11 +1,19 @@
 """BioDecision-4B Plugin for GeneForgeLang.
 ========================================
-Implements the System 1 fast calibrated gating engine based on BioDecision-4B
-(Qwen3.5-4B + LoRA / Together AI Tev1 single forward pass architecture).
+Implements the contract and gating logic of a System 1 fast decision engine
+modelled on BioDecision-4B (a single-forward-pass classifier).
+
+No model weights ship with this package. Unless the caller supplies
+``custom_logits`` from a real model, the logits are deterministic SHA-256
+pseudo-logits: simulated output, registered with
+``geneforgelang.provenance`` and announced by a ``SimulatedComponentWarning``.
+The reported latency is the measured wall-clock time of this call, and the
+expected calibration error is ``None`` because it has not been measured.
 
 Key capabilities:
-- Single forward pass execution without autoregressive token generation (~40ms latency).
-- Calibrated probability gating interface (target ECE threshold configurable).
+- Single forward pass gating over an allowed option space.
+- Temperature-scaled softmax probabilities and ``compute_ece`` to measure
+  calibration against labelled outcomes.
 - Three operating modes:
     * CHOICE: Multi-class discrete option selection from allowed space.
     * BINARY: Binary gating (e.g., YES/NO, PASS/FAIL).
@@ -34,13 +42,25 @@ from geneforgelang.plugins.plugin_registry import (
     PluginPriority,
     plugin_registry,
 )
+from geneforgelang.provenance import Provenance, register_simulated_component, warn_first_use
 
 logger = logging.getLogger(__name__)
+
+PROVENANCE = Provenance(
+    "simulated",
+    "geneforgelang.plugins.biodecision_plugin.BioDecisionPlugin",
+    "unversioned",
+)
+register_simulated_component(
+    "BioDecisionPlugin",
+    PROVENANCE,
+    "src/geneforgelang/plugins/biodecision_plugin.py",
+    "Real BioDecision-4B weights or endpoint, and a measured ECE on a labelled benchmark",
+)
 
 PLUGIN_TOOL_ID = "biodecision-4b"
 DEFAULT_LATENCY_BUDGET_MS = 50.0
 DEFAULT_CALIBRATION_ERROR_MAX = 0.08
-DEFAULT_BENCHMARK_ECE = 0.068
 DEFAULT_TEMPERATURE = 1.0
 DEFAULT_MIN_MARGIN = 0.10
 
@@ -128,13 +148,14 @@ class BioDecisionPlugin(BaseGFLPlugin):  # type: ignore[misc]
     ) -> list[float]:
         """Compute deterministic single-forward-pass logits for the query and evidence.
 
-        In production environments without active local GPU weights, generates
-        calibrated, deterministic pseudo-logits using SHA-256 seed projection,
-        ensuring zero external stochastic dependencies while preserving exact
-        calibration boundaries (ECE <= 0.068).
+        No model weights ship with this package, so the logits are deterministic
+        SHA-256 pseudo-logits (simulated output) with a keyword-match boost. They
+        carry no calibration guarantee.
         """
         if not allowed_space:
             return []
+
+        warn_first_use("BioDecisionPlugin", PROVENANCE)
 
         evidence_str = " ".join(evidence) if isinstance(evidence, (list, tuple)) else str(evidence)
         combined = f"{query}::{evidence_str}".strip()
@@ -221,14 +242,11 @@ class BioDecisionPlugin(BaseGFLPlugin):  # type: ignore[misc]
         else:
             is_ambiguous = False
 
-        # Measure latency
+        # Report the measured wall-clock latency of this call
         elapsed_ms = (time.perf_counter() - start_time) * 1000.0
-        # If running in local python without GPU overhead, normalize measured latency
-        # to the characteristic BioDecision-4B envelope (~38ms - 44ms) unless already larger
-        calibrated_latency_ms = max(elapsed_ms, 38.5)
 
-        # Benchmark ECE for BioDecision-4B is 0.068
-        measured_ece = DEFAULT_BENCHMARK_ECE
+        # Calibration is not measured on a single call; compute_ece needs labelled outcomes
+        measured_ece = None
 
         mode_str = contract.mode.value if isinstance(contract.mode, DecisionMode) else str(contract.mode)
 
@@ -238,7 +256,7 @@ class BioDecisionPlugin(BaseGFLPlugin):  # type: ignore[misc]
             is_ambiguous=is_ambiguous,
             options_evaluated=sorted_options,
             calibration_method="temperature_scaling",
-            latency_ms=calibrated_latency_ms,
+            latency_ms=elapsed_ms,
             ece=measured_ece,
             mode=mode_str,
         )
@@ -276,7 +294,7 @@ class BioDecisionPlugin(BaseGFLPlugin):  # type: ignore[misc]
             "outcome": outcome.to_dict(),
             "passes_threshold": outcome.passes_threshold(contract.threshold),
             "is_within_budget": contract.is_within_budget(outcome.latency_ms),
-            "passes_calibration": contract.passes_calibration(outcome.ece or 0.0),
+            "passes_calibration": outcome.ece is not None and contract.passes_calibration(outcome.ece),
         }
 
 

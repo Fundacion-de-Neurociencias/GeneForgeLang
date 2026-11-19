@@ -35,11 +35,18 @@ GeneForgeLang (GFL) is a domain-specific language for describing biological desi
 - **📋 Rule-Based Logic**: Complex biological constraint expression
 - **🎭 Simulation Framework**: What-if analysis and hypothesis testing
 
-### **Local Execution & Privacy-Preserving Bio-Skills**
+### **Domain Extensions (experimental)**
 
-- **🛡️ Data stays local**: the library parses and validates workflows on your machine; it sends no data to a cloud service.
-- **🛡️ Data Sovereignty & Biosecurity**: Provenance, Consent, Jurisdiction, and Population equity tracking as first-class language semantics.
-- **🔒 Security Policy**: Coordinated vulnerability reporting via [SECURITY.md](SECURITY.md) with Bandit static analysis and gitleaks secret scanning gates.
+The parser also accepts domain blocks for regulatory genomics, protein structure, single-cell regulation, biosecurity watermarking, lakehouse references and wet-lab dispatch (for example `alphagenome2:`, `protok:`, `single_cell_regulation:`, `biosecurity_watermark:`, `bioc_on_ice:` and `autonomous_execution:`). Each block is described in its [feature guide](#feature-guides--technical-specifications). These guides describe the block schema and the validation GFL performs; they are not benchmarks of the external models or services they name. Components that return simulated or stub output are listed by `geneforgelang.provenance.list_simulated_components()` and warn on first use.
+
+### **Interactive DNA Helix Viewer (`GF-HelixView`)**
+
+`geneforgelang.visualization.dna_helix_viewer` renders a self-contained HTML/SVG view of a DNA locus with codon translation, exon boundaries, known-variant tracks and SpCas9 PAM sites ([feature guide](docs/geneforgelang/features/dna_helix_viewer.md)).
+
+### **Local Execution**
+
+- **🛡️ Data stays local by default**: the parser and validator run on your machine and send no data to a cloud service. Optional engines that reach a remote service (for example the `bioc_on_ice` lakehouse reader or a remote model endpoint) only do so when a workflow asks for them; their feature guides say so.
+- **🔒 Security Policy**: Coordinated vulnerability reporting via [SECURITY.md](SECURITY.md) with gitleaks secret scanning in CI and Bandit as a pre-commit hook.
 
 ## 🌐 Open-Source and Universal
 GeneForgeLang is an **open-source project** dedicated to the entire scientific community. While it serves as the foundation for the GeneForge platform, its design and evolution are governed by universal biological principles, not by any specific commercial or execution environment.
@@ -60,12 +67,10 @@ To ensure consistency across the ecosystem, GFL maintains a set of formal specif
 
 ## Key Features
 
-- **Declarative Genetic Syntax**: Clean, readable YAML-based biological workflow definitions with strict 2-space indentation.
-- **Sovereign Biological AI & Air-Gapped Compliance**: Native on-premise contract schemas for FineDNA-14B and Carbon-X, rejecting public cloud egress when `air_gapped: true`.
-- **Closed-Loop RLVR Verification & Permutation Auditing**: Verifiable reward contracts (`verifiable_dna:`) and Phylo-style permutation baseline gates (`permutation_baseline:`) with cryptographic SHA-256 proofs.
-- **Dedicated Locus-Scale (1 Mb) Regulation & Lakehouses**: Contracts for AlphaGenome 2 (`alphagenome2:`), Bioconductor on Ice (`bioc_reference:`), PBD DNA breathing (`dna_dynamics:`), ProTok (`protok:`), and AutoDNA wet-lab dispatch (`autonomous_execution:`).
-- **Interactive Multi-Omic Visualizer (`GF-HelixView`)**: Dynamic B-DNA 2.5D helix scanner (`gfl view dna`).
-- **Type Safety & Extensible Plugin Architecture**: Strong typing system and interoperable plugins.
+- **Type Safety**: typed AST and semantic validation of GFL documents
+- **Plugin Architecture**: plugins subclass `BaseGFLPlugin` (see [Plugin System](#plugin-system))
+- **Service API**: a FastAPI service (`src/geneforgelang/api/gfl_service.py`, `web` extra) exposes parsing and validation over HTTP
+- **CLI and Web Interface**: in progress; the `gfl` command and the web UI do not work in this version (see [Command Line Interface](#command-line-interface) and [Web Interface](#web-interface-not-working))
 
 ## 🧪 Example: BRCA1 gRNA Discovery (Illustrative simulation)
 

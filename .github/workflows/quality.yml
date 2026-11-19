@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [ main ]
 
+# Formatting and lint use Ruff (configured by ruff.toml); the CI Pipeline runs the same lint gate.
+# This workflow also runs the architectural guards that Ruff cannot express.
+
 jobs:
   quality:
     runs-on: ubuntu-latest
@@ -29,45 +32,35 @@ jobs:
           ruff check .
 
       # Guard: src/ must not introduce new hard references to the "GeneForge"
-      # runtime (without "Lang"). The only allowed occurrences are the explicit
-      # deprecated-alias comments and the docstring that cites GeneForge as an
-      # *example* downstream runtime.  Any new occurrence fails the build.
+      # runtime (without "Lang"). Each allowed line is listed below with the
+      # reason it may name GeneForge. Any new occurrence fails the build.
       - name: Check GFL independence from GeneForge runtime
         run: |
-          # Allowlist: lines that are intentionally allowed to mention GeneForge
-          ALLOWED_PATTERNS=(
-            "GeneForgeSkill = GFLBioSkill"
-            "export_to_geneforge_adapter"
-            "geneforge.*deprecated"
-            "Deprecated.*GeneForge"
-            "GeneForge.*deprecated"
-            "GFL downstream runtime (GeneForge"
-            "GeneForge, or any third-party"
-          )
+          set -euo pipefail
+          test -d src/geneforgelang
 
-          # Build a grep -v chain to exclude allowed lines
-          EXCLUDE_ARGS=""
-          for pattern in "${ALLOWED_PATTERNS[@]}"; do
-            EXCLUDE_ARGS="$EXCLUDE_ARGS -e $'$pattern'"
-          done
-
-          # Search for GeneForge (without Lang) in src/, fail if unexpected hits found
-          HITS=$(grep -rn "GeneForge[^L]" GeneForgeLang/src/ \
+          HITS=$(grep -rn "GeneForge[^L]" src/geneforgelang/ \
             | grep -v "GeneForgeSkill = GFLBioSkill" \
             | grep -v "export_to_geneforge_adapter" \
             | grep -v "deprecated" \
             | grep -v "Deprecated" \
             | grep -v "GFL downstream runtime (GeneForge" \
             | grep -v "GeneForge, or any third-party" \
+            | grep -v "Clients (GeneForge, PharmaOracle, third parties)" \
+            | grep -v '"GeneForge-Rosalind"' \
+            | grep -v "GeneForge OnTrack execution (ADR-ARCH-001)" \
+            | grep -v '"GeneForge_OnTrack (ADR-ARCH-001)"' \
+            | grep -v "GeneForge Multi-Dimensional Dynamic DNA Helix Explorer" \
+            | grep -v "<title>GeneForge DNA Viewer" \
             || true)
 
           if [ -n "$HITS" ]; then
-            echo "❌ Unexpected GeneForge runtime references found in src/:"
+            echo "Unexpected GeneForge runtime references found in src/geneforgelang/:"
             echo "$HITS"
             echo ""
             echo "GFL src/ must remain independent of the GeneForge runtime."
-            echo "If this is intentional, add the pattern to the allowlist in quality.yml."
+            echo "If this is intentional, add the line to the allowlist in quality.yml."
             exit 1
           fi
 
-          echo "✅ No unexpected GeneForge runtime references in src/"
+          echo "No unexpected GeneForge runtime references in src/geneforgelang/"

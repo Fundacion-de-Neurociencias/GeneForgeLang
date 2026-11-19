@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- The CI test job installs every first-party `gfl-plugin-*` package (so their entry points are registered) and `numpy`; the tensor-geometry tests skip when `numpy` (an `ml` extra) is absent.
+- `quality.yml`'s GeneForge-independence guard scanned `GeneForgeLang/src/`, a path that does not exist in this repository, so it never checked anything; it now scans `src/geneforgelang/` with the existing references listed explicitly.
+- `gfl-plugin-clawbio` required `geneforgelang>=2.0.0`, a version that does not exist; it now requires `geneforgelang>=1.0.0`.
+- `AlphaGenome2Engine` imputations and `BioDecisionPlugin` pseudo-logits are now registered as simulated components (listed by `list_simulated_components()`, warn on first use) instead of being allowlisted as cache keys. `BioDecisionPlugin` no longer pads latency to 38.5 ms or reports a fixed ECE of 0.068; it reports the measured latency and `ece=None`, and an unmeasured ECE never passes the calibration gate.
+- Removed `scripts/conformance_runner.py` (it printed a pass for every case without running the validator; the real runner is `python -m geneforgelang.conformance`) and `docs/END_TO_END_TRUTH_AUDIT.md`, both re-added by the consolidation merge after they had been removed, and restored the strict public-claims guard for the latter.
+- `upstream_watchdog` suggested a security-gate script that does not exist in this repository; it now suggests `bandit -r src/geneforgelang -q`.
+- README: the feature list under "Key Features" no longer advertises a working web UI, CLI or container execution.
+- The CI Ruff gate runs `ruff check .` instead of `ruff check . --fix`, so fixable findings fail the build instead of being fixed silently in the runner.
+
 ### Changed
 - Contract 1.2.0: exposed geometric primitives (pairwise distances, contact maps, backbone frames, rigid transformations) with computed evidence labels.
 - Contract 1.1.0: provenance contract for simulated output:
@@ -77,7 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added comprehensive unit test suite in `tests/unit/test_tape_recorder_lineage.py`.
 - **BioDecision-4B & System 1 Fast Calibrated Gating Engine (Qwen3.5-4B + LoRA Tev1 Recipe)**:
   - Added first-class support for `BioDecision-4B` as the canonical biomedical System 1 decision engine.
-  - Implemented `DecisionContract` formal IO contract with deterministic latency budgets (`latency_budget_ms <= 50.0`) and empirical calibration bounds (`calibration_error_max <= 0.08`, benchmarked at $ECE = 0.068$).
+  - Implemented `DecisionContract` formal IO contract with deterministic latency budgets (`latency_budget_ms <= 50.0`) and calibration bounds (`calibration_error_max <= 0.08`). No model weights ship with the package: `BioDecisionPlugin` produces simulated pseudo-logits unless the caller supplies real logits, and it reports no ECE until one is measured.
   - Added `DecisionStrategy.SYSTEM_1_CALIBRATED`, `DecisionStrategy.BIODECISION_SINGLE_FORWARD`, and `DecisionStrategy.SYSTEM_1_FAST`.
   - Added `DecisionMode` (`CHOICE`, `BINARY`, `SCORE`) for discrete multi-class selection, binary gates, and continuous probability alignment.
   - Added `DecisionOutcome` tracking top predictions, ambiguity detection margins, empirical ECE, latency, and automated escalation triggers.
@@ -104,9 +114,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added core plugin adapter in `src/geneforgelang/plugins/tangermeme_plugin.py` and decoupled amputatable satellite plugin `gfl-plugin-tangermeme`.
   - Registered `tangermeme` as an authorized analysis tool in `EnhancedSemanticValidator`.
   - Added canonical example in `examples/features/tangermeme_cis_regulatory_logic.gfl` and comprehensive documentation in `docs/geneforgelang/features/tangermeme_cis_regulatory_logic.md`.
-- **Security Policy & Automated AI Vulnerability Auditing**:
+- **Security Policy**:
   - Added comprehensive security policy (`SECURITY.md`) outlining supported versions, coordinated disclosure SLAs, and GitHub Private Vulnerability Reporting channels.
-  - Formally documented opt-in automated security scanner integrations with empirical proof-of-concept (PoC) validation and remediation PRs.
 - **De Novo Catalytic Motif & Enzyme Design Layer (AlphaProtein Novo Synergy - ADR-ARCH-001)**:
   - Added `CatalyticResidueRole` enum (`NUCLEOPHILE`, `GENERAL_ACID`, `GENERAL_BASE`, `TRANSITION_STATE_STABILIZER`, `OXYANION_HOLE`, `ELECTROPHILE`, `COFACTOR_COORDINATOR`).
   - Added `CatalyticResidue` dataclass specifying residue identity, chain, target interaction atom (e.g., `OG`, `NE2`, `OD1`), and ideal coordinates.
@@ -118,7 +127,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `RetroelementType` enum (`ARRAY_ASSOCIATED_RT`, `RETRON`, `GROUP_II_INTRON`, `DGR`, `CRISPR_ASSOCIATED_RT`, `VIRAL_RT`).
   - Added `RetroelementArchitecture` dataclass formalizing reverse transcriptase domain ranges, catalytic triad verification (`YADD`, `YMDD`, `LGDD`), and flanking repeat arrays.
   - Added `ExhaustiveCoverageContract` enforcing 100% continuous base scanning across sequence contigs to prevent LLM agent context-window drift.
-  - Added `DeterministicReplayContract` binding agent discoveries to cryptographic verification hashes ($seed \times candidate \times checksum$), supporting reproducible re-discovery across independent agent runs (mitigating stochastic discovery loss in unstructured agent ART experiments).
+  - Added `DeterministicReplayContract` binding agent discoveries to cryptographic verification hashes ($seed \times candidate \times checksum$), so that independent agent runs can check that they re-discovered the same candidate.
 - **Non-Coding Regulatory Variant Interpretation & ClinVar Resolution (`gfl-plugin-alphagenome`)**:
   - Added `ClinVarSignificance` enum (`PATHOGENIC`, `LIKELY_PATHOGENIC`, `UNCERTAIN_SIGNIFICANCE`, `BENIGN`, etc.) with `is_vus` helper.
   - Added `TissueRegulatoryEffect` dataclass capturing tissue-specific epigenomic delta tracks (DNase, RNA-seq, H3K27ac, contact maps) and disrupted transcription factors.

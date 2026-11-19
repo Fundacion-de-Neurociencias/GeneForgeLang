@@ -28,12 +28,7 @@ from gfl_plugin_clawbio import (
 
 from geneforgelang.plugins.interfaces import DesignCandidate, EntityType, GeneratorPlugin
 
-# Add parent repo src to path for geneforgelang
 PLUGIN_ROOT = Path(__file__).parent.parent
-ECOSYSTEM_ROOT = PLUGIN_ROOT.parent
-GFL_SRC = ECOSYSTEM_ROOT / "GeneForgeLang" / "src"
-if GFL_SRC.exists():
-    sys.path.insert(0, str(GFL_SRC))
 
 # ── Interface compliance tests ────────────────────────────────────────────────
 

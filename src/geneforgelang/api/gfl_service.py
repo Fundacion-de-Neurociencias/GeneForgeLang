@@ -9,7 +9,6 @@ execution and Bio-Skills — to any conformant downstream runtime or client.
 import json
 import logging
 import os
-import sys
 from importlib.metadata import entry_points
 from typing import Any, Optional
 
@@ -21,11 +20,7 @@ from pydantic import BaseModel
 from geneforgelang.core.parser import parse_gfl
 from geneforgelang.plugins.plugin_registry import plugin_registry
 
-# Configure logging
 logger = logging.getLogger(__name__)
-
-# Add the project root to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 app = FastAPI(
     title="GeneForgeLang Service",

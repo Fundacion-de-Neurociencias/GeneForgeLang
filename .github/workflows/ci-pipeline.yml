@@ -90,7 +90,7 @@ jobs:
 
       # Paso clave: Ejecutar análisis de sintaxis y calidad del código
       - name: Run ruff check
-        run: ruff check . --fix
+        run: ruff check .
         continue-on-error: false  # Fallar inmediatamente si hay problemas de lint
 
 
@@ -122,7 +122,12 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e .
-          pip install pytest pytest-asyncio numpy
+          # First-party plugins live in gfl-plugin-*/ and are exercised by the root suite
+          for plugin in gfl-plugin-*/; do pip install -e "./${plugin}"; done
+          # numpy belongs to the `ml` extra; the tensor-geometry tests need it without pulling torch
+          pip install numpy
+          pip install pytest
+          pip install pytest-asyncio
 
       # Paso clave: Ejecutar suite de pruebas con reporte detallado
       - name: Run pytest

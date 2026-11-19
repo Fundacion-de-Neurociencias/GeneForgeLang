@@ -216,9 +216,9 @@ class TestBioDecisionPluginExecution:
         assert outcome.selected_option_id in contract.allowed_space
         assert 0.0 <= outcome.confidence <= 1.0
         assert len(outcome.options_evaluated) == 3
-        assert outcome.ece == 0.068
-        assert contract.passes_calibration(outcome.ece) is True
-        assert contract.is_within_budget(outcome.latency_ms) is True
+        # Calibration is not measured on a single call, and the latency is the real wall-clock time
+        assert outcome.ece is None
+        assert outcome.latency_ms >= 0.0
 
     def test_custom_logits_and_ambiguity_gating(self):
         """Test ambiguity detection when logits are tied or margins are small."""
@@ -267,8 +267,10 @@ class TestBioDecisionPluginExecution:
         assert res["success"] is True
         assert "outcome" in res
         assert res["outcome"]["selected_option_id"] in ["SUPPORTED", "CONTRADICTED"]
-        assert res["is_within_budget"] is True
-        assert res["passes_calibration"] is True
+        # The budget check uses the measured latency, so assert consistency rather than speed
+        assert res["is_within_budget"] is (res["outcome"]["latency_ms"] <= 50.0)
+        # An unmeasured calibration error never passes the calibration gate
+        assert res["passes_calibration"] is False
 
 
 class TestSemanticValidationWithDecisionBlock:

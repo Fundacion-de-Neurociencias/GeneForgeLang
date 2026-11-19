@@ -530,7 +530,7 @@ class TestBioTensorContracts:
 
     def test_pairwise_distances_and_contact_map(self):
         """Verify 3D coordinate distance and contact matrix computation."""
-        import numpy as np
+        np = pytest.importorskip("numpy")  # numpy ships with the `ml` extra
 
         from geneforgelang.core.api import compute_contact_map, compute_pairwise_distances
 
@@ -551,7 +551,7 @@ class TestBioTensorContracts:
 
     def test_backbone_frames_construction(self):
         """Verify SE(3) rigid frame reconstruction and local point transformation."""
-        import numpy as np
+        np = pytest.importorskip("numpy")  # numpy ships with the `ml` extra
 
         from geneforgelang.core.api import (
             construct_backbone_frames,

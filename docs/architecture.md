@@ -60,9 +60,9 @@ GFL constitutionalizes the complementary roles of generative structural models (
 
 In complex multi-agent scientific pipelines, evaluating candidate claims (*"Is this clinical endpoint statistically supported?"*, *"Does this extraction hallucinate?"*, *"Should this candidate proceed to full atomic co-folding?"*) using standard frontier autoregressive models (GPT-4o, Claude Opus, Gemini) creates a dual bottleneck: excessive latency (thousands of milliseconds of reasoning token generation) and uncalibrated verbal outputs devoid of deterministic mathematical thresholding.
 
-GFL formally constitutionalizes **System 1 Fast Calibrated Gating** via `BioDecision-4B` (single forward pass architecture, Qwen3.5-4B + LoRA Tev1 recipe):
-1. **Single Forward Pass Execution ($\le 50$ ms)**: Replaces autoregressive generation loops with direct logit projection over a constrained, discrete response space (`allowed_space`), cutting execution latency by $\sim 98\%$.
-2. **Strict Calibration Error Bounds ($ECE \le 0.08$)**: Requires empirical calibration error verification ($ECE = 0.068$ on HaluBench/PubMedQA). Unambiguous probability gating ($P \ge \tau$, default $\tau = 0.85$) enables deterministic routing without stochastic context drift.
+GFL formally constitutionalizes **System 1 Fast Calibrated Gating** via a decision contract modelled on BioDecision-4B (a single-forward-pass classifier):
+1. **Single Forward Pass Execution ($\le 50$ ms)**: Replaces autoregressive generation loops with direct logit projection over a constrained, discrete response space (`allowed_space`). The latency budget is declared in the contract; the bundled plugin reports the measured wall-clock time of each call.
+2. **Strict Calibration Error Bounds ($ECE \le 0.08$)**: Requires a measured calibration error; the bundled `BioDecisionPlugin` reports none because it ships no model weights and produces simulated pseudo-logits. Unambiguous probability gating ($P \ge \tau$, default $\tau = 0.85$) enables deterministic routing without stochastic context drift.
 3. **Formal Decision Modes (`DecisionMode`)**:
    - `CHOICE`: Multi-class single selection from an admissible biological hypothesis space.
    - `BINARY`: Deterministic binary gate (`SUPPORTED` vs `CONTRADICTED`, `PASS` vs `FAIL`).
@@ -163,7 +163,7 @@ GFL Core centralizes all data contracts in immutable, serializable structures:
    - `RetroelementType`: Taxonomy of non-canonical enzymes and mobile elements (`ARRAY_ASSOCIATED_RT` / ART, `RETRON`, `GROUP_II_INTRON`, `DGR`, `CRISPR_ASSOCIATED_RT`, `VIRAL_RT`).
    - `RetroelementArchitecture`: Formal structural contract defining reverse transcriptase domain boundaries, catalytic triad verification (`YADD`, `YMDD`, `LGDD`), and flanking repeat arrays.
    - `ExhaustiveCoverageContract`: Enforces full, continuous, non-fragmented base scanning ($100\%$ base coverage, sliding window/stride, dual-strand verification) preventing LLM agent context-window drift.
-   - `DeterministicReplayContract`: Guarantees reproducible re-discovery across independent agent runs via cryptographic verification hashes ($seed \times candidate \times checksum$), preventing the "stochastic trap" observed in unstructured agent swarms.
+   - `DeterministicReplayContract`: Binds agent discoveries to cryptographic verification hashes ($seed \times candidate \times checksum$), so that independent agent runs can check that they re-discovered the same candidate.
 
 6. **De Novo Catalytic & Enzyme Design Layer (AlphaProtein Novo Synergy - ADR-ARCH-001)**:
    - *Constitutional Boundary*: GFL provides strict syntactic representation and observational contracts, strictly delegating active kinetic solvers, energy barrier optimization ($\Delta G^\ddagger$), and generative diffusion to the GeneForge runtime (`gf/simulation/catalytic_kinetics/` and `gf/models/catalytic_scaffolder.py`).

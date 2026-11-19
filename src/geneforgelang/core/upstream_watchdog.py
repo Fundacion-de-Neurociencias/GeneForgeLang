@@ -96,7 +96,7 @@ def evaluate_release_status(
         "status": status,
         "upgrade_available": upgrade_available,
         "key_capability": spec.key_capability,
-        "security_gate_command": "python scripts/security/run_security_gate.py --report",
+        "security_gate_command": "bandit -r src/geneforgelang -q",
     }
 
 

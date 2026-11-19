@@ -29,8 +29,21 @@ from geneforgelang.core.gftypes import (
     AlphaGenome2Contract,
     ReferenceGenomeBuild,
 )
+from geneforgelang.provenance import Provenance, register_simulated_component, warn_first_use
 
 logger = logging.getLogger(__name__)
+
+PROVENANCE = Provenance(
+    "simulated",
+    "geneforgelang.core.alphagenome2_engine.AlphaGenome2Engine",
+    "unversioned",
+)
+register_simulated_component(
+    "AlphaGenome2Engine",
+    PROVENANCE,
+    "src/geneforgelang/core/alphagenome2_engine.py",
+    "Access to the real AlphaGenome 2 model and a test against its published predictions",
+)
 
 
 @dataclass
@@ -254,7 +267,13 @@ class AlphaGenome2Engine:
         cell_context: AG2CellularContextContract,
         variant_str: str | None = None,
     ) -> list[AG2ImputationResult]:
-        """Impute unmeasured epigenetic modalities at single-cell state resolution."""
+        """Impute unmeasured epigenetic modalities at single-cell state resolution.
+
+        No AlphaGenome 2 model ships with this package: the values come from a
+        closed-form rule seeded by SHA-256 hashes of the cell-type CURIE and the
+        variant, so they are simulated output, not model predictions.
+        """
+        warn_first_use("AlphaGenome2Engine", PROVENANCE)
         results: list[AG2ImputationResult] = []
 
         # Derive cell state multiplier from continuous state or CURIE hash
