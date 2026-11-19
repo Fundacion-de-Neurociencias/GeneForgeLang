@@ -145,8 +145,8 @@ class ArchitecturalAudit:
             if module.startswith("geneforgelang.extensions"):
                 for forbidden in forbidden_cores:
 
-                    def is_forbidden_match(mod: str, forbidden: str = forbidden) -> bool:
-                        return mod == forbidden or mod.startswith(forbidden + ".")
+                    def is_forbidden_match(mod: str, forb: str = forbidden):
+                        return mod == forb or mod.startswith(forb + ".")
 
                     path = self._find_path(module, is_forbidden_match)
                     if path:

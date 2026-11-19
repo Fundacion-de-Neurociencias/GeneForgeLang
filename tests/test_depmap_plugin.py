@@ -81,4 +81,3 @@ def test_depmap_plugin_generate_candidate():
     cand = cands[0]
     assert cand.properties["stop_gate_passed"] is True
     assert cand.properties["plugin_name"] == "depmap"
-

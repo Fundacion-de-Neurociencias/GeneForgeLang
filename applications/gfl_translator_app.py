@@ -32,7 +32,7 @@ def _configure_gemini() -> None:
         genai.configure(api_key=api_key)
     except (KeyError, AttributeError) as e:
         # Keep message concise but actionable for users
-        print("ERROR: Google API key not found. Create a .env with GOOGLE_API_KEY='your_key'.\n" f"Detail: {e}")
+        print(f"ERROR: Google API key not found. Create a .env with GOOGLE_API_KEY='your_key'.\nDetail: {e}")
         raise
 
 
@@ -65,7 +65,7 @@ def _format_inference_summary(inf: dict) -> str:
     label = inf.get("label", "unknown")
     conf = inf.get("confidence")
     exp = inf.get("explanation")
-    conf_str = f"{conf*100:.0f}%" if isinstance(conf, (int, float)) else str(conf)
+    conf_str = f"{conf * 100:.0f}%" if isinstance(conf, (int, float)) else str(conf)
     parts = ["### Inference", f"- Label: **{label}**", f"- Confidence: **{conf_str}**"]
     if exp:
         parts.append(f"- Explanation: {exp}")

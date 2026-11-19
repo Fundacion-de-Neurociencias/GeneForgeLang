@@ -136,9 +136,7 @@ _COMPONENT_MODULES = (
 )
 
 
-def register_simulated_component(
-    name: str, provenance: Provenance, location: str, promotion_oracle: str
-) -> None:
+def register_simulated_component(name: str, provenance: Provenance, location: str, promotion_oracle: str) -> None:
     """Record a simulated or stub component so it can be listed.
 
     Args:

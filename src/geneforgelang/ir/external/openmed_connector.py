@@ -316,9 +316,7 @@ class OpenMedConnector:
     # Literature Retrieval (PubMed Integration)
     # ------------------------------------------------------------------
 
-    def search_literature(
-        self, query: str, max_results: int = 10
-    ) -> list[dict[str, Any]]:
+    def search_literature(self, query: str, max_results: int = 10) -> list[dict[str, Any]]:
         """Search PubMed for relevant literature.
 
         Production: Use Biopython Entrez with OpenMed query expansion.

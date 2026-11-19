@@ -88,13 +88,15 @@ class JevDecisionPlugin(GeneratorPlugin):
     ) -> tuple[str, float, float, dict[str, float]] | None:
         """Query local Laya-Science daemon on Mac Studio with zero-fallback."""
         url = f"{self.endpoint_url.rstrip('/')}/predict"
-        payload = json.dumps({
-            "task": "science_discrete_triage",
-            "content": context,
-            "candidates": options,
-            "model": "laya_science_macstudio",
-            "domain": "SCIENCE_RESEARCH",
-        }).encode("utf-8")
+        payload = json.dumps(
+            {
+                "task": "science_discrete_triage",
+                "content": context,
+                "candidates": options,
+                "model": "laya_science_macstudio",
+                "domain": "SCIENCE_RESEARCH",
+            }
+        ).encode("utf-8")
 
         t0 = time.perf_counter()
         try:
@@ -108,7 +110,9 @@ class JevDecisionPlugin(GeneratorPlugin):
                 data = json.loads(resp.read().decode("utf-8"))
                 category = data.get("category", options[0])
                 confidence = float(data.get("confidence", 0.0))
-                opt_probs = data.get("probabilities", {opt: (confidence if opt == category else 0.0) for opt in options})
+                opt_probs = data.get(
+                    "probabilities", {opt: (confidence if opt == category else 0.0) for opt in options}
+                )
                 lat = (time.perf_counter() - t0) * 1000.0
                 return category, confidence, lat, opt_probs
         except Exception:
@@ -170,7 +174,7 @@ class JevDecisionPlugin(GeneratorPlugin):
             for shift in range(n):
                 shifted_scores = raw_scores[shift:] + raw_scores[:shift]
                 probs = self._softmax(shifted_scores, temperature)
-                unshifted = probs[n - shift:] + probs[:n - shift]
+                unshifted = probs[n - shift :] + probs[: n - shift]
                 for i, p in enumerate(unshifted):
                     accum_probs[i] += p
             calibrated = [p / n for p in accum_probs]
@@ -231,7 +235,7 @@ class JevDecisionPlugin(GeneratorPlugin):
         """Generate candidates with fast decision-pre-screened properties."""
         candidates: list[DesignCandidate] = []
         for i in range(count):
-            seq = f'JEV_DECISION_SCREENED{i+1}'
+            seq = f"JEV_DECISION_SCREENED{i + 1}"
             candidates.append(
                 DesignCandidate(
                     sequence=seq,

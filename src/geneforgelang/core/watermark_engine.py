@@ -374,7 +374,7 @@ class SynonymousCodonWatermarker:
             # Rank filtered codons by seeded hash
             ranked = sorted(
                 filtered,
-                key=lambda c: (int.from_bytes(hashlib.sha256(f"{seed_val}_{c}".encode()).digest()[:4], "big")),
+                key=lambda c: int.from_bytes(hashlib.sha256(f"{seed_val}_{c}".encode()).digest()[:4], "big"),
             )
             chosen_codon = ranked[0]
 
@@ -435,7 +435,7 @@ class SynonymousCodonWatermarker:
 
             ranked = sorted(
                 filtered,
-                key=lambda c: (int.from_bytes(hashlib.sha256(f"{seed_val}_{c}".encode()).digest()[:4], "big")),
+                key=lambda c: int.from_bytes(hashlib.sha256(f"{seed_val}_{c}".encode()).digest()[:4], "big"),
             )
             # Green codon list (top 50% preferred under key)
             green_cutoff = max(1, len(ranked) // 2)

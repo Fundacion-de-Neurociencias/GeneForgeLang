@@ -6,7 +6,6 @@ Epistemic Product Lattice in GeneForgeLang. It explicitly integrates the ecologi
 and causal context alignment to prevent blind supersession by instrumental resolution alone.
 """
 
-
 from geneforgelang.semantic.lattice import EpistemicState
 
 

@@ -101,7 +101,6 @@ class DepMapPlugin(GeneratorPlugin):
             tuple(sorted(["RAMP1", "CALCRL"])): (0.84, 1.0e-20),
         }
 
-        # Unknown pairs fall back to a baseline neutral correlation.
         corr, p_val = known_pairs.get(cache_key, (0.02, 0.75))
 
         res = DepMapCoDependency(
@@ -129,7 +128,10 @@ class DepMapPlugin(GeneratorPlugin):
                 f"STOP GATE TRIGGERED: Insufficient functional genetic co-dependency between {gene_a} and {gene_b} "
                 f"(r={depmap_res.correlation_score:.3f}, p={depmap_res.p_value:.3e}, min_required={min_correlation:.2f}).",
             )
-        return True, f"PASSED: Significant co-dependency verified (r={depmap_res.correlation_score:.3f}, tier={depmap_res.codependency_tier})."
+        return (
+            True,
+            f"PASSED: Significant co-dependency verified (r={depmap_res.correlation_score:.3f}, tier={depmap_res.codependency_tier}).",
+        )
 
     def generate(
         self,

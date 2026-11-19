@@ -24,22 +24,16 @@ FEATURES = {"experiment_tool": "CRISPR_cas9", "target_gene": "HTT"}
 def _save_tiny_tokenizer(path) -> int:
     """Save a word-level tokenizer and return its vocabulary size."""
     words = ["[UNK]", "[PAD]", "[EOS]", "experiment_tool:", "CRISPR_cas9", "target_gene:", "HTT"]
-    backend = tokenizers.Tokenizer(
-        tokenizers.models.WordLevel({w: i for i, w in enumerate(words)}, unk_token="[UNK]")
-    )
+    backend = tokenizers.Tokenizer(tokenizers.models.WordLevel({w: i for i, w in enumerate(words)}, unk_token="[UNK]"))
     backend.pre_tokenizer = tokenizers.pre_tokenizers.Whitespace()
-    transformers.PreTrainedTokenizerFast(tokenizer_object=backend, **SPECIAL_TOKENS).save_pretrained(
-        path
-    )
+    transformers.PreTrainedTokenizerFast(tokenizer_object=backend, **SPECIAL_TOKENS).save_pretrained(path)
     return len(words)
 
 
 @pytest.fixture
 def causal_lm_dir(tmp_path):
     vocab = _save_tiny_tokenizer(tmp_path)
-    config = transformers.GPT2Config(
-        vocab_size=vocab, n_embd=16, n_layer=1, n_head=2, n_positions=64
-    )
+    config = transformers.GPT2Config(vocab_size=vocab, n_embd=16, n_layer=1, n_head=2, n_positions=64)
     transformers.GPT2LMHeadModel(config).save_pretrained(tmp_path)
     return tmp_path
 

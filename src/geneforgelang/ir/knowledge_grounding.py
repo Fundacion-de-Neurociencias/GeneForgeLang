@@ -133,9 +133,7 @@ class KnowledgeBase:
     # Fase 3: External Knowledge Integration Methods
     # ------------------------------------------------------------------
 
-    def retrieve_for_objective(
-        self, objective: Objective, state: BiologicalState | None = None
-    ) -> dict[str, Any]:
+    def retrieve_for_objective(self, objective: Objective, state: BiologicalState | None = None) -> dict[str, Any]:
         """Retrieve external knowledge for a biological objective.
 
         Returns comprehensive retrieval context including:

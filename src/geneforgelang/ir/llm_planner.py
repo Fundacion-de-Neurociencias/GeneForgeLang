@@ -9,18 +9,14 @@ from geneforgelang.ir.strategy import Constraint, Objective, Strategy
 
 class LLMBackend(ABC):
     @abstractmethod
-    def generate(
-        self, prompt: str, context: dict[str, Any] | None = None
-    ) -> dict[str, Any]:
+    def generate(self, prompt: str, context: dict[str, Any] | None = None) -> dict[str, Any]:
         raise NotImplementedError
 
 
 class MockLLMBackend(LLMBackend):
     """A mock backend that returns a canned strategy based on keyword matching."""
 
-    def generate(
-        self, prompt: str, context: dict[str, Any] | None = None
-    ) -> dict[str, Any]:
+    def generate(self, prompt: str, context: dict[str, Any] | None = None) -> dict[str, Any]:
         prompt_lower = prompt.lower()
         if "knockout" in prompt_lower and "tp53" in prompt_lower:
             return {
@@ -61,9 +57,7 @@ class LLMPlanner:
     def __init__(self, backend: LLMBackend | None = None):
         self.backend = backend or MockLLMBackend()
 
-    def generate_strategy(
-        self, prompt: str, context: dict[str, Any] | None = None
-    ) -> Strategy:
+    def generate_strategy(self, prompt: str, context: dict[str, Any] | None = None) -> Strategy:
         raw = self.backend.generate(prompt, context)
         obj = raw.get("objective", {})
         objective = Objective(
@@ -71,9 +65,7 @@ class LLMPlanner:
             target_entity=obj.get("target_entity", ""),
             desired_outcome=obj.get("desired_outcome", ""),
         )
-        constraints = [
-            Constraint(expression=c) for c in raw.get("constraints", [])
-        ]
+        constraints = [Constraint(expression=c) for c in raw.get("constraints", [])]
         steps: list[Instruction] = []
         for step in raw.get("steps", []):
             op = step.get("op", "").upper()
@@ -96,6 +88,4 @@ class LLMPlanner:
                 )
             else:
                 raise ValueError(f"Unsupported step op: {op}")
-        return Strategy(
-            objective=objective, constraints=constraints, steps=steps
-        )
+        return Strategy(objective=objective, constraints=constraints, steps=steps)

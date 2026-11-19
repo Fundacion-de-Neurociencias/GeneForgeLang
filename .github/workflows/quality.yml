@@ -4,8 +4,8 @@ on:
   pull_request:
     branches: [ main ]
 
-# Linting runs in the CI Pipeline workflow (Ruff, configured by ruff.toml).
-# This workflow holds the architectural guards that Ruff cannot express.
+# Formatting and lint use Ruff (configured by ruff.toml); the CI Pipeline runs the same lint gate.
+# This workflow also runs the architectural guards that Ruff cannot express.
 
 jobs:
   quality:
@@ -13,6 +13,23 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install tools
+        run: |
+          pip install ruff
+
+      - name: Check formatting
+        run: |
+          ruff format --check src/ tests/
+
+      - name: Lint
+        run: |
+          ruff check .
 
       # Guard: src/ must not introduce new hard references to the "GeneForge"
       # runtime (without "Lang"). Each allowed line is listed below with the

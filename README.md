@@ -46,6 +46,7 @@ The parser also accepts domain blocks for regulatory genomics, protein structure
 ### **Local Execution**
 
 - **🛡️ Data stays local by default**: the parser and validator run on your machine and send no data to a cloud service. Optional engines that reach a remote service (for example the `bioc_on_ice` lakehouse reader or a remote model endpoint) only do so when a workflow asks for them; their feature guides say so.
+- **🔒 Security Policy**: Coordinated vulnerability reporting via [SECURITY.md](SECURITY.md) with gitleaks secret scanning in CI and Bandit as a pre-commit hook.
 
 ## 🌐 Open-Source and Universal
 GeneForgeLang is an **open-source project** dedicated to the entire scientific community. While it serves as the foundation for the GeneForge platform, its design and evolution are governed by universal biological principles, not by any specific commercial or execution environment.

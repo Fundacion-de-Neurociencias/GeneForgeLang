@@ -8,10 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
-- Restored a green `main` after the v0.3.0 consolidation merge: resolved the merge-conflict markers left in `README.md`, cleared the Ruff findings, moved the fake biosecurity-watermark test keys into `tests/fixtures/secrets/`, and made CI install the first-party `gfl-plugin-*` packages and `numpy` that the root suite imports.
+- The CI test job installs every first-party `gfl-plugin-*` package (so their entry points are registered) and `numpy`; the tensor-geometry tests skip when `numpy` (an `ml` extra) is absent.
+- `quality.yml`'s GeneForge-independence guard scanned `GeneForgeLang/src/`, a path that does not exist in this repository, so it never checked anything; it now scans `src/geneforgelang/` with the existing references listed explicitly.
 - `gfl-plugin-clawbio` required `geneforgelang>=2.0.0`, a version that does not exist; it now requires `geneforgelang>=1.0.0`.
 - `AlphaGenome2Engine` imputations and `BioDecisionPlugin` pseudo-logits are now registered as simulated components (listed by `list_simulated_components()`, warn on first use) instead of being allowlisted as cache keys. `BioDecisionPlugin` no longer pads latency to 38.5 ms or reports a fixed ECE of 0.068; it reports the measured latency and `ece=None`, and an unmeasured ECE never passes the calibration gate.
-- Removed `scripts/conformance_runner.py` (it printed a pass for every case without running the validator; the real runner is `python -m geneforgelang.conformance`) and `docs/END_TO_END_TRUTH_AUDIT.md`, both re-added by the consolidation merge after they had been removed.
+- Removed `scripts/conformance_runner.py` (it printed a pass for every case without running the validator; the real runner is `python -m geneforgelang.conformance`) and `docs/END_TO_END_TRUTH_AUDIT.md`, both re-added by the consolidation merge after they had been removed, and restored the strict public-claims guard for the latter.
 - Replaced developer home-directory paths in feature guides and scripts with repository-relative paths.
 - The CI Ruff gate runs `ruff check .` instead of `ruff check . --fix`, so fixable findings fail the build instead of being fixed silently in the runner.
 

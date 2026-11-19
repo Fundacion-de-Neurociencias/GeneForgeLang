@@ -149,9 +149,7 @@ class RAGBridge:
 
         return self._mock_validation(objective)
 
-    def query_literature(
-        self, query: str, n_results: int = 5
-    ) -> list[RetrievedEvidence]:
+    def query_literature(self, query: str, n_results: int = 5) -> list[RetrievedEvidence]:
         """Query RAG's ChromaDB for literature evidence."""
         evidence = []
 
@@ -178,18 +176,12 @@ class RAGBridge:
         # Fall back to direct ChromaDB access
         if self._load_chromadb_directly():
             try:
-                results = self._chromadb.query(
-                    query_texts=[query], n_results=n_results
-                )
+                results = self._chromadb.query(query_texts=[query], n_results=n_results)
 
                 if results and results.get("documents"):
                     for i, doc in enumerate(results["documents"][0]):
                         metadata = results["metadatas"][0][i] if results.get("metadatas") else {}
-                        distance = (
-                            results["distances"][0][i]
-                            if results.get("distances")
-                            else 0.5
-                        )
+                        distance = results["distances"][0][i] if results.get("distances") else 0.5
                         confidence = 1.0 - distance
 
                         evidence.append(
@@ -210,9 +202,7 @@ class RAGBridge:
 
         return evidence
 
-    def enrich_state_with_rag(
-        self, state: BiologicalState, objective: Objective | None = None
-    ) -> BiologicalState:
+    def enrich_state_with_rag(self, state: BiologicalState, objective: Objective | None = None) -> BiologicalState:
         """Enrich biological state with RAG-retrieved evidence."""
         enriched = state.fork()
 
@@ -326,9 +316,7 @@ class RAGIntegration:
         self.retrieval = retrieval_service or RetrievalService()
         self.rag = rag_bridge or RAGBridge()
 
-    def retrieve_comprehensive(
-        self, objective: Objective, state: BiologicalState | None = None
-    ) -> dict[str, Any]:
+    def retrieve_comprehensive(self, objective: Objective, state: BiologicalState | None = None) -> dict[str, Any]:
         """Retrieve evidence from all sources: IR + RAG."""
         # 1. Get IR external knowledge
         ir_context = self.retrieval.retrieve_for_objective(objective, state)

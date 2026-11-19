@@ -210,7 +210,7 @@ class AdvancedGFLLexer:
         return t
 
     def t_STRING(self, t):
-        r'"([^"\\]|\\.)*"|\'([^\'\\]|\\.)*\' '
+        r'"([^"\\]|\\.)*"|\'([^\'\\]|\\.)*\''
         # Remove quotes and handle escape sequences
         content = t.value[1:-1]
         # Basic escape sequence handling

@@ -1,4 +1,4 @@
-"r" "Tests for AlphaGenome Atlas GFL Integration and Plugin." ""
+"rTests for AlphaGenome Atlas GFL Integration and Plugin."
 
 import os
 import sys

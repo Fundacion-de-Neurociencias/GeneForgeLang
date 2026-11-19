@@ -148,7 +148,11 @@ class TestHuggingScienceConnector:
         result = connector.synthesize_evidence("TP53 knockout viability", evidence)
 
         assert "confidence_score" in result
-        assert result["supporting_evidence_count"] >= 2 if "supporting_evidence_count" in result else len(result.get("supporting_evidence", [])) >= 2
+        assert (
+            result["supporting_evidence_count"] >= 2
+            if "supporting_evidence_count" in result
+            else len(result.get("supporting_evidence", [])) >= 2
+        )
         assert len(result.get("contradicting_evidence", [])) >= 1
 
     def test_answer_question(self):

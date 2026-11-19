@@ -65,9 +65,7 @@ def parse_text(text: str) -> tuple[BiologicalState, list[Instruction]]:
             rel_type = parts[2]
             target = parts[3]
             attrs = _parse_attrs(parts[4:])
-            state.add_relation(
-                Relation(source=source, target=target, type=rel_type, metadata=attrs)
-            )
+            state.add_relation(Relation(source=source, target=target, type=rel_type, metadata=attrs))
 
         elif cmd == "substitute":
             if len(parts) < 5:

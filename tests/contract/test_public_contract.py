@@ -213,14 +213,10 @@ def test_lowering_an_evidence_label_is_breaking_and_raising_is_additive(
 def test_removed_grammar_construct_is_breaking_and_added_is_additive(baseline: dict) -> None:
     removed = copy.deepcopy(baseline)
     removed["grammar"]["constructs"]["timeline"] = False
-    assert ("breaking", "grammar construct 'timeline' is no longer parsed") in pc.diff_surface(
-        baseline, removed
-    )
+    assert ("breaking", "grammar construct 'timeline' is no longer parsed") in pc.diff_surface(baseline, removed)
     added = copy.deepcopy(baseline)
     added["grammar"]["constructs"]["loci"] = True
-    assert ("additive", "grammar construct 'loci' is now parsed") in pc.diff_surface(
-        baseline, added
-    )
+    assert ("additive", "grammar construct 'loci' is now parsed") in pc.diff_surface(baseline, added)
 
 
 def test_grammar_version_bump_forces_a_contract_bump(baseline: dict) -> None:
@@ -287,9 +283,7 @@ def test_against_rejects_a_removal_without_bump(repo: Path, baseline: dict) -> N
     assert "function infer removed" in proc.stdout
 
 
-def test_against_accepts_a_removal_with_major_bump_and_changelog(
-    repo: Path, baseline: dict
-) -> None:
+def test_against_accepts_a_removal_with_major_bump_and_changelog(repo: Path, baseline: dict) -> None:
     mutated = _bumped(baseline, "2.0.0")
     del mutated["functions"]["infer"]
     _commit_snapshot(repo, mutated, _changelog("2.0.0"))
@@ -434,15 +428,9 @@ def test_get_api_info_reports_the_contract_versions() -> None:
     assert info["gfl_version"] == pc.GRAMMAR_VERSION
 
 
-def test_grammar_version_is_tied_to_a_conformance_directory(
-    baseline: dict, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_grammar_version_is_tied_to_a_conformance_directory(baseline: dict, monkeypatch: pytest.MonkeyPatch) -> None:
     assert (ROOT / pc.CONFORMANCE_DIR / f"v{pc.GRAMMAR_VERSION}").is_dir()
-    above = [
-        v
-        for v in pc._suite_versions(ROOT)
-        if pc._version_tuple(v) > pc._version_tuple(pc.GRAMMAR_VERSION)
-    ]
+    above = [v for v in pc._suite_versions(ROOT) if pc._version_tuple(v) > pc._version_tuple(pc.GRAMMAR_VERSION)]
     assert baseline["grammar"]["unimplemented_suites"] == above
     monkeypatch.setattr(pc, "GRAMMAR_VERSION", "9.9.9")
     with pytest.raises(pc.ContractError, match="no directory v9.9.9"):

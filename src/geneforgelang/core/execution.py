@@ -74,9 +74,7 @@ class GFLExecutionEngine:
             raise
         except ValueError as e:
             available = registry.list_generators()
-            raise ExecutionError(
-                f"Design model '{model_name}' not available. Available: {available}"
-            )
+            raise ExecutionError(f"Design model '{model_name}' not available. Available: {available}")
 
     def execute_optimize_block(
         self,
@@ -127,14 +125,10 @@ class GFLExecutionEngine:
             raise
         except ValueError as e:
             available = registry.list_optimizers()
-            raise ExecutionError(
-                f"Optimization strategy '{strategy_name}' not supported. Available: {available}"
-            )
+            raise ExecutionError(f"Optimization strategy '{strategy_name}' not supported. Available: {available}")
 
 
-def execute_gfl_ast(
-    ast: dict[str, Any], registry: PluginRegistry, allow_simulated: bool = False
-) -> dict[str, Any]:
+def execute_gfl_ast(ast: dict[str, Any], registry: PluginRegistry, allow_simulated: bool = False) -> dict[str, Any]:
     """Execute a complete GFL AST.
 
     Raises:
@@ -151,9 +145,7 @@ def execute_gfl_ast(
 
     # Execute optimize blocks
     if "optimize" in ast:
-        results["optimize"] = engine.execute_optimize_block(
-            ast["optimize"], registry, allow_simulated
-        )
+        results["optimize"] = engine.execute_optimize_block(ast["optimize"], registry, allow_simulated)
 
     results["workflow_state"] = engine.workflow_state
     return inherit_provenance(
@@ -175,9 +167,7 @@ def validate_execution_requirements(ast: dict[str, Any], registry: PluginRegistr
         if model_name:
             available_generators = registry.list_generators()
             if model_name not in available_generators:
-                errors.append(
-                    f"Design model '{model_name}' not available. Available: {available_generators}"
-                )
+                errors.append(f"Design model '{model_name}' not available. Available: {available_generators}")
 
     # Check optimize block requirements
     if "optimize" in ast:

@@ -46,6 +46,7 @@ class GovernancePolicy:
     Represents institutional usage policy, consent parameters, jurisdiction boundaries,
     and biosecurity/privacy risk assessments.
     """
+
     provenance_scope: ProvenanceScope = ProvenanceScope.PUBLIC
     consent_scope: ConsentScope = ConsentScope.RESEARCH_ONLY
     population_scope: PopulationScope = PopulationScope.POPULATION
