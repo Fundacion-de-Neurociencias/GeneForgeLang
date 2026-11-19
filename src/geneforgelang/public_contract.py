@@ -34,7 +34,7 @@ from pathlib import Path
 from typing import Any
 
 # SemVer of the client-visible surface. Bump it with every surface change (see compare()).
-CONTRACT_VERSION = "1.1.0"
+CONTRACT_VERSION = "1.2.0"
 
 # Version of the language the parser and validator implement. v1.3.0 to v1.5.0 conformance
 # directories describe constructs the validator does not implement yet (see "grammar").
@@ -54,6 +54,10 @@ EVIDENCE_LABELS: dict[str, tuple[str, str]] = {
     "validate_plugins": ("computed", "deterministic check of plugin requirements"),
     "list_available_plugins": ("computed", "lists the plugins discovered at call time"),
     "get_api_info": ("computed", "reports the contract versions and detected features"),
+    "compute_pairwise_distances": ("computed", "deterministic Euclidean pairwise distance calculation"),
+    "compute_contact_map": ("computed", "deterministic binary threshold contact map from pairwise distances"),
+    "construct_backbone_frames": ("computed", "deterministic Gram-Schmidt orthonormal rotation frames from N-CA-C coordinates"),
+    "transform_points_to_local_frames": ("computed", "deterministic rigid-body coordinate transformation to local frames"),
     "infer": (
         "simulated",
         "simulated unless the caller passes a measured model; the library ships none",

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Contract 1.2.0: exposed geometric primitives (pairwise distances, contact maps, backbone frames, rigid transformations) with computed evidence labels.
 - Contract 1.1.0: provenance contract for simulated output:
   - New `geneforgelang.provenance` module: `Provenance` (`kind` of `measured`, `computed`, `simulated` or `stub`, plus `source` and `version`), `SimulatedComponentWarning`, `SimulatedInputError` and `list_simulated_components()`
   - Every plugin and connector shipped with the library is labelled and warns on first use: `SimpleProteinGenerator`, `SimpleOptimizer`, `AlphaGenomePlugin`, `OpenMedConnector`, `ProteinVAEGenerator`, `MoleculeTransformerGenerator` and `BayesianOptimizer`
