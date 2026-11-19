@@ -1,0 +1,33 @@
+# examples/somatic_repeat_expansion_gate.gfl
+# GFL Protocol: Disease-Agnostic Somatic Repeat Instability & Toxicity Cliff Gate
+# Inspired by Handsaker et al. (Cell 2025)
+# Adheres strictly to GFL syntax with 2-space indentation.
+
+metadata:
+  name: "SomaticRepeatExpansionCliffGate"
+  version: "1.0.0"
+  description: "Evaluates somatic drift and catastrophic collapse in postmitotic neuronal tracts"
+
+decision:
+  name: "SomaticToxicityCliffEvaluation"
+  strategy: SYSTEM_1_CALIBRATED
+  engine: "biodecision-4b"
+  latency_budget_ms: 50
+  calibration_error_max: 0.08
+  allowed_space:
+    - "LATENT_SUB_CLIFF"
+    - "CLIFF_COLLAPSE_ACTIVE"
+  threshold: 0.85
+
+experiment:
+  tool: "biodecision-4b"
+  type: "somatic_expansion_evaluation"
+  strategy: "system_1_calibrated"
+  temperature: 1.05
+  duration: 44
+  replicates: 1
+
+output:
+  gated_verdict: "CLIFF_COLLAPSE_ACTIVE"
+  tissue_discordance_ratio: 3.4
+  latency_budget_honored: true

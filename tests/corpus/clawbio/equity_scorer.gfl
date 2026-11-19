@@ -1,0 +1,70 @@
+# GFL Stress Test Fixture — clawbio/equity-scorer
+# Derived from: https://github.com/ClawBio/ClawBio/tree/main/skills/equity-scorer
+# SKILL.md spec: equity-scorer v0.1.0 — HEIM diversity metrics
+#
+# Expected parser behaviour: PASS
+# Expected validator behaviour: PASS
+# Gap probe: tests metadata-rich analyze block + equity domain (not in GFL today)
+
+metadata:
+  experiment_id: CB_STRESS_006
+  source_skill: clawbio/equity-scorer
+  skill_version: "0.1.0"
+  domain: population-diversity
+  tags: [equity, HEIM, diversity, FST, heterozygosity, ancestry]
+  description: >
+    Compute HEIM (Heterozygosity, Equity, and Inclusive Metrics) diversity metrics
+    from VCF or ancestry data. Reports heterozygosity per population,
+    FST between populations, and representation equity scores.
+
+analyze:
+  strategy: variant
+  data: population_vcf.vcf
+  thresholds:
+    min_maf: 0.01
+    min_sample_size: 30
+    max_missingness: 0.05
+  filters:
+    - "FILTER == 'PASS'"
+    - "AF >= 0.01"
+  contract:
+    inputs:
+      variant_data:
+        type: VCF
+        attributes:
+          genome_build: GRCh38
+          min_samples: 30
+      ancestry_labels:
+        type: CSV
+        attributes:
+          required_columns: [sample_id, population, superpopulation]
+    outputs:
+      heterozygosity_per_population:
+        type: JSON
+        attributes:
+          metric: pi_nucleotide_diversity
+      fst_matrix:
+        type: CSV
+        attributes:
+          description: pairwise_fst_weir_cockerham
+      equity_score:
+        type: JSON
+        attributes:
+          metric: HEIM_representation_score
+      diversity_report:
+        type: TEXT
+        attributes:
+          format: markdown
+  operations:
+    - type: compute_heterozygosity
+      params:
+        per_population: true
+        method: observed
+    - type: compute_fst
+      params:
+        method: weir_cockerham
+        pairwise: true
+    - type: compute_heim_score
+      params:
+        reference_panel: 1000_genomes_phase3
+        superpopulations: [AFR, AMR, EAS, EUR, SAS]

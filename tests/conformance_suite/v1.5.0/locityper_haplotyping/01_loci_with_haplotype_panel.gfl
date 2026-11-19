@@ -14,4 +14,3 @@ loci:
     start: 54784687
     end: 54799625
     haplotype_panel: "test_data/kir2dl1_panel.fasta"
-

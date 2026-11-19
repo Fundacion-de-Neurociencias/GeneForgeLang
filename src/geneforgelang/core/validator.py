@@ -7,10 +7,11 @@ reporting, including location tracking, error codes, and suggested fixes.
 import logging
 import os
 import re
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
 
 from geneforgelang.core.errors import (
     EnhancedValidationResult,
+    ErrorCategory,
     ErrorCodes,
     ErrorSeverity,
     SourceLocation,
@@ -52,6 +53,7 @@ class EnhancedSemanticValidator:
         self.result = EnhancedValidationResult(file_path=self.result.file_path)
         self.nested_level = 0
         self.schema_loader.clear()
+        self.current_ast = ast
 
         try:
             # Load schema imports first
@@ -101,11 +103,7 @@ class EnhancedSemanticValidator:
                 continue
 
             # Resolve relative paths
-            resolved_path = (
-                os.path.join(base_path, schema_path)
-                if not os.path.isabs(schema_path)
-                else schema_path
-            )
+            resolved_path = os.path.join(base_path, schema_path) if not os.path.isabs(schema_path) else schema_path
 
             schema_files.append(resolved_path)
 
@@ -137,6 +135,47 @@ class EnhancedSemanticValidator:
             "timeline",
             "pathways",
             "complexes",
+            "decision",
+            "tape_recorder",
+            "regulatory_profile",
+            "protocol",
+            "somatic_instability",
+            "ensemble",
+            "cryptic_pocket",
+            "thermodynamic_binding",
+            "bacteriophage",
+            "virtual_cell",
+            "force_field_engine",
+            "dna_viewer",
+            "perturbation_atlas",
+            "perturb_swarm",
+            "biosecurity_watermark",
+            "synth_provenance",
+            "genomic_llm",
+            "carbonx",
+            "protok",
+            "unified_protein_stream",
+            "dna_dynamics",
+            "breathing",
+            "single_cell_regulation",
+            "sc_regulation",
+            "cellular_context",
+            "verifiable_dna",
+            "rlvr_verifier",
+            "autonomous_execution",
+            "wet_lab_dispatch",
+            "laboratory_protocol",
+            "bioc_reference",
+            "lakehouse_reference",
+            "bioc_on_ice",
+            "alphagenome2",
+            "ag2_locus",
+            "cellular_regulation_1mb",
+            "finedna",
+            "finedna_task",
+            "finedna_circuit",
+            "permutation_baseline",
+            "sequence_signal_audit",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -147,12 +186,12 @@ class EnhancedSemanticValidator:
                 ErrorSeverity.ERROR,
             )
             error.add_fix(
-                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'pathways', or 'complexes' block"
+                "Add an 'experiment', 'analyze', 'simulate', 'design', 'optimize', 'refine_data', 'guided_discovery', 'rules', 'hypothesis', 'timeline', 'decision', 'pathways', 'complexes', 'regulatory_profile', 'protocol', 'somatic_instability', 'ensemble', 'cryptic_pocket', 'thermodynamic_binding', 'bacteriophage', 'virtual_cell', 'force_field_engine', 'dna_viewer', or 'perturbation_atlas' block"
             )
             error.add_context("available_blocks", list(main_blocks))
 
         # Check for unknown top-level keys
-        valid_top_level = main_blocks | {"metadata", "imports", "exports"}
+        valid_top_level = main_blocks | {"metadata", "imports", "exports", "output"}
         unknown_keys = set(ast.keys()) - valid_top_level
 
         for key in unknown_keys:
@@ -205,6 +244,52 @@ class EnhancedSemanticValidator:
                 self._validate_hypothesis_block(block_content)
             elif block_name == "timeline":
                 self._validate_timeline_block(block_content)
+            elif block_name == "decision":
+                self._validate_decision_block(block_content)
+            elif block_name == "tape_recorder":
+                self._validate_tape_recorder_block(block_content)
+            elif block_name == "regulatory_profile":
+                self._validate_regulatory_profile_block(block_content)
+            elif block_name in {"protocol", "somatic_instability"}:
+                self._validate_somatic_instability_block(block_content)
+            elif block_name == "ensemble":
+                self._validate_ensemble_block(block_content)
+            elif block_name == "cryptic_pocket":
+                self._validate_cryptic_pocket_block(block_content)
+            elif block_name == "thermodynamic_binding":
+                self._validate_thermodynamic_binding_block(block_content)
+            elif block_name == "bacteriophage":
+                self._validate_bacteriophage_block(block_content)
+            elif block_name == "virtual_cell":
+                self._validate_virtual_cell_block(block_content)
+            elif block_name == "force_field_engine":
+                self._validate_force_field_engine_block(block_content)
+            elif block_name == "dna_viewer":
+                self._validate_dna_viewer_block(block_content)
+            elif block_name in ("perturbation_atlas", "perturb_swarm"):
+                self._validate_perturbation_atlas_block(block_content)
+            elif block_name in ("biosecurity_watermark", "synth_provenance"):
+                self._validate_biosecurity_watermark_block(block_content)
+            elif block_name in ("genomic_llm", "carbonx"):
+                self._validate_genomic_llm_block(block_content)
+            elif block_name in ("protok", "unified_protein_stream"):
+                self._validate_protok_block(block_content)
+            elif block_name in ("dna_dynamics", "breathing"):
+                self._validate_dna_dynamics_block(block_content)
+            elif block_name in ("single_cell_regulation", "sc_regulation", "cellular_context"):
+                self._validate_single_cell_regulation_block(block_content)
+            elif block_name in ("verifiable_dna", "rlvr_verifier"):
+                self._validate_verifiable_dna_block(block_content)
+            elif block_name in ("autonomous_execution", "wet_lab_dispatch", "laboratory_protocol"):
+                self._validate_autonomous_execution_block(block_content)
+            elif block_name in ("bioc_reference", "lakehouse_reference", "bioc_on_ice"):
+                self._validate_bioc_reference_block(block_content)
+            elif block_name in ("alphagenome2", "ag2_locus", "cellular_regulation_1mb"):
+                self._validate_alphagenome2_block(block_content)
+            elif block_name in ("finedna", "finedna_task", "finedna_circuit"):
+                self._validate_finedna_block(block_content)
+            elif block_name in ("permutation_baseline", "sequence_signal_audit"):
+                self._validate_permutation_baseline_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -251,11 +336,62 @@ class EnhancedSemanticValidator:
                 self.entity_registry["complexes"] = complexes
                 # Validate complex structure
                 for complex_name, complex_def in complexes.items():
+                    if hasattr(complex_def, "to_dict"):
+                        complex_def = complex_def.to_dict()
+
                     if not isinstance(complex_def, dict):
                         self.result.add_error(
-                            f"Complex '{complex_name}' must be a dictionary",
+                            f"Complex '{complex_name}' must be a dictionary or ViralInteractomeComplexContract",
                             ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
                         ).add_fix(f"Format complex '{complex_name}' as a dictionary")
+                        continue
+
+                    # Validate subunits if specified
+                    if "subunits" in complex_def:
+                        subunits = complex_def["subunits"]
+                        if not isinstance(subunits, list) or len(subunits) < 2:
+                            self.result.add_error(
+                                f"Complex '{complex_name}' 'subunits' must be a list with at least 2 proteins",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ).add_fix("Provide at least 2 subunit identifiers in 'subunits'")
+
+                    # Validate confidence thresholds if present
+                    if "iplddt_threshold" in complex_def:
+                        thresh = complex_def["iplddt_threshold"]
+                        if not isinstance(thresh, (int, float)) or not (0.0 <= thresh <= 100.0):
+                            self.result.add_error(
+                                f"Complex '{complex_name}' iplddt_threshold must be between 0.0 and 100.0, got {thresh}",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ).add_fix("Set iplddt_threshold between 0.0 and 100.0 (e.g. 75.0)")
+
+                    if "iptm_threshold" in complex_def:
+                        thresh = complex_def["iptm_threshold"]
+                        if not isinstance(thresh, (int, float)) or not (0.0 <= thresh <= 1.0):
+                            self.result.add_error(
+                                f"Complex '{complex_name}' iptm_threshold must be between 0.0 and 1.0, got {thresh}",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ).add_fix("Set iptm_threshold between 0.0 and 1.0 (e.g. 0.70)")
+
+                    # Validate AlphaGenome host locus link if present
+                    if "host_locus_link" in complex_def and complex_def["host_locus_link"] is not None:
+                        link = complex_def["host_locus_link"]
+                        if hasattr(link, "to_dict"):
+                            link = link.to_dict()
+                        if not isinstance(link, dict) or "variant" not in link:
+                            self.result.add_error(
+                                f"Complex '{complex_name}' host_locus_link must contain 'variant' in chr:pos:ref>alt format",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ).add_fix(
+                                "Provide 'variant' in 1-based 'chr:pos:ref>alt' format for AlphaGenome Atlas linking"
+                            )
+                        else:
+                            var_str = str(link["variant"])
+                            # Strict AlphaGenome 1-based chr:pos:ref>alt format check
+                            if not re.match(r"^chr[0-9XYM]+:[0-9]+:[ACGTN]+>[ACGTN]+$", var_str):
+                                self.result.add_error(
+                                    f"Invalid AlphaGenome variant format '{var_str}' in host_locus_link. Expected 'chr:pos:ref>alt'",
+                                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                                ).add_fix("Format variant as 'chr:pos:ref>alt' (e.g., 'chrX:15579998:G>A')")
 
         # Debug: Print entity registry contents
         print(f"Collected entity registry: {self.entity_registry}")
@@ -305,9 +441,7 @@ class EnhancedSemanticValidator:
                     self.result.add_error(
                         f"Referenced {entity_type} '{entity_name}' is not defined",
                         ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-                    ).add_fix(
-                        f"Define a {entity_type} with name '{entity_name}' or reference an existing one"
-                    )
+                    ).add_fix(f"Define a {entity_type} with name '{entity_name}' or reference an existing one")
             else:
                 # Entity type registry doesn't exist
                 self.result.add_error(
@@ -488,6 +622,2419 @@ class EnhancedSemanticValidator:
                     ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
                 ).add_fix(f"Format 'expectations' field as a list in timeline event {i}")
 
+    def _validate_decision_block(self, decision_block: Any) -> None:
+        """Validate the decision block structure (System 1 fast gating)."""
+        if not isinstance(decision_block, dict):
+            if hasattr(decision_block, "to_dict"):
+                decision_block = decision_block.to_dict()
+            else:
+                self.result.add_error(
+                    "Decision block must be a dictionary or DecisionContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format decision as a dictionary with strategy, engine, and allowed_space")
+                return
+
+        # Check allowed_space / allowed_options
+        has_space = "allowed_space" in decision_block
+        has_options = "allowed_options" in decision_block
+        if has_space or has_options:
+            allowed_space = decision_block.get("allowed_space") if has_space else decision_block.get("allowed_options")
+            if not isinstance(allowed_space, list):
+                self.result.add_error(
+                    "Decision 'allowed_space' must be a list of allowed outcome options",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Format allowed_space as a list of strings, e.g., ['SUPPORTED', 'CONTRADICTED']")
+            elif len(allowed_space) == 0:
+                self.result.add_error(
+                    "Decision 'allowed_space' cannot be empty",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Provide at least one outcome option in allowed_space")
+
+        # Check strategy
+        if "strategy" in decision_block:
+            strat = decision_block["strategy"]
+            valid_strategies = {
+                "system_1_calibrated",
+                "system_1_fast",
+                "biodecision_single_forward",
+                "permutation_invariant_logits",
+                "calibrated_temperature",
+                "exact_match_prior",
+                "ensemble_marginalized",
+                "SYSTEM_1_CALIBRATED",
+                "SYSTEM_1_FAST",
+                "BIODECISION_SINGLE_FORWARD",
+                "PERMUTATION_INVARIANT_LOGITS",
+                "CALIBRATED_TEMPERATURE",
+                "EXACT_MATCH_PRIOR",
+                "ENSEMBLE_MARGINALIZED",
+            }
+            strat_str = str(strat)
+            if strat_str.lower() not in {s.lower() for s in valid_strategies}:
+                self.result.add_error(
+                    f"Unknown decision strategy '{strat}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'SYSTEM_1_CALIBRATED', 'SYSTEM_1_FAST', or 'BIODECISION_SINGLE_FORWARD'")
+
+        # Check latency budget
+        if "latency_budget_ms" in decision_block:
+            budget = decision_block["latency_budget_ms"]
+            if not isinstance(budget, (int, float)) or budget <= 0:
+                self.result.add_error(
+                    f"latency_budget_ms must be a positive number, got {budget}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set latency_budget_ms to a positive millisecond threshold (e.g. 50)")
+
+        # Check calibration error max
+        if "calibration_error_max" in decision_block:
+            ece_max = decision_block["calibration_error_max"]
+            if not isinstance(ece_max, (int, float)) or not (0.0 <= ece_max <= 1.0):
+                self.result.add_error(
+                    f"calibration_error_max must be a float between 0.0 and 1.0, got {ece_max}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set calibration_error_max between 0.0 and 1.0 (recommended <= 0.08)")
+
+        # Check threshold
+        thresh = decision_block.get("threshold") or decision_block.get("confidence_threshold")
+        if thresh is not None and (not isinstance(thresh, (int, float)) or not (0.0 <= thresh <= 1.0)):
+            self.result.add_error(
+                f"Decision threshold must be a float between 0.0 and 1.0, got {thresh}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set threshold between 0.0 and 1.0 (e.g., 0.85)")
+
+        # Check mode if present
+        if "mode" in decision_block:
+            mode = str(decision_block["mode"]).lower()
+            if mode not in {"choice", "binary", "score"}:
+                self.result.add_error(
+                    f"Unknown decision mode '{decision_block['mode']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set mode to 'choice', 'binary', or 'score'")
+
+        # Check target_tissue if present
+        if decision_block.get("target_tissue") is not None:
+            target_tissue = decision_block["target_tissue"]
+            if not isinstance(target_tissue, str) or not target_tissue.strip():
+                self.result.add_error(
+                    "Decision target_tissue must be a non-empty string",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Provide a valid anatomical tissue identifier (e.g. 'central_nervous_system')")
+
+        # Check cfdna_methylation_profile if present
+        if decision_block.get("cfdna_methylation_profile") is not None:
+            profile = decision_block["cfdna_methylation_profile"]
+            if not isinstance(profile, str) or not profile.strip():
+                self.result.add_error(
+                    "Decision cfdna_methylation_profile must be a non-empty string",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Provide a valid plasma cfDNA sample run identifier (e.g. 'patient_plasma_run_04')")
+
+    def _validate_tape_recorder_block(self, recorder_block: Any) -> None:
+        """Validate DNA Typewriter cellular tape recorder contract block."""
+        if not isinstance(recorder_block, dict):
+            if hasattr(recorder_block, "to_dict"):
+                recorder_block = recorder_block.to_dict()
+            else:
+                self.result.add_error(
+                    "Tape recorder block must be a dictionary or TapeRecorderContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format tape_recorder as a dictionary with cassette_architecture, tape_capacity_sites, etc.")
+                return
+
+        # Validate cassette architecture
+        if "cassette_architecture" in recorder_block:
+            arch = str(recorder_block["cassette_architecture"])
+            valid_architectures = {
+                "tandem_pegrna_insertional",
+                "base_editor_accumulation",
+                "crispr_homing_barcode",
+                "prime_editing_tape",
+            }
+            if arch.lower() not in valid_architectures:
+                self.result.add_error(
+                    f"Unknown cassette_architecture '{arch}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'tandem_pegRNA_insertional', 'base_editor_accumulation', or 'crispr_homing_barcode'")
+
+        # Validate tape capacity sites
+        if "tape_capacity_sites" in recorder_block:
+            sites = recorder_block["tape_capacity_sites"]
+            if not isinstance(sites, int) or sites <= 0:
+                self.result.add_error(
+                    f"tape_capacity_sites must be a positive integer, got {sites}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set tape_capacity_sites to a positive integer (e.g. 50)")
+
+        # Validate recording interval hours
+        if "recording_interval_hours" in recorder_block:
+            interval = recorder_block["recording_interval_hours"]
+            if not isinstance(interval, (int, float)) or interval <= 0:
+                self.result.add_error(
+                    f"recording_interval_hours must be a positive number, got {interval}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set recording_interval_hours to a positive float or int (e.g. 6.0)")
+
+        # Validate edit signature alphabet
+        if "edit_signature_alphabet" in recorder_block:
+            alphabet = recorder_block["edit_signature_alphabet"]
+            if not isinstance(alphabet, list):
+                self.result.add_error(
+                    "edit_signature_alphabet must be a list of edit signature strings",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Format edit_signature_alphabet as a list of strings, e.g. ['Ins_A1', 'Ins_B2']")
+            elif len(alphabet) == 0:
+                self.result.add_error(
+                    "edit_signature_alphabet cannot be empty",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Provide at least one edit signature in edit_signature_alphabet")
+
+        # Validate readout modality if specified
+        if "readout_modality" in recorder_block and recorder_block["readout_modality"] is not None:
+            modality = str(recorder_block["readout_modality"]).lower()
+            valid_modalities = {
+                "targeted_amplicon_dna_seq",
+                "single_cell_rna_seq_expression",
+                "multiplex_amplicon_seq",
+                "long_read_pacbio",
+                "long_read_ont",
+            }
+            if modality not in valid_modalities:
+                self.result.add_error(
+                    f"Unknown readout_modality '{recorder_block['readout_modality']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'targeted_amplicon_dna_seq' or 'single_cell_rna_seq_expression'")
+
+    def _validate_regulatory_profile_block(self, profile_block: Any) -> None:
+        """Validate Regulatory Genomics Dual-Head Contract block (BPNet & AtacWorks - MIT 6.874)."""
+        if not isinstance(profile_block, dict):
+            if hasattr(profile_block, "to_dict"):
+                profile_block = profile_block.to_dict()
+            else:
+                self.result.add_error(
+                    "regulatory_profile block must be a dictionary or RegulatoryProfileContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format regulatory_profile as a dictionary with target_factor, locus, count_head, etc.")
+                return
+
+        # Validate locus format (e.g. chr7:27142000-27143000)
+        if "locus" in profile_block:
+            locus = str(profile_block["locus"])
+            if not re.match(r"^chr[0-9XYM]+:[0-9]+-[0-9]+$", locus):
+                self.result.add_error(
+                    f"Invalid genomic locus format '{locus}'. Expected format 'chrN:start-end' (e.g. 'chr7:27142000-27143000')",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Specify locus as 1-based closed coordinate string 'chrN:start-end'")
+        else:
+            self.result.add_error(
+                "regulatory_profile block missing required 'locus' coordinates",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'locus: chrN:start-end' to regulatory_profile")
+
+        # Validate target factor
+        if "target_factor" in profile_block:
+            tf = str(profile_block["target_factor"]).strip()
+            if not tf:
+                self.result.add_error(
+                    "target_factor cannot be empty",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Provide a target transcription factor or chromatin mark (e.g. 'CTCF', 'OCT4', 'ATAC')")
+
+        # Validate signal modality if present
+        if "modality" in profile_block:
+            mod = str(profile_block["modality"]).lower()
+            valid_modalities = {
+                "de_novo_sequence_direct",
+                "signal_denoised_enriched",
+                "experimental_empirical",
+            }
+            if mod not in valid_modalities:
+                self.result.add_error(
+                    f"Unknown signal modality '{profile_block['modality']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'de_novo_sequence_direct', 'signal_denoised_enriched', or 'experimental_empirical'")
+
+        # Validate count_head if present
+        if "count_head" in profile_block and profile_block["count_head"] is not None:
+            ch = profile_block["count_head"]
+            if hasattr(ch, "to_dict"):
+                ch = ch.to_dict()
+            if not isinstance(ch, dict):
+                self.result.add_error(
+                    "count_head must be a dictionary or CountHeadContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format count_head as a dictionary with tolerance_fold, expected_total_counts, etc.")
+            else:
+                if "expected_total_counts" in ch and ch["expected_total_counts"] is not None:
+                    counts = ch["expected_total_counts"]
+                    if not isinstance(counts, (int, float)) or counts < 0:
+                        self.result.add_error(
+                            f"expected_total_counts must be a non-negative number, got {counts}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set expected_total_counts to a non-negative float or integer")
+
+                if "tolerance_fold" in ch:
+                    fold = ch["tolerance_fold"]
+                    if not isinstance(fold, (int, float)) or fold < 1.0:
+                        self.result.add_error(
+                            f"tolerance_fold must be >= 1.0, got {fold}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set tolerance_fold to a value >= 1.0 (e.g. 1.5)")
+
+        # Validate profile_head if present
+        if "profile_head" in profile_block and profile_block["profile_head"] is not None:
+            ph = profile_block["profile_head"]
+            if hasattr(ph, "to_dict"):
+                ph = ph.to_dict()
+            if not isinstance(ph, dict):
+                self.result.add_error(
+                    "profile_head must be a dictionary or ProfileHeadContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format profile_head as a dictionary with resolution, loss_metric, max_jsd_threshold, etc.")
+            else:
+                if "max_jsd_threshold" in ph:
+                    jsd_thresh = ph["max_jsd_threshold"]
+                    if not isinstance(jsd_thresh, (int, float)) or not (0.0 <= jsd_thresh <= 1.0):
+                        self.result.add_error(
+                            f"max_jsd_threshold must be between 0.0 and 1.0, got {jsd_thresh}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set max_jsd_threshold between 0.0 and 1.0 (e.g. 0.20)")
+
+                if "resolution" in ph:
+                    res = str(ph["resolution"]).lower()
+                    valid_resolutions = {"base_pair", "binned_10bp", "binned_128bp", "peak_level"}
+                    if res not in valid_resolutions:
+                        self.result.add_error(
+                            f"Unknown profile resolution '{ph['resolution']}'",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ErrorSeverity.WARNING,
+                        ).add_fix("Use 'base_pair', 'binned_10bp', 'binned_128bp', or 'peak_level'")
+
+        # Enforce Epistemic Barrier (MIT 6.874 Invariant)
+        # Deep learning predictions cannot claim VALIDATED_MECHANISM without confirmed orthogonal empirical validation.
+        epistemic_level = str(profile_block.get("epistemic_level", "predictive_guidance")).lower()
+        confirmed_validation = bool(profile_block.get("orthogonal_validation_confirmed", False))
+        if (
+            epistemic_level in {"validated_mechanism", "epistemic_level.validated_mechanism"}
+            and not confirmed_validation
+        ):
+            self.result.add_error(
+                "EPISTEMIC BARRIER VIOLATION: A regulatory neural network profile prediction cannot assert "
+                "'VALIDATED_MECHANISM' without confirmed orthogonal empirical validation ('orthogonal_validation_confirmed: true'). "
+                "Per MIT 6.874, accurate prediction guides experiments but does not establish a biological mechanism on its own.",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(
+                "Change epistemic_level to 'PREDICTIVE_GUIDANCE' or 'HYPOTHESIS_GENERATING', or provide confirmed orthogonal validation"
+            )
+
+    def _validate_somatic_instability_block(self, block: Any) -> None:
+        """Validate Microsatellite Somatic Instability & Catastrophe Cliff Contract block (Neurodiagnoses)."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "protocol/somatic_instability block must be a dictionary or SomaticInstabilityContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix(
+                    "Format somatic instability block as a dictionary with target_gene, germline_cag_repeat, simulation, etc."
+                )
+                return
+
+        # Validate target gene
+        if "target_gene" in block:
+            gene = str(block["target_gene"]).strip()
+            if not gene:
+                self.result.add_error(
+                    "target_gene cannot be empty in somatic instability protocol",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Provide target repeat expansion gene (e.g. 'HTT', 'ATXN1', 'C9orf72')")
+
+        # Validate locus format if present
+        if "locus" in block and block["locus"] is not None:
+            locus = str(block["locus"])
+            if not re.match(r"^chr[0-9XYM]+:[0-9]+-[0-9]+$", locus):
+                self.result.add_error(
+                    f"Invalid genomic locus format '{locus}'. Expected format 'chrN:start-end' (e.g. 'chr4:3074877-3074933')",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Specify locus as 1-based closed coordinate string 'chrN:start-end'")
+
+        # Validate germline repeat count (accepts either germline_repeat_count or germline_cag_repeat)
+        germline_count = block.get("germline_repeat_count")
+        if germline_count is None:
+            germline_count = block.get("germline_cag_repeat")
+
+        if germline_count is not None and (not isinstance(germline_count, int) or germline_count <= 0):
+            self.result.add_error(
+                f"germline repeat count must be a positive integer, got {germline_count}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set germline repeat count to a positive integer (e.g. 42 for HTT)")
+
+        # Validate simulation sub-block (accepts 'simulation' or named 'SomaticDrift')
+        sim_data = block.get("simulation")
+        if sim_data is None:
+            sim_data = block.get("SomaticDrift")
+
+        if sim_data is not None:
+            if hasattr(sim_data, "to_dict"):
+                sim_data = sim_data.to_dict()
+            if not isinstance(sim_data, dict):
+                self.result.add_error(
+                    "simulation/SomaticDrift must be a dictionary or SomaticDriftSimulationContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format simulation as a dictionary with time_horizon_years, toxicity_cliff_threshold, etc.")
+            else:
+                if "time_horizon_years" in sim_data:
+                    years = sim_data["time_horizon_years"]
+                    if not isinstance(years, (int, float)) or years <= 0:
+                        self.result.add_error(
+                            f"time_horizon_years must be a positive number, got {years}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set time_horizon_years to a positive number (e.g. 65)")
+
+                # Toxicity cliff threshold
+                cliff = sim_data.get("toxicity_cliff_threshold")
+                if cliff is None:
+                    cliff = sim_data.get("toxicity_cliff_cag")
+
+                if cliff is not None:
+                    if not isinstance(cliff, int) or cliff <= 0:
+                        self.result.add_error(
+                            f"toxicity_cliff_threshold must be a positive integer, got {cliff}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set toxicity_cliff_threshold to a positive integer (e.g. 150)")
+                    elif germline_count is not None and isinstance(germline_count, int) and cliff <= germline_count:
+                        self.result.add_error(
+                            f"toxicity_cliff_threshold ({cliff}) must be strictly greater than germline repeat count ({germline_count})",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix(f"Set toxicity_cliff_threshold greater than {germline_count}")
+
+                # Stochastic drift rate
+                if "stochastic_drift_rate_per_year" in sim_data:
+                    drift = sim_data["stochastic_drift_rate_per_year"]
+                    if not isinstance(drift, (int, float)) or drift < 0:
+                        self.result.add_error(
+                            f"stochastic_drift_rate_per_year must be non-negative, got {drift}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set stochastic_drift_rate_per_year >= 0 (e.g. 2.3)")
+
+        # Validate nested decision if embedded inside protocol
+        if "decision" in block and block["decision"] is not None:
+            self._validate_decision_block(block["decision"])
+
+    def _validate_ensemble_block(self, block: Any) -> None:
+        """Validate BoltzmannEnsembleContract block (BioEmu2)."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "ensemble block must be a dictionary or BoltzmannEnsembleContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format ensemble as a dictionary with target, sample_size, generator, etc.")
+                return
+
+        # Target protein is required
+        if "target" not in block or not str(block["target"]).strip():
+            self.result.add_error(
+                "ensemble block missing required 'target' protein identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'target: <protein_name_or_uniprot>' to ensemble block")
+
+        # Validate sample_size
+        if "sample_size" in block:
+            size = block["sample_size"]
+            if not isinstance(size, int) or size <= 0:
+                self.result.add_error(
+                    f"sample_size must be a positive integer, got {size}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set sample_size to a positive integer (e.g. 1000)")
+
+        # Validate temperature_kelvin
+        if "temperature_kelvin" in block:
+            temp = block["temperature_kelvin"]
+            if not isinstance(temp, (int, float)) or temp <= 0:
+                self.result.add_error(
+                    f"temperature_kelvin must be positive, got {temp}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set temperature_kelvin to a positive temperature in Kelvin (e.g. 310.15)")
+
+        # Validate generator if provided
+        if "generator" in block:
+            gen = str(block["generator"]).lower()
+            valid_generators = {"bioemu2", "alphafold3", "chai1", "boltz1", "molecular_dynamics"}
+            if gen not in valid_generators:
+                self.result.add_error(
+                    f"Unknown ensemble generator '{block['generator']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'bioemu2', 'alphafold3', 'chai1', or 'molecular_dynamics'")
+            elif gen == "alphafold3":
+                # Check AlphaFold v3.0.5+ (>10x faster Jackhmmer MSA pipeline)
+                ver_raw = block.get("engine_version")
+                if ver_raw is not None:
+                    m_ver = re.match(r"^v?(\d+)\.(\d+)\.(\d+)", str(ver_raw).strip())
+                    if not m_ver:
+                        self.result.add_error(
+                            f"Invalid semantic version '{ver_raw}' for alphafold3 engine_version",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Format engine_version as '3.0.5' or 'v3.0.5'")
+                    else:
+                        ver_tuple = (int(m_ver.group(1)), int(m_ver.group(2)), int(m_ver.group(3)))
+                        if ver_tuple < (3, 0, 5):
+                            self.result.add_error(
+                                f"AlphaFold 3 version '{ver_raw}' is older than v3.0.5 (>10x slower Jackhmmer MSA pipeline)",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                                ErrorSeverity.WARNING,
+                            ).add_fix("Upgrade engine_version to '3.0.5' or newer for >10x faster Jackhmmer MSA")
+                if "fast_jackhmmer_msa" in block and block["fast_jackhmmer_msa"] is False:
+                    self.result.add_error(
+                        "fast_jackhmmer_msa is disabled for alphafold3; MSA generation will be >10x slower",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ErrorSeverity.WARNING,
+                    ).add_fix("Set 'fast_jackhmmer_msa: true' (supported in AlphaFold >=3.0.5)")
+
+    def _validate_cryptic_pocket_block(self, block: Any) -> None:
+        """Validate CrypticPocketContract block."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "cryptic_pocket block must be a dictionary or CrypticPocketContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format cryptic_pocket as a dictionary with pocket_id, residues, min_boltzmann_weight, etc.")
+                return
+
+        # Validate residues list
+        if "residues" in block:
+            residues = block["residues"]
+            if not isinstance(residues, list) or len(residues) == 0:
+                self.result.add_error(
+                    "residues must be a non-empty list of residue indices",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Provide a list of integer residue numbers (e.g. residues: [306, 311])")
+            else:
+                for r in residues:
+                    if not isinstance(r, int) or r <= 0:
+                        self.result.add_error(
+                            f"Residue index must be a positive integer, got {r}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Use positive 1-based integers for residue indices")
+
+        # Validate min_boltzmann_weight
+        if "min_boltzmann_weight" in block:
+            weight = block["min_boltzmann_weight"]
+            if not isinstance(weight, (int, float)) or not (0.0 < weight <= 1.0):
+                self.result.add_error(
+                    f"min_boltzmann_weight must be in range (0.0, 1.0], got {weight}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set min_boltzmann_weight between 0.01 and 1.0 (e.g. 0.05)")
+
+        # Validate max_delta_g_relative_kcal_mol
+        if "max_delta_g_relative_kcal_mol" in block:
+            dg = block["max_delta_g_relative_kcal_mol"]
+            if not isinstance(dg, (int, float)):
+                self.result.add_error(
+                    f"max_delta_g_relative_kcal_mol must be a number, got {dg}",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Set max_delta_g_relative_kcal_mol to a number in kcal/mol (e.g. 2.5)")
+
+    def _validate_thermodynamic_binding_block(self, block: Any) -> None:
+        """Validate ThermodynamicBindingContract block."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "thermodynamic_binding block must be a dictionary or ThermodynamicBindingContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format thermodynamic_binding as a dictionary with binder_id, min_target_fraction, etc.")
+                return
+
+        # Validate min_target_fraction
+        if "min_target_fraction" in block:
+            frac = block["min_target_fraction"]
+            if not isinstance(frac, (int, float)) or not (0.0 < frac <= 1.0):
+                self.result.add_error(
+                    f"min_target_fraction must be in range (0.0, 1.0], got {frac}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set min_target_fraction between 0.0 and 1.0 (e.g. 0.85)")
+
+        # Validate max_delta_delta_g_kcal_mol
+        if "max_delta_delta_g_kcal_mol" in block:
+            ddg = block["max_delta_delta_g_kcal_mol"]
+            if not isinstance(ddg, (int, float)):
+                self.result.add_error(
+                    f"max_delta_delta_g_kcal_mol must be a number, got {ddg}",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Set max_delta_delta_g_kcal_mol to a number in kcal/mol (e.g. -2.5)")
+
+    def _validate_bacteriophage_block(self, block: Any) -> None:
+        """Validate BacteriophageTherapyContract and BiodefenseSafetyGate block (Omnii-1)."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "bacteriophage block must be a dictionary or BacteriophageTherapyContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format bacteriophage as a dictionary with target_pathogen, biodefense_gate, etc.")
+                return
+
+        # Target pathogen is required
+        if "target_pathogen" not in block or not str(block["target_pathogen"]).strip():
+            self.result.add_error(
+                "bacteriophage block missing required 'target_pathogen' identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'target_pathogen: <bacterial_strain>' to bacteriophage block")
+
+        # Validate capsid architecture if provided
+        if "capsid_architecture" in block:
+            arch = str(block["capsid_architecture"]).lower()
+            valid_archs = {
+                "myoviridae_t4",
+                "siphoviridae_lambda",
+                "podoviridae_t7",
+                "tequatrovirus",
+                "custom_chassis",
+            }
+            if arch not in valid_archs:
+                self.result.add_error(
+                    f"Unknown capsid_architecture '{block['capsid_architecture']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'myoviridae_t4', 'siphoviridae_lambda', or 'podoviridae_t7'")
+
+        # Validate biodefense safety gate if present
+        if "biodefense_gate" in block and block["biodefense_gate"] is not None:
+            gate = block["biodefense_gate"]
+            if hasattr(gate, "to_dict"):
+                gate = gate.to_dict()
+            if not isinstance(gate, dict):
+                self.result.add_error(
+                    "biodefense_gate must be a dictionary or BiodefenseSafetyGate",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format biodefense_gate as a dictionary with safety constraints")
+            else:
+                # Invariant: prohibit_amr_transfer_genes must be True for compassionate human use
+                if "prohibit_amr_transfer_genes" in gate and not bool(gate["prohibit_amr_transfer_genes"]):
+                    self.result.add_error(
+                        "BIODEFENSE INVARIANT VIOLATION: Synthetic bacteriophage cannot disable 'prohibit_amr_transfer_genes'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix(
+                        "Set 'prohibit_amr_transfer_genes: true' to prevent horizontal gene transfer of resistance"
+                    )
+
+                # Invariant: prohibit_toxin_homology must be True
+                if "prohibit_toxin_homology" in gate and not bool(gate["prohibit_toxin_homology"]):
+                    self.result.add_error(
+                        "BIODEFENSE INVARIANT VIOLATION: Synthetic bacteriophage cannot disable 'prohibit_toxin_homology'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Set 'prohibit_toxin_homology: true' to guarantee absence of bacterial toxin homology")
+
+                # Invariant: max_off_target_microbiome_lysis must be <= 0.05
+                if "max_off_target_microbiome_lysis" in gate:
+                    lysis = gate["max_off_target_microbiome_lysis"]
+                    if not isinstance(lysis, (int, float)) or not (0.0 <= lysis <= 0.05):
+                        self.result.add_error(
+                            f"max_off_target_microbiome_lysis must be between 0.0 and 0.05 (<= 5% commensal perturbation), got {lysis}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set max_off_target_microbiome_lysis <= 0.01 for clinical safety")
+
+    def _validate_virtual_cell_block(self, block: Any) -> None:
+        """Validate VirtualCellPerturbationContract and PerturbationReadout block (Virtual Biology Initiative)."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "virtual_cell block must be a dictionary or VirtualCellPerturbationContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format virtual_cell as a dictionary with cell_type, target_gene_or_compound, readout, etc.")
+                return
+
+        # Validate cell_type
+        if "cell_type" not in block or not str(block["cell_type"]).strip():
+            self.result.add_error(
+                "virtual_cell block missing required 'cell_type' identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'cell_type: <target_cellular_phenotype>' to virtual_cell block")
+
+        # Validate target_gene_or_compound
+        if "target_gene_or_compound" not in block or not str(block["target_gene_or_compound"]).strip():
+            self.result.add_error(
+                "virtual_cell block missing required 'target_gene_or_compound' perturbation target",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'target_gene_or_compound: <gene_or_small_molecule>' to virtual_cell block")
+
+        # Validate perturbation_type if provided
+        if "perturbation_type" in block:
+            pt = str(block["perturbation_type"]).lower()
+            valid_types = {
+                "crispr_knockout",
+                "crispr_inhibition",
+                "crispr_activation",
+                "small_molecule_inhibition",
+                "base_editing",
+                "prime_editing",
+                "overexpression",
+            }
+            if pt not in valid_types:
+                self.result.add_error(
+                    f"Unknown perturbation_type '{block['perturbation_type']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'crispr_knockout', 'crispr_inhibition', or 'small_molecule_inhibition'")
+
+        # Validate atlas_ref if provided
+        if "atlas_ref" in block:
+            atlas = str(block["atlas_ref"]).lower()
+            valid_atlases = {
+                "tabula_sapiens",
+                "cellxgene",
+                "zebrahub",
+                "human_cell_atlas",
+                "custom_atlas",
+                "shi_brain_perturb_seq",
+                "perturbai_brain_atlas",
+            }
+            if atlas not in valid_atlases:
+                self.result.add_error(
+                    f"Unknown atlas_ref '{block['atlas_ref']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'tabula_sapiens', 'cellxgene', 'zebrahub', or 'shi_brain_perturb_seq'")
+
+        # Validate readout sub-block if present
+        if "readout" in block and block["readout"] is not None:
+            readout = block["readout"]
+            if hasattr(readout, "to_dict"):
+                readout = readout.to_dict()
+            if not isinstance(readout, dict):
+                self.result.add_error(
+                    "readout must be a dictionary or PerturbationReadout",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format readout as a dictionary with min_survival_probability, etc.")
+            else:
+                if "min_survival_probability" in readout:
+                    surv = readout["min_survival_probability"]
+                    if not isinstance(surv, (int, float)) or not (0.0 <= surv <= 1.0):
+                        self.result.add_error(
+                            f"min_survival_probability must be between 0.0 and 1.0, got {surv}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set min_survival_probability to a probability fraction (e.g. 0.85)")
+
+                if "max_transcriptome_cosine_distance" in readout:
+                    dist = readout["max_transcriptome_cosine_distance"]
+                    if not isinstance(dist, (int, float)) or dist < 0.0:
+                        self.result.add_error(
+                            f"max_transcriptome_cosine_distance must be non-negative, got {dist}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set max_transcriptome_cosine_distance to a non-negative number (e.g. 0.15)")
+
+    def _validate_force_field_engine_block(self, block: Any) -> None:
+        """Validate ForceFieldEngineContract and InterEngineEnergyTolerance block (Miletić et al.)."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "force_field_engine block must be a dictionary or ForceFieldEngineContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format force_field_engine as a dictionary with force_field, primary_engine, etc.")
+                return
+
+        # Validate force_field family
+        if "force_field" in block:
+            ff = str(block["force_field"]).lower()
+            valid_ffs = {"amber_ff14sb", "amber_ff19sb", "charmm36m", "opls_aa"}
+            if ff not in valid_ffs:
+                self.result.add_error(
+                    f"Unknown force_field '{block['force_field']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'amber_ff19sb', 'amber_ff14sb', or 'charmm36m'")
+
+        # Validate primary and reference engines
+        for engine_field in ["primary_engine", "reference_engine"]:
+            if engine_field in block:
+                eng = str(block[engine_field]).lower()
+                valid_engines = {"gromacs", "amber", "openmm", "namd"}
+                if eng not in valid_engines:
+                    self.result.add_error(
+                        f"Unknown {engine_field} '{block[engine_field]}'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ErrorSeverity.WARNING,
+                    ).add_fix("Use 'gromacs', 'amber', or 'openmm'")
+
+        # Validate water_model
+        if "water_model" in block:
+            wm = str(block["water_model"]).lower()
+            valid_waters = {"opc", "opc3", "tip3p", "tip4p_ew", "tip4p_d"}
+            if wm not in valid_waters:
+                self.result.add_error(
+                    f"Unknown water_model '{block['water_model']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'opc' (recommended for ff19SB), 'opc3', or 'tip3p'")
+
+        # Validate energy_tolerance sub-block if present
+        if "energy_tolerance" in block and block["energy_tolerance"] is not None:
+            tol = block["energy_tolerance"]
+            if hasattr(tol, "to_dict"):
+                tol = tol.to_dict()
+            if not isinstance(tol, dict):
+                self.result.add_error(
+                    "energy_tolerance must be a dictionary or InterEngineEnergyTolerance",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format energy_tolerance as a dictionary with max_potential_energy_delta_kj_mol, etc.")
+            else:
+                if "max_potential_energy_delta_kj_mol" in tol:
+                    e_tol = tol["max_potential_energy_delta_kj_mol"]
+                    if not isinstance(e_tol, (int, float)) or e_tol <= 0.0:
+                        self.result.add_error(
+                            f"max_potential_energy_delta_kj_mol must be a positive number, got {e_tol}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set max_potential_energy_delta_kj_mol to a positive float (e.g. 1e-6)")
+
+                if "electrostatic_14_scale" in tol:
+                    scale = tol["electrostatic_14_scale"]
+                    if not isinstance(scale, (int, float)) or not (0.0 < scale <= 1.0):
+                        self.result.add_error(
+                            f"electrostatic_14_scale must be in range (0.0, 1.0], got {scale}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set electrostatic_14_scale to 0.8333333 for Amber conventions")
+
+                if "vdw_14_scale" in tol:
+                    vscale = tol["vdw_14_scale"]
+                    if not isinstance(vscale, (int, float)) or not (0.0 < vscale <= 1.0):
+                        self.result.add_error(
+                            f"vdw_14_scale must be in range (0.0, 1.0], got {vscale}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set vdw_14_scale to 0.5 for Amber conventions")
+
+    def _validate_dna_viewer_block(self, block: Any) -> None:
+        """Validate DNAViewerContract block for multi-dimensional genomic visualization."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "dna_viewer block must be a dictionary or DNAViewerContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format dna_viewer as a dictionary with target_gene, active_coordinate, tracks, etc.")
+                return
+
+        # Validate target_gene
+        if "target_gene" in block:
+            gene = block["target_gene"]
+            if not isinstance(gene, str) or not gene.strip():
+                self.result.add_error(
+                    "target_gene must be a non-empty string",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Specify a valid gene symbol such as 'DMD' or 'TP53'")
+
+        # Validate helix_type
+        if "helix_type" in block:
+            ht = str(block["helix_type"]).lower()
+            valid_ht = {"b_dna", "a_dna", "z_dna"}
+            if ht not in valid_ht:
+                self.result.add_error(
+                    f"Unknown helix_type '{block['helix_type']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Use 'b_dna' (default), 'a_dna', or 'z_dna'")
+
+        # Validate active_coordinate
+        if "active_coordinate" in block:
+            coord = block["active_coordinate"]
+            if not isinstance(coord, int) or coord < 1:
+                self.result.add_error(
+                    f"active_coordinate must be a positive 1-based integer, got {coord}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set active_coordinate to a 1-based integer >= 1")
+
+        # Validate raw_sequence if provided directly
+        if "raw_sequence" in block and block["raw_sequence"] is not None:
+            seq = str(block["raw_sequence"]).strip().upper()
+            if not seq:
+                self.result.add_error(
+                    "raw_sequence cannot be empty when provided",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Provide a non-empty DNA sequence string (e.g. 'ATG...')")
+            else:
+                valid_bases = set("ATGCNU")
+                invalid = set(seq) - valid_bases
+                if invalid:
+                    self.result.add_error(
+                        f"raw_sequence contains invalid nucleic acid bases: {sorted(list(invalid))}",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Use standard nucleotide characters: A, T, G, C, N")
+
+        # Validate tracks
+        if "tracks" in block and isinstance(block["tracks"], list):
+            valid_tracks = {
+                "exons",
+                "reading_frames",
+                "clinvar_variants",
+                "epigenetics_5hmc",
+                "crispr_pam_sites",
+                "somatic_repeat_expansion",
+            }
+            for track in block["tracks"]:
+                t_str = str(track).lower()
+                if t_str not in valid_tracks:
+                    self.result.add_error(
+                        f"Unknown viewer track '{track}'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ErrorSeverity.WARNING,
+                    ).add_fix(f"Choose from valid tracks: {sorted(list(valid_tracks))}")
+
+        # Validate exons
+        if "exons" in block and isinstance(block["exons"], list):
+            for i, exon in enumerate(block["exons"]):
+                if isinstance(exon, dict):
+                    start = exon.get("start_coord")
+                    end = exon.get("end_coord")
+                    if (
+                        start is not None
+                        and end is not None
+                        and (not isinstance(start, int) or not isinstance(end, int) or start > end or start < 1)
+                    ):
+                        self.result.add_error(
+                            f"Exon {i + 1} has invalid coordinate range ({start}, {end})",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Ensure start_coord >= 1 and start_coord <= end_coord")
+
+        # Validate variants
+        if "variants" in block and isinstance(block["variants"], list):
+            for i, var in enumerate(block["variants"]):
+                if isinstance(var, dict):
+                    vcoord = var.get("coordinate")
+                    if vcoord is not None and (not isinstance(vcoord, int) or vcoord < 1):
+                        self.result.add_error(
+                            f"Variant {i + 1} coordinate must be >= 1, got {vcoord}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Provide a 1-based positive coordinate for each variant")
+
+    def _validate_perturbation_atlas_block(self, block: Any) -> None:
+        """Validate PerturbationAtlasContract block (OpenAI/Scripps/PerturbAI distributed biological reasoning)."""
+        if not isinstance(block, dict):
+            if hasattr(block, "to_dict"):
+                block = block.to_dict()
+            else:
+                self.result.add_error(
+                    "perturbation_atlas block must be a dictionary or PerturbationAtlasContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format perturbation_atlas as a dictionary with name, perturbation_targets, etc.")
+                return
+
+        # Validate name
+        if "name" not in block or not str(block["name"]).strip():
+            self.result.add_error(
+                "perturbation_atlas block missing required 'name' identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'name: <screen_id>' to perturbation_atlas block")
+
+        # Validate dataset_ref
+        if "dataset_ref" not in block or not str(block["dataset_ref"]).strip():
+            self.result.add_error(
+                "perturbation_atlas block missing required 'dataset_ref' (DOI or benchmark reference)",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'dataset_ref: doi:10.64898/2026.10.15.759436v1' or relevant paper reference")
+
+        # Validate cell_atlas_size if present
+        if "cell_atlas_size" in block and block["cell_atlas_size"] is not None:
+            size = block["cell_atlas_size"]
+            if not isinstance(size, int) or size <= 0:
+                self.result.add_error(
+                    f"cell_atlas_size must be a positive integer, got {size}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Specify cell_atlas_size as a positive integer (e.g. 7700000)")
+
+        # Validate modality if present
+        if "modality" in block and block["modality"] is not None:
+            mod = str(block["modality"]).lower()
+            valid_modalities = {
+                "in_vivo_perturb_seq",
+                "single_cell_crispr",
+                "perturb_cite_seq",
+                "optical_pooled_screen",
+            }
+            if mod not in valid_modalities:
+                self.result.add_error(
+                    f"Unknown atlas modality '{block['modality']}'",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix(f"Choose from valid modalities: {sorted(list(valid_modalities))}")
+
+        # Validate perturbation_targets
+        if "perturbation_targets" not in block or not isinstance(block["perturbation_targets"], list):
+            self.result.add_error(
+                "perturbation_atlas block missing required 'perturbation_targets' list",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add a list of 'perturbation_targets' with gene symbols and pathways")
+        elif len(block["perturbation_targets"]) == 0:
+            self.result.add_error(
+                "perturbation_targets list cannot be empty",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Specify at least one perturbation target with gene: <SYMBOL>")
+        else:
+            for idx, target in enumerate(block["perturbation_targets"]):
+                if hasattr(target, "to_dict"):
+                    target = target.to_dict()
+                if not isinstance(target, dict):
+                    self.result.add_error(
+                        f"Perturbation target {idx + 1} must be a dictionary",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    ).add_fix("Format perturbation target with gene, pathway_focus, etc.")
+                    continue
+
+                if "gene" not in target or not str(target["gene"]).strip():
+                    self.result.add_error(
+                        f"Perturbation target {idx + 1} missing required 'gene' symbol",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    ).add_fix("Provide a valid non-empty gene symbol (e.g. 'DCTN1')")
+
+        # Validate swarm_policy if present
+        if "swarm_policy" in block and block["swarm_policy"] is not None:
+            policy = block["swarm_policy"]
+            if hasattr(policy, "to_dict"):
+                policy = policy.to_dict()
+            if isinstance(policy, dict):
+                if "agent_granularity" in policy and policy["agent_granularity"] is not None:
+                    gran = str(policy["agent_granularity"]).lower()
+                    valid_gran = {"per_perturbation", "per_cell_type", "hierarchical_cluster"}
+                    if gran not in valid_gran:
+                        self.result.add_error(
+                            f"Unknown agent_granularity '{policy['agent_granularity']}' in swarm_policy",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ErrorSeverity.WARNING,
+                        ).add_fix(f"Choose from valid granularities: {sorted(list(valid_gran))}")
+
+                if "min_expert_preference_score" in policy and policy["min_expert_preference_score"] is not None:
+                    score = policy["min_expert_preference_score"]
+                    if not isinstance(score, (int, float)) or not (0.0 <= score <= 1.0):
+                        self.result.add_error(
+                            f"min_expert_preference_score must be a float between 0.0 and 1.0, got {score}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set min_expert_preference_score to a calibrated decimal fraction (e.g. 0.75)")
+
+        # Validate divergence_check / paralog_divergence if present
+        div_check = block.get("divergence_check") or block.get("paralog_divergence")
+        if div_check is not None:
+            if hasattr(div_check, "to_dict"):
+                div_check = div_check.to_dict()
+            if isinstance(div_check, dict):
+                has_pair = "pair" in div_check and isinstance(div_check["pair"], list) and len(div_check["pair"]) >= 2
+                has_pairs = (
+                    "pairs" in div_check and isinstance(div_check["pairs"], list) and len(div_check["pairs"]) > 0
+                )
+                if not has_pair and not has_pairs:
+                    self.result.add_error(
+                        "divergence_check requires at least one homologous gene pair to evaluate opposition",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Specify pair: ['GRIN2A', 'GRIN2B'] or pairs: [['GRIN2A', 'GRIN2B']]")
+
+                if (
+                    "min_transcriptional_divergence" in div_check
+                    and div_check["min_transcriptional_divergence"] is not None
+                ):
+                    div_val = div_check["min_transcriptional_divergence"]
+                    if not isinstance(div_val, (int, float)) or div_val < 0.0:
+                        self.result.add_error(
+                            f"min_transcriptional_divergence must be non-negative, got {div_val}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set min_transcriptional_divergence to a non-negative threshold (e.g. 0.30)")
+
+        # Cross-Contract Synergy: check compatibility with virtual_cell if linked
+        if "virtual_cell_link" in block and block["virtual_cell_link"]:
+            vc_link = str(block["virtual_cell_link"]).strip()
+            # If the current AST also contains a virtual_cell block, cross-validate simulation_id
+            if (
+                hasattr(self, "current_ast")
+                and isinstance(self.current_ast, dict)
+                and "virtual_cell" in self.current_ast
+            ):
+                vc_block = self.current_ast["virtual_cell"]
+                if isinstance(vc_block, dict):
+                    vc_id = str(vc_block.get("simulation_id", vc_block.get("name", ""))).strip()
+                    if vc_id and vc_id != vc_link:
+                        self.result.add_error(
+                            f"virtual_cell_link '{vc_link}' does not match simulation_id '{vc_id}' in document",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ErrorSeverity.WARNING,
+                        ).add_fix(f"Align virtual_cell_link with simulation_id: '{vc_id}'")
+
+    def _validate_biosecurity_watermark_block(self, block: Any) -> None:
+        """Validate biosecurity_watermark / synth_provenance block according to SynthID Bio standards."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "biosecurity_watermark block must be a dictionary or BiosecurityWatermarkContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format biosecurity_watermark as a dictionary with name, target_modality, algorithm, etc.")
+            return
+
+        # Name is required
+        if "name" not in block or not str(block["name"]).strip():
+            self.result.add_error(
+                "biosecurity_watermark block missing required 'name' identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'name: <watermark_id>' to biosecurity_watermark block")
+
+        # Modality check
+        valid_modalities = {"protein", "mrna", "coding_dna", "genomic_dna", "multimodal"}
+        mod = block.get("target_modality", block.get("modality", "protein"))
+        if str(mod).lower() not in valid_modalities:
+            self.result.add_error(
+                f"Unknown target_modality '{mod}' in biosecurity_watermark",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Select a valid modality from: {sorted(list(valid_modalities))}")
+
+        # Algorithm check
+        valid_algorithms = {"synthid_gvalue", "synonymous_codon_hmac", "kmer_pseudorandom"}
+        alg = block.get("algorithm", block.get("watermark_algorithm", "synthid_gvalue"))
+        if str(alg).lower() not in valid_algorithms:
+            self.result.add_error(
+                f"Unknown watermark algorithm '{alg}' in biosecurity_watermark",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Select a valid algorithm from: {sorted(list(valid_algorithms))}")
+
+        # Detection policy validation
+        policy = block.get("detection_policy", block.get("policy"))
+        if policy is not None:
+            if hasattr(policy, "to_dict"):
+                policy = policy.to_dict()
+            if isinstance(policy, dict):
+                if "min_z_score" in policy and policy["min_z_score"] is not None:
+                    z = policy["min_z_score"]
+                    if not isinstance(z, (int, float)) or z <= 0.0:
+                        self.result.add_error(
+                            f"min_z_score must be a positive float, got {z}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set min_z_score to a positive threshold (e.g. 4.5)")
+
+                if "green_list_fraction" in policy and policy["green_list_fraction"] is not None:
+                    gamma = policy["green_list_fraction"]
+                    if not isinstance(gamma, (int, float)) or not (0.10 <= gamma <= 0.90):
+                        self.result.add_error(
+                            f"green_list_fraction must be between 0.10 and 0.90, got {gamma}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set green_list_fraction between 0.10 and 0.90 (standard is 0.50)")
+
+        # Viability guardrails validation
+        guardrails = block.get("viability_guardrails", block.get("guardrails"))
+        if guardrails is not None:
+            if hasattr(guardrails, "to_dict"):
+                guardrails = guardrails.to_dict()
+            if isinstance(guardrails, dict):
+                if "max_delta_delta_g" in guardrails and guardrails["max_delta_delta_g"] is not None:
+                    ddg = guardrails["max_delta_delta_g"]
+                    if not isinstance(ddg, (int, float)) or ddg < 0.0:
+                        self.result.add_error(
+                            f"max_delta_delta_g must be non-negative, got {ddg}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set max_delta_delta_g to a non-negative energy threshold in kcal/mol (e.g. 0.50)")
+
+                if "min_cai_score" in guardrails and guardrails["min_cai_score"] is not None:
+                    cai = guardrails["min_cai_score"]
+                    if not isinstance(cai, (int, float)) or not (0.0 < cai <= 1.0):
+                        self.result.add_error(
+                            f"min_cai_score must be a float between 0.0 and 1.0, got {cai}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Set min_cai_score to an adaptation threshold (e.g. 0.80)")
+
+    def _validate_genomic_llm_block(self, block: Any) -> None:
+        """Validate genomic_llm / carbonx block according to Carbon-X specifications."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "genomic_llm block must be a dictionary or GenomicLLMContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format genomic_llm as a dictionary with name, task_type, etc.")
+            return
+
+        # Name is required
+        if "name" not in block or not str(block["name"]).strip():
+            self.result.add_error(
+                "genomic_llm block missing required 'name' identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'name: <analysis_id>' to genomic_llm block")
+
+        # Task type check
+        valid_tasks = {
+            "variant_effect_reasoning",
+            "locus_annotation",
+            "promoter_generation",
+            "pathway_impact",
+            "chat_with_dna",
+        }
+        task = block.get("task_type", "variant_effect_reasoning")
+        if str(task).lower() not in valid_tasks:
+            self.result.add_error(
+                f"Unknown task_type '{task}' in genomic_llm",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Select a valid task from: {sorted(list(valid_tasks))}")
+
+        # Model checkpoint check
+        valid_models = {"carbonx-14b", "carbonx-base"}
+        mod = block.get("model", "carbonx-14b")
+        if str(mod).lower() not in valid_models:
+            self.result.add_error(
+                f"Unknown model checkpoint '{mod}' in genomic_llm",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Select a valid model checkpoint: {sorted(list(valid_models))}")
+
+        # Context token limit check
+        max_tokens = block.get("max_context_tokens", 40960)
+        if not isinstance(max_tokens, int) or max_tokens <= 0:
+            self.result.add_error(
+                f"max_context_tokens must be a positive integer, got {max_tokens}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set max_context_tokens to a positive integer (up to 40960)")
+        elif max_tokens > 40960:
+            self.result.add_error(
+                f"max_context_tokens ({max_tokens}) exceeds Carbon-X hardware limit of 40,960 tokens",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set max_context_tokens <= 40960 (equivalent to ~245,760 bp of contiguous DNA)")
+
+        # Target locus coordinate validation
+        locus = block.get("target_locus", block.get("locus"))
+        if locus is not None:
+            if hasattr(locus, "to_dict"):
+                locus = locus.to_dict()
+            if isinstance(locus, dict):
+                start = locus.get("start", 0)
+                end = locus.get("end", 0)
+                if isinstance(start, int) and isinstance(end, int):
+                    if start < 0 or end < 0:
+                        self.result.add_error(
+                            f"Locus coordinates cannot be negative (start={start}, end={end})",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Use 0-based or 1-based non-negative genomic coordinates")
+                    elif start > end:
+                        self.result.add_error(
+                            f"Invalid locus coordinates: start ({start}) cannot be greater than end ({end})",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Ensure start <= end in target_locus block")
+
+        # Sequence payload validation
+        seq = block.get("sequence_payload", block.get("sequence"))
+        query = block.get("query")
+        if query is not None:
+            if hasattr(query, "to_dict"):
+                query = query.to_dict()
+            if isinstance(query, dict) and not seq:
+                seq = query.get("sequence")
+
+        if seq is not None and isinstance(seq, str):
+            clean_seq = re.sub(r"\s+", "", seq.upper())
+            # 1. Length check against max context window
+            # 40,960 tokens * 6 bp = 245,760 bp
+            if len(clean_seq) > 245760:
+                self.result.add_error(
+                    f"Sequence length ({len(clean_seq)} bp) exceeds Carbon-X max context window (245,760 bp / 40,960 tokens)",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Truncate or partition sequence into windows <= 245,760 bp")
+            elif len(clean_seq) > 50000:
+                # Warning for sequences exceeding the 50 kb pre-training chunk size
+                self.result.add_error(
+                    f"Sequence length ({len(clean_seq)} bp) exceeds Carbon-X pretraining chunk limit (~50,000 bp). "
+                    "Long-range attention fidelity and reasoning precision may degrade. Chunking into windows <= 50 kb is recommended.",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ErrorSeverity.WARNING,
+                ).add_fix("Partition sequence into locus windows <= 50,000 bp for optimal grounding")
+
+            # 2. Nucleotide validity
+            invalid_nucleotides = set(clean_seq) - {"A", "C", "G", "T", "N"}
+            if invalid_nucleotides:
+                self.result.add_error(
+                    f"Sequence contains invalid IUPAC nucleotide characters: {sorted(list(invalid_nucleotides))}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Ensure sequence contains only standard DNA bases ('A', 'C', 'G', 'T', 'N')")
+
+    def _validate_protok_block(self, block: Any) -> None:
+        """Validate protok / unified_protein_stream block according to ProTok specifications."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "protok block must be a dictionary or ProTokContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format protok as a dictionary with name, conditioning_mode, etc.")
+            return
+
+        # Name is required
+        if "name" not in block or not str(block["name"]).strip():
+            self.result.add_error(
+                "protok block missing required 'name' identifier",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'name: <protok_id>' to protok block")
+
+        # Conditioning mode check
+        valid_modes = {
+            "unconditional",
+            "sequence_to_structure",
+            "structure_to_function",
+            "function_to_all",
+            "sequence_to_function",
+        }
+        mode = block.get("conditioning_mode", "structure_to_function")
+        if str(mode).lower() not in valid_modes:
+            self.result.add_error(
+                f"Unknown conditioning_mode '{mode}' in protok",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Select a valid conditioning mode from: {sorted(list(valid_modes))}")
+
+        # Modality check
+        valid_modalities = {"sequence", "structure", "function", "trimodal"}
+        mod = block.get("target_modality", "trimodal")
+        if str(mod).lower() not in valid_modalities:
+            self.result.add_error(
+                f"Unknown target_modality '{mod}' in protok",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix(f"Select a valid modality from: {sorted(list(valid_modalities))}")
+
+        # Target EC format check
+        target_ec = block.get("target_ec_classification")
+        if target_ec is not None and str(target_ec).strip():
+            ec_str = str(target_ec).strip()
+            if not re.match(r"^(?:EC:)?\d+(\.\d+)*$", ec_str, re.IGNORECASE):
+                self.result.add_error(
+                    f"Invalid Enzyme Commission syntax '{target_ec}' in protok",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Format EC classification as 'EC:X.Y.Z.W' (e.g. 'EC:2.3.2.27')")
+
+        # expected_lddt_min check
+        if "expected_lddt_min" in block and block["expected_lddt_min"] is not None:
+            lddt = block["expected_lddt_min"]
+            if not isinstance(lddt, (int, float)) or not (0.0 <= lddt <= 1.0):
+                self.result.add_error(
+                    f"expected_lddt_min must be a float between 0.0 and 1.0, got {lddt}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set expected_lddt_min to a threshold between 0.0 and 1.0 (e.g. 0.90)")
+
+        # Dropout policy validation
+        dropout_pol = block.get("dropout_policy")
+        allow_missing_str = False
+        if isinstance(dropout_pol, dict):
+            rate = dropout_pol.get("dropout_rate")
+            if rate is not None and (not isinstance(rate, (int, float)) or not (0.0 <= rate <= 1.0)):
+                self.result.add_error(
+                    f"dropout_rate must be a float between 0.0 and 1.0, got {rate}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set dropout_rate between 0.0 and 1.0 (e.g. 0.15)")
+            allow_missing_str = bool(dropout_pol.get("allow_missing_structure", False))
+
+        # Residue stream sequence alignment check
+        seq_payload = block.get("sequence_payload")
+        residue_stream = block.get("residue_stream", [])
+        if isinstance(residue_stream, list) and isinstance(seq_payload, str) and seq_payload.strip():
+            for res in residue_stream:
+                if hasattr(res, "to_dict"):
+                    res = res.to_dict()
+                if not isinstance(res, dict):
+                    continue
+                pos = res.get("pos")
+                aa = res.get("amino_acid")
+                if isinstance(pos, int) and 1 <= pos <= len(seq_payload) and isinstance(aa, str) and aa:
+                    expected_aa = seq_payload[pos - 1]
+                    if aa != expected_aa:
+                        self.result.add_error(
+                            f"Residue mismatch at pos {pos}: token has '{aa}' but sequence_payload has '{expected_aa}'",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix(f"Align residue token amino_acid with sequence_payload ('{expected_aa}')")
+
+        # Residue stream validation
+        if isinstance(residue_stream, list):
+            for i, res in enumerate(residue_stream):
+                if hasattr(res, "to_dict"):
+                    res = res.to_dict()
+                if not isinstance(res, dict):
+                    continue
+
+                pos = res.get("pos", i + 1)
+                if not isinstance(pos, int) or pos <= 0:
+                    self.result.add_error(
+                        f"Residue token position must be a positive integer, got {pos}",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix(f"Set pos to {i + 1}")
+
+                # Dihedral angle checks
+                for angle_name in ("dihedral_phi", "dihedral_psi"):
+                    angle = res.get(angle_name)
+                    if angle is not None and (not isinstance(angle, (int, float)) or not (-180.0 <= angle <= 180.0)):
+                        self.result.add_error(
+                            f"{angle_name} must be within [-180.0, 180.0] degrees, got {angle} at pos {pos}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Normalize dihedral angles to [-180.0, 180.0]")
+
+                # Codebook range checks
+                str_code = res.get("structure_code")
+                if str_code is not None and isinstance(str_code, int):
+                    if not (0 <= str_code <= 511):
+                        self.result.add_error(
+                            f"structure_code ({str_code}) outside ProTok codebook range [0..511] at pos {pos}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Ensure structure_code is an integer in [0..511]")
+                    elif not allow_missing_str and str_code == 511:
+                        self.result.add_error(
+                            f"structure_code is masked (511) at pos {pos}, but dropout_policy forbids missing structure (allow_missing_structure=false)",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Provide valid structure_code or set allow_missing_structure: true")
+
+                fun_code = res.get("function_code")
+                if fun_code is not None and isinstance(fun_code, int) and not (0 <= fun_code <= 255):
+                    self.result.add_error(
+                        f"function_code ({fun_code}) outside ProTok codebook range [0..255] at pos {pos}",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Ensure function_code is an integer in [0..255]")
+
+    def _validate_dna_dynamics_block(self, block: Any) -> None:
+        """Validate dna_dynamics / breathing block according to mesoscopic PBD specifications."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "dna_dynamics block must be a dictionary or DNADynamicsContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format dna_dynamics as a dictionary with sequence, temperature_kelvin, etc.")
+            return
+
+        # Sequence is required
+        seq = block.get("sequence") or block.get("dna_sequence")
+        if not seq or not str(seq).strip():
+            self.result.add_error(
+                "dna_dynamics block missing required 'sequence' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add 'sequence: <IUPAC_DNA_STRING>' to dna_dynamics block")
+            return
+
+        clean_seq = re.sub(r"\s+", "", str(seq).upper())
+        invalid_chars = set(clean_seq) - {"A", "C", "G", "T", "N"}
+        if invalid_chars:
+            self.result.add_error(
+                f"Invalid nucleotide characters in dna_dynamics sequence: {sorted(list(invalid_chars))}",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Ensure sequence contains only standard IUPAC DNA characters (A, C, G, T, N)")
+
+        # Temperature check (Kelvin)
+        temp_k = block.get("temperature_kelvin")
+        if temp_k is not None and (not isinstance(temp_k, (int, float)) or not (270.0 <= float(temp_k) <= 373.15)):
+            self.result.add_error(
+                f"temperature_kelvin ({temp_k}) outside biophysical range [270.0, 373.15] K in dna_dynamics",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set temperature_kelvin between 270.0 (near freezing) and 373.15 (boiling)")
+
+        # Displacement threshold check (Angstroms)
+        thresh = block.get("displacement_threshold_angstrom")
+        if thresh is not None and (not isinstance(thresh, (int, float)) or not (0.5 <= float(thresh) <= 5.0)):
+            self.result.add_error(
+                f"displacement_threshold_angstrom ({thresh}) outside valid range [0.5, 5.0] A in dna_dynamics",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set displacement_threshold_angstrom between 0.5 and 5.0 Angstroms (default 1.5)")
+
+        # Model check
+        model = block.get("model")
+        if model is not None:
+            valid_models = {"pbd_mesoscopic", "epbd_stochastic", "thermodynamic_melting"}
+            if str(model).lower() not in valid_models:
+                self.result.add_error(
+                    f"Unknown model '{model}' in dna_dynamics",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix(f"Select a valid model from: {sorted(list(valid_models))}")
+
+        # TF coupling check
+        tf_coupling = block.get("target_tf_coupling")
+        if tf_coupling is not None and isinstance(tf_coupling, dict):
+            tf_name = tf_coupling.get("tf_name")
+            if not tf_name or not str(tf_name).strip():
+                self.result.add_error(
+                    "target_tf_coupling missing required 'tf_name' in dna_dynamics",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix("Specify 'tf_name: <TF_IDENTIFIER>' in target_tf_coupling")
+
+            mode = tf_coupling.get("coupling_mode")
+            if mode is not None:
+                valid_modes = {"rigid_shape_dominated", "breathing_assisted", "bifunctional_balanced"}
+                if str(mode).lower() not in valid_modes:
+                    self.result.add_error(
+                        f"Unknown coupling_mode '{mode}' in target_tf_coupling",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix(f"Select a valid coupling_mode from: {sorted(list(valid_modes))}")
+
+        # Variant delta check
+        v_delta = block.get("variant_delta")
+        if v_delta is not None and isinstance(v_delta, dict):
+            pos = v_delta.get("pos")
+            ref = v_delta.get("ref")
+            alt = v_delta.get("alt")
+            if pos is None or ref is None or alt is None:
+                self.result.add_error(
+                    "variant_delta requires 'pos', 'ref', and 'alt' fields in dna_dynamics",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix("Format variant_delta as {'pos': <int>, 'ref': <str>, 'alt': <str>}")
+            else:
+                try:
+                    p_int = int(pos)
+                    if not (0 <= p_int < len(clean_seq)):
+                        self.result.add_error(
+                            f"variant_delta pos ({p_int}) out of sequence bounds [0, {len(clean_seq) - 1}] in dna_dynamics",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix(f"Ensure variant_delta pos is within [0, {len(clean_seq) - 1}]")
+                    elif clean_seq and clean_seq[p_int] != str(ref).upper().strip():
+                        self.result.add_error(
+                            f"variant_delta ref '{ref}' does not match sequence base '{clean_seq[p_int]}' at pos {p_int}",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix(f"Update ref to '{clean_seq[p_int]}' or correct variant coordinate")
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        f"variant_delta pos '{pos}' must be an integer",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
+
+    def _validate_single_cell_regulation_block(self, block: Any) -> None:
+        """Validate single_cell_regulation / sc_regulation / cellular_context block (TenK10K specifications)."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "single_cell_regulation block must be a dictionary or SingleCellRegulatoryContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format single_cell_regulation as a dictionary with target_gene, variant, cell_type, etc.")
+            return
+
+        # target_gene is required
+        gene = block.get("target_gene")
+        if not gene or not str(gene).strip():
+            self.result.add_error(
+                "single_cell_regulation block missing required 'target_gene' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Specify 'target_gene: <GENE_SYMBOL>' in single_cell_regulation block")
+
+        # variant is required
+        variant = block.get("variant")
+        if not variant or not str(variant).strip():
+            self.result.add_error(
+                "single_cell_regulation block missing required 'variant' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Specify 'variant: <chr:pos:ref>alt | rsID>' in single_cell_regulation block")
+
+        # cell_type validation
+        cell_type = block.get("cell_type")
+        if not cell_type or not str(cell_type).strip():
+            self.result.add_error(
+                "single_cell_regulation block missing required 'cell_type' field",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix(
+                "Specify 'cell_type: CL:XXXXXXX' or a valid TenK10K cell type (e.g. 'NK_CD56_DIM', 'MONOCYTE_CLASSICAL')"
+            )
+        else:
+            ct_str = str(cell_type).strip()
+            # Must be either valid CL CURIE (e.g. CL:0000938) or non-empty identifier
+            if ct_str.startswith("CL:") and not re.match(r"^CL:\d{7}$", ct_str):
+                self.result.add_error(
+                    f"Malformed Cell Ontology CURIE '{ct_str}' in single_cell_regulation",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Use canonical 7-digit Cell Ontology format, e.g. 'CL:0000938'")
+
+        # distance_to_tss_bp check
+        dist = block.get("distance_to_tss_bp")
+        if dist is not None:
+            try:
+                dist_val = int(dist)
+                if dist_val < 0:
+                    self.result.add_error(
+                        f"distance_to_tss_bp ({dist_val}) cannot be negative in single_cell_regulation",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Ensure distance_to_tss_bp is a non-negative integer")
+            except (ValueError, TypeError):
+                self.result.add_error(
+                    f"distance_to_tss_bp '{dist}' must be an integer",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                )
+
+        # state_interaction check
+        interaction = block.get("state_interaction")
+        if interaction is not None and isinstance(interaction, dict):
+            s_range = interaction.get("state_range")
+            if s_range is not None and (
+                not isinstance(s_range, (list, tuple))
+                or len(s_range) != 2
+                or not (0.0 <= float(s_range[0]) <= float(s_range[1]) <= 1.0)
+            ):
+                self.result.add_error(
+                    f"state_range '{s_range}' must be a 2-tuple [min, max] bounded in [0.0, 1.0]",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set state_range within [0.0, 1.0], e.g. [0.0, 1.0] or [0.2, 0.8]")
+
+            p_val = interaction.get("p_value_interaction")
+            if p_val is not None:
+                try:
+                    p_num = float(p_val)
+                    if not (0.0 < p_num <= 1.0):
+                        self.result.add_error(
+                            f"p_value_interaction ({p_num}) outside (0.0, 1.0] in state_interaction",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        f"p_value_interaction '{p_val}' must be a float",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
+
+        # abundance_qtl check
+        abundance = block.get("abundance_qtl")
+        if abundance is not None and isinstance(abundance, dict):
+            delta = abundance.get("effect_size_delta")
+            if delta is not None:
+                try:
+                    d_val = float(delta)
+                    if not (-1.0 <= d_val <= 1.0):
+                        self.result.add_error(
+                            f"abundance_qtl effect_size_delta ({d_val}) must be in [-1.0, 1.0]",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Specify fractional shift delta between -1.0 (total depletion) and +1.0 (doubling)")
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        f"abundance_qtl effect_size_delta '{delta}' must be a float",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
+
+            base_frac = abundance.get("baseline_fraction")
+            if base_frac is not None:
+                try:
+                    bf_val = float(base_frac)
+                    if not (0.0 <= bf_val <= 1.0):
+                        self.result.add_error(
+                            f"abundance_qtl baseline_fraction ({bf_val}) must be in [0.0, 1.0]",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        f"abundance_qtl baseline_fraction '{base_frac}' must be a float",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
+
+        # colocalization_gate check
+        coloc = block.get("colocalization_gate")
+        if coloc is not None and isinstance(coloc, dict):
+            pp4 = coloc.get("posterior_prob_h4")
+            if pp4 is not None:
+                try:
+                    pp4_val = float(pp4)
+                    if not (0.0 <= pp4_val <= 1.0):
+                        self.result.add_error(
+                            f"colocalization_gate posterior_prob_h4 ({pp4_val}) must be in [0.0, 1.0]",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        f"colocalization_gate posterior_prob_h4 '{pp4}' must be a float",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
+
+            thresh = coloc.get("pp4_threshold")
+            if thresh is not None:
+                try:
+                    th_val = float(thresh)
+                    if not (0.0 <= th_val <= 1.0):
+                        self.result.add_error(
+                            f"colocalization_gate pp4_threshold ({th_val}) must be in [0.0, 1.0]",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        f"colocalization_gate pp4_threshold '{thresh}' must be a float",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    )
+
+        # tandem_repeat check
+        tr = block.get("tandem_repeat")
+        if tr is not None and isinstance(tr, dict):
+            motif = tr.get("repeat_unit_motif")
+            if motif is not None:
+                clean_motif = re.sub(r"\s+", "", str(motif).upper())
+                invalid_chars = set(clean_motif) - {"A", "C", "G", "T"}
+                if invalid_chars:
+                    self.result.add_error(
+                        f"tandem_repeat repeat_unit_motif '{motif}' contains non-DNA characters: {sorted(list(invalid_chars))}",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Ensure repeat_unit_motif only contains standard DNA nucleotides: A, C, G, T")
+
+    def _validate_verifiable_dna_block(self, block: Any) -> None:
+        """Validate verifiable_dna / rlvr_verifier block (FineDNA RLVR specifications)."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "verifiable_dna block must be a dictionary or VerifiableRewardContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format verifiable_dna as a dictionary with task_id, domain, etc.")
+            return
+
+        task_id = block.get("task_id")
+        if not task_id or not str(task_id).strip():
+            self.result.add_error(
+                "verifiable_dna block must define a non-empty 'task_id'",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Provide a unique identifier string for task_id")
+
+        domain = block.get("domain")
+        if domain:
+            from geneforgelang.core.gftypes import RLVRTaskDomain
+
+            valid_domains = {d.value for d in RLVRTaskDomain}
+            if isinstance(domain, str) and domain.lower() not in valid_domains:
+                self.result.add_error(
+                    f"Invalid domain '{domain}' in verifiable_dna block. Must be one of {valid_domains}",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Use a valid RLVRTaskDomain")
+
+        loc = block.get("localization_contract")
+        if loc and isinstance(loc, dict) and not loc.get("query_pattern"):
+            self.result.add_error(
+                "localization_contract must define 'query_pattern'",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Provide query_pattern sequence in localization_contract")
+
+        comp = block.get("computation_contract")
+        if comp and isinstance(comp, dict) and not comp.get("input_dna"):
+            self.result.add_error(
+                "computation_contract must define 'input_dna'",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Provide input_dna sequence in computation_contract")
+
+        pb = block.get("permutation_baseline")
+        if pb is not None:
+            self._validate_permutation_baseline_block(pb)
+
+    def _validate_autonomous_execution_block(self, block: Any) -> None:
+        """Validate autonomous_execution / wet_lab_dispatch / laboratory_protocol block (AutoDNA specifications)."""
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "autonomous_execution block must be a dictionary or AutonomousExecutionContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format autonomous_execution as a dictionary with protocol_id, target_sequence, steps, etc.")
+            return
+
+        protocol_id = block.get("protocol_id", block.get("name"))
+        if not protocol_id or not str(protocol_id).strip():
+            self.result.add_error(
+                "autonomous_execution block must define a non-empty 'protocol_id'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide a unique identifier string for protocol_id")
+
+        seq = block.get("target_sequence")
+        if not seq or not str(seq).strip():
+            self.result.add_error(
+                "autonomous_execution block must define a non-empty 'target_sequence'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide target biomolecular sequence (DNA/RNA) in target_sequence")
+        else:
+            clean_seq = str(seq).upper().replace(" ", "").replace("\n", "")
+            invalid_chars = set(clean_seq) - set("ACGTURYKMSWBDHVN")
+            if invalid_chars:
+                self.result.add_error(
+                    f"target_sequence contains invalid non-IUPAC characters: {sorted(list(invalid_chars))}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Ensure target_sequence contains valid IUPAC nucleotide characters")
+
+        # Synthesizability gate validation
+        synth = block.get("synthesizability")
+        if synth and isinstance(synth, dict):
+            chem = synth.get("chemistry")
+            if chem:
+                from geneforgelang.core.gftypes import SynthesisChemistry
+
+                valid_chemistries = {c.value for c in SynthesisChemistry}
+                if str(chem).lower() not in valid_chemistries:
+                    self.result.add_error(
+                        f"Invalid synthesis chemistry '{chem}' in synthesizability gate. Must be one of {valid_chemistries}",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    ).add_fix("Select a valid SynthesisChemistry (e.g. 'enzymatic_tdt', 'chemical_phosphoramidite')")
+
+            min_gc = synth.get("min_gc_content", 0.40)
+            max_gc = synth.get("max_gc_content", 0.60)
+            try:
+                min_gc_val = float(min_gc)
+                max_gc_val = float(max_gc)
+                if not (0.0 <= min_gc_val <= max_gc_val <= 1.0):
+                    self.result.add_error(
+                        f"Invalid GC content bounds [{min_gc_val}, {max_gc_val}]. Must satisfy 0.0 <= min <= max <= 1.0",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Set valid GC content bounds in range [0.0, 1.0]")
+            except (ValueError, TypeError):
+                self.result.add_error(
+                    "GC content bounds must be numeric floats between 0.0 and 1.0",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                )
+
+            max_homopolymer = synth.get("max_homopolymer", 4)
+            try:
+                if int(max_homopolymer) < 1:
+                    self.result.add_error(
+                        f"max_homopolymer ({max_homopolymer}) must be >= 1",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Set max_homopolymer to an integer >= 1 (default 4 for enzymatic TdT)")
+            except (ValueError, TypeError):
+                self.result.add_error(
+                    "max_homopolymer must be an integer",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                )
+
+        # Biosecurity validation
+        bio = block.get("biosecurity")
+        if bio and isinstance(bio, dict):
+            risk_tier = bio.get("risk_tier")
+            if risk_tier:
+                from geneforgelang.core.gftypes import BiosecurityRiskTier
+
+                valid_tiers = {t.value for t in BiosecurityRiskTier}
+                if str(risk_tier).lower() not in valid_tiers:
+                    self.result.add_error(
+                        f"Invalid biosecurity risk_tier '{risk_tier}'. Must be one of {valid_tiers}",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    ).add_fix("Select a valid BiosecurityRiskTier (e.g. 'benign_research', 'prohibited_toxin')")
+
+            if bio.get("screening_passed") is False:
+                self.result.add_error(
+                    "Biosecurity screening failed: target sequence matches regulated dual-use pathogen or toxin signature",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Review sequence against biosecurity select agent guidelines before wet-lab dispatch")
+
+        # Steps validation
+        steps = block.get("steps")
+        if steps is not None:
+            if not isinstance(steps, list):
+                self.result.add_error(
+                    "steps must be a list of WetLabStepContract objects or dictionaries",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format steps as a YAML list of instrument operations")
+            elif len(steps) == 0:
+                self.result.add_error(
+                    "autonomous_execution protocol must define at least one hardware step in 'steps'",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix("Add at least one instrument operation (e.g. synthesis, thermocycling, sequencing)")
+            else:
+                from geneforgelang.core.gftypes import WetLabInstrumentType
+
+                valid_instruments = {i.value for i in WetLabInstrumentType}
+                for idx, step in enumerate(steps):
+                    if isinstance(step, dict):
+                        inst = step.get("instrument")
+                        if not inst or str(inst).lower() not in valid_instruments:
+                            self.result.add_error(
+                                f"Invalid instrument '{inst}' in step {idx + 1}. Must be one of {valid_instruments}",
+                                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                            ).add_fix("Select a valid WetLabInstrumentType")
+                        op = step.get("operation")
+                        if not op or not str(op).strip():
+                            self.result.add_error(
+                                f"Step {idx + 1} must define a non-empty 'operation'",
+                                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                            ).add_fix(f"Specify operation name for step {idx + 1}")
+
+        # Telemetry validation
+        telem = block.get("telemetry")
+        if telem and isinstance(telem, dict):
+            readout = telem.get("readout_type")
+            if readout:
+                from geneforgelang.core.gftypes import TelemetryReadoutType
+
+                valid_readouts = {r.value for r in TelemetryReadoutType}
+                if str(readout).lower() not in valid_readouts:
+                    self.result.add_error(
+                        f"Invalid telemetry readout_type '{readout}'. Must be one of {valid_readouts}",
+                        ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                    ).add_fix("Select a valid TelemetryReadoutType")
+
+            conc = telem.get("concordance_rate")
+            if conc is not None:
+                try:
+                    conc_val = float(conc)
+                    if not (0.0 <= conc_val <= 1.0):
+                        self.result.add_error(
+                            f"concordance_rate ({conc_val}) must be in range [0.0, 1.0]",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Provide concordance_rate as a float between 0.0 and 1.0")
+                except (ValueError, TypeError):
+                    self.result.add_error(
+                        "concordance_rate must be a numeric float",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    )
+
+    def _validate_bioc_reference_block(self, block: Any) -> None:
+        """Validate bioc_reference / lakehouse_reference / bioc_on_ice block.
+
+        Grounded in Bioconductor on Ice (Sean Davis, 2026):
+        - Validates release_id pinning (e.g. 'latest' or 'YYYY-MM-DD').
+        - Validates genome_build against ReferenceGenomeBuild.
+        - Validates query_backend against LakehouseQueryBackend.
+        - Validates lakehouse queries (schemas, tables, columns, limits).
+        """
+        import re
+
+        from geneforgelang.core.gftypes import (
+            BiocSchemaType,
+            LakehouseQueryBackend,
+            ReferenceGenomeBuild,
+        )
+
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "bioc_reference block must be a dictionary or BiocIceContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format bioc_reference as a dictionary with release_id, genome_build, queries, etc.")
+            return
+
+        # 1. release_id validation
+        release_id = block.get("release_id", "latest")
+        if not release_id or not isinstance(release_id, str):
+            self.result.add_error(
+                "bioc_reference must define a non-empty string for 'release_id'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Specify 'release_id: latest' or a dated release such as '2026-11-08'")
+        else:
+            rel_str = release_id.strip()
+            if rel_str.lower() != "latest" and not re.match(r"^(v)?\d{4}-\d{2}(-\d{2})?$", rel_str):
+                self.result.add_error(
+                    f"Invalid release_id '{release_id}'. Must be 'latest' or a date format YYYY-MM-DD",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Use 'latest' or a valid frozen date snapshot format like '2026-11-08'")
+
+        # 2. genome_build validation
+        genome_build = block.get("genome_build")
+        if genome_build is not None:
+            build_str = str(genome_build.value if hasattr(genome_build, "value") else genome_build).strip().lower()
+            valid_builds = {b.value.lower(): b for b in ReferenceGenomeBuild}
+            if build_str not in valid_builds:
+                self.result.add_error(
+                    f"Invalid genome_build '{genome_build}'. Supported builds: {[b.value for b in ReferenceGenomeBuild]}",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Set genome_build to 'GRCh38', 'GRCh37', 'T2T-CHM13', or 'GRCm39'")
+
+        # 3. query_backend validation
+        backend = block.get("query_backend")
+        if backend is not None:
+            backend_str = str(backend.value if hasattr(backend, "value") else backend).strip().lower()
+            valid_backends = {b.value.lower(): b for b in LakehouseQueryBackend}
+            backend_aliases = {
+                "duckdb": "duckdb_httpfs",
+                "arrow": "arrow_streaming",
+                "polars": "arrow_streaming",
+                "manifest": "manifest_index",
+                "index": "manifest_index",
+            }
+            if backend_str not in valid_backends and backend_str not in backend_aliases:
+                self.result.add_error(
+                    f"Invalid query_backend '{backend}'. Supported backends: {[b.value for b in LakehouseQueryBackend]} (or aliases 'duckdb', 'arrow')",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Set query_backend to 'duckdb_httpfs' (or 'duckdb'), 'arrow_streaming', or 'manifest_index'")
+
+        # 4. base_url validation
+        base_url = block.get("base_url")
+        if base_url is not None and (
+            not isinstance(base_url, str)
+            or not any(base_url.startswith(proto) for proto in ("http://", "https://", "s3://", "gs://"))
+        ):
+            self.result.add_error(
+                f"Invalid base_url '{base_url}'. Must start with http://, https://, s3://, or gs://",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Provide a valid base URL for the lakehouse bucket")
+
+        # 5. queries validation
+        queries = block.get("queries")
+        if queries is not None:
+            if not isinstance(queries, list):
+                self.result.add_error(
+                    "queries in bioc_reference must be a list of LakehouseQueryContract objects or dictionaries",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Format queries as a YAML list of query specifications")
+            else:
+                valid_schemas = {s.value.lower(): s for s in BiocSchemaType}
+                for idx, q in enumerate(queries):
+                    if hasattr(q, "to_dict"):
+                        q = q.to_dict()
+                    if not isinstance(q, dict):
+                        self.result.add_error(
+                            f"Query at index {idx} must be a dictionary",
+                            ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                        )
+                        continue
+
+                    # Validate schema
+                    schema = q.get("schema")
+                    if schema is not None:
+                        schema_str = str(schema.value if hasattr(schema, "value") else schema).strip().lower()
+                        if schema_str not in valid_schemas:
+                            self.result.add_error(
+                                f"Invalid schema '{schema}' in query {idx + 1}. Must be one of {[s.value for s in BiocSchemaType]}",
+                                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                            ).add_fix(
+                                "Use one of 'annotation', 'clinical', 'ontology', 'provenance', 'raw', 'reference', 'resource'"
+                            )
+
+                    # Validate table
+                    table = q.get("table")
+                    if not table or not str(table).strip():
+                        self.result.add_error(
+                            f"Query {idx + 1} must specify a non-empty 'table' name",
+                            ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                        ).add_fix("Specify table name (e.g. 'gene', 'transcript', 'terms')")
+
+                    # Validate limit
+                    limit = q.get("limit")
+                    if limit is not None:
+                        try:
+                            lim_val = int(limit)
+                            if lim_val < 1:
+                                self.result.add_error(
+                                    f"limit ({lim_val}) in query {idx + 1} must be an integer >= 1",
+                                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                                ).add_fix("Set limit to an integer >= 1")
+                        except (ValueError, TypeError):
+                            self.result.add_error(
+                                f"limit in query {idx + 1} must be an integer",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            )
+
+                    # Validate columns
+                    cols = q.get("columns")
+                    if cols is not None and not isinstance(cols, list):
+                        self.result.add_error(
+                            f"columns in query {idx + 1} must be a list of column names",
+                            ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                        )
+
+        # 6. pinned_tables validation
+        pinned_tables = block.get("pinned_tables")
+        if pinned_tables is not None and not isinstance(pinned_tables, list):
+            self.result.add_error(
+                "pinned_tables must be a list of table identifiers (e.g. 'annotation.gene')",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            )
+
+        self._store_block_contract("bioc_reference", block)
+
+    def _validate_alphagenome2_block(self, block: Any) -> None:
+        """Validate alphagenome2 / ag2_locus / cellular_regulation_1mb block.
+
+        Grounded in Google DeepMind AlphaGenome 2 (Gayoso, Mottram et al., November 2026):
+        - Enforces 1 Mb maximum sequence context window (GRCh38).
+        - Validates dedicated cellular state conditioning (Cell Ontology CL: CURIE, continuous axis, or scRNA-seq profile).
+        - Validates cross-modality epigenetic targets (chromatin accessibility, 5mC DNA methylation, histone marks).
+        - Validates distal enhancer-to-gene mapping (distance <= 1 Mb, contact probability in [0, 1]).
+        - Validates 1-based IUPAC variant format (chrN:pos:ref>alt).
+        """
+        import re
+
+        from geneforgelang.core.gftypes import (
+            AG2ConditioningMode,
+            AG2EpigeneticModality,
+            ReferenceGenomeBuild,
+        )
+
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "alphagenome2 block must be a dictionary or AlphaGenome2Contract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format alphagenome2 as a dictionary with contract_id, locus_1mb, cellular_context, etc.")
+            return
+
+        # 1. contract_id validation
+        contract_id = block.get("contract_id", block.get("name"))
+        if not contract_id or not str(contract_id).strip():
+            self.result.add_error(
+                "alphagenome2 block must define a non-empty 'contract_id'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide a unique identifier string for contract_id")
+
+        # 2. locus_window_1mb validation
+        locus = block.get("locus_window_1mb", block.get("locus_1mb", block.get("locus")))
+        if not locus or not str(locus).strip():
+            self.result.add_error(
+                "alphagenome2 block must define a 1 Mb sequence window in 'locus_window_1mb' (or 'locus_1mb')",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Specify genomic locus window in 'chrN:start-end' format (e.g. 'chr14:24100000-25100000')")
+        else:
+            clean_locus = str(locus).strip()
+            m = re.match(r"^(chr[0-9XYM]+):(\d+)-(\d+)$", clean_locus, re.IGNORECASE)
+            if not m:
+                self.result.add_error(
+                    f"Invalid locus format '{locus}'. Expected 'chrN:start-end' (e.g. 'chr14:24100000-25100000')",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Format locus as 'chrN:start-end'")
+            else:
+                start_bp = int(m.group(2))
+                end_bp = int(m.group(3))
+                if start_bp >= end_bp:
+                    self.result.add_error(
+                        f"Start coordinate ({start_bp}) must be strictly less than end coordinate ({end_bp}) in locus_window_1mb",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    )
+                else:
+                    span_bp = end_bp - start_bp
+                    if span_bp > 1_000_000:
+                        self.result.add_error(
+                            f"locus_window_1mb span ({span_bp:,} bp) exceeds maximum AlphaGenome 2 window limit of 1,000,000 bp (1 Mb)",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        ).add_fix("Limit genomic locus window to at most 1,000,000 bp (1 Mb)")
+
+        # 3. genome_build validation
+        genome_build = block.get("genome_build")
+        if genome_build is not None:
+            build_str = str(genome_build.value if hasattr(genome_build, "value") else genome_build).strip().lower()
+            valid_builds = {b.value.lower(): b for b in ReferenceGenomeBuild}
+            if build_str not in valid_builds:
+                self.result.add_error(
+                    f"Invalid genome_build '{genome_build}' in alphagenome2 block. Supported builds: {[b.value for b in ReferenceGenomeBuild]}",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Set genome_build to 'GRCh38', 'GRCh37', or 'T2T-CHM13'")
+
+        # 4. cellular_context validation
+        cell_ctx = block.get("cellular_context")
+        if cell_ctx is not None:
+            if hasattr(cell_ctx, "to_dict"):
+                cell_ctx = cell_ctx.to_dict()
+            if not isinstance(cell_ctx, dict):
+                self.result.add_error(
+                    "cellular_context must be a dictionary or AG2CellularContextContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                )
+            else:
+                cell_type = str(cell_ctx.get("cell_type_curie", cell_ctx.get("cell_type", ""))).strip()
+                if cell_type and not re.match(r"^[A-Za-z0-9_-]+:[A-Za-z0-9_.-]+$", cell_type):
+                    self.result.add_error(
+                        f"Invalid cell_type CURIE '{cell_type}' in cellular_context. Expected format 'CL:XXXXXXX' or 'UBERON:XXXXXXX'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix("Provide a valid Cell Ontology or Uberon CURIE (e.g. 'CL:0000938')")
+
+                mode = cell_ctx.get("conditioning_mode")
+                if mode is not None:
+                    mode_str = str(mode.value if hasattr(mode, "value") else mode).strip().lower()
+                    valid_modes = {m.value.lower() for m in AG2ConditioningMode}
+                    if mode_str not in valid_modes:
+                        self.result.add_error(
+                            f"Invalid conditioning_mode '{mode}' in cellular_context. Supported modes: {[m.value for m in AG2ConditioningMode]}",
+                            ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                        )
+
+                state_val = cell_ctx.get("continuous_state_value", cell_ctx.get("state_value"))
+                if state_val is not None:
+                    try:
+                        s_float = float(state_val)
+                        if not (0.0 <= s_float <= 1.0):
+                            self.result.add_error(
+                                f"continuous_state_value ({s_float}) must be in range [0.0, 1.0]",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            ).add_fix("Set continuous_state_value to a float between 0.0 and 1.0")
+                    except (ValueError, TypeError):
+                        self.result.add_error(
+                            "continuous_state_value must be a numeric float",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+
+        # 5. impute_modalities validation
+        modalities = block.get("impute_modalities", block.get("modalities"))
+        if modalities is not None:
+            if not isinstance(modalities, list):
+                self.result.add_error(
+                    "impute_modalities must be a list of epigenetic modalities",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                )
+            else:
+                valid_mods = {m.value.lower() for m in AG2EpigeneticModality}
+                for idx, mod in enumerate(modalities):
+                    mod_str = str(mod.value if hasattr(mod, "value") else mod).strip().lower()
+                    if mod_str not in valid_mods:
+                        self.result.add_error(
+                            f"Invalid modality '{mod}' at index {idx}. Supported modalities: {[m.value for m in AG2EpigeneticModality]}",
+                            ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                        ).add_fix(
+                            "Select valid AG2 modalities (e.g. 'chromatin_accessibility', 'dna_methylation_5mc', 'histone_h3k27ac')"
+                        )
+
+        # 6. variant format validation
+        variant = block.get("variant")
+        if variant is not None and str(variant).strip():
+            var_str = str(variant).strip()
+            if not re.match(r"^chr[0-9XYM]+:\d+:[ACGTURYKMSWBDHVN]+>[ACGTURYKMSWBDHVN]+$", var_str, re.IGNORECASE):
+                self.result.add_error(
+                    f"Invalid variant format '{var_str}' in alphagenome2 block. Expected IUPAC format 'chrN:pos:ref>alt' (e.g. 'chr14:24598100:C>T')",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Format variant as 'chrN:pos:ref>alt'")
+
+        # 7. enhancer_gene_linking validation
+        eg_link = block.get("enhancer_gene_linking", block.get("enhancer_gene_link"))
+        if eg_link is not None:
+            if hasattr(eg_link, "to_dict"):
+                eg_link = eg_link.to_dict()
+            if not isinstance(eg_link, dict):
+                self.result.add_error(
+                    "enhancer_gene_linking must be a dictionary or AG2EnhancerGeneLinkContract",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                )
+            else:
+                target_gene = eg_link.get("target_gene_id", eg_link.get("target_promoter", eg_link.get("target_gene")))
+                if not target_gene or not str(target_gene).strip():
+                    self.result.add_error(
+                        "enhancer_gene_linking must specify a non-empty 'target_gene_id' (or 'target_promoter')",
+                        ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                    ).add_fix("Provide Ensembl ID or gene symbol in target_gene_id")
+
+                max_dist = eg_link.get("max_distance_bp", eg_link.get("max_interaction_distance_bp"))
+                if max_dist is not None:
+                    try:
+                        dist_val = int(max_dist)
+                        if dist_val < 0 or dist_val > 1_000_000:
+                            self.result.add_error(
+                                f"max_distance_bp ({dist_val:,} bp) must be between 0 and 1,000,000 bp (1 Mb window)",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            )
+                    except (ValueError, TypeError):
+                        self.result.add_error(
+                            "max_distance_bp must be an integer",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+
+                min_prob = eg_link.get("min_contact_probability")
+                if min_prob is not None:
+                    try:
+                        prob_val = float(min_prob)
+                        if not (0.0 <= prob_val <= 1.0):
+                            self.result.add_error(
+                                f"min_contact_probability ({prob_val}) must be in range [0.0, 1.0]",
+                                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                            )
+                    except (ValueError, TypeError):
+                        self.result.add_error(
+                            "min_contact_probability must be a numeric float",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+
+        self._store_block_contract("alphagenome2", block)
+
+    def _validate_finedna_block(self, block: Any) -> None:
+        """Validate finedna / finedna_task / finedna_circuit block.
+
+        Grounded in FineDNA (Qwen3-14B backbone, 514B biological mid-training tokens,
+        200k SFT conversations, 100k RL tasks for environments, reaching GPT-Sol 6.1 tier):
+        - Enforces sovereign air-gapped endpoints (prohibits external cloud leakage when air_gapped=True).
+        - Validates task types (GFL code synthesis, sequence localization, CRISPR design).
+        - Verifies linked RLVR verifiable reward contracts and parameters.
+        """
+        from urllib.parse import urlparse
+
+        from geneforgelang.core.gftypes import FineDNATaskType
+
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "finedna block must be a dictionary or FineDNAContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format finedna as a dictionary with contract_id, task_type, and prompt")
+            return
+
+        # 1. contract_id validation
+        contract_id = block.get("contract_id", block.get("name"))
+        if not contract_id or not str(contract_id).strip():
+            self.result.add_error(
+                "finedna block must define a non-empty 'contract_id' (or 'name')",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide a unique identifier string for contract_id")
+
+        # 2. task_type validation
+        task_type = block.get("task_type")
+        if task_type:
+            valid_tasks = {t.value for t in FineDNATaskType}
+            tt_str = str(task_type.value if hasattr(task_type, "value") else task_type).strip().lower()
+            if tt_str not in valid_tasks:
+                self.result.add_error(
+                    f"Invalid task_type '{task_type}' in finedna block. Must be one of {sorted(valid_tasks)}",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Use a valid FineDNATaskType")
+
+        # 3. prompt validation
+        prompt = block.get("prompt")
+        if prompt is not None and not str(prompt).strip():
+            self.result.add_error(
+                "finedna block prompt cannot be empty string when provided",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Provide a descriptive biological reasoning or GFL synthesis prompt")
+
+        # 4. inference_config and air-gapped security validation
+        inf_cfg = block.get("inference_config")
+        if isinstance(inf_cfg, dict):
+            air_gapped = inf_cfg.get("air_gapped", True)
+            endpoint = str(inf_cfg.get("endpoint_url", "")).strip()
+            if air_gapped and endpoint:
+                parsed = urlparse(endpoint)
+                hostname = (parsed.hostname or "").lower()
+                is_local = (
+                    hostname in {"localhost", "127.0.0.1", "::1"}
+                    or hostname.startswith("10.")
+                    or hostname.startswith("192.168.")
+                    or (
+                        hostname.startswith("172.")
+                        and len(hostname.split(".")) == 4
+                        and 16 <= int(hostname.split(".")[1]) <= 31
+                    )
+                )
+                if not is_local:
+                    self.result.add_error(
+                        f"Air-gapped sovereign inference violation: Public external endpoint '{endpoint}' "
+                        f"detected while air_gapped=True. Client IP confidentiality requires local/on-premise endpoint.",
+                        ErrorCodes.SECURITY_UNSAFE_OPERATION,
+                        severity=ErrorSeverity.CRITICAL,
+                        category=ErrorCategory.SECURITY,
+                    ).add_fix(
+                        "Set endpoint_url to a local loopback (e.g. http://localhost:8000/v1) or set air_gapped=False"
+                    )
+
+            temp = inf_cfg.get("temperature")
+            if temp is not None:
+                try:
+                    temp_f = float(temp)
+                    if not (0.0 <= temp_f <= 2.0):
+                        self.result.add_error(
+                            f"temperature ({temp_f}) must be between 0.0 and 2.0",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                except (ValueError, TypeError):
+                    self.result.add_error("temperature must be numeric", ErrorCodes.SEMANTIC_INVALID_PARAMETER)
+
+            max_tok = inf_cfg.get("max_tokens")
+            if max_tok is not None:
+                try:
+                    tok_i = int(max_tok)
+                    if tok_i <= 0:
+                        self.result.add_error(
+                            f"max_tokens ({tok_i}) must be a positive integer",
+                            ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                        )
+                except (ValueError, TypeError):
+                    self.result.add_error("max_tokens must be an integer", ErrorCodes.SEMANTIC_INVALID_PARAMETER)
+
+        # 5. verifiable_reward_contract validation
+        vrc = block.get("verifiable_reward_contract")
+        if vrc is not None:
+            self._validate_verifiable_dna_block(vrc)
+
+        self._store_block_contract("finedna", block)
+
+    def _validate_permutation_baseline_block(self, block: Any) -> None:
+        """Validate permutation_baseline / sequence_signal_audit block (Phylo Shuffled-Control Gate).
+
+        Grounded in Tu & Chen (Phylo, Nov 2026):
+        - Enforces valid sequence_type ('protein' or 'dna') and IUPAC characters.
+        - Validates control_mode against PermutationControlMode.
+        - Validates min_permutation_gap in (0.0, 1.0] and non-negative integer seed.
+        """
+        from geneforgelang.core.gftypes import PermutationControlMode
+
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "permutation_baseline block must be a dictionary or SequencePermutationBaselineContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format permutation_baseline as a dictionary with contract_id, reference_prefix, target_suffix")
+            return
+
+        contract_id = block.get("contract_id", block.get("name"))
+        if not contract_id or not str(contract_id).strip():
+            self.result.add_error(
+                "permutation_baseline block must define a non-empty 'contract_id'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide a unique identifier string for contract_id")
+
+        seq_type = str(block.get("sequence_type", "protein")).strip().lower()
+        if seq_type not in {"protein", "dna"}:
+            self.result.add_error(
+                f"Invalid sequence_type '{seq_type}' in permutation_baseline. Must be 'protein' or 'dna'",
+                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+            ).add_fix("Set sequence_type to 'protein' or 'dna'")
+
+        valid_alphabet = set("ACDEFGHIKLMNPQRSTVWY*XBZ") if seq_type == "protein" else set("ACGTNRYSWKMBDHV")
+
+        for field_name in ("reference_prefix", "target_suffix"):
+            val = block.get(field_name)
+            if not val or not str(val).strip():
+                self.result.add_error(
+                    f"permutation_baseline block must define a non-empty '{field_name}'",
+                    ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+                ).add_fix(f"Provide a valid {seq_type} sequence for '{field_name}'")
+            else:
+                clean_seq = str(val).strip().upper()
+                bad_chars = set(clean_seq) - valid_alphabet
+                if bad_chars:
+                    self.result.add_error(
+                        f"Invalid {seq_type} characters {sorted(bad_chars)} in '{field_name}'",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    ).add_fix(f"Ensure '{field_name}' contains only valid {seq_type} IUPAC symbols")
+
+        mode = block.get("control_mode")
+        if mode is not None:
+            valid_modes = {m.value for m in PermutationControlMode}
+            mode_str = str(mode.value if hasattr(mode, "value") else mode).strip().lower()
+            if mode_str not in valid_modes:
+                self.result.add_error(
+                    f"Invalid control_mode '{mode}' in permutation_baseline. Must be one of {sorted(valid_modes)}",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Use 'uniform_shuffle', 'dinucleotide_shuffle', or 'dipeptide_shuffle'")
+
+        gap = block.get("min_permutation_gap")
+        if gap is not None:
+            try:
+                gap_f = float(gap)
+                if not (0.0 < gap_f <= 1.0):
+                    self.result.add_error(
+                        f"min_permutation_gap ({gap_f}) must be in (0.0, 1.0]",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    )
+            except (ValueError, TypeError):
+                self.result.add_error("min_permutation_gap must be numeric", ErrorCodes.SEMANTIC_INVALID_PARAMETER)
+
+        seed = block.get("seed")
+        if seed is not None:
+            try:
+                seed_i = int(seed)
+                if seed_i < 0:
+                    self.result.add_error(
+                        f"seed ({seed_i}) must be a non-negative integer",
+                        ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                    )
+            except (ValueError, TypeError):
+                self.result.add_error("seed must be an integer", ErrorCodes.SEMANTIC_INVALID_PARAMETER)
+
+        self._store_block_contract("permutation_baseline", block)
+
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
         self.symbol_table[block_name] = {"contract": contract}
@@ -520,9 +3067,7 @@ class EnhancedSemanticValidator:
             if input_name in producer_outputs:
                 output_contract = producer_outputs[input_name]
                 # Check type compatibility
-                if not self._are_contract_types_compatible(
-                    output_contract.get("type"), input_contract.get("type")
-                ):
+                if not self._are_contract_types_compatible(output_contract.get("type"), input_contract.get("type")):
                     error = self.result.add_error(
                         f"Contract type mismatch: {producer_block} output '{input_name}' "
                         f"(type: {output_contract.get('type')}) is incompatible with "
@@ -549,9 +3094,7 @@ class EnhancedSemanticValidator:
             self.result.add_error(
                 f"Contract {section_name} '{name}' must be a dictionary",
                 ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
-            ).add_fix(
-                f"Format {section_name} '{name}' as a dictionary with 'type' and optional 'attributes'"
-            )
+            ).add_fix(f"Format {section_name} '{name}' as a dictionary with 'type' and optional 'attributes'")
             return
 
         # Validate type field
@@ -598,9 +3141,7 @@ class EnhancedSemanticValidator:
                     f"for schema type '{schema_def.name}'",
                     ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
                 )
-                error.add_fix(
-                    f"Add '{attr_name}: {expected_value}' to contract {section_name} '{name}' attributes"
-                )
+                error.add_fix(f"Add '{attr_name}: {expected_value}' to contract {section_name} '{name}' attributes")
             elif attr_name in attributes and expected_value is not None:
                 actual_value = attributes[attr_name]
                 if actual_value != expected_value:
@@ -661,6 +3202,13 @@ class EnhancedSemanticValidator:
             "VCF": ["VCF", "TEXT"],
             "CSV": ["CSV", "TEXT"],
             "JSON": ["JSON", "TEXT"],
+            # Biological Tensors & Geometric AI Representations
+            "TENSOR": ["TENSOR", "BINARY"],
+            "DISTANCE_MATRIX": ["DISTANCE_MATRIX", "TENSOR", "BINARY"],
+            "BACKBONE_FRAMES": ["BACKBONE_FRAMES", "TENSOR", "BINARY"],
+            "CONTACT_MAP": ["CONTACT_MAP", "TENSOR", "BINARY"],
+            "SEQUENCE_EMBEDDING": ["SEQUENCE_EMBEDDING", "TENSOR", "BINARY"],
+            "ATTENTION_MAP": ["ATTENTION_MAP", "TENSOR", "BINARY"],
         }
 
         if output_base_type in compatibility_rules:
@@ -785,9 +3333,7 @@ class EnhancedSemanticValidator:
             self.result.add_error(
                 f"Contract {section_name} must be a dictionary",
                 ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
-            ).add_fix(
-                f"Format {section_name} as a dictionary mapping names to contract definitions"
-            )
+            ).add_fix(f"Format {section_name} as a dictionary mapping names to contract definitions")
             return
 
         # Validate each contract definition
@@ -816,6 +3362,30 @@ class EnhancedSemanticValidator:
             "WGS",
             "WES",
             "targeted_seq",
+            "tangermeme",
+            "alphafold3",
+            "boltz1",
+            "chai1",
+            "protenix",
+            "rosettafold3",
+            "openmm",
+            "runs_n_poses",
+            "biodecision-4b",
+            "pleiades",
+            "pleiades-biodecision",
+            "pleiades-7b",
+            "prompteina",
+            "dna_typewriter",
+            "targeted_amplicon_dna_seq",
+            "bioemu2",
+            "omnii-1",
+            "virtual-cell-foundation-1",
+            "gromacs",
+            "amber",
+            "geneforge_helix_view",
+            "finedna",
+            "finedna_verifier",
+            "finedna_oracle",
         }
 
         if tool not in known_tools:
@@ -843,6 +3413,19 @@ class EnhancedSemanticValidator:
             "analysis",
             "simulation",
             "validation",
+            "somatic_expansion_evaluation",
+            "structural_ensemble_generation",
+            "cryptic_pocket_detection",
+            "thermodynamic_refinement",
+            "bacteriophage_design",
+            "epigenomic_5hmc_profiling",
+            "multimodal_genome_generation",
+            "rare_earth_chelator_design",
+            "virtual_cell_simulation",
+            "perturbation_phenotype_prediction",
+            "inter_engine_validation",
+            "molecular_dynamics_production",
+            "in_silico_validation",
         }
 
         if exp_type not in valid_types:
@@ -874,11 +3457,7 @@ class EnhancedSemanticValidator:
 
         for param_name, param_value in params.items():
             # Skip validation for parameter injection (${...} syntax)
-            if (
-                isinstance(param_value, str)
-                and param_value.startswith("${")
-                and param_value.endswith("}")
-            ):
+            if isinstance(param_value, str) and param_value.startswith("${") and param_value.endswith("}"):
                 continue
 
             # Check for entity references (e.g., pathway(UreaCycle))
@@ -908,66 +3487,6 @@ class EnhancedSemanticValidator:
         pattern = r"^[a-zA-Z_][a-zA-Z0-9_]*\([a-zA-Z_][a-zA-Z0-9_]*\)$"
         return bool(re.match(pattern, value))
 
-    def _validate_entity_reference(self, entity_ref: str) -> None:
-        """Validate entity reference in parameter values."""
-
-        # Extract entity type and name
-        match = re.match(r"^([a-zA-Z_][a-zA-Z0-9_]*)\(([a-zA-Z_][a-zA-Z0-9_]*)\)$", entity_ref)
-        if not match:
-            self.result.add_error(
-                f"Invalid entity reference format: {entity_ref}",
-                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
-            ).add_fix("Use format 'entity_type(entity_name)' for entity references")
-            return
-
-        entity_type, entity_name = match.groups()
-
-        # Check if entity type is supported
-        supported_entity_types = {"pathway", "complex"}
-        if entity_type not in supported_entity_types:
-            self.result.add_error(
-                f"Unsupported entity type '{entity_type}' in reference: {entity_ref}",
-                ErrorCodes.SEMANTIC_INVALID_PARAMETER,
-            ).add_fix(f"Use one of the supported entity types: {', '.join(supported_entity_types)}")
-            return
-
-        # Check if entity is defined
-        if hasattr(self, "entity_registry"):
-            # Debug: Print entity registry contents
-            print(f"Entity registry: {self.entity_registry}")
-            print(f"Looking for entity type: {entity_type}")
-            print(f"Looking for entity name: {entity_name}")
-
-            registry_key = entity_type + "s"  # "pathway" -> "pathways", "complex" -> "complexes"
-            # Fix for complex -> complexes
-            if entity_type == "complex":
-                registry_key = "complexes"
-            print(f"Registry key: {registry_key}")
-            if registry_key in self.entity_registry:
-                print(f"Found registry key: {registry_key}")
-                print(f"Available entities: {list(self.entity_registry[registry_key].keys())}")
-                if entity_name in self.entity_registry[registry_key]:
-                    print(f"Found entity: {entity_name}")
-                    return  # Valid reference
-                else:
-                    self.result.add_error(
-                        f"Referenced {entity_type} '{entity_name}' is not defined",
-                        ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-                    ).add_fix(
-                        f"Define a {entity_type} with name '{entity_name}' or reference an existing one"
-                    )
-            else:
-                # Entity type registry doesn't exist
-                self.result.add_error(
-                    f"Referenced {entity_type} '{entity_name}' is not defined (no {entity_type} definitions found)",
-                    ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-                ).add_fix(f"Add a {entity_type} definition section or reference an existing one")
-        else:
-            self.result.add_error(
-                f"Referenced {entity_type} '{entity_name}' is not defined (no entity definitions found)",
-                ErrorCodes.SEMANTIC_UNDEFINED_ENTITY_REFERENCE,
-            ).add_fix("Add entity definitions or reference an existing one")
-
     def _validate_tool_type_compatibility(self, tool: str, exp_type: str) -> None:
         """Validate tool and type compatibility."""
         compatibility_matrix = {
@@ -977,6 +3496,72 @@ class EnhancedSemanticValidator:
             "RNAseq": ["sequencing", "analysis"],
             "ChIPseq": ["sequencing", "analysis"],
             "ATACseq": ["sequencing", "analysis"],
+            "tangermeme": ["analysis", "simulation", "validation"],
+            "alphafold3": ["analysis", "simulation", "validation"],
+            "boltz1": ["analysis", "simulation", "validation"],
+            "chai1": ["analysis", "simulation", "validation"],
+            "protenix": ["analysis", "simulation", "validation"],
+            "rosettafold3": ["analysis", "simulation", "validation"],
+            "openmm": ["simulation", "analysis", "validation"],
+            "runs_n_poses": ["analysis", "validation"],
+            "biodecision-4b": ["analysis", "validation", "simulation", "somatic_expansion_evaluation"],
+            "pleiades": ["analysis", "validation", "simulation", "sequencing"],
+            "pleiades-biodecision": ["analysis", "validation", "simulation"],
+            "pleiades-7b": ["analysis", "validation", "simulation"],
+            "prompteina": ["design", "simulation", "analysis", "validation"],
+            "finedna": ["analysis", "validation", "simulation"],
+            "finedna_verifier": ["analysis", "validation", "simulation"],
+            "finedna_oracle": ["analysis", "validation", "simulation"],
+            "dna_typewriter": ["gene_editing", "sequencing", "analysis", "simulation"],
+            "targeted_amplicon_dna_seq": ["sequencing", "analysis", "validation"],
+            "bioemu2": [
+                "analysis",
+                "simulation",
+                "validation",
+                "structural_ensemble_generation",
+                "cryptic_pocket_detection",
+                "thermodynamic_refinement",
+            ],
+            "omnii-1": [
+                "design",
+                "simulation",
+                "analysis",
+                "validation",
+                "sequencing",
+                "bacteriophage_design",
+                "epigenomic_5hmc_profiling",
+                "multimodal_genome_generation",
+                "rare_earth_chelator_design",
+            ],
+            "virtual-cell-foundation-1": [
+                "simulation",
+                "analysis",
+                "validation",
+                "virtual_cell_simulation",
+                "perturbation_phenotype_prediction",
+            ],
+            "gromacs": [
+                "simulation",
+                "analysis",
+                "validation",
+                "inter_engine_validation",
+                "molecular_dynamics_production",
+                "thermodynamic_refinement",
+            ],
+            "amber": [
+                "simulation",
+                "analysis",
+                "validation",
+                "inter_engine_validation",
+                "molecular_dynamics_production",
+                "thermodynamic_refinement",
+            ],
+            "geneforge_helix_view": [
+                "in_silico_validation",
+                "analysis",
+                "validation",
+                "simulation",
+            ],
         }
 
         if tool in compatibility_matrix:
@@ -1036,6 +3621,11 @@ class EnhancedSemanticValidator:
             "functional",
             "comparative",
             "longitudinal",
+            "epigenetic_deconvolution",
+            "fragmentomics",
+            "deterministic",
+            "rlvr",
+            "dna_computation",
         }
 
         if strategy not in valid_strategies:
@@ -1101,9 +3691,41 @@ class EnhancedSemanticValidator:
         if "constraints" in design:
             self._validate_design_constraints(design["constraints"])
 
+        # Validate prompt_conditioning field if present (Prompteina)
+        if "prompt_conditioning" in design:
+            self._validate_prompt_conditioning(design["prompt_conditioning"])
+
         # Validate design_type specific requirements
         if design_type == "inverse_design":
             self._validate_inverse_design(design)
+
+    def _validate_prompt_conditioning(self, prompt_config: Any) -> None:
+        """Validate Prompteina natural language prompt conditioning in design block."""
+        if hasattr(prompt_config, "to_dict"):
+            prompt_config = prompt_config.to_dict()
+
+        if not isinstance(prompt_config, dict):
+            self.result.add_error(
+                "prompt_conditioning must be a dictionary or NaturalLanguageConditioningContract",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Format prompt_conditioning as a dictionary with 'prompt' or structural keys")
+            return
+
+        if "guidance_scale" in prompt_config:
+            scale = prompt_config["guidance_scale"]
+            if not isinstance(scale, (int, float)) or scale <= 0:
+                self.result.add_error(
+                    f"guidance_scale must be a positive number, got {scale}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set guidance_scale to a positive float (e.g. 7.5)")
+
+        if "num_inference_steps" in prompt_config:
+            steps = prompt_config["num_inference_steps"]
+            if not isinstance(steps, int) or steps <= 0:
+                self.result.add_error(
+                    f"num_inference_steps must be a positive integer, got {steps}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set num_inference_steps to a positive integer (e.g. 50)")
 
     def _validate_inverse_design(self, design: dict[str, Any]) -> None:
         """Validate inverse_design configuration."""
@@ -1141,9 +3763,7 @@ class EnhancedSemanticValidator:
                         self.result.add_error(
                             f"target_properties must be a dictionary, got {type(value).__name__}",
                             ErrorCodes.TYPE_INVALID_TYPE,
-                        ).add_fix(
-                            "Format target_properties as a dictionary with property specifications"
-                        )
+                        ).add_fix("Format target_properties as a dictionary with property specifications")
                 elif key == "foundation_model" and not isinstance(value, str):
                     self.result.add_error(
                         f"foundation_model must be a string, got {type(value).__name__}",
@@ -1193,6 +3813,23 @@ class EnhancedSemanticValidator:
             "MoleculeTransformer",
             "SequenceOptimizer",
             "StructurePredictor",
+            "AlphaFold3",
+            "alphafold3",
+            "Boltz1",
+            "boltz1",
+            "Chai1",
+            "chai1",
+            "Protenix",
+            "protenix",
+            "RoseTTAFold3",
+            "rosettafold3",
+            "RFdiffusion",
+            "BindCraft",
+            "Prompteina",
+            "prompteina",
+            "finedna",
+            "finedna_rlvr_oracle",
+            "FineDNA",
         }
 
         if model not in known_models:
@@ -1256,6 +3893,8 @@ class EnhancedSemanticValidator:
             "selectivity",
             "permeability",
             "expression_level",
+            "reward_score",
+            "verification_rate",
         }
 
         if metric not in valid_metrics:
@@ -1551,6 +4190,8 @@ class EnhancedSemanticValidator:
         # Known optimization strategies
         known_strategies = {
             "ActiveLearning",
+            "AlphaEvolve",
+            "ProgramEvolution",
             "BayesianOptimization",
             "GeneticAlgorithm",
             "SimulatedAnnealing",
@@ -1570,6 +4211,58 @@ class EnhancedSemanticValidator:
         # Special validation for ActiveLearning strategy
         if strategy_name == "ActiveLearning":
             self._validate_active_learning_strategy(strategy)
+        elif strategy_name in {"AlphaEvolve", "ProgramEvolution"}:
+            self._validate_alpha_evolve_strategy(strategy)
+
+    def _validate_alpha_evolve_strategy(self, strategy: dict[str, Any]) -> None:
+        """Validate AlphaEvolve / ProgramEvolution strategy with required keys."""
+        config = strategy.get("alpha_evolve") or strategy.get("program_evolution")
+        if config is None:
+            # If inline parameters are directly at the strategy level
+            config = strategy
+
+        if not isinstance(config, dict):
+            self.result.add_error(
+                "AlphaEvolve configuration must be a dictionary",
+                ErrorCodes.TYPE_INVALID_TYPE,
+            ).add_fix("Format alpha_evolve as a dictionary with required parameters")
+            return
+
+        # Check population_size if present
+        if "population_size" in config:
+            pop_size = config["population_size"]
+            if not isinstance(pop_size, int) or pop_size <= 0:
+                self.result.add_error(
+                    f"population_size must be a positive integer, got {pop_size}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set population_size to a positive integer (e.g., 20)")
+
+        # Check generations if present
+        if "generations" in config:
+            gens = config["generations"]
+            if not isinstance(gens, int) or gens <= 0:
+                self.result.add_error(
+                    f"generations must be a positive integer, got {gens}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set generations to a positive integer (e.g., 15)")
+
+        # Check elitism_rate if present
+        if "elitism_rate" in config:
+            rate = config["elitism_rate"]
+            if not isinstance(rate, (int, float)) or not (0.0 <= float(rate) <= 1.0):
+                self.result.add_error(
+                    f"elitism_rate must be a float between 0.0 and 1.0, got {rate}",
+                    ErrorCodes.SEMANTIC_INVALID_PARAMETER,
+                ).add_fix("Set elitism_rate to a float between 0.0 and 1.0 (e.g., 0.20)")
+
+        # Check seed_program if present
+        if "seed_program" in config:
+            seed = config["seed_program"]
+            if not isinstance(seed, str) or not seed.strip():
+                self.result.add_error(
+                    "seed_program must be a non-empty string path or identifier",
+                    ErrorCodes.TYPE_INVALID_TYPE,
+                ).add_fix("Provide a valid string path or module name for seed_program")
 
     def _validate_active_learning_strategy(self, strategy: dict[str, Any]) -> None:
         """Validate ActiveLearning strategy with required nested keys."""
@@ -1603,14 +4296,9 @@ class EnhancedSemanticValidator:
                 error.add_fix(f"Add '{key}: <value>' to active_learning configuration")
             else:
                 value = active_learning_config[key]
-                if not isinstance(
-                    value, expected_type if isinstance(expected_type, tuple) else (expected_type,)
-                ):
+                if not isinstance(value, expected_type if isinstance(expected_type, tuple) else (expected_type,)):
                     type_names = " or ".join(
-                        t.__name__
-                        for t in (
-                            expected_type if isinstance(expected_type, tuple) else (expected_type,)
-                        )
+                        t.__name__ for t in (expected_type if isinstance(expected_type, tuple) else (expected_type,))
                     )
                     error = self.result.add_error(
                         f"'{key}' must be {type_names}, got {type(value).__name__}",
@@ -1774,7 +4462,7 @@ class EnhancedSemanticValidator:
             self._validate_analysis_block(run["analyze"])
             self._validate_parameter_injection(run["analyze"])
 
-    def _validate_parameter_injection(self, block: dict) -> None:
+    def _validate_parameter_injection(self, block: dict[str, Any]) -> None:
         """Validate ${...} parameter injection syntax in nested blocks."""
         # Recursively check all values in the block for parameter injection
         self._check_parameter_injection_recursive(block, "")
@@ -1880,9 +4568,7 @@ class EnhancedSemanticValidator:
                 "refine_data block requires 'refinement_config' configuration",
                 ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
             )
-            error.add_fix(
-                "Add 'refinement_config: {...}' with refinement_type, noise_level, and target_resolution"
-            )
+            error.add_fix("Add 'refinement_config: {...}' with refinement_type, noise_level, and target_resolution")
             return
 
         refinement_config = refine_data["refinement_config"]
@@ -1979,9 +4665,7 @@ class EnhancedSemanticValidator:
         # Restore original block context
         self.current_block = original_block
 
-    def _validate_guided_discovery_active_learning_params(
-        self, active_learning_params: Any
-    ) -> None:
+    def _validate_guided_discovery_active_learning_params(self, active_learning_params: Any) -> None:
         """Validate active_learning_params in guided_discovery block."""
         if not isinstance(active_learning_params, dict):
             self.result.add_error(
@@ -2004,9 +4688,7 @@ class EnhancedSemanticValidator:
                 "active_learning_params in guided_discovery requires 'experiments_per_cycle'",
                 ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
             )
-            error.add_fix(
-                "Add 'experiments_per_cycle: <positive_integer>' to active_learning_params"
-            )
+            error.add_fix("Add 'experiments_per_cycle: <positive_integer>' to active_learning_params")
         else:
             experiments_per_cycle = active_learning_params["experiments_per_cycle"]
             if not isinstance(experiments_per_cycle, int) or experiments_per_cycle <= 0:
@@ -2088,17 +4770,17 @@ class SemanticValidator:
     Maintains the original API while delegating to the enhanced validator.
     """
 
-    def __init__(self):
-        self.symbol_table = {}
-        self.errors = []
+    def __init__(self) -> None:
+        self.symbol_table: dict[str, Any] = {}
+        self.errors: list[str] = []
         self._enhanced_validator = EnhancedSemanticValidator()
 
-    def validate_program(self, ast):
+    def validate_program(self, ast: Any) -> list[str]:
         """Validate a program AST and return a list of error strings."""
         result = self._enhanced_validator.validate_ast(ast)
-        return result.to_legacy_format()
+        return cast(list[str], result.to_legacy_format())
 
-    def validate(self, ast):
+    def validate(self, ast: Any) -> list[str]:
         """Validate a program AST and return a list of error strings.
 
         This is an alias for validate_program for API compatibility.
@@ -2107,13 +4789,11 @@ class SemanticValidator:
 
 
 # Global validator instances
-_validator = SemanticValidator()
-_enhanced_validator = EnhancedSemanticValidator()
+_validator: SemanticValidator = SemanticValidator()
+_enhanced_validator: EnhancedSemanticValidator = EnhancedSemanticValidator()
 
 
-def validate(
-    ast: dict[str, Any], enhanced: bool = False
-) -> Union[list[str], EnhancedValidationResult]:
+def validate(ast: dict[str, Any], enhanced: bool = False) -> Union[list[str], EnhancedValidationResult]:
     """Validate a GFL AST and return validation results.
 
     Args:

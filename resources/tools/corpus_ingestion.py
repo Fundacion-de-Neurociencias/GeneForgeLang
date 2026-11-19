@@ -39,10 +39,7 @@ def fetch_summaries(pmids: list[str]) -> dict[str, dict[str, object]]:
     if not pmids:
         return {}
     ids_str = ",".join(pmids)
-    url = (
-        f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
-        f"?db=pubmed&id={ids_str}&retmode=json"
-    )
+    url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi" f"?db=pubmed&id={ids_str}&retmode=json"
     req = urllib.request.Request(url, headers={"User-Agent": "GeneForgeLang/1.0"})
     try:
         with urllib.request.urlopen(req) as response:  # noqa: S310

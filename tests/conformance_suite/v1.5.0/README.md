@@ -11,7 +11,7 @@ This version of the GFL Conformance Test Suite introduces support for **genomic 
 - Validation of file path references to haplotype databases
 - Support for complex, polymorphic genomic loci (HLA, KIR, etc.)
 
-### Locityper Tool Integration  
+### Locityper Tool Integration
 - Tests for analyze blocks with `tool: "locityper"`
 - Validation of locus target references
 - Contract validation for genotyping inputs/outputs
@@ -59,4 +59,3 @@ The haplotyping capabilities tested in this suite enable:
 - Disease susceptibility analysis
 
 These are critical capabilities for precision medicine applications of GeneForge.
-

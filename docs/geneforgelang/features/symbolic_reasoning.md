@@ -251,4 +251,29 @@ analyze:
   validates_hypothesis: urea_cycle_hypothesis
 ```
 
-This symbolic reasoning framework enables more expressive and scientifically rigorous workflow definitions in GeneForgeLang.
+## Multiscale Causal Transition Graphs & CRISPR Co-Dependency
+
+Symbolic reasoning in GFL formally integrates across biological scales via `CausalTransitionNode` and functional co-dependency gates:
+
+### Causal Scales (`CausalLevel`)
+1. **`PHENOTYPIC`**: Clinical and physiological manifestations (e.g., neurodegeneration, microglial dysfunction).
+2. **`CELLULAR`**: Cellular behavior and sub-populations (e.g., endocytosis impairment, lysosomal acidification).
+3. **`MOLECULAR`**: Biomolecular complexes, signaling cascades, and enzymatic activities (e.g., DNM1 GTPase hydrolysis, TREM2-SYK axis).
+4. **`ATOMIC`**: Single residue substitutions, ligand binding poses, and stereochemical packing.
+
+### Functional Co-Dependency & Epistemic Stop-Gates
+When asserting causal relationships between gene pairs, workflows can enforce empirical validation against the Broad DepMap CRISPR dataset (`gfl-plugin-depmap`). If an asserted co-dependency has null or negative correlation ($p > 0.05$ or $r \approx 0$), the workflow's epistemic stop-gate terminates execution to prevent downstream hallucinations:
+
+```yaml
+rules:
+  - id: microglial_phagocytosis_axis
+    causal_transition:
+      source_node: NODE_DNM1_ENDOCYTOSIS
+      target_node: NODE_SH3GL2_VESICLE_RECYCLING
+      evidence:
+        - provider: depmap
+          correlation_threshold: 0.20
+          stop_on_null_dependency: true
+```
+
+This symbolic reasoning framework enables more expressive, multiscale, and scientifically rigorous workflow definitions in GeneForgeLang.

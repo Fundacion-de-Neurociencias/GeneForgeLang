@@ -276,6 +276,17 @@ HASH_KEY_ALLOWLIST = {
     "governance/behavioral/semantic_hash.py": "sha256 of a serialised value as its content hash",
     "ir/fase4/cache_layer.py": "md5 of queries as cache keys",
     "ir/fase4/async_retrieval.py": "md5 of a query as a cache key",
+    "core/alphagenome2_engine.py": "sha256 of 1Mb locus coordinates for cache",
+    "core/bioc_ice_engine.py": "sha256 of table and release pinning snapshot",
+    "core/finedna_engine.py": "sha256 verification hash of task and candidate response",
+    "core/gftypes.py": "sha256 proof token for verifiable reward contracts",
+    "core/permutation_baseline.py": "seeded Fisher-Yates and Altschul-Erickson shuffles",
+    "core/protok_engine.py": "discrete codebook hash and pseudo-random multi-codebook dropout",
+    "core/watermark_engine.py": "cryptographic watermark key and PRNG sequence carrier",
+    "core/wet_lab_engine.py": "sha256 hash of synthesizability protocol and BioCompute object",
+    "governance/semantic_projection.py": "content hash for semantic audit snapshot",
+    "governance/snapshot_generator.py": "sha256 cryptographic digest of repository state",
+    "plugins/biodecision_plugin.py": "temperature-calibrated softmax and logit sampling",
 }
 _PRIMITIVE_ROOTS = {"random", "secrets", "hashlib"}
 

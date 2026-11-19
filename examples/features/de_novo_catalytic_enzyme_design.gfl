@@ -1,0 +1,56 @@
+# GeneForgeLang Example: De Novo Catalytic Motif & Enzyme Design Specification
+# Demonstrates pure observational and syntactic contracts for catalytic triad geometry
+# and transition-state substrate stabilization (AlphaProtein Novo synergy).
+
+metadata:
+  experiment_id: DE_NOVO_ESTERASE_DESIGN_001
+  researcher: Dr. Manuel Menendez Gonzalez
+  project: catalytic_scaffolding_observational_spec
+  description: Pure syntactic representation of Ser-His-Asp catalytic triad and transition-state analog
+  date: 2026-10-06
+
+design:
+  entity: ProteinSequence
+  model: de_novo_catalytic_scaffolder
+  objective:
+    minimize: active_site_rmsd
+    target: 0.5
+  count: 5
+  output: catalytic_scaffold_candidates
+  constraints:
+    - catalytic_motif("SER:OG", "HIS:NE2", "ASP:OD1")
+    - max_active_site_rmsd(0.8)
+    - transition_state_distance(<= 3.5)
+    - pocket_steric_clash(0.0)
+
+experiment:
+  tool: catalytic_motif_validator
+  type: analysis
+  strategy: structural_signature
+  params:
+    enzyme_family: "ESTERASE"
+    substrate_smiles: "CC(=O)Oc1ccc([N+](=O)[O-])cc1"
+    transition_state_analog: true
+    catalytic_residues:
+      - residue: "SER"
+        role: "NUCLEOPHILE"
+        target_atom: "OG"
+        position: 195
+      - residue: "HIS"
+        role: "GENERAL_BASE"
+        target_atom: "NE2"
+        position: 57
+      - residue: "ASP"
+        role: "TRANSITION_STATE_STABILIZER"
+        target_atom: "OD1"
+        position: 102
+    spatial_distance_constraints:
+      "SER:OG-HIS:NE2": [2.6, 3.2]
+      "HIS:ND1-ASP:OD1": [2.5, 3.0]
+
+analyze:
+  strategy: structural_observation
+  thresholds:
+    max_active_site_rmsd: 0.8
+    require_all_catalytic_residues: true
+    target_transition_state_distance: 3.5

@@ -1,0 +1,53 @@
+// Viral-Host Interactome Complex and AlphaGenome Locus Link Specification in GFL
+// Grounded in AlphaFold Database Pandemic Preparedness Portal (DeepMind, EMBL-EBI, NVIDIA, CEPI, SIB, MRC Glasgow 2026)
+// Cross-referencing 1.7M predicted viral dimers, 8,028 high-confidence complexes with host receptor genomic loci
+
+complexes {
+  SpikeACE2Dimer {
+    portal: "alphafold_pandemic_preparedness"
+    viral_family: "coronaviridae"
+    proteome_id: "UP000464024"
+    interactome_type: "heterodimer"
+    subunits: ["P0DTC2", "Q9BYF1"]  // SARS-CoV-2 Spike RBD + Human ACE2 Receptor
+
+    iplddt_threshold: 80.0
+    iptm_threshold: 0.75
+    is_high_confidence_portal_hit: true
+
+    // AlphaGenome Atlas host receptor variant cross-reference (1-based chr:pos:ref>alt)
+    host_locus_link: {
+      variant: "chrX:15579998:G>A"
+      gene: "ACE2"
+      biosample: "Lung"
+      modalities: ["RNA_SEQ", "DNASE", "CHIP_TF"]
+    }
+  }
+
+  MarburgGlycoproteinHomodimer {
+    portal: "alphafold_pandemic_preparedness"
+    viral_family: "filoviridae"
+    proteome_id: "UP000007270"
+    interactome_type: "homodimer"
+    subunits: ["P35254", "P35254"]
+
+    iplddt_threshold: 82.0
+    iptm_threshold: 0.78
+    is_high_confidence_portal_hit: true
+  }
+}
+
+experiment ViralEntryInhibitionScreen {
+  tool: "boltz1"
+  type: "validation"
+  params: {
+    target_gene: "ACE2"
+  }
+}
+
+analyze InterfaceBindingConsensus {
+  strategy: "structural"
+  thresholds: {
+    interface_rmsd_max: 1.5
+    min_affinity_nm: 250.0
+  }
+}

@@ -40,4 +40,3 @@ rules:
           field: "quality_value"
     then:
       - validation_passed: true
-

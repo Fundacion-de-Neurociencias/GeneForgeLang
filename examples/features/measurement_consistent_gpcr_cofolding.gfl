@@ -1,0 +1,41 @@
+# GeneForgeLang (GFL) v2.0 - Measurement-Consistent GPCR Co-folding Workflow
+# Integrates 5-Model Consensus (AF3, Boltz-1, Chai-1, Protenix, RF3),
+# Experimental Restraint Guidance (NMR NOE), Cryptic Pocket Induction, and Physics Refinement (OpenMM)
+metadata:
+  experiment_name: "HTR2A Serotonin Receptor Co-folding & OpenMM Refinement"
+  version: "2.0.0"
+  author: "GeneForgeLang & Fundacion de Neurociencias"
+  citation: "Runs N Poses Benchmark & Measurement-Guided Ensembles (Nature Methods 2026)"
+  target_organism: "Homo sapiens"
+
+experiment:
+  tool: "chai1"
+  type: "analysis"
+  params:
+    target_receptor: "HTR2A_HUMAN"
+    probe_ligand_smiles: "CCN(CC)C(=O)C1CN(C2CC3=CNC4=CC=CC(=C34)C2=C1)C"
+    pocket_mode: "holo_induced"
+    experimental_restraints:
+      restraint_type: "nmr_noe"
+      restraint_file: "data/restraints/htr2a_transmembrane_noe.tbl"
+      tolerance_angstrom: 2.5
+      weight: 1.0
+    consensus_screening:
+      models: ["alphafold3", "boltz1", "chai1", "protenix", "rosettafold3"]
+      min_iptm: 0.80
+      max_ipae: 2.5
+      min_confidence: 0.80
+    physics_refinement:
+      engine: "openmm"
+      force_field: "amber14sb"
+      max_iterations: 500
+      tolerance_kj_mol: 10.0
+      restrain_backbone: true
+
+analyze:
+  strategy: "structural"
+  data: "HTR2A_cofolded_ensemble"
+  thresholds:
+    max_pose_rmsd: 2.0
+    max_clash_score: 10.0
+    min_satisfaction_ratio: 0.85

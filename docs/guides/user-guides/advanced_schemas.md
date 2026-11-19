@@ -8,8 +8,8 @@ Custom schemas in GFL enforce data integrity between workflow steps. While the Q
 
 Beyond CSV, GFL schemas support two additional base types suited for specialized genomic data:
 
-- **Variant Call Format files. Enables attributes specific to variant annotation workflows**.VCF — 
-- **Arbitrary data structures where no standard format applies (e.g., phylogenetic trees, custom matrices)**.CUSTOM — 
+- **Variant Call Format files. Enables attributes specific to variant annotation workflows**.VCF —
+- **Arbitrary data structures where no standard format applies (e.g., phylogenetic trees, custom matrices)**.CUSTOM —
 
 VCF Schema: Variant Annotation
 Use this schema when your workflow produces or consumes annotated variant calls with clinical significance data:
@@ -65,7 +65,7 @@ Use CUSTOM base type for non-standard data structures such as phylogenetic trees
 
 This example uses both VCF and CUSTOM schemas in a variant analysis pipeline that produces a phylogenetic tree:
 
-```bash 
+```bash
 # variant_analysis.gfl
 import_schemas:
   - ./schemas/advanced_genomics_schemas.yml
@@ -140,7 +140,7 @@ Fix:   Add the 'sample_count' attribute to your contract definition.
 
 Invalid Enum Value
 
-```bash 
+```bash
 Error: Attribute 'clinical_significance' in contract inputs 'variants' must
        have value '[benign, likely_benign, uncertain, likely_pathogenic,
        pathogenic]' for schema type 'VariantAnnotation', got 'unknown'
@@ -149,23 +149,23 @@ Fix:   Use one of the allowed values listed in the schema definition.
 
 Type Mismatch
 
-```bash 
+```bash
 Error: Attribute 'bootstrap_threshold' expected type float, got string
 Fix:   Remove quotes around numeric values in your contract.
 ```
 
 ## 5. Best Practices for Advanced Schemas
 
-- **keep genomic variant schemas apart from expression schemas to avoid naming conflicts**. Separate schema files by domain: 
-- **bump the version field whenever you change attribute requirements to avoid breaking existing workflows**.Version every schema file: 
-- **enum-style constraints prevent invalid clinical significance values from propagating silently**.Use value lists for clinical fields: 
-- **makes schemas forward-compatible as new annotation sources are added.Set required**: false for optional annotations: 
-- **run gfl-validate on any workflow that uses advanced schemas before distributing it to collaborators**.Validate before sharing: 
+- **keep genomic variant schemas apart from expression schemas to avoid naming conflicts**. Separate schema files by domain:
+- **bump the version field whenever you change attribute requirements to avoid breaking existing workflows**.Version every schema file:
+- **enum-style constraints prevent invalid clinical significance values from propagating silently**.Use value lists for clinical fields:
+- **makes schemas forward-compatible as new annotation sources are added.Set required**: false for optional annotations:
+- **run gfl-validate on any workflow that uses advanced schemas before distributing it to collaborators**.Validate before sharing:
 
 ## 6. Related Resources
 
-- **quickstart.md** — basic schemas, IO contracts, and first workflows.Quickstart Guide — 
-- **features/schema_registry.md** — complete attribute reference.Schema Registry Documentation — 
-- **features/io_contracts.md** — how contracts are evaluated at runtime.IO Contracts Documentation — 
-- **error_handling.md** — full list of validation error types and resolution steps.Error Handling Guide — 
-- **tutorials/guided_discovery.md** — combine custom schemas with AI-powered workflows.Guided Discovery Tutorial — 
+- **quickstart.md** — basic schemas, IO contracts, and first workflows.Quickstart Guide —
+- **features/schema_registry.md** — complete attribute reference.Schema Registry Documentation —
+- **features/io_contracts.md** — how contracts are evaluated at runtime.IO Contracts Documentation —
+- **error_handling.md** — full list of validation error types and resolution steps.Error Handling Guide —
+- **tutorials/guided_discovery.md** — combine custom schemas with AI-powered workflows.Guided Discovery Tutorial —

@@ -1,0 +1,88 @@
+# GFL Stress Test Fixture — clawbio/scrnaseq-orchestrator
+# Derived from: https://github.com/ClawBio/ClawBio/tree/main/skills/scRNA-orchestrator
+# SKILL.md spec: scrnaseq-orchestrator v0.1.0 (Scanpy pipeline)
+#
+# Expected parser behaviour: PASS
+# Expected validator behaviour: PASS (guided_discovery block)
+# Gap probe: tests guided_discovery with multi-step iterative clustering
+
+metadata:
+  experiment_id: CB_STRESS_005
+  source_skill: clawbio/scrnaseq-orchestrator
+  skill_version: "0.1.0"
+  domain: single-cell-transcriptomics
+  tags: [scrna-seq, scanpy, clustering, cell-type-annotation, QC]
+  description: >
+    Local Scanpy pipeline for single-cell RNA-seq.
+    Steps: QC, doublet detection (scrublet), normalisation,
+    feature selection, dimensionality reduction (PCA, UMAP),
+    Leiden clustering, marker discovery, cell-type annotation.
+
+guided_discovery:
+  objective:
+    identify: cell_type_populations
+    from: single_cell_count_matrix
+  strategy:
+    iterative: true
+    max_cycles: 5
+    convergence_metric: silhouette_score
+    convergence_threshold: 0.8
+  steps:
+    - id: quality_control
+      operation: filter_cells
+      params:
+        min_genes: 200
+        max_genes: 5000
+        max_pct_mito: 20
+        doublet_detection: true
+        doublet_method: scrublet
+    - id: normalisation
+      operation: normalise_counts
+      params:
+        target_sum: 10000
+        log_transform: true
+    - id: feature_selection
+      operation: select_highly_variable_genes
+      params:
+        n_top_genes: 2000
+        method: seurat
+    - id: dimensionality_reduction
+      operation: pca_then_umap
+      params:
+        n_pcs: 50
+        n_neighbors: 15
+        umap_min_dist: 0.3
+    - id: clustering
+      operation: leiden_clustering
+      params:
+        resolution: 0.5
+        random_state: 42
+    - id: marker_discovery
+      operation: find_rank_genes_groups
+      params:
+        method: wilcoxon
+        n_genes_per_cluster: 25
+    - id: annotation
+      operation: annotate_cell_types
+      params:
+        reference: celltypist
+        mode: best_match
+  contract:
+    inputs:
+      count_matrix:
+        type: BINARY
+        attributes:
+          format: h5ad
+    outputs:
+      annotated_adata:
+        type: BINARY
+        attributes:
+          format: h5ad
+      cluster_report:
+        type: JSON
+      umap_plot:
+        type: BINARY
+        attributes:
+          format: png
+      marker_genes:
+        type: CSV

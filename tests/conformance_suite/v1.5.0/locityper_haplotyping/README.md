@@ -90,4 +90,3 @@ All tests should parse without errors and validate successfully.
 - Haplotype panel files referenced may not exist (testing references only)
 - Actual genotyping would require Locityper plugin implementation
 - Predicate evaluation (genotype_contains, etc.) is reserved for future versions
-

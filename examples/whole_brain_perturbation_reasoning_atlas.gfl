@@ -1,0 +1,58 @@
+# GFL Protocol: Whole-Brain In Vivo Perturb-seq Reasoning Atlas
+# Grounded in Sun et al., 2026 (OpenAI, Scripps Research, PerturbAI) and Shi et al., 2026
+# Strict 2-space indentation enforced across all blocks
+
+perturbation_atlas:
+  name: "whole_brain_crispr_screen"
+  organism: "Mus musculus"
+  dataset_ref: "doi:10.64898/2026.10.15.759436v1"
+  cell_atlas_size: 7700000
+  modality: "in_vivo_perturb_seq"
+  perturbation_targets:
+    - gene: "DCTN1"
+      pathway_focus: "cholesterol_metabolism"
+      target_cell_types:
+        - "cortical_neuron"
+        - "striatal_medium_spiny_neuron"
+      expected_phenotype: "retrograde_transport_and_cholesterol_clearance_defect"
+      causal_transition_refs:
+        - "CAUSAL_NEURODEGEN_LIPID_ACCUMULATION"
+    - gene: "GRIN2A"
+      pathway_focus: "nmda_glutamate_signaling"
+      target_cell_types:
+        - "cortical_pyramidal_neuron"
+        - "hippocampal_ca1"
+    - gene: "GRIN2B"
+      pathway_focus: "nmda_glutamate_signaling"
+      target_cell_types:
+        - "cortical_pyramidal_neuron"
+        - "hippocampal_ca1"
+  swarm_policy:
+    agent_granularity: "per_perturbation"
+    literature_grounding: true
+    min_expert_preference_score: 0.75
+    synthesis_aggregator: "reasoning_atlas"
+  divergence_check:
+    evaluate_paralog_opposition: true
+    pair:
+      - "GRIN2A"
+      - "GRIN2B"
+    min_transcriptional_divergence: 0.35
+  mcp_endpoint: "https://sites-publish-check-20261021.as-alexander-sun.chatgpt.site/api/shi-mcp"
+  virtual_cell_link: "sim_vc_dctn1_cortical"
+
+virtual_cell:
+  simulation_id: "sim_vc_dctn1_cortical"
+  cell_type: "cortical_neuron"
+  target_gene_or_compound: "DCTN1"
+  perturbation_type: "crispr_knockout"
+  atlas_ref: "shi_brain_perturb_seq"
+  dose_or_fold_change: 0.0
+  readout:
+    max_transcriptome_cosine_distance: 0.18
+    min_survival_probability: 0.82
+    mitochondrial_potential_retention: 0.89
+    off_target_pathway_disruption: 0.05
+  engine: "distributed-agent-virtual-cell"
+  wet_lab_clearance: true
+  tissue_context: "Whole-brain in vivo Perturb-seq atlas"

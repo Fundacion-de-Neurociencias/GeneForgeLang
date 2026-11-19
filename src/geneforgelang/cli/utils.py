@@ -23,9 +23,7 @@ except ImportError:
     HAS_YAML = False
 
 
-def collect_files(
-    file_paths: list[Path], recursive: bool = False, pattern: str = "*.gfl"
-) -> list[Path]:
+def collect_files(file_paths: list[Path], recursive: bool = False, pattern: str = "*.gfl") -> list[Path]:
     """Collect files from paths, optionally recursively."""
     files = []
 
@@ -230,9 +228,7 @@ def create_sarif_report(results: list[dict[str, Any]], output_path: Path):
                         "ruleId": error.get("code", "GFL_ERROR"),
                         "level": "error" if error.get("severity") == "ERROR" else "warning",
                         "message": {"text": error.get("message", "Unknown error")},
-                        "locations": [
-                            {"physicalLocation": {"artifactLocation": {"uri": result["file"]}}}
-                        ],
+                        "locations": [{"physicalLocation": {"artifactLocation": {"uri": result["file"]}}}],
                     }
 
                     # Add location if available
@@ -259,9 +255,7 @@ def create_sarif_report(results: list[dict[str, Any]], output_path: Path):
 class CLIUtilsMixin:
     """Mixin class with utility methods for the CLI."""
 
-    def _collect_files(
-        self, file_paths: list[Path], recursive: bool = False, pattern: str = "*.gfl"
-    ) -> list[Path]:
+    def _collect_files(self, file_paths: list[Path], recursive: bool = False, pattern: str = "*.gfl") -> list[Path]:
         """Collect files from paths."""
         return collect_files(file_paths, recursive, pattern)
 
@@ -311,9 +305,7 @@ class CLIUtilsMixin:
                         else:
                             self.formatter.print_error(f"  {error}")
 
-    def _write_validation_output(
-        self, results: list[dict[str, Any]], output_path: Path, format_type: str
-    ):
+    def _write_validation_output(self, results: list[dict[str, Any]], output_path: Path, format_type: str):
         """Write validation results to file."""
         if format_type == "junit":
             create_junit_report(results, output_path)
@@ -390,8 +382,7 @@ class CLIUtilsMixin:
 
             # Submit all tasks
             future_to_file = {
-                executor.submit(process_file_batch, file_path, args.action): file_path
-                for file_path in files
+                executor.submit(process_file_batch, file_path, args.action): file_path for file_path in files
             }
 
             # Collect results as they complete

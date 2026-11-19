@@ -1,9 +1,9 @@
 # ADR-001 — Arquitectura y Contrato de Frontera: GeneForgeLang ↔ GeneForge
 
-**Estado:** Aceptado  
-**Fecha:** 2026-03-11  
-**Autores:** Equipo NeuroIA (Agente GeneForge + Agente GeneForgeLang)  
-**Repositorios afectados:** GeneForgeLang (GFL), GeneForge  
+**Estado:** Aceptado
+**Fecha:** 2026-03-11
+**Autores:** Equipo NeuroIA (Agente GeneForge + Agente GeneForgeLang)
+**Repositorios afectados:** GeneForgeLang (GFL), GeneForge
 
 ---
 

@@ -1,0 +1,93 @@
+# GFL Stress Test Fixture — clawbio/dnasp
+# Derived from: https://github.com/ClawBio/ClawBio/tree/main/skills/dnasp
+# SKILL.md spec: dnasp v0.1.0 — 16 population genetics analyses
+#
+# Expected parser behaviour: PASS
+# Expected validator behaviour: WARN (analyze.strategy: population_genetics not in enum)
+# Gap probe: MAJOR — population genetics is a domain GFL does not cover today.
+#            Exposes need for new AnalysisStrategy enum values.
+
+metadata:
+  experiment_id: CB_STRESS_008
+  source_skill: clawbio/dnasp
+  skill_version: "0.1.0"
+  domain: population-genetics
+  tags: [population-genetics, nucleotide-diversity, Tajima-D, FST, DnaSP]
+  description: >
+    Python reimplementation of DnaSP 6 for population genetics.
+    Analyses: nucleotide diversity (Pi, Theta-W, Theta-L),
+    Tajima's D, Fu & Li D*/F*, Ka/Ks, McDonald-Kreitman,
+    Fst, site frequency spectrum, codon usage bias, and more.
+
+  gap_probe:
+    type: MISSING_STRATEGY_ENUM
+    missing_value: "population_genetics"
+    current_values: [differential, pathway, variant, expression, structural]
+    recommendation: >
+      Add 'population_genetics' to AnalysisStrategy enum in gftypes.py.
+      This domain covers nucleotide diversity, selection tests,
+      demographic inference, and molecular evolution metrics.
+
+analyze:
+  strategy: population_genetics
+  data: aligned_sequences.fasta
+  thresholds:
+    min_sites: 100
+    significance_alpha: 0.05
+  contract:
+    inputs:
+      aligned_sequences:
+        type: FASTA
+        attributes:
+          alignment: true
+          min_sequences: 2
+      outgroup:
+        type: FASTA
+        attributes:
+          sequences: 1
+    outputs:
+      nucleotide_diversity:
+        type: JSON
+        attributes:
+          metrics: [pi, theta_w, theta_l]
+      tajima_d:
+        type: JSON
+        attributes:
+          statistic: tajima_d
+          pvalue: true
+      fu_li_statistics:
+        type: JSON
+        attributes:
+          metrics: [D_star, F_star]
+      ka_ks_ratio:
+        type: JSON
+        attributes:
+          method: yn00
+      mcdonald_kreitman:
+        type: JSON
+        attributes:
+          test: neutrality_index
+      site_frequency_spectrum:
+        type: JSON
+      summary_report:
+        type: TEXT
+        attributes:
+          format: markdown
+  operations:
+    - type: compute_nucleotide_diversity
+      params:
+        metrics: [pi, theta_watterson, theta_l]
+        sliding_window: false
+    - type: tajima_d_test
+      params:
+        permutations: 10000
+    - type: compute_ka_ks
+      params:
+        method: yn00
+        codon_table: standard
+    - type: mcdonald_kreitman_test
+      params:
+        outgroup_required: true
+    - type: site_frequency_spectrum
+      params:
+        unfolded: true

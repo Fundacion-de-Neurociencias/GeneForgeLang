@@ -1,0 +1,54 @@
+# Sovereign Biological Circuit Synthesis & Closed-Loop RLVR Verification
+# Model: FineDNA-14B (Qwen3-14B backbone, 514B biological tokens, 100k RL tasks)
+# Client Guarantee: 100% Air-Gapped On-Premise Execution (Zero IP Leakage)
+
+finedna_circuit:
+  contract_id: "FineDNA-TREM2-Microglia-Rescue-01"
+  task_type: "crispr_circuit_design"
+  prompt: "Synthesize an HDR repair construct to rescue loss-of-function TREM2 variant R47H in human microglia with synonymous PAM protection and an EcoRI identification marker."
+  target_locus: "chr6:41126000-41131000"
+  inference_config:
+    endpoint_url: "http://localhost:8000/v1"
+    model_name: "FineDNA-14B"
+    temperature: 0.2
+    max_tokens: 4096
+    air_gapped: true
+    timeout_seconds: 30.0
+
+verifiable_dna:
+  task_id: "TREM2-RLVR-Verification-Task-01"
+  domain: "sequence_localization"
+  ground_truth_reference: "12-35:+"
+  reward_success: 1.0
+  reward_failure: 0.0
+  deterministic_evaluator: "gfl_deterministic_reward_oracle"
+  localization_contract:
+    contract_id: "loc_trem2_exon2_hdr"
+    query_pattern: "GAATTCATGCGATCG"
+    target_sequence: "NNNNNNNNNNNGAATTCATGCGATCGNNNNNNNNNN"
+    mode: "exact_match"
+    coordinate_system: "1_based_closed"
+    strand_orientation: "forward"
+  computation_contract:
+    contract_id: "comp_trem2_reading_frame"
+    computation_type: "translation"
+    input_dna: "ATGCGATCGTAA"
+    reading_frame: 1
+    expected_output: "MRS*"
+
+alphagenome2:
+  contract_id: "ag2_microglia_trem2_1mb"
+  locus_window_1mb: "chr6:40626000-41626000"
+  genome_build: "GRCh38"
+  cellular_context:
+    cell_type_curie: "CL:0000129"
+    cell_type_name: "microglial cell"
+    conditioning_mode: "cell_ontology_curie"
+  impute_modalities:
+    - "chromatin_accessibility"
+    - "dna_methylation_5mc"
+  enhancer_gene_linking:
+    target_gene_id: "ENSG00000095977"
+    enhancer_locus: "chr6:41129500-41130500"
+    min_contact_probability: 0.75
+    max_distance_bp: 150000

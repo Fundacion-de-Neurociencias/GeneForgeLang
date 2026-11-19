@@ -1,0 +1,39 @@
+// Prompteina Text-Conditioned All-Atom Protein Design in GeneForgeLang (GFL)
+// Grounded in Baker Lab / IPD & Ai2 (2026)
+// Target: De novo binder design against GM2A (deficiency causes GM2 gangliosidosis)
+
+design GM2ABinderDesign {
+  entity: "ProteinSequence"
+  model: "prompteina"
+  objective: {
+    maximize: "binding_affinity"
+  }
+  count: 50
+  output: "gm2a_de_novo_binders"
+
+  prompt_conditioning: {
+    macro_topology: "De novo three-helix bundle with amphipathic packing"
+    interaction_site: "Target the apical hydrophobic cavity of GM2A, forming hydrogen bonds with Thr108 and hydrophobic packing against Leu115"
+    negative_design: "Avoid binding the lipid transfer gateway residues Lys88-Asp91"
+    symmetry: "C1"
+    sequence_composition: "High thermal stability, depleted in cysteines and flexible loops"
+    guidance_scale: 8.0
+    num_inference_steps: 60
+  }
+}
+
+experiment InSilicoCrossValidation {
+  tool: "boltz1"
+  type: "validation"
+  params: {
+    target_gene: "GM2A"
+  }
+}
+
+analyze ComplexCoFoldingConsensus {
+  strategy: "structural"
+  thresholds: {
+    interface_rmsd_max: 1.5
+    min_affinity_nm: 500.0
+  }
+}

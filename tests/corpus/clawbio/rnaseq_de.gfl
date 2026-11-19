@@ -1,0 +1,83 @@
+# GFL Stress Test Fixture — clawbio/rnaseq-de
+# Derived from: https://github.com/ClawBio/ClawBio/tree/main/skills/rnaseq-de
+# SKILL.md spec: rnaseq-de v0.1.0 (PyDESeq2 backend)
+#
+# Expected parser behaviour: PASS
+# Expected validator behaviour: PASS
+# Gap probe: tests multi-input contract + downstream chain (analyze → design)
+
+metadata:
+  experiment_id: CB_STRESS_003
+  source_skill: clawbio/rnaseq-de
+  skill_version: "0.1.0"
+  domain: transcriptomics
+  tags: [rna-seq, differential-expression, bulk, DESeq2, PCA]
+  description: >
+    Differential expression analysis for bulk RNA-seq count matrices.
+    QC, PCA, DESeq2 normalisation, volcano plot, MA plot, contrast testing.
+
+analyze:
+  strategy: differential
+  data: count_matrix.csv
+  thresholds:
+    padj: 0.05
+    log2fc_abs: 1.5
+    min_count: 10
+    min_samples: 3
+  filters:
+    - "baseMean >= 10"
+    - "padj IS NOT NULL"
+  contract:
+    inputs:
+      count_matrix:
+        type: CSV
+        attributes:
+          rows: genes
+          columns: samples
+          values: raw_counts
+      sample_metadata:
+        type: CSV
+        attributes:
+          required_columns:
+            - sample_id
+            - condition
+    outputs:
+      de_results:
+        type: CSV
+        attributes:
+          columns:
+            - gene_id
+            - log2FoldChange
+            - padj
+            - baseMean
+      volcano_plot:
+        type: BINARY
+        attributes:
+          format: png
+      pca_plot:
+        type: BINARY
+        attributes:
+          format: png
+      summary_stats:
+        type: JSON
+  operations:
+    - type: library_size_qc
+      input: count_matrix
+    - type: pca_visualisation
+      input: count_matrix
+      params:
+        n_components: 2
+        color_by: condition
+    - type: deseq2_normalisation
+      input: count_matrix
+      params:
+        reference_condition: "control"
+    - type: differential_test
+      params:
+        contrast: ["condition", "treatment", "control"]
+    - type: volcano_plot
+      params:
+        x_axis: log2FoldChange
+        y_axis: "-log10(padj)"
+        color_threshold_padj: 0.05
+        color_threshold_lfc: 1.5

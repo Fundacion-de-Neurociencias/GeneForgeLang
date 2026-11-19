@@ -1,0 +1,44 @@
+metadata:
+  name: "RegulatoryGenomics_DualHead_Profile_Experiment"
+  version: "1.0.0"
+  description: "Declarative GFL specification for BPNet base-resolution profile heads and AtacWorks signal denoising (MIT 6.874)"
+  author: "Fundación de Neurociencias"
+
+regulatory_profile:
+  profile_id: "OCT4_SOX2_Enhancer_DualHead"
+  target_factor: "OCT4"
+  locus: "chr1:15432000-15433000"
+  cell_type: "H1_hESC"
+  modality: "de_novo_sequence_direct"
+  source_model: "BPNet"
+
+  # Head 1: Total signal count prediction (global magnitude)
+  count_head:
+    expected_total_counts: 100.0
+    tolerance_fold: 1.5
+    dispersion: 0.1
+    loss_model: "negative_binomial"
+
+  # Head 2: Base-resolution spatial distribution profile
+  profile_head:
+    resolution: "base_pair"
+    loss_metric: "multinomial_nll"
+    max_jsd_threshold: 0.18
+    strand_mode: "stranded_plus_minus"
+    smoothing_window_bp: 0
+
+  # Epistemic Barrier enforcement (MIT 6.874 Invariant)
+  epistemic_level: "predictive_guidance"
+  orthogonal_validation_required: true
+  orthogonal_validation_confirmed: false
+
+experiment:
+  tool: "tangermeme"
+  type: "analysis"
+  params:
+    strategy: "cis_regulatory_syntax"
+    target_gene: "OCT4"
+    cell_line: "H1_hESC"
+    assay: "ChIP-nexus"
+    model_name: "BPNet_OCT4_fold0"
+    attribution_method: "DeepLIFT"

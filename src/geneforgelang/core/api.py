@@ -149,9 +149,7 @@ def parse(text: str, use_grammar: bool = False, filename: str = "<input>") -> di
 
 
 @cached(cache_name="schema_validation", ttl=600.0, max_size=500)
-def validate(
-    ast: dict[str, Any], enhanced: bool = False
-) -> Union[list[str], EnhancedValidationResult]:
+def validate(ast: dict[str, Any], enhanced: bool = False) -> Union[list[str], EnhancedValidationResult]:
     """Return validation errors for the given AST.
 
     Performs semantic validation on the parsed AST to ensure it follows
@@ -272,9 +270,7 @@ def infer(
         return engine.predict_effect(ast, enhanced=False)
 
 
-def parse_enhanced(
-    text: str, use_grammar: bool = True, filename: str = "<input>"
-) -> EnhancedValidationResult:
+def parse_enhanced(text: str, use_grammar: bool = True, filename: str = "<input>") -> EnhancedValidationResult:
     """Parse GFL source with enhanced error reporting.
 
     This function provides detailed parsing results with rich error information,
@@ -332,9 +328,7 @@ def parse_enhanced(
 # Enhanced inference convenience functions
 
 
-def infer_enhanced(
-    ast: dict[str, Any], model_name: str = "heuristic", explain: bool = True
-) -> dict[str, Any]:
+def infer_enhanced(ast: dict[str, Any], model_name: str = "heuristic", explain: bool = True) -> dict[str, Any]:
     """Enhanced inference using advanced ML models.
 
     Convenience function for enhanced inference without requiring a model instance.
@@ -379,9 +373,7 @@ def infer_enhanced(
         raise ImportError("Enhanced inference engine not available")
 
 
-def compare_inference_models(
-    ast: dict[str, Any], model_names: list[str] | None = None
-) -> dict[str, Any]:
+def compare_inference_models(ast: dict[str, Any], model_names: list[str] | None = None) -> dict[str, Any]:
     """Compare predictions across multiple inference models.
 
     Args:
@@ -493,9 +485,7 @@ def execute(
         Best parameters: {'temperature': 37.2, 'concentration': 75.5}
     """
     if not HAS_EXECUTION_ENGINE:
-        raise ImportError(
-            "Execution engine not available. Plugin system may not be properly installed."
-        )
+        raise ImportError("Execution engine not available. Plugin system may not be properly installed.")
 
     with get_monitor().time_operation("api_execute"):
         if validate_first:
@@ -632,6 +622,96 @@ def get_api_info() -> dict[str, Any]:
     return info
 
 
+def compute_pairwise_distances(coords: Any) -> Any:
+    """Compute pairwise Euclidean distance matrix for 3D atomic coordinates.
+
+    Args:
+        coords: Array-like of shape [N, 3] representing 3D spatial points.
+
+    Returns:
+        Distance matrix of shape [N, N].
+    """
+    import numpy as np
+
+    arr = np.asarray(coords, dtype=np.float32)
+    if arr.ndim != 2 or arr.shape[-1] != 3:
+        raise ValueError(f"Expected coordinates shape [N, 3], got {arr.shape}")
+    diff = arr[:, np.newaxis, :] - arr[np.newaxis, :, :]
+    return np.sqrt(np.sum(diff**2, axis=-1) + 1e-8)
+
+
+def compute_contact_map(coords: Any, threshold: float = 8.0) -> Any:
+    """Compute binary residue contact map at given distance threshold (e.g. 8.0 Angstroms).
+
+    Args:
+        coords: C-alpha coordinates of shape [N, 3].
+        threshold: Distance threshold in Angstroms (default: 8.0).
+
+    Returns:
+        Binary adjacency/contact matrix of shape [N, N].
+    """
+    import numpy as np
+
+    dist = compute_pairwise_distances(coords)
+    return (dist <= threshold).astype(np.float32)
+
+
+def construct_backbone_frames(
+    n_coords: Any,
+    ca_coords: Any,
+    c_coords: Any,
+) -> tuple[Any, Any]:
+    """Construct SE(3) local rigid frames from protein backbone atoms (N, CA, C).
+
+    Follows Gram-Schmidt orthonormalization for invariant structural biology architectures.
+
+    Args:
+        n_coords: Nitrogen coordinates [N, 3].
+        ca_coords: Alpha carbon coordinates [N, 3].
+        c_coords: Carbonyl carbon coordinates [N, 3].
+
+    Returns:
+        Tuple (rotations [N, 3, 3], translations [N, 3]) representing local frames.
+    """
+    import numpy as np
+
+    n = np.asarray(n_coords, dtype=np.float32)
+    ca = np.asarray(ca_coords, dtype=np.float32)
+    c = np.asarray(c_coords, dtype=np.float32)
+
+    if not (n.shape == ca.shape == c.shape):
+        raise ValueError("Coordinate shapes for N, CA, C must match")
+
+    translations = ca
+    v1 = c - ca
+    e1 = v1 / (np.linalg.norm(v1, axis=-1, keepdims=True) + 1e-8)
+
+    v2 = n - ca
+    dot = np.sum(v2 * e1, axis=-1, keepdims=True)
+    u2 = v2 - dot * e1
+    e2 = u2 / (np.linalg.norm(u2, axis=-1, keepdims=True) + 1e-8)
+    e3 = np.cross(e1, e2)
+
+    rotations = np.stack([e1, e2, e3], axis=-1)
+    return rotations, translations
+
+
+def transform_points_to_local_frames(
+    points: Any,
+    rotations: Any,
+    translations: Any,
+) -> Any:
+    """Transform global 3D points into local SE(3) residue frames: p_local = R^T * (p_global - T)."""
+    import numpy as np
+
+    pts = np.asarray(points, dtype=np.float32)
+    rots = np.asarray(rotations, dtype=np.float32)
+    trans = np.asarray(translations, dtype=np.float32)
+
+    shifted = pts - trans
+    return np.einsum("nij,ni->nj", rots, shifted)
+
+
 __all__ = [
     "parse",
     "validate",
@@ -643,4 +723,8 @@ __all__ = [
     "infer_enhanced",
     "compare_inference_models",
     "get_api_info",
+    "compute_pairwise_distances",
+    "compute_contact_map",
+    "construct_backbone_frames",
+    "transform_points_to_local_frames",
 ]

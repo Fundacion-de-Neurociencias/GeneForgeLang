@@ -249,11 +249,7 @@ class EnhancedValidationResult:
         """Get semantic errors only."""
         if self._semantic_errors is not None:
             return self._semantic_errors
-        return [
-            e
-            for e in self.errors
-            if e.severity == ErrorSeverity.ERROR and e.category == ErrorCategory.SEMANTIC
-        ]
+        return [e for e in self.errors if e.severity == ErrorSeverity.ERROR and e.category == ErrorCategory.SEMANTIC]
 
     @semantic_errors.setter
     def semantic_errors(self, value: list[EnhancedValidationError]) -> None:
@@ -298,11 +294,7 @@ class EnhancedValidationResult:
     @property
     def is_valid(self) -> bool:
         """True if no critical, semantic, or syntax errors."""
-        return (
-            len(self.critical_errors) == 0
-            and len(self.semantic_errors) == 0
-            and len(self.syntax_errors) == 0
-        )
+        return len(self.critical_errors) == 0 and len(self.semantic_errors) == 0 and len(self.syntax_errors) == 0
 
     @property
     def has_warnings(self) -> bool:
@@ -326,11 +318,7 @@ class EnhancedValidationResult:
 
     def to_legacy_format(self) -> list[str]:
         """Convert to legacy string list format for backward compatibility."""
-        return [
-            str(error)
-            for error in self.errors
-            if error.severity in (ErrorSeverity.CRITICAL, ErrorSeverity.ERROR)
-        ]
+        return [str(error) for error in self.errors if error.severity in (ErrorSeverity.CRITICAL, ErrorSeverity.ERROR)]
 
     def __str__(self) -> str:
         """Comprehensive string representation."""
@@ -390,9 +378,7 @@ class ErrorCodes:
     SEMANTIC_VARIABLE_REDEFINITION = "SEMANTIC007"
     SEMANTIC_UNDEFINED_VARIABLE = "SEMANTIC008"
     SEMANTIC_UNDEFINED_HYPOTHESIS = "SEMANTIC009"  # New error code for undefined hypothesis
-    SEMANTIC_UNDEFINED_ENTITY_REFERENCE = (
-        "SEMANTIC010"  # New error code for undefined entity references
-    )
+    SEMANTIC_UNDEFINED_ENTITY_REFERENCE = "SEMANTIC010"  # New error code for undefined entity references
 
     # IO Contract errors (SEMANTIC100-SEMANTIC199)
     SEMANTIC_INVALID_CONTRACT = "SEMANTIC100"

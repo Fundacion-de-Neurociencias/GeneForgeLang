@@ -1,0 +1,43 @@
+# ==============================================================================
+# Biosecurity Provenance & SynthID Bio Watermarking Protocol
+# Demonstrating multi-modal AI-generated biological provenance attestation:
+# - SynthID Bio protein sequence k-mer context hashing & g-value detection
+# - 100% synonymous codon wobble-base encoding (0% amino acid change)
+# - Host Codon Adaptation Index (CAI) and splice motif protection
+# ==============================================================================
+
+biosecurity_watermark:
+  name: "fneurociencias_nanobody_anti_trem2_v1"
+  target_modality: "multimodal"
+  algorithm: "synthid_gvalue"
+
+  provenance:
+    institution: "Fundacion de Neurociencias"
+    lab_id: "INVESTIGO_NEUROIA"
+    generator_engine: "GeneForge-Rosalind-v2"
+    biosecurity_clearance: "passed_pathogen_screening"
+    timestamp: "2026-10-25T11:45:00Z"
+    signature_hash: "sha256:d8f3b491a92e10c74b98c36190ef0d198274efb"
+
+  viability_guardrails:
+    max_delta_delta_g: 0.50
+    min_cai_score: 0.82
+    preserve_amino_acid_sequence: true
+    avoid_splice_motifs: true
+    forbidden_motifs:
+      - "restriction_ecoRI"
+      - "cryptic_splice_donor"
+
+  detection_policy:
+    min_z_score: 4.50
+    green_list_fraction: 0.50
+    context_kmer_size: 3
+    significance_threshold_pvalue: 0.00001
+
+  security_key_ref: "vault:fneurociencias_synthid_key_2026"
+  sequence_payload: "QVQLVESGGGLVQPGGSLRLSCAASGFTFSSYAMSWVRQAPGKGLEWVSAISGSGGSTYYADSVKGRFTISRDNSKNTLYLQMNSLRAEDTAVYYCAKDYDYWGQGTLVTVSS"
+
+  metadata:
+    target_disease: "Alzheimer_Disease"
+    target_receptor: "TREM2_stalk_region"
+    synthesis_provider_check: "Twist_Bioscience_Verified"

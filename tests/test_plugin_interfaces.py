@@ -7,7 +7,6 @@ blocks, ensuring they provide proper contracts for external tool integration.
 from typing import Any
 
 import pytest
-
 from geneforgelang.plugins.interfaces import (
     BayesianOptimizerPlugin,
     DesignCandidate,
@@ -50,9 +49,7 @@ class TestDesignCandidate:
     def test_design_candidate_with_metadata(self):
         """Test DesignCandidate with metadata."""
         metadata = {"model_version": "v1.2", "temperature": 0.8}
-        candidate = DesignCandidate(
-            sequence="ATCGATCGATCG", properties={"gc_content": 0.5}, metadata=metadata
-        )
+        candidate = DesignCandidate(sequence="ATCGATCGATCG", properties={"gc_content": 0.5}, metadata=metadata)
 
         assert candidate.metadata["model_version"] == "v1.2"
         assert candidate.metadata["temperature"] == 0.8
@@ -102,9 +99,7 @@ class TestOptimizationStep:
 
     def test_optimization_step_with_metrics(self):
         """Test OptimizationStep with acquisition function metrics."""
-        step = OptimizationStep(
-            parameters={"param1": 1.5}, iteration=10, expected_improvement=0.25, uncertainty=0.15
-        )
+        step = OptimizationStep(parameters={"param1": 1.5}, iteration=10, expected_improvement=0.25, uncertainty=0.15)
 
         assert step.expected_improvement == 0.25
         assert step.uncertainty == 0.15
@@ -131,16 +126,10 @@ class MockGeneratorPlugin(GeneratorPlugin):
         """Generate mock candidates."""
         candidates = []
         for i in range(count):
-            sequence = (
-                "MKLLVL" + "A" * (20 + i)
-                if entity == EntityType.PROTEIN_SEQUENCE.value
-                else "ATCG" * (10 + i)
-            )
+            sequence = "MKLLVL" + "A" * (20 + i) if entity == EntityType.PROTEIN_SEQUENCE.value else "ATCG" * (10 + i)
 
             candidates.append(
-                DesignCandidate(
-                    sequence=sequence, properties={"mock_property": 0.5 + i * 0.1}, confidence=0.8
-                )
+                DesignCandidate(sequence=sequence, properties={"mock_property": 0.5 + i * 0.1}, confidence=0.8)
             )
 
         return candidates
@@ -183,9 +172,7 @@ class MockOptimizerPlugin(OptimizerPlugin):
     def suggest_next(self, experiment_history: list[ExperimentResult]) -> OptimizationStep:
         """Mock suggestion."""
         self.iteration += 1
-        return OptimizationStep(
-            parameters={"param1": self.iteration * 0.1}, iteration=self.iteration
-        )
+        return OptimizationStep(parameters={"param1": self.iteration * 0.1}, iteration=self.iteration)
 
     def process(self, data: dict[str, Any]) -> dict[str, Any]:
         """Process method required by BaseGFLPlugin."""

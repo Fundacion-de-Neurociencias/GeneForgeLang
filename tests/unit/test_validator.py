@@ -9,7 +9,6 @@ Tests cover:
 """
 
 import pytest
-
 from geneforgelang.core.api import validate
 from geneforgelang.core.validator import SemanticValidator
 

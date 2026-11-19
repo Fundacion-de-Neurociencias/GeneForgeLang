@@ -1,7 +1,6 @@
 """Tests for the advanced grammar-based GFL parser."""
 
 import pytest
-
 from geneforgelang.core.errors import ErrorCategory, ErrorSeverity
 from geneforgelang.utils.grammar_parser import (
     create_lexer,
@@ -302,9 +301,7 @@ class TestAdvancedGFLParser:
         assert assignment["type"] == "assignment"
         assert assignment["identifier"] == "target_gene"
 
-    @pytest.mark.xfail(
-        reason="Complex expressions in assignments not yet fully supported by parser grammar"
-    )
+    @pytest.mark.xfail(reason="Complex expressions in assignments not yet fully supported by parser grammar")
     def test_expressions(self):
         """Test parsing various expressions."""
         expression_tests = [

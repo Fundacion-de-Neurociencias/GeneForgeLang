@@ -1,0 +1,31 @@
+metadata:
+  name: "Huntington_Somatic_Instability_Gating"
+  version: "1.0.0"
+  description: "Stochastic microsatellite somatic expansion and toxicity cliff catastrophe gating (Neurodiagnoses Ecosystem)"
+  author: "Fundación de Neurociencias"
+
+protocol:
+  name: "HuntingtonSomaticInstabilitySimulator"
+  target_gene: "HTT"
+  locus: "chr4:3074877-3074933"
+  repeat_unit: "CAG"
+  germline_cag_repeat: 42
+  cell_type: "striatal_projection_neuron"
+  modifiers:
+    msh3_genotype: "risk_variant_rs1805355"
+    mlh1_expression: 1.15
+
+  SomaticDrift:
+    time_horizon_years: 65
+    toxicity_cliff_cag: 150
+    stochastic_drift_rate_per_year: 2.3
+    stochastic_dispersion: 0.25
+
+  decision:
+    task_id: "NeurodegenerationTippingPoint"
+    strategy: "SYSTEM_1_CALIBRATED"
+    engine: "biodecision-4b"
+    threshold: 0.85
+    allowed_space:
+      - "SUB_THRESHOLD_LATENT"     # CAG < 150: viabilidad celular intacta
+      - "CLIFF_COLLAPSE_IMMINENT"  # CAG >= 150: catástrofe y muerte neuronal acelerada

@@ -7,6 +7,28 @@ GeneForgeLang (GFL) is the **sole authority** for defining the symbolic represen
 *   **GeneForge = The Executive**: Executes the rules, performs inference, and optimizes the state in practice.
 *   **CAL = The Judiciary**: Arbitrates between interpretations and empirical evidence.
 
+### 1.1 The Bio-Thermodynamic Axiom
+> **"Metabolism is the global thermodynamic tax that the organism pays for its local order."**
+
+GeneForgeLang establishes that no biological structure, information processing, or causal transition exists in isolation from thermodynamic costs. Every local reduction of entropy (structural synthesis, cellular order, genetic fidelity) requires global metabolic dissipation. GFL formalizes metabolic cost and thermodynamic constraints as first-class invariants across all biological representations.
+
+### 1.2 The Genomic Data Governance & Sovereignty Mandate
+> **"A Genome Language Model is not merely an AI inference engine; it is a container of individual, population, and biosecurity information."**
+
+GeneForgeLang is a **Governance-Aware Biological Language**. Symbolic biological expressions, variant analyses, and multi-omic pipelines do not execute in a vacuum. GFL treats genomic data governance as a first-class dimension of semantic validity alongside causal logic:
+1. **Provenance Scope**: Public, Controlled, Clinical, Commercial, or Restricted source system lineage.
+2. **Consent Scope**: Explicit boundaries governing Research Only, Clinical Care, Commercial Use, or Population Genomics.
+3. **Population Scope & Sensitivity**: Ancestry-stratified awareness, cohort boundaries, and equity checks.
+4. **Data Sovereignty & Biosecurity**: Jurisdiction constraints (e.g. EU, US, Local-Only) and biosecurity risk scoring.
+
+### 1.3 The Epistemic Refinement Hypothesis (Representations as Priors)
+> **"GeneForge representations must be treated as epistemic priors, not as final truths. New evidence sources update, refine, or partition claims rather than overwrite them."**
+
+In GeneForgeLang, no biological candidate, causal claim, or structural representation is immutable or dogmatic. Every GFL state represents a belief prior $P(\text{Claim} \mid \mathcal{E}_{\text{prior}})$. When new empirical evidence emerges (from assays, clinical cohorts, or structural predictions):
+1. **Additive Evidence**: Evidence accumulates non-destructively in the provenance graph.
+2. **Context Partitioning**: Contradictory or context-dependent evidence splits claims into conditional equivalence classes (e.g., population-specific or tissue-specific sub-claims) rather than performing destructive overwrites.
+3. **Epistemic Updating**: Belief states transition deterministically through the Evidence DFA (`SUPPORTED` $\to$ `CONTESTED` $\to$ `CONDITIONALLY_VALID` $\to$ `SUPERSEDED`).
+
 ## 2. Delineation of Responsibilities
 
 ### 🧾 GeneForgeLang (GFL Repository)

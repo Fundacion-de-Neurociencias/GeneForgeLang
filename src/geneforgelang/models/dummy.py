@@ -31,11 +31,7 @@ class DummyGeneModel:
 
         if "differential" in strategy or "expression" in strategy:
             return {"label": "expression_change", "gene_type": gene_type, "confidence": 0.7}
-        if (
-            "edit" in exp_type
-            or "gene_edit" in exp_type
-            or "crispr" in (features.get("experiment_tool") or "").lower()
-        ):
+        if "edit" in exp_type or "gene_edit" in exp_type or "crispr" in (features.get("experiment_tool") or "").lower():
             return {"label": "edited", "gene_type": gene_type, "confidence": 0.8}
         return {"label": "targeted", "gene_type": gene_type, "confidence": 0.6}
 

@@ -1,0 +1,31 @@
+# GeneForgeLang Protocol: Carbon-X Genomic Foundation LLM Locus Reasoning
+# Model: HuggingFaceBio/Carbon-X (14.8B parameters, 40,960 context tokens)
+# Target: Human DCTN1 Promoter and Cis-Regulatory Non-Coding Variants in ALS/FTD
+
+genomic_llm:
+  name: "dctn1_promoter_variant_reasoning"
+  model: "carbonx-14b"
+  task_type: "variant_effect_reasoning"
+  max_context_tokens: 40960
+  temperature: 0.2
+  target_locus:
+    chrom: "chr2"
+    start: 74588200
+    end: 74591200
+    strand: "+"
+    assembly: "GRCh38"
+    gene_symbol: "DCTN1"
+  query:
+    prompt: "Analyze the regulatory consequence of the C>T transition in the DCTN1 core promoter. Assess SP1 motif disruption and downstream motor neuron retrograde axonal transport vulnerability."
+    task_type: "variant_effect_reasoning"
+    variant_delta:
+      ref: "C"
+      alt: "T"
+      pos: 74589320
+    sequence: "GGGCGGGGCGGGCCGCTAGCTAGCTAGCGATCGATCGATCGATCGATCGCGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTA"
+    max_new_tokens: 1024
+    temperature: 0.2
+  metadata:
+    organism: "Homo sapiens"
+    disease_context: "Amyotrophic Lateral Sclerosis / Frontotemporal Dementia"
+    benchmark: "Carbon-X Whole-Genome Locus Understanding"

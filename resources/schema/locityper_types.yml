@@ -77,4 +77,3 @@ schemas:
         type: array
         required: true
         description: "List of individual LocusGenotypeResult objects"
-

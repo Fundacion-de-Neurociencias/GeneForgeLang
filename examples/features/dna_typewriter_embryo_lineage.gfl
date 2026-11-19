@@ -1,0 +1,26 @@
+# DNA Typewriter Embryo Lineage Recording Workflow
+# Grounded in Science 2026 (Yu et al., DOI: 10.1126/science.ael0508)
+# Reconstructing single-cell developmental history from zygote through 13.5 days of mouse organogenesis
+
+tape_recorder MouseEmbryoTape {
+  cassette_architecture: "tandem_pegRNA_insertional"
+  tape_capacity_sites: 50
+  recording_interval_hours: 6.0
+  edit_signature_alphabet: ["Ins_A1", "Ins_B2", "Ins_C3", "Del_D1"]
+  target_organism: "mus_musculus"
+  developmental_window: "13.5_days"
+  readout_modality: "targeted_amplicon_dna_seq"
+}
+
+experiment LineageReconstructionExp {
+  tool: "targeted_amplicon_dna_seq"
+  type: "sequencing"
+  params: {
+    target_organism: "mus_musculus"
+    developmental_window: "13.5_days"
+    recorder: "MouseEmbryoTape"
+    readout_modality: "targeted_amplicon_dna_seq"
+    tape_capacity_sites: 50
+    replicates: 3
+  }
+}

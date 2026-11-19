@@ -32,42 +32,40 @@ server = LanguageServer("gfl-lsp", "v0.1.0")
 KEYWORD_DOCS = {
     "guided_discovery": "Bloque principal para orquestar un ciclo de descubrimiento iterativo guiado por IA.",
     "timeline": "Define un flujo de trabajo basado en una secuencia de eventos cronológicos.",
-    "contract": "Define el esquema de datos esperado para las entradas (inputs) y salidas (outputs) de un paso.",
-    "rules": "Define reglas lógicas para la validación y transformación de datos.",
-    "hypothesis": "Define hipótesis científicas con condiciones lógicas.",
-    "pathways": "Define rutas biológicas como listas de genes o componentes.",
-    "complexes": "Define complejos biológicos como conjuntos de subunidades.",
-    "experiment": "Define un experimento con herramientas y parámetros.",
-    "analyze": "Define análisis de datos con métodos específicos.",
-    "refine_data": "Refina datos mediante técnicas de procesamiento.",
-    "optimize": "Optimiza parámetros usando algoritmos de búsqueda.",
-    "simulate": "Simula procesos biológicos o experimentales.",
+    "contract": "Defines expected data schema for inputs and outputs of a workflow step.",
+    "rules": "Defines logical rules for data validation and transformation.",
+    "hypothesis": "Defines scientific hypotheses with logical conditions.",
+    "pathways": "Defines biological pathways as lists of genes or components.",
+    "complexes": "Defines biological complexes as sets of subunits.",
+    "experiment": "Defines an experiment with tools and parameters.",
+    "analyze": "Defines data analysis with specific strategies.",
+    "refine_data": "Refines data through processing techniques.",
+    "optimize": "Optimizes parameters using search and active learning algorithms.",
+    "simulate": "Simulates biological or experimental processes.",
 }
 
 
 def _validate(ls: LanguageServer, params):
     """
-    Función interna para validar un documento y publicar los diagnósticos.
+    Internal function to validate a document and publish diagnostics.
     """
     text_doc = ls.workspace.get_document(params.text_document.uri)
     source = text_doc.source
     diagnostics: list[Diagnostic] = []
 
     try:
-        # 1. Parsear el código fuente
+        # 1. Parse source code
         ast = parse(source)
 
-        # 2. Validar el AST con resultado mejorado
+        # 2. Validate AST with enhanced diagnostics
         validation_result = validate(ast, enhanced=True)
 
-        # 3. Convertir los errores de GFL a Diagnósticos de LSP
+        # 3. Convert GFL errors to LSP Diagnostics
         if isinstance(validation_result, EnhancedValidationResult):
-            # Procesar errores sintácticos
+            # Process syntax errors
             for error in validation_result.syntax_errors:
                 line = error.location.line - 1 if error.location and error.location.line > 0 else 0
-                col = (
-                    error.location.column - 1 if error.location and error.location.column > 0 else 0
-                )
+                col = error.location.column - 1 if error.location and error.location.column > 0 else 0
 
                 d = Diagnostic(
                     range=Range(
@@ -79,15 +77,13 @@ def _validate(ls: LanguageServer, params):
                 )
                 diagnostics.append(d)
 
-            # Procesar errores semánticos
+            # Process semantic errors
             for error in validation_result.semantic_errors:
                 line = error.location.line - 1 if error.location and error.location.line > 0 else 0
-                col = (
-                    error.location.column - 1 if error.location and error.location.column > 0 else 0
-                )
+                col = error.location.column - 1 if error.location and error.location.column > 0 else 0
 
-                # Determinar severidad
-                severity = DiagnosticSeverity.Error  # Error por defecto
+                # Determine severity level
+                severity = DiagnosticSeverity.Error  # Default to Error
                 if error.severity == ErrorSeverity.WARNING:
                     severity = DiagnosticSeverity.Warning
                 elif error.severity == ErrorSeverity.INFO:
@@ -105,19 +101,17 @@ def _validate(ls: LanguageServer, params):
                 )
                 diagnostics.append(d)
         else:
-            # Resultado legacy (lista de strings)
+            # Legacy result (list of strings)
             for i, error_msg in enumerate(validation_result):
                 d = Diagnostic(
-                    range=Range(
-                        start=Position(line=i, character=0), end=Position(line=i, character=50)
-                    ),
+                    range=Range(start=Position(line=i, character=0), end=Position(line=i, character=50)),
                     message=f"[VALIDATION] {error_msg}",
                     severity=DiagnosticSeverity.Error,
                 )
                 diagnostics.append(d)
 
     except Exception as e:
-        # Manejar errores generales del parser
+        # Handle general parser errors
         d = Diagnostic(
             range=Range(start=Position(line=0, character=0), end=Position(line=0, character=10)),
             message=f"[PARSE_ERROR] {str(e)}",
@@ -125,16 +119,14 @@ def _validate(ls: LanguageServer, params):
         )
         diagnostics.append(d)
 
-    # 4. Publicar los diagnósticos en el editor
+    # 4. Publish diagnostics to client
     ls.publish_diagnostics(text_doc.uri, diagnostics)
 
 
-@server.feature(
-    "textDocument/completion", CompletionOptions(trigger_characters=[":", " ", "(", "\n"])
-)
+@server.feature("textDocument/completion", CompletionOptions(trigger_characters=[":", " ", "(", "\n"]))
 def completions(params):
     """
-    Ofrece sugerencias de autocompletado basadas en el contexto.
+    Provides context-aware autocompletion suggestions.
     """
     items = []
     document = server.workspace.get_document(params.text_document.uri)
@@ -438,9 +430,7 @@ def hover(params):
     # A. Hover sobre palabras clave de GFL
     if word in KEYWORD_DOCS:
         return Hover(
-            contents=MarkupContent(
-                kind=MarkupKind.Markdown, value=f"**{word}**\n\n---\n\n{KEYWORD_DOCS[word]}"
-            )
+            contents=MarkupContent(kind=MarkupKind.Markdown, value=f"**{word}**\n\n---\n\n{KEYWORD_DOCS[word]}")
         )
 
     try:
@@ -461,11 +451,7 @@ def hover(params):
                 )
 
         # B. Hover sobre Tipos de Esquemas
-        if (
-            "type:" in document.lines[pos.line]
-            and "import_schemas" in ast
-            and isinstance(ast["import_schemas"], list)
-        ):
+        if "type:" in document.lines[pos.line] and "import_schemas" in ast and isinstance(ast["import_schemas"], list):
             schema_files = ast["import_schemas"]
             for schema_file in schema_files:
                 try:
@@ -493,13 +479,9 @@ def hover(params):
                             for attr, props in schema_def.attributes.items():
                                 required = props.get("required", False)
                                 attr_type = props.get("type", "unknown")
-                                contents_md += (
-                                    f"- `{attr}`: (type: `{attr_type}`, required: `{required}`)\n"
-                                )
+                                contents_md += f"- `{attr}`: (type: `{attr_type}`, required: `{required}`)\n"
 
-                        return Hover(
-                            contents=MarkupContent(kind=MarkupKind.Markdown, value=contents_md)
-                        )
+                        return Hover(contents=MarkupContent(kind=MarkupKind.Markdown, value=contents_md))
                 except Exception:
                     continue
 

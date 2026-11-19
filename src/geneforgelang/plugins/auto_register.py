@@ -47,12 +47,7 @@ def _register_genesis_plugins() -> None:
 
         from geneforgelang.plugins.plugin_registry import register_plugin_class
 
-        plugin_path = (
-            examples_path
-            / "gfl-plugin-ontarget-scorer"
-            / "gfl_plugin_ontarget_scorer"
-            / "plugin.py"
-        )
+        plugin_path = examples_path / "gfl-plugin-ontarget-scorer" / "gfl_plugin_ontarget_scorer" / "plugin.py"
         logger.info(f"Looking for on-target plugin at: {plugin_path}")
         if plugin_path.exists():
             spec = importlib.util.spec_from_file_location("ontarget_plugin", plugin_path)
@@ -73,12 +68,7 @@ def _register_genesis_plugins() -> None:
 
         from geneforgelang.plugins.plugin_registry import register_plugin_class
 
-        plugin_path = (
-            examples_path
-            / "gfl-plugin-offtarget-scorer"
-            / "gfl_plugin_offtarget_scorer"
-            / "plugin.py"
-        )
+        plugin_path = examples_path / "gfl-plugin-offtarget-scorer" / "gfl_plugin_offtarget_scorer" / "plugin.py"
         logger.info(f"Looking for off-target plugin at: {plugin_path}")
         if plugin_path.exists():
             spec = importlib.util.spec_from_file_location("offtarget_plugin", plugin_path)

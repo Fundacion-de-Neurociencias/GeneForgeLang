@@ -1,0 +1,45 @@
+# Force Field Engine Portability & Inter-Engine Energy Consistency Protocol
+# Grounded in Miletić, Wieczór, Simmerling et al. (JCTC / ChemRxiv): Amber ff14SB & ff19SB in GROMACS
+# Enforcing static potential energy tolerance (<= 1e-6 kJ/mol) and CMAP/improper dihedral audit
+
+metadata:
+  protocol_name: "GROMACS_Amber_ff19SB_OPC_Equivalence"
+  target_organism: "Homo sapiens"
+  benchmark_target: "Ubiquitin / Metalloprotease Loop"
+  version: "2.4.0"
+
+force_field_engine:
+  contract_id: "ff19sb_gmx_amber_verification"
+  force_field: "amber_ff19sb"
+  primary_engine: "gromacs"
+  reference_engine: "amber"
+  water_model: "opc"
+  target_structure_ref: "PDB:1UBQ"
+  verified_portability: true
+  energy_tolerance:
+    max_potential_energy_delta_kj_mol: 0.000001
+    max_force_delta_kj_mol_nm: 0.0001
+    audit_improper_dihedral_ordering: true
+    audit_cmap_residue_spec: true
+    electrostatic_14_scale: 0.8333333
+    vdw_14_scale: 0.5000000
+
+decision:
+  task_id: "inter_engine_clearance_gate"
+  strategy: "system_1_calibrated"
+  engine: "biodecision-4b"
+  threshold: 0.95
+  allowed_space:
+    - "INTER_ENGINE_EQUIVALENCE_CONFIRMED"
+    - "TOPOLOGY_DISCREPANCY_REJECTED"
+
+experiment:
+  tool: "gromacs"
+  type: "inter_engine_validation"
+  params:
+    target_gene: "UBB"
+    replicates: 3
+
+output:
+  report_format: "potential_energy_discrepancy_audit"
+  destination: "evidence/force_fields/ff19sb_gmx_amber_comparison.json"

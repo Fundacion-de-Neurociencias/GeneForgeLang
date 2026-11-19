@@ -269,9 +269,7 @@ class OptimizerPlugin(BaseGFLPlugin):
             RuntimeError: If suggestion generation fails
         """
 
-    def should_stop(
-        self, experiment_history: list[ExperimentResult], budget: dict[str, Any]
-    ) -> bool:
+    def should_stop(self, experiment_history: list[ExperimentResult], budget: dict[str, Any]) -> bool:
         """Determine if optimization should terminate.
 
         Args:
@@ -332,9 +330,7 @@ class PriorsPlugin(BaseGFLPlugin):
     """
 
     @abstractmethod
-    def specify_priors(
-        self, parameters: dict[str, Any], prior_type: str, **kwargs
-    ) -> dict[str, Any]:
+    def specify_priors(self, parameters: dict[str, Any], prior_type: str, **kwargs) -> dict[str, Any]:
         """Specify prior distributions for experimental parameters.
 
         Args:
@@ -416,9 +412,7 @@ class MoleculeGeneratorPlugin(GeneratorPlugin):
 
         for constraint in constraints:
             # Drug-likeness constraint validation
-            if "molecular_weight" in constraint and not any(
-                op in constraint for op in ["<", ">", "="]
-            ):
+            if "molecular_weight" in constraint and not any(op in constraint for op in ["<", ">", "="]):
                 errors.append(f"Invalid molecular_weight constraint: {constraint}")
             elif "logP" in constraint and not any(op in constraint for op in ["<", ">", "="]):
                 errors.append(f"Invalid logP constraint: {constraint}")

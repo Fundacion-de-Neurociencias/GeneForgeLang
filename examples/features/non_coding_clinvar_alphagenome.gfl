@@ -1,0 +1,41 @@
+# GeneForgeLang Example: Non-Coding Regulatory Variant Interpretation (ClinVar + AlphaGenome)
+# Evaluates tissue-specific regulatory impact to resolve Variants of Uncertain Significance (VUS).
+
+metadata:
+  experiment_id: NON_CODING_REGULATORY_TRIAGE_001
+  researcher: Dr. Manuel Menendez Gonzalez
+  project: neurodegenerative_non_coding_prioritization
+  description: Evaluation of non-coding regulatory variant in APOE/TOMM40 enhancer locus
+  date: 2026-10-04
+
+design:
+  entity: DNASequence
+  model: alphagenome_atlas
+  objective:
+    maximize: avi_phred
+    target: 30.0
+  count: 1
+  output: prioritized_candidates
+  constraints:
+    - tissue_specificity(UBERON:0000955, UBERON:0002107)
+    - resolve_vus(true)
+
+experiment:
+  tool: alphagenome_atlas
+  type: analysis
+  strategy: variant
+  params:
+    target_gene: APOE
+    variant: chr19:44906584:C>T
+    clinvar_significance: "Uncertain significance"
+    target_tissue: "UBERON:0000955"    # Brain cortex
+    control_tissue: "UBERON:0002107"   # Liver
+    min_phred: 25.0
+    modality: ChIP-TF
+
+analyze:
+  strategy: variant
+  thresholds:
+    min_avi_phred: 20.0
+    max_top_percentile: 1.0
+    resolves_non_coding_vus: true

@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gfl-plugin-causal-evidence"
+version = "0.1.0"
+description = "GFL plugin for Causal Evidence Triangulation, Instrument Strength, Invalidation, and Population Equity checks"
+readme = "README.md"
+authors = [{ name = "GeneForgeLang & Fundacion de Neurociencias", email = "info@neurociencias.org" }]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = []
+
+[project.entry-points."geneforgelang.plugins"]
+causal_evidence = "gfl_plugin_causal_evidence.causal_triangulation:CausalEvidencePlugin"

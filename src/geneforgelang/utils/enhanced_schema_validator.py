@@ -73,9 +73,7 @@ class EnhancedSchemaValidator:
             self._validator = Draft202012Validator(schema)
         return self._validator
 
-    def validate(
-        self, data: dict[str, Any], file_path: str | None = None
-    ) -> EnhancedValidationResult:
+    def validate(self, data: dict[str, Any], file_path: str | None = None) -> EnhancedValidationResult:
         """Validate GFL data against the JSON schema.
 
         Args:
@@ -116,9 +114,7 @@ class EnhancedSchemaValidator:
 
         return result
 
-    def _convert_json_schema_error(
-        self, json_error: JsonSchemaError, result: EnhancedValidationResult
-    ) -> None:
+    def _convert_json_schema_error(self, json_error: JsonSchemaError, result: EnhancedValidationResult) -> None:
         """Convert JSON Schema validation error to enhanced format."""
         # Build location path
         location_parts = []
@@ -137,18 +133,14 @@ class EnhancedSchemaValidator:
         # Handle specific validation cases
         if json_error.validator == "required":
             code = ErrorCodes.SCHEMA_MISSING_PROPERTY
-            missing_prop = (
-                json_error.message.split("'")[1] if "'" in json_error.message else "unknown"
-            )
+            missing_prop = json_error.message.split("'")[1] if "'" in json_error.message else "unknown"
             message = f"Missing required property '{missing_prop}'"
 
         elif json_error.validator == "enum":
             code = ErrorCodes.SCHEMA_INVALID_FORMAT
             if hasattr(json_error, "schema") and "enum" in json_error.schema:
                 valid_values = json_error.schema["enum"]
-                message = (
-                    f"Invalid value. Must be one of: {', '.join(str(v) for v in valid_values)}"
-                )
+                message = f"Invalid value. Must be one of: {', '.join(str(v) for v in valid_values)}"
 
         elif json_error.validator == "type":
             code = ErrorCodes.TYPE_INVALID_TYPE
@@ -195,9 +187,7 @@ class EnhancedSchemaValidator:
                 else:
                     error.add_fix(f"Change value to {expected_type} type")
 
-    def get_completion_suggestions(
-        self, data: dict[str, Any], cursor_path: list[str]
-    ) -> list[dict[str, Any]]:
+    def get_completion_suggestions(self, data: dict[str, Any], cursor_path: list[str]) -> list[dict[str, Any]]:
         """Get autocompletion suggestions for the given cursor position.
 
         Args:
@@ -315,9 +305,7 @@ class EnhancedSchemaValidator:
 _schema_validator = EnhancedSchemaValidator()
 
 
-def validate_with_enhanced_schema(
-    data: dict[str, Any], file_path: str | None = None
-) -> EnhancedValidationResult:
+def validate_with_enhanced_schema(data: dict[str, Any], file_path: str | None = None) -> EnhancedValidationResult:
     """Validate GFL data with enhanced schema validation.
 
     Args:
@@ -330,9 +318,7 @@ def validate_with_enhanced_schema(
     return _schema_validator.validate(data, file_path)
 
 
-def get_autocompletion_suggestions(
-    data: dict[str, Any], cursor_path: list[str]
-) -> list[dict[str, Any]]:
+def get_autocompletion_suggestions(data: dict[str, Any], cursor_path: list[str]) -> list[dict[str, Any]]:
     """Get IDE autocompletion suggestions.
 
     Args:

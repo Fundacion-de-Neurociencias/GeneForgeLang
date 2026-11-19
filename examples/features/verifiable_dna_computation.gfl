@@ -1,0 +1,58 @@
+# GeneForgeLang Example: Verifiable DNA Computation & Sequence Localization (FineDNA Synergy)
+# Formalizes RLVR verifiable reward contracts and deterministic biochemical computations for genomic LLMs.
+
+metadata:
+  experiment_id: FINEDNA_RLVR_VERIFIER_001
+  project: verifiable_genomic_intelligence
+  researcher: Dr. Manuel Menendez Gonzalez
+  institution: Fundacion de Neurociencias
+  description: Verifiable DNA sequence localization and 6-frame translation rewards inspired by FineDNA
+  date: 2026-11-07
+
+design:
+  entity: DNASequence
+  model: finedna_rlvr_oracle
+  objective:
+    maximize: reward_score
+    target: 1.0
+  count: 1
+  output: verified_reasoning_trace
+  constraints:
+    - coordinate_system(1_based_closed)
+    - strand_search(dual_strand)
+    - deterministic_verification(sha256)
+
+verifiable_dna:
+  task_id: "FineDNA-RLVR-Localization-Task-01"
+  domain: "sequence_localization"
+  ground_truth_reference: "45-98:+"
+  reward_success: 1.0
+  reward_failure: 0.0
+  deterministic_evaluator: "gfl_deterministic_reward_oracle"
+  localization_contract:
+    contract_id: "loc_target_locus_chr17"
+    query_pattern: "ATGCGATCGATCG"
+    target_sequence: "NNNNNATGCGATCGATCGNNNNN"
+    mode: "exact_match"
+    coordinate_system: "1_based_closed"
+    strand_orientation: "dual_strand"
+  computation_contract:
+    contract_id: "comp_reading_frame_f1"
+    computation_type: "translation"
+    input_dna: "ATGCGATCGATCGTAA"
+    reading_frame: 1
+    expected_output: "MRSI*"
+
+experiment:
+  tool: "finedna_verifier"
+  type: "analysis"
+  strategy: "deterministic"
+  params:
+    evaluation_mode: "binary_reward"
+    cryptographic_hash: true
+
+analyze:
+  strategy: "deterministic"
+  thresholds:
+    min_reward: 1.0
+    verification_passed: true

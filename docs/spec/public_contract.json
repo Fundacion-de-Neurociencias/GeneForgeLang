@@ -563,7 +563,7 @@
       "module": "geneforgelang.provenance"
     }
   },
-  "contract_version": "1.1.0",
+  "contract_version": "1.2.0",
   "functions": {
     "compare_inference_models": {
       "evidence": {
@@ -588,6 +588,81 @@
           }
         ],
         "return": "dict[str, Any]"
+      }
+    },
+    "compute_contact_map": {
+      "evidence": {
+        "label": "computed",
+        "reason": "deterministic binary threshold contact map from pairwise distances"
+      },
+      "signature": {
+        "parameters": [
+          {
+            "annotation": "Any",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "coords",
+            "required": true
+          },
+          {
+            "annotation": "float",
+            "default": "8.0",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "threshold",
+            "required": false
+          }
+        ],
+        "return": "Any"
+      }
+    },
+    "compute_pairwise_distances": {
+      "evidence": {
+        "label": "computed",
+        "reason": "deterministic Euclidean pairwise distance calculation"
+      },
+      "signature": {
+        "parameters": [
+          {
+            "annotation": "Any",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "coords",
+            "required": true
+          }
+        ],
+        "return": "Any"
+      }
+    },
+    "construct_backbone_frames": {
+      "evidence": {
+        "label": "computed",
+        "reason": "deterministic Gram-Schmidt orthonormal rotation frames from N-CA-C coordinates"
+      },
+      "signature": {
+        "parameters": [
+          {
+            "annotation": "Any",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "n_coords",
+            "required": true
+          },
+          {
+            "annotation": "Any",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "ca_coords",
+            "required": true
+          },
+          {
+            "annotation": "Any",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "c_coords",
+            "required": true
+          }
+        ],
+        "return": "tuple[Any, Any]"
       }
     },
     "execute": {
@@ -789,6 +864,38 @@
           }
         ],
         "return": "EnhancedValidationResult"
+      }
+    },
+    "transform_points_to_local_frames": {
+      "evidence": {
+        "label": "computed",
+        "reason": "deterministic rigid-body coordinate transformation to local frames"
+      },
+      "signature": {
+        "parameters": [
+          {
+            "annotation": "Any",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "points",
+            "required": true
+          },
+          {
+            "annotation": "Any",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "rotations",
+            "required": true
+          },
+          {
+            "annotation": "Any",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "translations",
+            "required": true
+          }
+        ],
+        "return": "Any"
       }
     },
     "validate": {

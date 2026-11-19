@@ -281,11 +281,39 @@ design:
   output: drug_candidates
 ```
 
+## Candidate Lifecycle & Multi-Model Borderline Rescue (RFOptimization)
+
+Generated candidates follow an explicit epistemic lifecycle inspired by RFOptimization (David Baker Lab, bioRxiv 2026):
+
+- **`VALIDATED`**: Passes all cross-model structural thresholds ($iPAE < 2.5, iPTM > 0.8, \text{confidence} > 0.8$).
+- **`NEAR_MISS`**: Borderline designs sitting close to the decision boundary (within `near_miss_margin = 0.15`). Instead of discarding them, GFL schedules them for gradient-guided simulated MCMC rescue and discrete resampling.
+- **`OPTIMIZED`**: Successfully rescued near-miss candidates promoted into viability.
+- **`REJECTED`**: Structurally unfeasible candidates with severe topological defects or steric clashes.
+
+```yaml
+design:
+  entity: ProteinSequence
+  model: RFdiffusionGenerator
+  objective:
+    maximize: binder_affinity
+    target: "TREM2"
+  consensus:
+    models: [alphafold3, rosettafold3, boltz1]
+    iptm_threshold: 0.80
+    ipae_threshold: 2.50
+  rescue_policy:
+    strategy: gradient_guided_mcmc
+    near_miss_margin: 0.15
+    max_cycles: 3
+  count: 100
+  output: designed_binders
+```
+
 ## Integration with Other Blocks
 
 The `design` block seamlessly integrates with other GFL workflow components:
 
-- **`optimize`**: Iteratively improve designs through experimental optimization
+- **`optimize`**: Iteratively improve designs through experimental optimization and rescue plugins (`gfl-plugin-rfo`)
 - **`analyze`**: Evaluate and characterize generated candidates
 - **`refine`**: Filter and improve candidate quality
 - **`simulate`**: Predict behavior in biological contexts
