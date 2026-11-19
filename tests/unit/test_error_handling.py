@@ -1,6 +1,7 @@
 """Tests for enhanced error handling system."""
 
 import pytest
+
 from geneforgelang.core.errors import (
     EnhancedValidationError,
     EnhancedValidationResult,

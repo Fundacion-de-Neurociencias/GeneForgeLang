@@ -41,44 +41,42 @@ def audit_directory(target_dir, manifest):
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
-                    if alias.name.startswith("geneforgelang."):
-                        if alias.name not in public_modules:
-                            print(
-                                f"[ERROR] {py_file.name}:{node.lineno} - Prohibited import of internal module: '{alias.name}'"
-                            )
-                            errors += 1
-            elif isinstance(node, ast.ImportFrom):
-                if node.module and node.module.startswith("geneforgelang."):
-                    if node.module not in public_modules:
+                    if alias.name.startswith("geneforgelang.") and alias.name not in public_modules:
                         print(
-                            f"[ERROR] {py_file.name}:{node.lineno} - Prohibited import from internal module: '{node.module}'"
+                            f"[ERROR] {py_file.name}:{node.lineno} - Prohibited import of internal module: '{alias.name}'"
                         )
                         errors += 1
-                    else:
-                        # Module is public, check symbols
-                        module_exports = exports.get(node.module, {})
-                        for alias in node.names:
-                            symbol = alias.name
-                            if symbol == "*":
-                                continue  # Hard to analyze statically without full environment
+            elif isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("geneforgelang."):
+                if node.module not in public_modules:
+                    print(
+                        f"[ERROR] {py_file.name}:{node.lineno} - Prohibited import from internal module: '{node.module}'"
+                    )
+                    errors += 1
+                else:
+                    # Module is public, check symbols
+                    module_exports = exports.get(node.module, {})
+                    for alias in node.names:
+                        symbol = alias.name
+                        if symbol == "*":
+                            continue  # Hard to analyze statically without full environment
 
-                            if symbol not in module_exports:
+                        if symbol not in module_exports:
+                            print(
+                                f"[ERROR] {py_file.name}:{node.lineno} - Prohibited import of internal symbol: '{symbol}' from '{node.module}'"
+                            )
+                            errors += 1
+                        else:
+                            state = module_exports[symbol].get("state", "stable")
+                            if state == "experimental":
                                 print(
-                                    f"[ERROR] {py_file.name}:{node.lineno} - Prohibited import of internal symbol: '{symbol}' from '{node.module}'"
+                                    f"[WARNING] {py_file.name}:{node.lineno} - Importing experimental symbol: '{symbol}'"
                                 )
-                                errors += 1
-                            else:
-                                state = module_exports[symbol].get("state", "stable")
-                                if state == "experimental":
-                                    print(
-                                        f"[WARNING] {py_file.name}:{node.lineno} - Importing experimental symbol: '{symbol}'"
-                                    )
-                                    warnings += 1
-                                elif state == "deprecated":
-                                    print(
-                                        f"[NOTICE] {py_file.name}:{node.lineno} - Importing deprecated symbol: '{symbol}'. Please migrate."
-                                    )
-                                    notices += 1
+                                warnings += 1
+                            elif state == "deprecated":
+                                print(
+                                    f"[NOTICE] {py_file.name}:{node.lineno} - Importing deprecated symbol: '{symbol}'. Please migrate."
+                                )
+                                notices += 1
 
     print("\n--- BOUNDARY AUDIT SUMMARY ---")
     print(f"Errors: {errors} | Warnings: {warnings} | Notices: {notices}")

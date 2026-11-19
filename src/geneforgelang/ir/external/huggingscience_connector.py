@@ -62,9 +62,7 @@ class HuggingScienceConnector:
     # Scientific Reasoning
     # ------------------------------------------------------------------
 
-    def reason_about_hypothesis(
-        self, hypothesis: str, context: list[dict[str, Any]] | None = None
-    ) -> ReasoningResult:
+    def reason_about_hypothesis(self, hypothesis: str, context: list[dict[str, Any]] | None = None) -> ReasoningResult:
         """Apply scientific reasoning to validate a hypothesis.
 
         Production: Call HuggingScience reasoning model API.
@@ -81,9 +79,7 @@ class HuggingScienceConnector:
 
         return result
 
-    def _mock_reasoning(
-        self, hypothesis: str, context: list[dict[str, Any]]
-    ) -> ReasoningResult:
+    def _mock_reasoning(self, hypothesis: str, context: list[dict[str, Any]]) -> ReasoningResult:
         """Generate mock reasoning result based on hypothesis keywords."""
         hypothesis_lower = hypothesis.lower()
 
@@ -174,9 +170,7 @@ class HuggingScienceConnector:
     # Biomedical QA
     # ------------------------------------------------------------------
 
-    def answer_question(
-        self, question: str, context: str | None = None
-    ) -> dict[str, Any]:
+    def answer_question(self, question: str, context: str | None = None) -> dict[str, Any]:
         """Answer biomedical questions using scientific models.
 
         Production: Call HuggingFace Inference API with BioGPT/MedAlpaca.
@@ -205,9 +199,7 @@ class HuggingScienceConnector:
     # Batch Processing
     # ------------------------------------------------------------------
 
-    def batch_reason(
-        self, hypotheses: list[str], max_batch_size: int = 10
-    ) -> list[ReasoningResult]:
+    def batch_reason(self, hypotheses: list[str], max_batch_size: int = 10) -> list[ReasoningResult]:
         """Process multiple hypotheses efficiently."""
         results = []
         for hyp in hypotheses[:max_batch_size]:

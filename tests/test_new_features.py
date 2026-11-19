@@ -7,6 +7,7 @@ These tests prevent future updates from breaking existing functionality.
 """
 
 import pytest
+
 from geneforgelang.core.api import parse, validate
 
 

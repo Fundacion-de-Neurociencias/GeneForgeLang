@@ -40,8 +40,8 @@ class ContextState:
     assay_type: str = "ChIP-seq"
     target_factor: str = "MYC"
     condition: str = "baseline"
-    disease_stage: Optional[str] = None
-    microenvironment: Optional[str] = None
+    disease_stage: str | None = None
+    microenvironment: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -64,7 +64,7 @@ class Provenance:
     attribution_method: str
     convergence_delta_checked: bool
     convergence_delta: float
-    seed: Optional[int] = 42
+    seed: int | None = 42
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -111,8 +111,8 @@ class Seqlet:
     attribution_sum: float
     p_value: float
     sequence: str
-    annotation: Optional[str] = None
-    annotation_p_value: Optional[float] = None
+    annotation: str | None = None
+    annotation_p_value: float | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {

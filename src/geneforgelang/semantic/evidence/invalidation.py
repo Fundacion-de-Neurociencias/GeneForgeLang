@@ -10,8 +10,6 @@ downstream dependents undergo mandatory epistemic recalibration in accordance
 with the ContractStateTransitionMatrix.
 """
 
-from typing import Dict, List, Set
-
 from geneforgelang.semantic.evidence.contract import ContractStateTransitionMatrix, ContradictionState, EvidenceContract
 
 

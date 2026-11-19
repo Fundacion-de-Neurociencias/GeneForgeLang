@@ -6,13 +6,14 @@ import sys
 sys.path.insert(0, os.path.abspath("src"))
 sys.path.insert(0, os.path.abspath("gfl-plugin-bgc"))
 
+from gfl_plugin_bgc.plugin import BGCPlugin
+
 from geneforgelang.core.gftypes import (
     BGCAssemblyContract,
     BiosyntheticDomainType,
     MegasynthaseDomain,
     MegasynthaseModule,
 )
-from gfl_plugin_bgc.plugin import BGCPlugin
 
 
 def test_bgc_domain_enums():

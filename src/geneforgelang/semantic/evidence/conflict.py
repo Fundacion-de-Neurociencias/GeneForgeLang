@@ -8,7 +8,7 @@ to determine if a true contradiction exists, or merely a misalignment in domain.
 """
 
 from enum import Enum, auto
-from typing import List, Optional
+from typing import Optional
 
 from geneforgelang.semantic.evidence.contract import ContradictionState, EvidenceContract, ScaleAnchor
 

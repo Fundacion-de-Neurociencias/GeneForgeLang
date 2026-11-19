@@ -142,9 +142,7 @@ class GraphExecutor:
                 return result
 
             # Entity attribute checks: "TP53.status == knocked_out" (flexible spacing/quotes)
-            attr_match = re.match(
-                r"(\w+)\.status\s*==\s*['\"]?(\w+)['\"]?", condition.strip()
-            )
+            attr_match = re.match(r"(\w+)\.status\s*==\s*['\"]?(\w+)['\"]?", condition.strip())
             if attr_match:
                 eid = attr_match.group(1)
                 val = attr_match.group(2)

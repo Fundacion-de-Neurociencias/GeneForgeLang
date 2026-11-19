@@ -1,4 +1,5 @@
 import pytest
+
 from geneforgelang.extensions.protein_evidence.esm_bridge import (
     ESMBridgeValidationError,
     export_to_geneforge_adapter,

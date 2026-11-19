@@ -38,7 +38,7 @@ class GFLConformanceRunner:
             # actual = validator.validate(content)
 
             # For now, we simulate the result
-            actual = expected # Mocking success
+            actual = expected  # Placeholder stub: mirrors expected outcome until validator integration
 
             if actual == expected:
                 print("✅ PASSED")

@@ -122,8 +122,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e .
-          pip install pytest
-          pip install pytest-asyncio  # Si se usan pruebas asíncronas
+          pip install pytest pytest-asyncio numpy
 
       # Paso clave: Ejecutar suite de pruebas con reporte detallado
       - name: Run pytest

@@ -222,9 +222,7 @@ class TestMultiHopReasoner:
         state = BiologicalState()
         state.add_entity(Entity(id="TP53", type=EntityType.GENE))
         state.add_entity(Entity(id="MDM2", type=EntityType.GENE))
-        state.add_relation(Relation(
-            type=RelationType.REGULATES, source="TP53", target="MDM2"
-        ))
+        state.add_relation(Relation(type=RelationType.REGULATES, source="TP53", target="MDM2"))
 
         reasoner = MultiHopReasoner()
         paths = reasoner.find_paths("TP53", "MDM2", state, max_paths=2)

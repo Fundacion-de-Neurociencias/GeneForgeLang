@@ -1,5 +1,3 @@
-from typing import Any, Tuple
-
 from geneforgelang.semantic.capabilities import VariantSpec
 
 

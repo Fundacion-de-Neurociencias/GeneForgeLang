@@ -87,7 +87,7 @@ A single unified model checkpoint operates across any subset of inputs without r
 ---
 
 ## 6. Synergy with SynthID Bio (Biosecurity Watermarking & Detection)
-ProTok enables structural steganography via `embed_structural_watermark()` and `detect_structural_watermark()` in [`ProTokEngine`](file:///C:/Users/usuario/GeneForgeLang%20Ecosystem/GeneForgeLang/src/geneforgelang/core/protok_engine.py):
+ProTok enables structural steganography via `embed_structural_watermark()` and `detect_structural_watermark()` in [`ProTokEngine`](../../../src/geneforgelang/core/protok_engine.py):
 - Watermark bits are embedded by introducing controlled, imperceptible parity perturbations in structural codebook indices.
 - **100% Sequence Preservation**: The amino acid sequence is completely unchanged (zero phenotypic alteration).
 - **High Structural Fidelity**: Retains $\ge 0.93$ lDDT without steric clashes.
@@ -114,7 +114,7 @@ In compliance with GeneForge architectural principles:
 
 ## 9. Bidirectional Cross-Synergies Between ProTok and GeneForgeLang
 
-Beyond molecular protein tokenization, ProTok and GFL cross-pollinate via four operational bridges in [`protok_engine.py`](file:///C:/Users/usuario/GeneForgeLang%20Ecosystem/GeneForgeLang/src/geneforgelang/core/protok_engine.py):
+Beyond molecular protein tokenization, ProTok and GFL cross-pollinate via four operational bridges in [`protok_engine.py`](../../../src/geneforgelang/core/protok_engine.py):
 
 ### Synergy 1: `GenTokTokenizer` (Trimodal Genomic Locus Tokenization)
 Exports ProTok's **Multi-Codebook Vector Quantization + Group Dropout** directly to GFL's genomic layer:

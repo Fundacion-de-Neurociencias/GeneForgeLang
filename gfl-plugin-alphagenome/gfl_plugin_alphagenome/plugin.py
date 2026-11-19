@@ -150,7 +150,7 @@ class AlphaGenomePlugin(GeneratorPlugin):
 
         resolved_api_key = api_key or os.environ.get("ALPHAGENOME_API_KEY")
         if not resolved_api_key:
-            # Fallback to loading from ~/.env or C:/Users/usuario/.env
+            # Fallback to loading from ~/.env
             env_path = os.path.expanduser("~/.env")
             if os.path.exists(env_path):
                 try:

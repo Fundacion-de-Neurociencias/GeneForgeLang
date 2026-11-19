@@ -4,6 +4,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 import pytest
+
 from geneforgelang.core.performance import (
     IntelligentCache,
     LazyLoader,

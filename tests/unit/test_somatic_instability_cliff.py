@@ -1,6 +1,7 @@
 """Unit tests for Microsatellite Somatic Instability and Toxicity Cliff Gating contracts in GeneForgeLang."""
 
 import pytest
+
 from geneforgelang.core.gftypes import (
     GFLAST,
     SomaticDriftModel,

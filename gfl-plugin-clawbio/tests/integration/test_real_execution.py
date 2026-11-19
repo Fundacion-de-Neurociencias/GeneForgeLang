@@ -17,6 +17,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pytest
+from gfl_plugin_clawbio import GwasLookupPlugin, RnaseqDEPlugin
 
 # Ensure GFL and plugin are importable
 PLUGIN_ROOT = Path(__file__).parent.parent.parent
@@ -33,8 +34,6 @@ except ImportError:
     HAS_CLAWBIO = False
 
 pytestmark = pytest.mark.skipif(not HAS_CLAWBIO, reason="ClawBio is not installed")
-
-from gfl_plugin_clawbio import GwasLookupPlugin, RnaseqDEPlugin
 
 
 @pytest.mark.integration

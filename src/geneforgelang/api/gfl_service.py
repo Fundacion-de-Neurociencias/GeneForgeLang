@@ -10,26 +10,22 @@ import json
 import logging
 import os
 import sys
-from typing import Any, Dict, Optional
+from importlib.metadata import entry_points
+from typing import Any, Optional
 
 import yaml
 from fastapi import FastAPI, HTTPException
+from geneforgelang.staging import DataStagingManager
 from pydantic import BaseModel
+
+from geneforgelang.core.parser import parse_gfl
+from geneforgelang.plugins.plugin_registry import plugin_registry
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
 # Add the project root to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-
-# Import GFL core functionality
-from importlib.metadata import entry_points
-
-from geneforgelang.core.parser import parse_gfl
-
-# Import plugin registry for dynamic plugin discovery
-from geneforgelang.plugins.plugin_registry import plugin_registry
-from geneforgelang.staging import DataStagingManager
 
 app = FastAPI(
     title="GeneForgeLang Service",

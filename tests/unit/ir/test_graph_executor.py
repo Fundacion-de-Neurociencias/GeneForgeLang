@@ -35,7 +35,7 @@ def test_graph_executor_unconditional():
 def test_graph_executor_conditional_true():
     state = _make_state()
     root = PlanNode(
-        condition='TP53.status == wildtype',
+        condition="TP53.status == wildtype",
         action=Substitute(gene_id="TP53", position=0, ref="A", alt="G"),
     )
     plan = PlanGraph(objective=Objective(description="Mutate if wildtype"), root=root)
@@ -48,7 +48,7 @@ def test_graph_executor_conditional_false():
     state = _make_state()
     state.entities["TP53"].set_attr("status", "mutated")
     root = PlanNode(
-        condition='TP53.status == wildtype',
+        condition="TP53.status == wildtype",
         action=Substitute(gene_id="TP53", position=0, ref="A", alt="G"),
     )
     plan = PlanGraph(objective=Objective(description="Mutate if wildtype"), root=root)
@@ -62,7 +62,7 @@ def test_graph_executor_conditional_false():
 def test_graph_executor_branching():
     state = _make_state()
     root = PlanNode(
-        condition='TP53.status == wildtype',
+        condition="TP53.status == wildtype",
         action=Substitute(gene_id="TP53", position=0, ref="A", alt="G"),
         next_nodes=[
             PlanNode(

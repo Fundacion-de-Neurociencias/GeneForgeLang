@@ -1,7 +1,7 @@
 """RFOptimization and Multi-Model Consensus Rescue GFL Plugin.
 
 Implements candidate rescue for de novo protein design near decision boundaries
-inspired by David Baker Lab (bioRxiv 2026): 
+inspired by David Baker Lab (bioRxiv 2026):
 - Classification of candidates into VALIDATED, NEAR_MISS, REJECTED.
 - Gradient-guided alternating optimization and discrete resampling.
 - Multi-model consensus screening across independent models (AF3, RF3, Boltz1).
@@ -12,7 +12,6 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from typing import Any
-
 
 from geneforgelang.core.gftypes import (
     CandidateStatus,

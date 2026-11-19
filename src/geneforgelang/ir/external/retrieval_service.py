@@ -192,9 +192,7 @@ class RetrievalService:
 
         return self.openmed.find_similar_entities(entity_id, top_k=top_k)
 
-    def reason_about_edit(
-        self, entity_id: str, edit_description: str
-    ) -> ReasoningResult | None:
+    def reason_about_edit(self, entity_id: str, edit_description: str) -> ReasoningResult | None:
         """Apply scientific reasoning to evaluate an edit."""
         if not self.enable_huggingscience or not self.huggingscience:
             return None
@@ -202,9 +200,7 @@ class RetrievalService:
         hypothesis = f"{edit_description} on {entity_id}"
         return self.huggingscience.reason_about_hypothesis(hypothesis)
 
-    def synthesize_evidence(
-        self, hypothesis: str, evidence: list[RetrievedEvidence]
-    ) -> dict[str, Any]:
+    def synthesize_evidence(self, hypothesis: str, evidence: list[RetrievedEvidence]) -> dict[str, Any]:
         """Synthesize multiple evidence sources."""
         if not self.enable_huggingscience or not self.huggingscience:
             return {"synthesized": False, "hypothesis": hypothesis}
@@ -250,9 +246,7 @@ class RetrievalService:
 
         return " AND ".join(terms)
 
-    def _build_knowledge_summary(
-        self, target: str, context: RetrievalContext
-    ) -> dict[str, Any]:
+    def _build_knowledge_summary(self, target: str, context: RetrievalContext) -> dict[str, Any]:
         """Summarize retrieved knowledge."""
         summary: dict[str, Any] = {
             "target_entity": target,

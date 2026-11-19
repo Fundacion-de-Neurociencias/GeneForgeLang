@@ -5,7 +5,7 @@ Implements the System 1 fast calibrated gating engine based on BioDecision-4B
 
 Key capabilities:
 - Single forward pass execution without autoregressive token generation (~40ms latency).
-- Calibrated probability outputs (ECE <= 0.08, benchmarked at 0.068 on Tev1).
+- Calibrated probability gating interface (target ECE threshold configurable).
 - Three operating modes:
     * CHOICE: Multi-class discrete option selection from allowed space.
     * BINARY: Binary gating (e.g., YES/NO, PASS/FAIL).

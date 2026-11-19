@@ -232,9 +232,7 @@ class MultiHopReasoner:
         interactors = hop.knowledge.get("interactors", [])
         for interactor in interactors:
             if interactor not in [r.get("target") for r in hop.outgoing_relations]:
-                hop.outgoing_relations.append(
-                    {"source": entity_id, "target": interactor, "type": "INTERACTS_WITH"}
-                )
+                hop.outgoing_relations.append({"source": entity_id, "target": interactor, "type": "INTERACTS_WITH"})
 
         # 4. Reasoning at this hop
         if self.huggingscience and hypothesis:
@@ -299,13 +297,9 @@ class MultiHopReasoner:
 
         return candidates[:5]  # Limit candidates
 
-    def _select_next_hop(
-        self, current_hop: HopResult, visited: set[str], target: str | None
-    ) -> str | None:
+    def _select_next_hop(self, current_hop: HopResult, visited: set[str], target: str | None) -> str | None:
         """Select best next hop candidate."""
-        candidates = [
-            c for c in current_hop.next_hop_candidates if c.upper() not in visited
-        ]
+        candidates = [c for c in current_hop.next_hop_candidates if c.upper() not in visited]
 
         if not candidates:
             return None
@@ -339,9 +333,7 @@ class MultiHopReasoner:
     # Path Finding Strategies
     # ------------------------------------------------------------------
 
-    def _find_via_interactors(
-        self, start: str, end: str, state: BiologicalState | None
-    ) -> MultiHopPath | None:
+    def _find_via_interactors(self, start: str, end: str, state: BiologicalState | None) -> MultiHopPath | None:
         """Find path via common interactors."""
         start_knowledge = self.openmed.get_entity_knowledge(start)
         end_knowledge = self.openmed.get_entity_knowledge(end)
@@ -387,9 +379,7 @@ class MultiHopReasoner:
 
         return path
 
-    def _find_via_pathway(
-        self, start: str, end: str, state: BiologicalState | None
-    ) -> MultiHopPath | None:
+    def _find_via_pathway(self, start: str, end: str, state: BiologicalState | None) -> MultiHopPath | None:
         """Find path via common pathway membership."""
         start_knowledge = self.openmed.get_entity_knowledge(start)
         end_knowledge = self.openmed.get_entity_knowledge(end)
@@ -441,14 +431,8 @@ class MultiHopReasoner:
     def _classify_path(self, path: MultiHopPath) -> str:
         """Classify the type of biological relationship."""
         # Analyze relations
-        has_regulatory = any(
-            "REGULATES" in str(r.get("type", "")) for h in path.hops for r in h.outgoing_relations
-        )
-        has_physical = any(
-            "INTERACTS_WITH" in str(r.get("type", ""))
-            for h in path.hops
-            for r in h.outgoing_relations
-        )
+        has_regulatory = any("REGULATES" in str(r.get("type", "")) for h in path.hops for r in h.outgoing_relations)
+        has_physical = any("INTERACTS_WITH" in str(r.get("type", "")) for h in path.hops for r in h.outgoing_relations)
 
         if has_regulatory:
             return "regulatory"

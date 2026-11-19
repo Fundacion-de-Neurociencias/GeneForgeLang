@@ -25,11 +25,7 @@ def _make_tp53_state():
             attrs={"status": "functional"},
         )
     )
-    state.add_relation(
-        Relation(
-            source="TP53", target="TP53_protein", type=RelationType.DERIVES_FROM
-        )
-    )
+    state.add_relation(Relation(source="TP53", target="TP53_protein", type=RelationType.DERIVES_FROM))
     return state
 
 

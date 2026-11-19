@@ -42,9 +42,7 @@ class StateEvaluator:
 
         return min(max(score, 0.0), 1.0)
 
-    def _infer_target(
-        self, description: str, state: BiologicalState | None = None
-    ) -> str | None:
+    def _infer_target(self, description: str, state: BiologicalState | None = None) -> str | None:
         # Extract potential target IDs and validate against known entities if state provided.
         tokens = description.upper().split()
         # Common operation words to exclude from being identified as targets

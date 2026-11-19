@@ -172,7 +172,7 @@ print("Query result:", result["rows"])
 
 ## Quality & Verification Gates
 
-The implementation is verified across 20 unit tests in [`tests/unit/test_bioc_on_ice.py`](file:///C:/Users/usuario/GeneForgeLang%20Ecosystem/GeneForgeLang/tests/unit/test_bioc_on_ice.py):
+The implementation is verified across 20 unit tests in [`tests/unit/test_bioc_on_ice.py`](../../../tests/unit/test_bioc_on_ice.py):
 * `TestBiocIceTypes`: 100% roundtrip coverage for enums, metadata, contracts, and AST aliases (`bioc_reference`, `lakehouse_reference`, `bioc_on_ice`).
 * `TestBiocOnIceEngine`: Empirical manifest parsing, table listing (81 tables), gene resolution, CURIE validation, and query execution.
 * `TestBiocIceValidator`: Rejection of invalid release formats, unsupported genome builds, unknown backends, invalid schemas, and malformed limits.

@@ -9,6 +9,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+
 from geneforgelang.core.dna_breathing_engine import DNABreathingEngine
 from geneforgelang.core.gftypes import (
     GFLAST,

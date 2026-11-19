@@ -3,6 +3,7 @@
 from typing import Any
 
 import pytest
+
 from geneforgelang.plugins.plugin_registry import (
     BaseGFLPlugin,
     PluginDependency,

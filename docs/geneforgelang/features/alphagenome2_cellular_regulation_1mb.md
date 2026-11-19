@@ -112,7 +112,7 @@ alphagenome2:
 
 ## Quality & Verification Gates
 
-The implementation is verified by 19 unit tests in [`tests/unit/test_alphagenome2.py`](file:///C:/Users/usuario/GeneForgeLang%20Ecosystem/GeneForgeLang/tests/unit/test_alphagenome2.py):
+The implementation is verified by 19 unit tests in [`tests/unit/test_alphagenome2.py`](../../../tests/unit/test_alphagenome2.py):
 * `TestAlphaGenome2Types`: Full roundtrip serialization for contracts, enums, and AST aliases (`alphagenome2`, `ag2_locus`, `cellular_regulation_1mb`).
 * `TestAlphaGenome2Engine`: 1 Mb coordinate parsing, boundary enforcement, loop decay modeling, 5mC imputation, and report caching.
 * `TestAlphaGenome2Validator`: Semantic validation rules rejecting sequence windows $>1\text{ Mb}$, malformed coordinates, invalid cell CURIEs, unknown modalities, and non-IUPAC variants.
