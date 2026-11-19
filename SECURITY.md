@@ -48,12 +48,12 @@ When a security vulnerability report is received:
 
 ---
 
-## Automated Security Scanners & AI Research (Anthropic OSS Scanner)
+## Automated Security Scanners & AI Research
 
-GeneForgeLang actively participates in and welcomes opt-in automated vulnerability analysis programs for open-source software, including:
-- **Anthropic OSS Scanner**: Periodic, automated vulnerability scanning and empirical proof-of-concept (PoC) validation powered by advanced Claude models.
+GeneForgeLang welcomes opt-in automated vulnerability analysis programs for open-source software, including:
+- **Automated Security Auditing**: Periodic, automated vulnerability scanning and empirical proof-of-concept (PoC) validation.
 - **GitHub Dependency Graph & Dependabot**: Automated CVE tracking for supply chain dependencies.
-- **Static Analysis Gates**: Ruff, Bandit, and Mypy integration enforced on all pull requests and pre-commit hooks.
+- **Static Analysis Gates**: Ruff, Bandit, and Mypy integration configured on pull requests and pre-commit hooks.
 
 Automated scanning systems that discover valid vulnerabilities with verifiable PoCs are invited to submit reports directly through **GitHub Private Vulnerability Reporting** or submit non-destructive security pull requests addressing identified findings.
 

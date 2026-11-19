@@ -1,4 +1,5 @@
 import pytest
+
 from geneforgelang.semantic.algebra_audit import SemanticAlgebraAudit
 from geneforgelang.semantic.lattice import EpistemicState
 from geneforgelang.semantic.state_space import SemanticStateSpaceAudit

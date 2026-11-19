@@ -10,6 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import yaml
+
 from geneforgelang.core.gftypes import (
     GFLAST,
     BiosecurityWatermarkContract,
@@ -27,6 +28,13 @@ from geneforgelang.core.watermark_engine import (
     WatermarkEngine,
     calculate_cai,
     translate_dna,
+)
+from tests.fixtures.secrets.watermark_test_seeds import (
+    CODON_WATERMARK_TEST_SEED,
+    CONTRACT_TEST_SEED,
+    HIGH_LEVEL_WATERMARK_TEST_SEED,
+    MRNA_WATERMARK_TEST_SEED,
+    PROTEIN_WATERMARK_TEST_SEED,
 )
 
 
@@ -76,7 +84,7 @@ def test_biosecurity_watermark_contract_roundtrip() -> None:
             min_z_score=4.80,
             green_list_fraction=0.50,
         ),
-        security_key_ref="test_key_seed",
+        security_key_ref=CONTRACT_TEST_SEED,
     )
 
     data = contract.to_dict()
@@ -115,7 +123,7 @@ def test_gfl_ast_roundtrip_with_biosecurity_watermark() -> None:
 
 def test_synthid_protein_watermarking_embedding_and_detection() -> None:
     """Test DeepMind SynthID Bio protein sequence watermarking and g-value detection."""
-    watermarker = SynthIDProteinWatermarker(key="deepmind_synthid_test_key_2026", kmer_size=3, gamma=0.50)
+    watermarker = SynthIDProteinWatermarker(key=PROTEIN_WATERMARK_TEST_SEED, kmer_size=3, gamma=0.50)
 
     # Standard therapeutic nanobody sequence (115 amino acids)
     nanobody = (
@@ -142,7 +150,7 @@ def test_synthid_protein_watermarking_embedding_and_detection() -> None:
 
 def test_synonymous_codon_watermarking_exact_phenotypic_invariance() -> None:
     """Verify coding DNA watermarking achieves 100% amino acid identity (zero mutation)."""
-    codon_wm = SynonymousCodonWatermarker(key="fneurociencias_codon_key_2026")
+    codon_wm = SynonymousCodonWatermarker(key=CODON_WATERMARK_TEST_SEED)
 
     # Coding DNA sequence (90 codons = 270 bp)
     dna = (
@@ -161,9 +169,9 @@ def test_synonymous_codon_watermarking_exact_phenotypic_invariance() -> None:
     watermarked_protein = translate_dna(watermarked_dna)
 
     # STRICT INVARIANT: 100% Amino acid identity must be preserved!
-    assert (
-        watermarked_protein == original_protein
-    ), f"Phenotype modified! Original: {original_protein}\nWatermarked: {watermarked_protein}"
+    assert watermarked_protein == original_protein, (
+        f"Phenotype modified! Original: {original_protein}\nWatermarked: {watermarked_protein}"
+    )
 
     # CAI must remain favorable for human host expression
     wm_cai = calculate_cai(watermarked_dna)
@@ -178,7 +186,7 @@ def test_synonymous_codon_watermarking_exact_phenotypic_invariance() -> None:
 
 def test_mrna_watermarking_and_ribo_detection() -> None:
     """Verify mRNA watermarking preserves translation and operates with uracil bases."""
-    codon_wm = SynonymousCodonWatermarker(key="mrna_therapeutic_key_2026")
+    codon_wm = SynonymousCodonWatermarker(key=MRNA_WATERMARK_TEST_SEED)
 
     mrna = (
         "AUGCAAGUGCAACUGGUGGAGUCUGGGGGAGGCUUGGUACAGCCUGGGGGGUCCCUGAGACUCUCCUGUGCAGCCUCU"
@@ -203,7 +211,7 @@ def test_watermark_engine_high_level_orchestration() -> None:
         name="high_level_nanobody_test",
         target_modality=WatermarkModality.PROTEIN,
         algorithm=WatermarkAlgorithm.SYNTHID_GVALUE,
-        security_key_ref="hl_key_123",
+        security_key_ref=HIGH_LEVEL_WATERMARK_TEST_SEED,
         detection_policy=WatermarkDetectionPolicy(min_z_score=4.0),
     )
 

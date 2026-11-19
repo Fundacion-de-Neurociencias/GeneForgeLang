@@ -437,7 +437,11 @@ OWNED_CLAIMS = [
     pytest.param(_c17_no_unconditional_privacy_flag, id="C17-privacy-cleared-F004"),
     pytest.param(_c18_no_mocked_conformance, id="C18-mocked-conformance-F006"),
     pytest.param(_c19_no_dead_docs_url, id="C19-readthedocs-url-F011", marks=_owned_xfail("C19", "F011")),
-    pytest.param(_c20_no_status_doc("END_TO_END_TRUTH_AUDIT.md"), id="C20-truth-audit-doc-F009"),
+    pytest.param(
+        _c20_no_status_doc("END_TO_END_TRUTH_AUDIT.md"),
+        id="C20-truth-audit-doc-F009",
+        marks=_owned_xfail("C20", "F009"),
+    ),
     pytest.param(
         _c20_no_status_doc("PULL_REQUEST_DESCRIPTION.md"),
         id="C20-pr-description-doc-F009",

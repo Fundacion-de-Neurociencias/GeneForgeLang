@@ -7,6 +7,7 @@ based on Science 2026 (Yu et al., DOI: 10.1126/science.ael0508).
 from __future__ import annotations
 
 import pytest
+
 from geneforgelang.core.gftypes import (
     GFLAST,
     CassetteArchitecture,

@@ -11,6 +11,7 @@ Tests cover:
 import math
 
 import pytest
+
 from geneforgelang.core.gftypes import (
     GFLAST,
     DecisionContract,

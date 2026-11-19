@@ -1,6 +1,7 @@
 """Unit tests for Regulatory Genomics Dual-Head Contracts (BPNet & AtacWorks) in GeneForgeLang."""
 
 import pytest
+
 from geneforgelang.core.gftypes import (
     GFLAST,
     CountHeadContract,

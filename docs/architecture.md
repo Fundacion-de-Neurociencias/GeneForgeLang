@@ -163,7 +163,7 @@ GFL Core centralizes all data contracts in immutable, serializable structures:
    - `RetroelementType`: Taxonomy of non-canonical enzymes and mobile elements (`ARRAY_ASSOCIATED_RT` / ART, `RETRON`, `GROUP_II_INTRON`, `DGR`, `CRISPR_ASSOCIATED_RT`, `VIRAL_RT`).
    - `RetroelementArchitecture`: Formal structural contract defining reverse transcriptase domain boundaries, catalytic triad verification (`YADD`, `YMDD`, `LGDD`), and flanking repeat arrays.
    - `ExhaustiveCoverageContract`: Enforces full, continuous, non-fragmented base scanning ($100\%$ base coverage, sliding window/stride, dual-strand verification) preventing LLM agent context-window drift.
-   - `DeterministicReplayContract`: Guarantees reproducible re-discovery across independent agent runs via cryptographic verification hashes ($seed \times candidate \times checksum$), preventing the "stochastic trap" observed in unstructured agent swarms (e.g., Anthropic Mythos ART discovery).
+   - `DeterministicReplayContract`: Guarantees reproducible re-discovery across independent agent runs via cryptographic verification hashes ($seed \times candidate \times checksum$), preventing the "stochastic trap" observed in unstructured agent swarms.
 
 6. **De Novo Catalytic & Enzyme Design Layer (AlphaProtein Novo Synergy - ADR-ARCH-001)**:
    - *Constitutional Boundary*: GFL provides strict syntactic representation and observational contracts, strictly delegating active kinetic solvers, energy barrier optimization ($\Delta G^\ddagger$), and generative diffusion to the GeneForge runtime (`gf/simulation/catalytic_kinetics/` and `gf/models/catalytic_scaffolder.py`).

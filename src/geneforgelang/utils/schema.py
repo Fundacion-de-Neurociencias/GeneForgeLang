@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, Union
 
 import yaml
+
 from geneforgelang.core.errors import (
     EnhancedValidationResult,
     ErrorCodes,

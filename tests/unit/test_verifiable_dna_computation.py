@@ -5,10 +5,10 @@ from __future__ import annotations
 import pytest
 
 from geneforgelang.core.gftypes import (
+    GFLAST,
     CoordinateSystem,
     DNAComputationContract,
     DNAComputationType,
-    GFLAST,
     RLVRTaskDomain,
     SequenceLocalizationContract,
     SequenceLocalizationMode,
@@ -291,13 +291,15 @@ class TestVerifiableDNASemanticValidation:
         assert any("task_id" in e.message for e in result.errors)
 
     def test_validate_exemplar_file(self) -> None:
-        import yaml
         from pathlib import Path
+
+        import yaml
+
         from geneforgelang.core.validator import EnhancedSemanticValidator
 
         example_path = Path("examples/features/verifiable_dna_computation.gfl")
         assert example_path.exists(), f"Exemplar file {example_path} not found"
-        with open(example_path, "r", encoding="utf-8") as f:
+        with open(example_path, encoding="utf-8") as f:
             ast = yaml.safe_load(f)
 
         validator = EnhancedSemanticValidator()

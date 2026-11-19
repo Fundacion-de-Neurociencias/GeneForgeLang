@@ -88,7 +88,7 @@ dna_dynamics:
 
 ## 4. Empirical Validation & Benchmarking
 
-The Python test suite (`tests/unit/test_dna_breathing.py`, 9 tests, 100% passing) validates:
+The Python test suite (`tests/unit/test_dna_breathing.py`, 9 unit tests) validates:
 1. **AT vs GC Opening Contrast**: TATA box (`TATAAA`) demonstrates average opening probabilities of $12.5\%\text{--}13.7\%$ per base pair, compared to $<1.4\%$ for GC-rich tracts (`GGGCGG`) at 310.15 K.
 2. **Thermal Monotonicity**: Opening probabilities scale strictly monotonically with temperature from 298.15 K ($25^\circ\text{C}$) to 310.15 K ($37^\circ\text{C}$) to 330.15 K ($57^\circ\text{C}$).
 3. **Shape vs Dynamics Orthogonality**: A-tracts narrow down to $\text{MGW} < 3.5\text{ \AA}$ in static equilibrium while maintaining high thermal opening flexibility, separating static geometry from dynamic susceptibility.

@@ -8,6 +8,12 @@ import pytest
 sys.path.insert(0, os.path.abspath("src"))
 sys.path.insert(0, os.path.abspath("gfl-plugin-alphagenome"))
 
+from gfl_plugin_alphagenome.plugin import (
+    AlphaGenomePlugin,
+    AviScoreResult,
+    RegulatoryMotifAnnotation,
+)
+
 from geneforgelang.core.gftypes import (
     AviModality,
     AviScore,
@@ -17,11 +23,6 @@ from geneforgelang.core.gftypes import (
     RegulatoryMotifAnnotation as CoreMotifAnnotation,
 )
 from geneforgelang.plugins.interfaces import EntityType
-from gfl_plugin_alphagenome.plugin import (
-    AlphaGenomePlugin,
-    AviScoreResult,
-    RegulatoryMotifAnnotation,
-)
 
 
 def test_alphagenome_core_types():
