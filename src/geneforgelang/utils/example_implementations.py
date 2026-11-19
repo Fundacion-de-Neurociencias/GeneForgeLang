@@ -24,8 +24,43 @@ from geneforgelang.plugins.interfaces import (
     SequenceGeneratorPlugin,
 )
 from geneforgelang.plugins.plugin_registry import PluginDependency, PluginPriority
+from geneforgelang.provenance import (
+    Provenance,
+    ProvenancedList,
+    register_simulated_component,
+    warn_first_use,
+)
 
 logger = logging.getLogger(__name__)
+
+_LOCATION = "src/geneforgelang/utils/example_implementations.py"
+PROTEIN_VAE_PROVENANCE = Provenance(
+    "simulated", "geneforgelang.utils.example_implementations.ProteinVAEGenerator", "1.2.0"
+)
+MOLECULE_TRANSFORMER_PROVENANCE = Provenance(
+    "simulated", "geneforgelang.utils.example_implementations.MoleculeTransformerGenerator", "2.1.0"
+)
+BAYESIAN_OPTIMIZER_PROVENANCE = Provenance(
+    "simulated", "geneforgelang.utils.example_implementations.BayesianOptimizer", "1.5.0"
+)
+register_simulated_component(
+    "ProteinVAEGenerator",
+    PROTEIN_VAE_PROVENANCE,
+    _LOCATION,
+    "A trained protein VAE and a held-out benchmark of expressed, folded sequences",
+)
+register_simulated_component(
+    "MoleculeTransformerGenerator",
+    MOLECULE_TRANSFORMER_PROVENANCE,
+    _LOCATION,
+    "A trained molecular transformer and a benchmark against measured molecular properties",
+)
+register_simulated_component(
+    "BayesianOptimizer",
+    BAYESIAN_OPTIMIZER_PROVENANCE,
+    _LOCATION,
+    "A Gaussian-process model fitted to real experiment results, with a test that it beats random search",
+)
 
 
 class ProteinVAEGenerator(SequenceGeneratorPlugin):
@@ -35,6 +70,8 @@ class ProteinVAEGenerator(SequenceGeneratorPlugin):
     design using a Variational Autoencoder approach. In practice, this would
     integrate with actual ML models like ESM, ProtBERT, or custom VAEs.
     """
+
+    provenance = PROTEIN_VAE_PROVENANCE
 
     @property
     def name(self) -> str:
@@ -63,7 +100,11 @@ class ProteinVAEGenerator(SequenceGeneratorPlugin):
     def generate(
         self, entity: str, objective: dict[str, Any], constraints: list[str], count: int, **kwargs
     ) -> list[DesignCandidate]:
-        """Generate protein sequences using VAE-based design."""
+        """Generate protein sequences using VAE-based design.
+
+        The sequences are random draws labelled ``simulated``; no VAE is run.
+        """
+        warn_first_use("ProteinVAEGenerator", PROTEIN_VAE_PROVENANCE)
 
         if entity not in [EntityType.PROTEIN_SEQUENCE.value, EntityType.PEPTIDE.value]:
             raise ValueError(f"Unsupported entity type: {entity}")
@@ -89,11 +130,12 @@ class ProteinVAEGenerator(SequenceGeneratorPlugin):
                     "model_version": "protein_vae_v1.2",
                     "generation_temperature": kwargs.get("temperature", 0.8),
                     "iteration": i + 1,
+                    "provenance": PROTEIN_VAE_PROVENANCE.to_dict(),
                 },
             )
             candidates.append(candidate)
 
-        return candidates
+        return ProvenancedList(candidates, PROTEIN_VAE_PROVENANCE)
 
     def _parse_length_constraint(self, constraints: list[str]) -> tuple:
         """Parse length constraints from constraint list."""
@@ -211,6 +253,8 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
     generate SMILES strings for drug-like compounds.
     """
 
+    provenance = MOLECULE_TRANSFORMER_PROVENANCE
+
     @property
     def name(self) -> str:
         return "MoleculeTransformerGenerator"
@@ -238,7 +282,11 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
     def generate(
         self, entity: str, objective: dict[str, Any], constraints: list[str], count: int, **kwargs
     ) -> list[DesignCandidate]:
-        """Generate drug-like molecules using transformer architecture."""
+        """Generate drug-like molecules using transformer architecture.
+
+        The molecules are random draws labelled ``simulated``; no transformer is run.
+        """
+        warn_first_use("MoleculeTransformerGenerator", MOLECULE_TRANSFORMER_PROVENANCE)
 
         if entity != EntityType.SMALL_MOLECULE.value:
             raise ValueError(f"Unsupported entity type: {entity}")
@@ -265,11 +313,12 @@ class MoleculeTransformerGenerator(MoleculeGeneratorPlugin):
                     "model_version": "molecule_transformer_v2.1",
                     "sampling_strategy": kwargs.get("sampling", "nucleus"),
                     "iteration": i + 1,
+                    "provenance": MOLECULE_TRANSFORMER_PROVENANCE.to_dict(),
                 },
             )
             candidates.append(candidate)
 
-        return candidates
+        return ProvenancedList(candidates, MOLECULE_TRANSFORMER_PROVENANCE)
 
     def _parse_objective(self, objective: dict[str, Any]) -> dict[str, Any]:
         """Parse optimization objective."""
@@ -386,7 +435,12 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
 
     This plugin demonstrates intelligent experimental design using Bayesian
     optimization with Gaussian process models and acquisition functions.
+
+    No Gaussian process is fitted: suggestions and uncertainty are random draws,
+    labelled ``simulated``.
     """
+
+    provenance = BAYESIAN_OPTIMIZER_PROVENANCE
 
     def __init__(self):
         super().__init__()
@@ -440,6 +494,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
 
     def suggest_next(self, experiment_history: list[ExperimentResult]) -> OptimizationStep:
         """Suggest next experiment using Bayesian optimization."""
+        warn_first_use("BayesianOptimizer", BAYESIAN_OPTIMIZER_PROVENANCE)
 
         self._iteration_count += 1
 
@@ -465,6 +520,7 @@ class BayesianOptimizer(BayesianOptimizerPlugin):
                 "acquisition_function": self._strategy_config.get("acquisition", "expected_improvement"),
                 "gp_lengthscale": 0.5 + random.uniform(-0.1, 0.1),  # Simulated
                 "exploration_weight": self._strategy_config.get("exploration_weight", 0.1),
+                "provenance": BAYESIAN_OPTIMIZER_PROVENANCE.to_dict(),
             },
         )
 

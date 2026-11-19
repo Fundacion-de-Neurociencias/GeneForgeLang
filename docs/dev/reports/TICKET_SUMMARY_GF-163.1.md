@@ -7,39 +7,39 @@ Successfully implemented container-based plugin execution for GFL to ensure repr
 ## Changes Made
 
 ### 1. Plugin Registry Updates
-- Modified [gfl/plugins/plugin_registry.py](file:///C:/Users/usuario/GeneForgeLang/gfl/plugins/plugin_registry.py) to discover container images through `gfl.plugin_containers` entry points
+- Modified [gfl/plugins/plugin_registry.py](../../../gfl/plugins/plugin_registry.py) to discover container images through `gfl.plugin_containers` entry points
 - Added `_container_images` dictionary to store plugin-to-container mappings
 - Implemented `get_container_image()` method to retrieve container images for plugins
 - Updated `_discover_plugins()` to use `entry_points().select()` for proper entry point discovery
 
 ### 2. Container Executor Implementation
-- Created [gfl/container_executor.py](file:///C:/Users/usuario/GeneForgeLang/gfl/container_executor.py) with `ContainerExecutor` class
+- Created [gfl/container_executor.py](../../../gfl/container_executor.py) with `ContainerExecutor` class
 - Implemented Docker integration using `docker-py` library
 - Added automatic volume mounting for file I/O operations
 - Implemented error handling for container execution failures
 - Added fallback mechanism when Docker is not available
 
 ### 3. Execution Engine Updates
-- Modified [gfl/execution_engine.py](file:///C:/Users/usuario/GeneForgeLang/gfl/execution_engine.py) to check for container images before execution
+- Modified [gfl/execution_engine.py](../../../gfl/execution_engine.py) to check for container images before execution
 - Implemented automatic switching between container and local execution
 - Added `ContainerExecutor` integration with proper error handling
 
 ### 4. Dependency Management
-- Added `docker>=7.0.0` as optional dependency in [pyproject.toml](file:///C:/Users/usuario/GeneForgeLang/pyproject.toml) under `containers` extra
+- Added `docker>=7.0.0` as optional dependency in [pyproject.toml](../../../pyproject.toml) under `containers` extra
 - Updated `all` extra to include `containers` dependency
 
 ### 5. Plugin Example Updates
-- Updated [gfl-plugin-samtools/pyproject.toml](file:///C:/Users/usuario/GeneForgeLang/gfl-plugin-samtools/pyproject.toml) to include container entry point example
+- Updated [gfl-plugin-samtools/pyproject.toml](../../../gfl-plugin-samtools/pyproject.toml) to include container entry point example
 - Added `[project.entry-points."gfl.plugin_containers"]` section with `biocontainers/samtools:v1.15.1_cv4`
 
 ### 6. Documentation
-- Created [docs/container_execution.md](file:///C:/Users/usuario/GeneForgeLang/docs/container_execution.md) with comprehensive documentation
-- Added container execution example in [examples/container_execution_example.gfl](file:///C:/Users/usuario/GeneForgeLang/examples/container_execution_example.gfl)
-- Updated [README.md](file:///C:/Users/usuario/GeneForgeLang/README.md) to mention container execution feature
-- Updated [CHANGELOG.md](file:///C:/Users/usuario/GeneForgeLang/CHANGELOG.md) to document the new feature
+- Created [docs/container_execution.md](../../../docs/container_execution.md) with comprehensive documentation
+- Added container execution example in [examples/container_execution_example.gfl](../../../examples/container_execution_example.gfl)
+- Updated [README.md](../../../README.md) to mention container execution feature
+- Updated [CHANGELOG.md](../../../CHANGELOG.md) to document the new feature
 
 ### 7. Testing
-- Created [tests/test_container_execution.py](file:///C:/Users/usuario/GeneForgeLang/tests/test_container_execution.py) with unit tests for container execution functionality
+- Created [tests/test_container_execution.py](../../../tests/test_container_execution.py) with unit tests for container execution functionality
 
 ## How It Works
 
@@ -63,7 +63,7 @@ To use container execution:
 
 1. Install with container support:
    ```bash
-   pip install geneforgelang[containers]
+   pip install -e ".[containers]"  # from a source checkout; not yet on PyPI
    ```
 
 2. Plugins can specify container images in their `pyproject.toml`:

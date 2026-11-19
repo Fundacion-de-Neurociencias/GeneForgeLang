@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Contract 1.1.0: provenance contract for simulated output:
+  - New `geneforgelang.provenance` module: `Provenance` (`kind` of `measured`, `computed`, `simulated` or `stub`, plus `source` and `version`), `SimulatedComponentWarning`, `SimulatedInputError` and `list_simulated_components()`
+  - Every plugin and connector shipped with the library is labelled and warns on first use: `SimpleProteinGenerator`, `SimpleOptimizer`, `AlphaGenomePlugin`, `OpenMedConnector`, `ProteinVAEGenerator`, `MoleculeTransformerGenerator` and `BayesianOptimizer`
+  - `execute()` takes the optional parameter `allow_simulated` (default `False`). **Behaviour change:** without it, a plugin or intermediate result labelled `simulated` or `stub` raises `SimulatedInputError`. Every shipped plugin is one of these, so a default call that used one now raises. Pass `allow_simulated=True` to accept the output knowingly; the result then carries `provenance` with kind `simulated`
+  - `OpenMedConnector.deidentify_clinical_note()` returns `privacy_cleared: False`. The connector never applied a privacy filter, so the previous constant `True` was wrong. The result now says that no privacy guarantee is provided; `get_entity_knowledge()` reports its `source` as `OpenMed (stub)`
+  - `geneforgelang.plugins.alphafold` is now an alias of `geneforgelang.plugins.alpha_genome` (it held a diverging copy of the same stub)
+
+### Security
+- Raised the minimum versions of optional dependencies that had known HIGH or CRITICAL advisories (OSV.dev scan of 2026-10-21):
+  - `ml` extra: `torch>=2.10.0`, `transformers>=5.10.0`
+  - `web` extra: `fastapi>=0.133.0`, `starlette>=1.3.1`, `aiohttp>=3.14.4`
+  - `dev` extra: `black>=26.10.1`
+  - The `web` extra now declares `python-multipart>=0.0.31`, which `web/server.py` needs for `UploadFile` and which was missing
+  - These releases require Python 3.10 or newer, so the pins carry the marker `python_version >= '3.10'`. The core library still installs on Python 3.9; the `web`, `ml` and `dev` extras add these packages only on 3.10+
+
 ### Added
 - **Microsatellite Somatic Instability & Catastrophe Cliff Gating (Neurodiagnoses Ecosystem)**:
   - Formalized `SomaticInstabilityContract` and `SomaticDriftSimulationContract` capturing tissue-specific stochastic expansion of tandem repeats (e.g. HTT CAG repeats in striatal projection neurons) across decadal horizons.
@@ -136,6 +152,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added Bio-Thermodynamic Metabolic Tax Axiom (`CONSTITUTION.md`).
   - Added Genomic Data Governance & Sovereignty Mandate (`CONSTITUTION.md`).
   - Added Epistemic Refinement Hypothesis (Representations as Priors).
+- Conformance runner that checks real results: `python -m geneforgelang.conformance <suite> [--junit FILE]` runs the real parser and validator on every case and compares the status and reason codes with the case's `expected.json`. It exits non-zero on a mismatch, a missing or malformed expectation, or a known failure that now passes. New `Conformance` CI workflow publishes the JUnit report. It replaces `resources/tools/dev/conformance_runner.py`, which printed `PASSED` for every case without running the validator. Current result: 9 of 36 cases pass, 27 are listed in `tests/conformance_suite/known_failures.json`
+- Published API contract for clients (Contract 1.0.0, grammar 1.2.0):
+  - `docs/spec/public_contract.json` is generated from the code by `python -m geneforgelang.public_contract --write`
+  - CI fails when a public name, signature, error code or grammar construct changes without a `CONTRACT_VERSION` bump and a `Contract X.Y.Z` line here
+  - Release tags `vX.Y.Z` must equal the `pyproject.toml` version and `geneforgelang.__version__`
+  - Every public function carries an evidence label (`computed` or `simulated`)
+  - `get_api_info()` now reports the contract and grammar versions instead of a fixed `0.1.0`
 - Container-Based Plugin Execution:
   - Implemented container image discovery through `gfl.plugin_containers` entry points
   - Added `ContainerExecutor` for Docker-based plugin execution

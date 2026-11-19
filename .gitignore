@@ -194,3 +194,14 @@ representational_audit_report.json
 # Graphify / Codebase Graph artifacts
 graphify-out/
 .codebase-graph/
+
+# Secrets and code-executing serialized artifacts (F001; see docs/decisions/20261019-no-pickle-artifacts.md).
+# Keep the negations last: *.env.example files are the only tracked env files.
+.env
+.env.*
+**/.env
+*.pkl
+*.pickle
+*.joblib
+!.env.example
+!**/.env.example

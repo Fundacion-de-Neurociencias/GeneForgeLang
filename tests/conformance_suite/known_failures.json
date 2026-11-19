@@ -1,0 +1,110 @@
+{
+  "core_semantics/adversarial/01_essential_gene_knockout.gfl": {
+    "reason": "The validator has no rule that reports VIABILITY_VIOLATION; the document is accepted as valid.",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "core_semantics/ambiguity/01_multiple_locus_match.gfl": {
+    "reason": "The validator has no rule that reports AMBIGUOUS_TARGET; the document is accepted as valid.",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "core_semantics/invariants/01_iupac_violation.gfl": {
+    "reason": "The validator has no rule that reports INVALID_SEQUENCE; the document is accepted as valid.",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.2.0/contracts_and_schemas/01_entity_resolution.gfl": {
+    "reason": "The validator rejects the document (SEMANTIC001/SEMANTIC002: required fields and dict-typed fields of the pathways and hypothesis blocks).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.2.0/rules_and_hypothesis/01_hypothesis_link.gfl": {
+    "reason": "The validator rejects the document (SEMANTIC001/SEMANTIC002: required fields and dict-typed fields of the pathways and hypothesis blocks).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/loci/01_valid_definition.gfl": {
+    "reason": "The validator does not recognise 'loci' as a main block (SEMANTIC006).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/loci/06_multiple_loci.gfl": {
+    "reason": "The validator does not recognise 'loci' as a main block (SEMANTIC006).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/loci/07_complex_elements.gfl": {
+    "reason": "The validator does not recognise 'loci' as a main block (SEMANTIC006).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/loci/08_edge_coordinates.gfl": {
+    "reason": "The validator does not recognise 'loci' as a main block (SEMANTIC006).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/simulate/01_simple_simulation.gfl": {
+    "reason": "The validator does not support the 'simulate' block of v1.3.0 (SEMANTIC002, SEMANTICTYPE001).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/simulate/02_simulation_no_matching_rule.gfl": {
+    "reason": "The validator does not support the 'simulate' block of v1.3.0 (SEMANTIC002, SEMANTICTYPE001).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/simulate/03_complex_multi_rule_simulation.gfl": {
+    "reason": "The validator does not support the 'simulate' block of v1.3.0 (SEMANTIC002, SEMANTICTYPE001).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/simulate/04_simulation_with_contact_check.gfl": {
+    "reason": "The validator does not support the 'simulate' block of v1.3.0 (SEMANTIC002, SEMANTICTYPE001).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/simulate/07_edge_case_null_action.gfl": {
+    "reason": "The validator does not support the 'simulate' block of v1.3.0 (SEMANTIC002, SEMANTICTYPE001).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/simulate/08_complex_nested_simulation.gfl": {
+    "reason": "The validator does not support the 'simulate' block of v1.3.0 (SEMANTIC002, SEMANTICTYPE001).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/spatial_predicates/01_is_within_pass.gfl": {
+    "reason": "The validator requires rule 'if'/'then' fields to be dicts and has no spatial predicates (SEMANTIC002).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/spatial_predicates/02_is_within_fail.gfl": {
+    "reason": "The validator requires rule 'if'/'then' fields to be dicts and has no spatial predicates (SEMANTIC002).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/spatial_predicates/03_distance_between.gfl": {
+    "reason": "The validator requires rule 'if'/'then' fields to be dicts and has no spatial predicates (SEMANTIC002).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/spatial_predicates/04_is_in_contact.gfl": {
+    "reason": "The validator requires rule 'if'/'then' fields to be dicts and has no spatial predicates (SEMANTIC002).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/spatial_predicates/05_complex_logical_conditions.gfl": {
+    "reason": "The validator requires rule 'if'/'then' fields to be dicts and has no spatial predicates (SEMANTIC002).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.3.0/spatial_predicates/08_edge_case_same_coordinates.gfl": {
+    "reason": "The validator requires rule 'if'/'then' fields to be dicts and has no spatial predicates (SEMANTIC002).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.4.0/large_scale_editing/01_delete_operation.gfl": {
+    "reason": "The document is not valid YAML (a call-style predicate 'expression_is(...)'); the parser raises.",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.4.0/large_scale_editing/02_insert_operation.gfl": {
+    "reason": "The validator reports a missing 'type' in the experiment block (SEMANTIC001); v1.4.0 editing operations are not supported.",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.4.0/large_scale_editing/03_invert_operation.gfl": {
+    "reason": "The document is not valid YAML (a call-style predicate 'expression_is(...)'); the parser raises.",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.5.0/locityper_haplotyping/01_loci_with_haplotype_panel.gfl": {
+    "reason": "The validator does not recognise 'loci' as a main block (SEMANTIC006).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.5.0/locityper_haplotyping/02_locityper_analyze_block.gfl": {
+    "reason": "The validator cannot load schema/locityper_types.yml and rejects the document (SEMANTIC001, SEMANTICSCHEMA001).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  },
+  "v1.5.0/locityper_haplotyping/03_genotype_result_schema.gfl": {
+    "reason": "The validator cannot load schema/locityper_types.yml and rejects the document (SEMANTIC001, SEMANTICSCHEMA001).",
+    "tracking": "tests/conformance_suite/README.md (Current result)"
+  }
+}

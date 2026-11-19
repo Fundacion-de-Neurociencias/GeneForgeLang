@@ -1,0 +1,871 @@
+{
+  "classes": {
+    "EnhancedValidationError": {
+      "bases": [],
+      "members": {
+        "add_context": {
+          "kind": "method",
+          "signature": {
+            "parameters": [
+              {
+                "annotation": null,
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "self",
+                "required": true
+              },
+              {
+                "annotation": "str",
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "key",
+                "required": true
+              },
+              {
+                "annotation": "Any",
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "value",
+                "required": true
+              }
+            ],
+            "return": "EnhancedValidationError"
+          }
+        },
+        "add_fix": {
+          "kind": "method",
+          "signature": {
+            "parameters": [
+              {
+                "annotation": null,
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "self",
+                "required": true
+              },
+              {
+                "annotation": "str",
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "description",
+                "required": true
+              },
+              {
+                "annotation": "str | None",
+                "default": "None",
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "replacement",
+                "required": false
+              },
+              {
+                "annotation": "SourceLocation | None",
+                "default": "None",
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "location",
+                "required": false
+              }
+            ],
+            "return": "EnhancedValidationError"
+          }
+        },
+        "category": {
+          "kind": "field",
+          "required": false,
+          "type": "ErrorCategory"
+        },
+        "code": {
+          "kind": "field",
+          "required": true,
+          "type": "str"
+        },
+        "context": {
+          "kind": "field",
+          "required": false,
+          "type": "dict[str, Any]"
+        },
+        "location": {
+          "kind": "field",
+          "required": false,
+          "type": "SourceLocation | None"
+        },
+        "message": {
+          "kind": "field",
+          "required": true,
+          "type": "str"
+        },
+        "related_errors": {
+          "kind": "field",
+          "required": false,
+          "type": "list[str]"
+        },
+        "severity": {
+          "kind": "field",
+          "required": false,
+          "type": "ErrorSeverity"
+        },
+        "suggested_fixes": {
+          "kind": "field",
+          "required": false,
+          "type": "list[ErrorFix]"
+        },
+        "to_dict": {
+          "kind": "method",
+          "signature": {
+            "parameters": [
+              {
+                "annotation": null,
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "self",
+                "required": true
+              }
+            ],
+            "return": "dict[str, Any]"
+          }
+        }
+      },
+      "module": "geneforgelang.core.errors"
+    },
+    "EnhancedValidationResult": {
+      "bases": [],
+      "members": {
+        "_schema_errors": {
+          "kind": "field",
+          "required": false,
+          "type": "list[EnhancedValidationError] | None"
+        },
+        "_semantic_errors": {
+          "kind": "field",
+          "required": false,
+          "type": "list[EnhancedValidationError] | None"
+        },
+        "_syntax_errors": {
+          "kind": "field",
+          "required": false,
+          "type": "list[EnhancedValidationError] | None"
+        },
+        "add_error": {
+          "kind": "method",
+          "signature": {
+            "parameters": [
+              {
+                "annotation": null,
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "self",
+                "required": true
+              },
+              {
+                "annotation": "str",
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "message",
+                "required": true
+              },
+              {
+                "annotation": "str",
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "code",
+                "required": true
+              },
+              {
+                "annotation": "ErrorSeverity",
+                "default": "<ErrorSeverity.ERROR: 'error'>",
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "severity",
+                "required": false
+              },
+              {
+                "annotation": "ErrorCategory",
+                "default": "<ErrorCategory.SEMANTIC: 'semantic'>",
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "category",
+                "required": false
+              },
+              {
+                "annotation": "SourceLocation | None",
+                "default": "None",
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "location",
+                "required": false
+              }
+            ],
+            "return": "EnhancedValidationError"
+          }
+        },
+        "ast": {
+          "kind": "field",
+          "required": false,
+          "type": "dict[str, Any] | None"
+        },
+        "critical_errors": {
+          "kind": "property"
+        },
+        "errors": {
+          "kind": "field",
+          "required": false,
+          "type": "list[EnhancedValidationError]"
+        },
+        "file_path": {
+          "kind": "field",
+          "required": false,
+          "type": "str | None"
+        },
+        "get_errors_by_category": {
+          "kind": "method",
+          "signature": {
+            "parameters": [
+              {
+                "annotation": null,
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "self",
+                "required": true
+              },
+              {
+                "annotation": "ErrorCategory",
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "category",
+                "required": true
+              }
+            ],
+            "return": "list[EnhancedValidationError]"
+          }
+        },
+        "get_statistics": {
+          "kind": "method",
+          "signature": {
+            "parameters": [
+              {
+                "annotation": null,
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "self",
+                "required": true
+              }
+            ],
+            "return": "dict[str, int]"
+          }
+        },
+        "has_warnings": {
+          "kind": "property"
+        },
+        "hints": {
+          "kind": "property"
+        },
+        "info_messages": {
+          "kind": "property"
+        },
+        "is_valid": {
+          "kind": "property"
+        },
+        "schema_errors": {
+          "kind": "property"
+        },
+        "semantic_errors": {
+          "kind": "property"
+        },
+        "syntax_errors": {
+          "kind": "property"
+        },
+        "to_legacy_format": {
+          "kind": "method",
+          "signature": {
+            "parameters": [
+              {
+                "annotation": null,
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "self",
+                "required": true
+              }
+            ],
+            "return": "list[str]"
+          }
+        },
+        "warnings": {
+          "kind": "property"
+        }
+      },
+      "module": "geneforgelang.core.errors"
+    },
+    "ErrorCategory": {
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "members": {
+        "PERFORMANCE": {
+          "kind": "enum_member",
+          "value": "performance"
+        },
+        "PLUGIN": {
+          "kind": "enum_member",
+          "value": "plugin"
+        },
+        "SCHEMA": {
+          "kind": "enum_member",
+          "value": "schema"
+        },
+        "SECURITY": {
+          "kind": "enum_member",
+          "value": "security"
+        },
+        "SEMANTIC": {
+          "kind": "enum_member",
+          "value": "semantic"
+        },
+        "SYNTAX": {
+          "kind": "enum_member",
+          "value": "syntax"
+        },
+        "TYPE": {
+          "kind": "enum_member",
+          "value": "type"
+        }
+      },
+      "module": "geneforgelang.core.errors"
+    },
+    "ErrorCodes": {
+      "bases": [],
+      "members": {
+        "PERFORMANCE_INEFFICIENT_OPERATION": {
+          "kind": "constant",
+          "value": "PERFORMANCE002"
+        },
+        "PERFORMANCE_LARGE_DATASET": {
+          "kind": "constant",
+          "value": "PERFORMANCE001"
+        },
+        "PLUGIN_EXECUTION_FAILED": {
+          "kind": "constant",
+          "value": "PLUGIN004"
+        },
+        "PLUGIN_INVALID_METHOD": {
+          "kind": "constant",
+          "value": "PLUGIN003"
+        },
+        "PLUGIN_LOAD_FAILED": {
+          "kind": "constant",
+          "value": "PLUGIN002"
+        },
+        "PLUGIN_NOT_FOUND": {
+          "kind": "constant",
+          "value": "PLUGIN001"
+        },
+        "SCHEMA_INVALID_FORMAT": {
+          "kind": "constant",
+          "value": "SCHEMA003"
+        },
+        "SCHEMA_MISSING_PROPERTY": {
+          "kind": "constant",
+          "value": "SCHEMA002"
+        },
+        "SCHEMA_VALIDATION_FAILED": {
+          "kind": "constant",
+          "value": "SCHEMA001"
+        },
+        "SECURITY_UNSAFE_OPERATION": {
+          "kind": "constant",
+          "value": "SECURITY001"
+        },
+        "SECURITY_UNTRUSTED_INPUT": {
+          "kind": "constant",
+          "value": "SECURITY002"
+        },
+        "SEMANTIC_CONTRACT_MISMATCH": {
+          "kind": "constant",
+          "value": "SEMANTIC101"
+        },
+        "SEMANTIC_INVALID_CONTRACT": {
+          "kind": "constant",
+          "value": "SEMANTIC100"
+        },
+        "SEMANTIC_INVALID_FIELD_TYPE": {
+          "kind": "constant",
+          "value": "SEMANTIC002"
+        },
+        "SEMANTIC_INVALID_PARAMETER": {
+          "kind": "constant",
+          "value": "SEMANTIC005"
+        },
+        "SEMANTIC_INVALID_SCHEMA_DEFINITION": {
+          "kind": "constant",
+          "value": "SEMANTIC202"
+        },
+        "SEMANTIC_INVALID_SCHEMA_FILE": {
+          "kind": "constant",
+          "value": "SEMANTIC200"
+        },
+        "SEMANTIC_MISSING_CONTRACT": {
+          "kind": "constant",
+          "value": "SEMANTIC102"
+        },
+        "SEMANTIC_MISSING_EXPERIMENT_BLOCK": {
+          "kind": "constant",
+          "value": "SEMANTIC006"
+        },
+        "SEMANTIC_MISSING_REQUIRED_FIELD": {
+          "kind": "constant",
+          "value": "SEMANTIC001"
+        },
+        "SEMANTIC_SCHEMA_NOT_FOUND": {
+          "kind": "constant",
+          "value": "SEMANTIC201"
+        },
+        "SEMANTIC_UNDEFINED_ENTITY_REFERENCE": {
+          "kind": "constant",
+          "value": "SEMANTIC010"
+        },
+        "SEMANTIC_UNDEFINED_HYPOTHESIS": {
+          "kind": "constant",
+          "value": "SEMANTIC009"
+        },
+        "SEMANTIC_UNDEFINED_VARIABLE": {
+          "kind": "constant",
+          "value": "SEMANTIC008"
+        },
+        "SEMANTIC_UNKNOWN_STRATEGY": {
+          "kind": "constant",
+          "value": "SEMANTIC004"
+        },
+        "SEMANTIC_UNKNOWN_TOOL": {
+          "kind": "constant",
+          "value": "SEMANTIC003"
+        },
+        "SEMANTIC_VARIABLE_REDEFINITION": {
+          "kind": "constant",
+          "value": "SEMANTIC007"
+        },
+        "SYNTAX_INVALID_STRUCTURE": {
+          "kind": "constant",
+          "value": "SYNTAX002"
+        },
+        "SYNTAX_INVALID_YAML": {
+          "kind": "constant",
+          "value": "SYNTAX001"
+        },
+        "SYNTAX_UNEXPECTED_CHARACTER": {
+          "kind": "constant",
+          "value": "SYNTAX003"
+        },
+        "TYPE_INCOMPATIBLE_TYPES": {
+          "kind": "constant",
+          "value": "TYPE003"
+        },
+        "TYPE_INVALID_TYPE": {
+          "kind": "constant",
+          "value": "TYPE001"
+        },
+        "TYPE_MISSING_TYPE_INFO": {
+          "kind": "constant",
+          "value": "TYPE002"
+        }
+      },
+      "module": "geneforgelang.core.errors"
+    },
+    "ErrorSeverity": {
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "members": {
+        "CRITICAL": {
+          "kind": "enum_member",
+          "value": "critical"
+        },
+        "ERROR": {
+          "kind": "enum_member",
+          "value": "error"
+        },
+        "HINT": {
+          "kind": "enum_member",
+          "value": "hint"
+        },
+        "INFO": {
+          "kind": "enum_member",
+          "value": "info"
+        },
+        "WARNING": {
+          "kind": "enum_member",
+          "value": "warning"
+        }
+      },
+      "module": "geneforgelang.core.errors"
+    },
+    "ExecutionError": {
+      "bases": [
+        "Exception"
+      ],
+      "members": {},
+      "module": "geneforgelang.core.execution"
+    },
+    "GFLSyntaxError": {
+      "bases": [
+        "Exception"
+      ],
+      "members": {},
+      "module": "geneforgelang.utils.grammar_parser"
+    },
+    "Provenance": {
+      "bases": [],
+      "members": {
+        "is_unverified": {
+          "kind": "property"
+        },
+        "kind": {
+          "kind": "field",
+          "required": true,
+          "type": "ProvenanceKind"
+        },
+        "source": {
+          "kind": "field",
+          "required": true,
+          "type": "str"
+        },
+        "to_dict": {
+          "kind": "method",
+          "signature": {
+            "parameters": [
+              {
+                "annotation": null,
+                "default": null,
+                "kind": "POSITIONAL_OR_KEYWORD",
+                "name": "self",
+                "required": true
+              }
+            ],
+            "return": "dict[str, str]"
+          }
+        },
+        "version": {
+          "kind": "field",
+          "required": true,
+          "type": "str"
+        }
+      },
+      "module": "geneforgelang.provenance"
+    },
+    "SimulatedComponentWarning": {
+      "bases": [
+        "UserWarning"
+      ],
+      "members": {},
+      "module": "geneforgelang.provenance"
+    },
+    "SimulatedInputError": {
+      "bases": [
+        "ValueError"
+      ],
+      "members": {},
+      "module": "geneforgelang.provenance"
+    }
+  },
+  "contract_version": "1.1.0",
+  "functions": {
+    "compare_inference_models": {
+      "evidence": {
+        "label": "simulated",
+        "reason": "compares heuristic and dummy models"
+      },
+      "signature": {
+        "parameters": [
+          {
+            "annotation": "dict[str, Any]",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "ast",
+            "required": true
+          },
+          {
+            "annotation": "list[str] | None",
+            "default": "None",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "model_names",
+            "required": false
+          }
+        ],
+        "return": "dict[str, Any]"
+      }
+    },
+    "execute": {
+      "evidence": {
+        "label": "simulated",
+        "reason": "returns what the registered plugins return; every plugin shipped with the library generates random or placeholder results and is refused unless the caller passes allow_simulated=True"
+      },
+      "signature": {
+        "parameters": [
+          {
+            "annotation": "dict[str, Any]",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "ast",
+            "required": true
+          },
+          {
+            "annotation": "PluginRegistry",
+            "default": "None",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "registry",
+            "required": false
+          },
+          {
+            "annotation": "bool",
+            "default": "True",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "validate_first",
+            "required": false
+          },
+          {
+            "annotation": "bool",
+            "default": "False",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "allow_simulated",
+            "required": false
+          }
+        ],
+        "return": "dict[str, Any]"
+      }
+    },
+    "get_api_info": {
+      "evidence": {
+        "label": "computed",
+        "reason": "reports the contract versions and detected features"
+      },
+      "signature": {
+        "parameters": [],
+        "return": "dict[str, Any]"
+      }
+    },
+    "infer": {
+      "evidence": {
+        "label": "simulated",
+        "reason": "simulated unless the caller passes a measured model; the library ships none"
+      },
+      "signature": {
+        "parameters": [
+          {
+            "annotation": null,
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "model",
+            "required": true
+          },
+          {
+            "annotation": "dict[str, Any]",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "ast",
+            "required": true
+          },
+          {
+            "annotation": "bool",
+            "default": "False",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "enhanced",
+            "required": false
+          },
+          {
+            "annotation": "str | None",
+            "default": "None",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "model_name",
+            "required": false
+          },
+          {
+            "annotation": "bool",
+            "default": "True",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "explain",
+            "required": false
+          }
+        ],
+        "return": "dict[str, Any]"
+      }
+    },
+    "infer_enhanced": {
+      "evidence": {
+        "label": "simulated",
+        "reason": "heuristic rules and DummyGeneModel, not measured"
+      },
+      "signature": {
+        "parameters": [
+          {
+            "annotation": "dict[str, Any]",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "ast",
+            "required": true
+          },
+          {
+            "annotation": "str",
+            "default": "'heuristic'",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "model_name",
+            "required": false
+          },
+          {
+            "annotation": "bool",
+            "default": "True",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "explain",
+            "required": false
+          }
+        ],
+        "return": "dict[str, Any]"
+      }
+    },
+    "list_available_plugins": {
+      "evidence": {
+        "label": "computed",
+        "reason": "lists the plugins discovered at call time"
+      },
+      "signature": {
+        "parameters": [],
+        "return": "dict[str, list[str]]"
+      }
+    },
+    "parse": {
+      "evidence": {
+        "label": "computed",
+        "reason": "deterministic parsing of the input text"
+      },
+      "signature": {
+        "parameters": [
+          {
+            "annotation": "str",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "text",
+            "required": true
+          },
+          {
+            "annotation": "bool",
+            "default": "False",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "use_grammar",
+            "required": false
+          },
+          {
+            "annotation": "str",
+            "default": "'<input>'",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "filename",
+            "required": false
+          }
+        ],
+        "return": "dict[str, Any]"
+      }
+    },
+    "parse_enhanced": {
+      "evidence": {
+        "label": "computed",
+        "reason": "deterministic parsing with structured errors"
+      },
+      "signature": {
+        "parameters": [
+          {
+            "annotation": "str",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "text",
+            "required": true
+          },
+          {
+            "annotation": "bool",
+            "default": "True",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "use_grammar",
+            "required": false
+          },
+          {
+            "annotation": "str",
+            "default": "'<input>'",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "filename",
+            "required": false
+          }
+        ],
+        "return": "EnhancedValidationResult"
+      }
+    },
+    "validate": {
+      "evidence": {
+        "label": "computed",
+        "reason": "deterministic rule checks on the AST"
+      },
+      "signature": {
+        "parameters": [
+          {
+            "annotation": "dict[str, Any]",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "ast",
+            "required": true
+          },
+          {
+            "annotation": "bool",
+            "default": "False",
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "enhanced",
+            "required": false
+          }
+        ],
+        "return": "Union[list[str], EnhancedValidationResult]"
+      }
+    },
+    "validate_plugins": {
+      "evidence": {
+        "label": "computed",
+        "reason": "deterministic check of plugin requirements"
+      },
+      "signature": {
+        "parameters": [
+          {
+            "annotation": "dict[str, Any]",
+            "default": null,
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "ast",
+            "required": true
+          }
+        ],
+        "return": "list[str]"
+      }
+    }
+  },
+  "generated": "Generated by `python -m geneforgelang.public_contract --write`. Do not edit by hand.",
+  "grammar": {
+    "conformance_samples": {
+      "tests/conformance_suite/v1.2.0/contracts_and_schemas/01_entity_resolution.gfl": [
+        "analyze",
+        "pathways"
+      ],
+      "tests/conformance_suite/v1.2.0/rules_and_hypothesis/01_hypothesis_link.gfl": [
+        "experiment",
+        "hypothesis"
+      ],
+      "tests/conformance_suite/v1.2.0/timeline/01_simple_chronology.gfl": [
+        "timeline"
+      ]
+    },
+    "constructs": {
+      "complexes": true,
+      "design": true,
+      "experiment": true,
+      "hypothesis": true,
+      "optimize": true,
+      "pathways": true,
+      "rules": true,
+      "timeline": true
+    },
+    "unimplemented_suites": [
+      "1.3.0",
+      "1.4.0",
+      "1.5.0"
+    ]
+  },
+  "grammar_version": "1.2.0",
+  "module": "geneforgelang.core.api"
+}

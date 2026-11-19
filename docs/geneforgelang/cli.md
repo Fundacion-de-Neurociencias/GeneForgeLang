@@ -7,7 +7,7 @@ The GeneForgeLang Enhanced CLI provides a comprehensive command-line interface f
 The enhanced CLI is automatically available when you install GeneForgeLang:
 
 ```bash
-pip install geneforgelang[apps]  # For full feature set
+pip install -e ".[cli]"  # from a source checkout; GeneForgeLang is not yet on PyPI
 ```
 
 Optional dependencies for enhanced features:

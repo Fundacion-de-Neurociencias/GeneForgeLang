@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
-GFL Genesis Project - Real Execution Script
-Executes the complete CRISPR gRNA discovery workflow using the GFL runtime.
+GFL Genesis Project - illustrative simulation script.
 
-This script is self-contained and does not depend on GeneForge or any other
-specific downstream runtime being installed locally. It simulates the
-discovery engine for demonstration purposes.
+Runs a simulated CRISPR gRNA discovery workflow for BRCA1. It does not call
+the GeneForge engine or any scoring model: every on-target and off-target
+score is a random draw from ``np.random.beta`` (confidence from
+``np.random.uniform``) and the sequences are random. The outputs are
+illustrative only; they are not a validation and say nothing about real
+guide RNAs. Research software, not for clinical use.
 """
 
 import json
@@ -18,10 +20,29 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from geneforgelang.provenance import (
+    Provenance,
+    ProvenancedDict,
+    register_simulated_component,
+    warn_first_use,
+)
 
-def simulate_discovery_engine():
-    """Simulate a GFL-compatible discovery engine with realistic results."""
-    print("🚀 Starting GFL Discovery Engine...")
+PROVENANCE = Provenance("simulated", "examples/real_project/execute_genesis_real.py", "1.0.0")
+register_simulated_component(
+    "execute_genesis_real",
+    PROVENANCE,
+    "examples/real_project/execute_genesis_real.py",
+    "A gRNA efficiency and off-target model with published validation, run through the GeneForge engine",
+)
+
+
+def simulate_geneforge_engine():
+    """Simulate the GeneForge engine with random scores (np.random.beta); not real predictions.
+
+    The returned dictionary is labelled ``simulated`` (``result.provenance``).
+    """
+    warn_first_use("execute_genesis_real", PROVENANCE, stacklevel=2)
+    print("🚀 Starting GeneForge v2.0 Engine...")
     print("📊 Initializing Multi-Omic Discovery Pipeline...")
 
     # Simulate guided discovery cycles
@@ -43,8 +64,11 @@ def simulate_discovery_engine():
                 "combined_score": 0.0,
                 "genomic_position": f"chr17:{43094495 + np.random.randint(0, 10000)}",
                 "efficiency_confidence": np.random.uniform(0.7, 0.95),
+                "provenance_kind": PROVENANCE.kind,
             }
-            candidate["combined_score"] = candidate["on_target_score"] * 0.6 + (1 - candidate["off_target_score"]) * 0.4
+            candidate["combined_score"] = (
+                candidate["on_target_score"] * 0.6 + (1 - candidate["off_target_score"]) * 0.4
+            )
             cycle_candidates.append(candidate)
 
         # Sort by combined score
@@ -79,11 +103,11 @@ def simulate_discovery_engine():
     print(f"🏆 Best candidate: {results['final_rankings'][0]['id']}")
     print(f"⭐ Best score: {results['final_rankings'][0]['combined_score']:.4f}")
 
-    return results
+    return ProvenancedDict(results, PROVENANCE)
 
 
 def generate_realistic_grna_sequence():
-    """Generate a realistic gRNA sequence."""
+    """Generate a random 20-nt gRNA-like sequence."""
     bases = ["A", "T", "G", "C"]
     # Generate 20bp sequence with some constraints
     sequence = ""
@@ -237,7 +261,7 @@ def main():
 
     try:
         # Execute the discovery workflow
-        results = simulate_discovery_engine()
+        results = simulate_geneforge_engine()
 
         # Save results and generate visualizations
         save_results(results)
@@ -245,7 +269,7 @@ def main():
         # Generate manuscript table
         table1 = generate_manuscript_table()
 
-        print("\n🎉 EXPERIMENT COMPLETED SUCCESSFULLY!")
+        print("\nSIMULATION COMPLETED (random scores, not a validation)")
         print("=" * 60)
         print("📁 Generated Files:")
         print("  • results/final_candidates.csv - All ranked candidates")
@@ -260,7 +284,7 @@ def main():
         print(f"⚠️  Off-Target Score: {results['final_rankings'][0]['off_target_score']:.4f}")
 
         print(f"\n🕒 Completed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print("\n🚀 GFL Multi-Omic Discovery: MISSION ACCOMPLISHED!")
+        print("\nIllustrative simulation finished. Scores are random draws, not predictions.")
 
     except Exception as e:
         print(f"❌ Error during execution: {e}")

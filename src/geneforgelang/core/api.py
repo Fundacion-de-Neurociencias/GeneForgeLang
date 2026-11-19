@@ -38,6 +38,7 @@ from geneforgelang.core.inference import InferenceEngine as _InferenceEngine
 from geneforgelang.core.performance import cached, get_monitor
 from geneforgelang.core.validator import validate as _validate
 from geneforgelang.plugins.plugin_registry import PluginRegistry
+from geneforgelang.public_contract import CONTRACT_VERSION, GRAMMAR_VERSION
 from geneforgelang.utils.prob_rules import default_rules
 
 # Optional execution engine import
@@ -411,7 +412,12 @@ def compare_inference_models(ast: dict[str, Any], model_names: list[str] | None 
         raise ImportError("Enhanced inference engine not available")
 
 
-def execute(ast: dict[str, Any], registry: PluginRegistry = None, validate_first: bool = True) -> dict[str, Any]:
+def execute(
+    ast: dict[str, Any],
+    registry: PluginRegistry = None,
+    validate_first: bool = True,
+    allow_simulated: bool = False,
+) -> dict[str, Any]:
     """Execute a GFL workflow by dispatching to appropriate plugins.
 
     This function orchestrates the execution of design and optimize blocks
@@ -421,6 +427,10 @@ def execute(ast: dict[str, Any], registry: PluginRegistry = None, validate_first
         ast: Dictionary AST from parse(). Should contain 'design' and/or 'optimize' blocks.
         registry: Plugin registry to use. If None, uses the default plugin registry.
         validate_first: If True, validate AST and plugin requirements before execution.
+        allow_simulated: Every plugin shipped with the library returns simulated or stub
+            output. By default a plugin or intermediate result labelled ``simulated`` or
+            ``stub`` is refused. Pass True to accept it knowingly; the returned
+            dictionary then carries ``provenance`` with kind ``simulated``.
 
     Returns:
         Dictionary containing execution results:
@@ -430,6 +440,8 @@ def execute(ast: dict[str, Any], registry: PluginRegistry = None, validate_first
 
     Raises:
         ImportError: If execution engine is not available.
+        SimulatedInputError: If a plugin or intermediate result is simulated or stub and
+            ``allow_simulated`` is not True.
         ExecutionError: If execution fails due to plugin issues or configuration errors.
         ValueError: If AST is invalid or missing required plugins.
 
@@ -497,7 +509,7 @@ def execute(ast: dict[str, Any], registry: PluginRegistry = None, validate_first
 
         # Execute workflow
         if execute_gfl_ast is not None:
-            return execute_gfl_ast(ast, registry)
+            return execute_gfl_ast(ast, registry, allow_simulated)
         else:
             raise ImportError("Execution engine not properly initialized")
 
@@ -571,8 +583,8 @@ def get_api_info() -> dict[str, Any]:
         Dictionary containing API version, available features, and system info.
     """
     info = {
-        "api_version": "0.1.0",
-        "gfl_version": "0.1.0",
+        "api_version": CONTRACT_VERSION,
+        "gfl_version": GRAMMAR_VERSION,
         "features": {
             "basic_parsing": True,
             "grammar_parsing": HAS_GRAMMAR_PARSER,

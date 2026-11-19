@@ -9,8 +9,8 @@ This project demonstrates the capabilities of the GeneForgeLang (GFL) ecosystem 
 The GFL Genesis project provides a complete workflow for designing and evaluating gRNA candidates for CRISPR gene editing applications. It leverages the specialized Genesis plugins to:
 
 1. Design gRNA candidates for target genes
-2. Evaluate on-target efficiency using machine learning models
-3. Assess off-target risk using sequence alignment
+2. Score on-target efficiency (in `execute_genesis_real.py` these scores are random draws from `np.random.beta`, not model predictions)
+3. Score off-target risk (also random draws in `execute_genesis_real.py`)
 4. Combine scores for final candidate ranking
 5. Visualize results for easy interpretation
 

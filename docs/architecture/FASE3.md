@@ -71,7 +71,8 @@ La Fase 3 integra GeneForgeLang (GFL) IR con fuentes de conocimiento externas:
 **RFC 002 Compliance**:
 ```python
 result = connector.deidentify_clinical_note(clinical_text)
-# result["privacy_cleared"] = True  <- Flag requerido por MRI
+# result["privacy_cleared"] is False and result["provenance"]["kind"] == "stub":
+# the connector is a stub and gives no privacy guarantee (RFC 002 requires a real filter)
 ```
 
 ### 2. HuggingScience Connector

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Clinical-Grade Process Prior Graph (PPG)",
+  "title": "Process Prior Graph (PPG)",
   "description": "Represents the causal distribution of neurobiological processes with explicit temporal, conflict, and provenance modeling for clinical inference.",
   "type": "object",
   "properties": {

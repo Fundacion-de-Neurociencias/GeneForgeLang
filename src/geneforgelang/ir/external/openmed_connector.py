@@ -1,10 +1,18 @@
 """OpenMed Connector for GFL IR.
 
-Integrates with OpenMed ecosystem:
+Stub of the OpenMed ecosystem. No OpenMed service is called: every result comes
+from a small hardcoded table, hash-derived vectors or keyword matching, and is
+labelled with provenance ``stub``.
+
+Planned integration (not implemented):
 - Biomedical embeddings (entity similarity)
 - Clinical NER (entity extraction from text)
 - Privacy filter (PII de-identification)
 - PubMed retrieval (literature evidence)
+
+No privacy guarantee is provided. The pattern-based redaction in
+``_apply_privacy_filter`` is not a de-identification method and its output must
+not be treated as anonymised.
 """
 
 from __future__ import annotations
@@ -13,7 +21,28 @@ import logging
 from dataclasses import dataclass
 from typing import Any
 
+from geneforgelang.provenance import (
+    Provenance,
+    ProvenancedDict,
+    ProvenancedList,
+    register_simulated_component,
+    warn_first_use,
+)
+
 logger = logging.getLogger(__name__)
+
+PROVENANCE = Provenance(
+    "stub",
+    "geneforgelang.ir.external.openmed_connector.OpenMedConnector",
+    "unversioned",
+)
+register_simulated_component(
+    "OpenMedConnector",
+    PROVENANCE,
+    "src/geneforgelang/ir/external/openmed_connector.py",
+    "A connected OpenMed service and, for privacy, a validated de-identification filter "
+    "with a recall test on labelled notes",
+)
 
 
 @dataclass
@@ -26,6 +55,7 @@ class OpenMedEntity:
     end: int
     confidence: float
     normalized_id: str | None = None  # e.g., "HGNC:11998" for TP53
+    provenance: Provenance = PROVENANCE
 
 
 @dataclass
@@ -36,6 +66,7 @@ class SimilarEntity:
     entity_type: str
     similarity: float
     metadata: dict[str, Any]
+    provenance: Provenance = PROVENANCE
 
 
 class OpenMedConnector:
@@ -45,7 +76,13 @@ class OpenMedConnector:
     - OpenMed API endpoints (embeddings, NER)
     - Local model inference (privacy-filter-nemotron)
     - PubMed Entrez for literature retrieval
+
+    Today it calls none of them. Results are labelled ``stub`` and decision
+    paths refuse them unless ``allow_simulated=True``. ``base_url`` and
+    ``api_key`` are stored but never used.
     """
+
+    provenance = PROVENANCE
 
     def __init__(
         self,
@@ -90,9 +127,10 @@ class OpenMedConnector:
 
         Production: Call OpenMed embeddings API.
         """
+        warn_first_use("OpenMedConnector", PROVENANCE)
         entity_id = entity_id.upper()
         if entity_id in self._mock_knowledge:
-            return self._mock_knowledge[entity_id].get("embedding")
+            return ProvenancedList(self._mock_knowledge[entity_id]["embedding"], PROVENANCE)
 
         # Fallback: generate deterministic mock embedding
         import hashlib
@@ -106,7 +144,7 @@ class OpenMedConnector:
                 embedding.append(((int(chunk, 16) / 255.0) - 0.5) * 2)
         # Pad to 768 dimensions by repeating
         embedding = (embedding * (768 // len(embedding) + 1))[:768] if embedding else [0.0] * 768
-        return embedding
+        return ProvenancedList(embedding, PROVENANCE)
 
     def find_similar_entities(
         self, entity_id: str, entity_type: str | None = None, top_k: int = 5
@@ -115,6 +153,7 @@ class OpenMedConnector:
 
         Uses cosine similarity over biomedical embeddings.
         """
+        warn_first_use("OpenMedConnector", PROVENANCE)
         query_emb = self.get_embedding(entity_id)
         if query_emb is None:
             return []
@@ -133,15 +172,18 @@ class OpenMedConnector:
 
         scores.sort(key=lambda x: x[1], reverse=True)
 
-        return [
-            SimilarEntity(
-                entity_id=eid,
-                entity_type=self._mock_knowledge.get(eid, {}).get("function", "unknown"),
-                similarity=sim,
-                metadata=self._mock_knowledge.get(eid, {}),
-            )
-            for eid, sim in scores[:top_k]
-        ]
+        return ProvenancedList(
+            [
+                SimilarEntity(
+                    entity_id=eid,
+                    entity_type=self._mock_knowledge.get(eid, {}).get("function", "unknown"),
+                    similarity=sim,
+                    metadata=self._mock_knowledge.get(eid, {}),
+                )
+                for eid, sim in scores[:top_k]
+            ],
+            PROVENANCE,
+        )
 
     def _cosine_similarity(self, a: list[float], b: list[float]) -> float:
         """Compute cosine similarity between two vectors."""
@@ -152,7 +194,11 @@ class OpenMedConnector:
         norm_b = math.sqrt(sum(x * x for x in b))
         if norm_a == 0 or norm_b == 0:
             return 0.0
-        return dot / (norm_a * norm_b)
+        # Cosine similarity is bounded by [-1, 1]; clamp to remove floating-point
+        # rounding that can push it marginally outside (e.g. 1.0000000000000033).
+        # Round to 12 decimals so parallel vectors give exactly 1.0 instead of
+        # 0.9999999999999999 (float noise far below any meaningful resolution).
+        return max(-1.0, min(1.0, round(dot / (norm_a * norm_b), 12)))
 
     # ------------------------------------------------------------------
     # Named Entity Recognition (NER)
@@ -163,6 +209,7 @@ class OpenMedConnector:
 
         Production: Call OpenMed NER model (openmed-clinical-ner).
         """
+        warn_first_use("OpenMedConnector", PROVENANCE)
         if self.enable_privacy_filter:
             text = self._apply_privacy_filter(text)
 
@@ -201,14 +248,17 @@ class OpenMedConnector:
                     )
                 )
 
-        return entities
+        return ProvenancedList(entities, PROVENANCE)
 
     # ------------------------------------------------------------------
     # Privacy Filter
     # ------------------------------------------------------------------
 
     def _apply_privacy_filter(self, text: str) -> str:
-        """De-identify PII from clinical text.
+        """Redact four regular-expression patterns (name-like pairs, SSN, dates, emails).
+
+        This is not de-identification and gives no privacy guarantee: it misses
+        most identifiers and redacts non-identifiers.
 
         Production: Use OpenMed/privacy-filter-nemotron.
         RFC 002: GFL Privacy Layer integration.
@@ -231,20 +281,27 @@ class OpenMedConnector:
         return filtered
 
     def deidentify_clinical_note(self, note: str) -> dict[str, Any]:
-        """Full de-identification pipeline for clinical notes.
+        """Redact a clinical note with the stub filter and extract entities.
 
-        Returns dict with cleaned text and extracted entities.
+        Returns dict with cleaned text and extracted entities. ``privacy_cleared``
+        is always ``False``: no real privacy filter is connected, so the text must
+        not be treated as de-identified.
         """
+        warn_first_use("OpenMedConnector", PROVENANCE)
         cleaned = self._apply_privacy_filter(note)
         entities = self.extract_entities(cleaned)
 
-        return {
-            "original_length": len(note),
-            "cleaned_text": cleaned,
-            "cleaned_length": len(cleaned),
-            "entities": [self._entity_to_dict(e) for e in entities],
-            "privacy_cleared": True,  # Flag per RFC 002
-        }
+        return ProvenancedDict(
+            {
+                "original_length": len(note),
+                "cleaned_text": cleaned,
+                "cleaned_length": len(cleaned),
+                "entities": [self._entity_to_dict(e) for e in entities],
+                "privacy_cleared": False,  # RFC 002 flag: no real filter is connected
+                "privacy_note": "stub redaction only; no privacy guarantee is provided",
+            },
+            PROVENANCE,
+        )
 
     def _entity_to_dict(self, entity: OpenMedEntity) -> dict[str, Any]:
         return {
@@ -266,7 +323,9 @@ class OpenMedConnector:
 
         Production: Use Biopython Entrez with OpenMed query expansion.
         """
-        # Mock implementation - production calls PubMed API
+        # Mock implementation - production calls PubMed API. The records below are
+        # fabricated placeholders, not PubMed entries.
+        warn_first_use("OpenMedConnector", PROVENANCE)
         logger.info(f"Searching literature: {query}")
 
         # Return mock results based on query keywords
@@ -297,24 +356,31 @@ class OpenMedConnector:
                 }
             )
 
-        return mock_results[:max_results]
+        return ProvenancedList(
+            [ProvenancedDict(item, PROVENANCE) for item in mock_results[:max_results]],
+            PROVENANCE,
+        )
 
     def get_entity_knowledge(self, entity_id: str) -> dict[str, Any]:
-        """Retrieve comprehensive knowledge about a biomedical entity."""
+        """Retrieve the stub knowledge entry for a biomedical entity."""
+        warn_first_use("OpenMedConnector", PROVENANCE)
         entity_id = entity_id.upper()
 
         # Check mock database
         if entity_id in self._mock_knowledge:
             knowledge = dict(self._mock_knowledge[entity_id])
             knowledge["entity_id"] = entity_id
-            knowledge["source"] = "OpenMed"
-            return knowledge
+            knowledge["source"] = "OpenMed (stub)"
+            return ProvenancedDict(knowledge, PROVENANCE)
 
         # Default: return minimal structure
-        return {
-            "entity_id": entity_id,
-            "function": "unknown",
-            "pathways": [],
-            "diseases": [],
-            "source": "OpenMed (not found)",
-        }
+        return ProvenancedDict(
+            {
+                "entity_id": entity_id,
+                "function": "unknown",
+                "pathways": [],
+                "diseases": [],
+                "source": "OpenMed (stub, not found)",
+            },
+            PROVENANCE,
+        )

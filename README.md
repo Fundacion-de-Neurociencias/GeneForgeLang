@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 # 🧬 GFL v2.0 Beta
+=======
+# 🧬 GeneForgeLang
+>>>>>>> origin/main
 
 > **The Symbolic Language for Biological Reasoning**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<<<<<<< HEAD
 [![Version](https://img.shields.io/badge/version-2.0.0--beta-blue.svg)](.)
 [![PyPI](https://img.shields.io/pypi/v/geneforgelang.svg)](https://pypi.org/project/geneforgelang/)
 
@@ -17,8 +22,18 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 > ⚡ **Fundamental Bio-Thermodynamic Pillar**:
 > *"Metabolism is the global thermodynamic tax that the organism pays for its local order."*
 > In GFL, metabolic cost and global entropic dissipation are first-order constraints against any local entropy reduction or biological order synthesis.
+=======
 
-## 🚀 **New in v2.0 - Multi-Omic Capabilities**
+> **Notice.** Research software. Not a medical device, not for clinical use, and not legal or regulatory advice.
+
+## What is GeneForgeLang?
+
+GeneForgeLang (GFL) is a domain-specific language for describing biological design workflows. A GFL document is YAML with typed blocks (`design`, `optimize`, `experiment`, `analyze`, ...). The Python library parses and validates these documents and offers a plugin system for tools that act on them.
+
+**Status.** GFL is under active development and has no published release yet. The documented public API and the `gfl` command-line tool do not work from an installed package in this version (see [Quick Start](#quick-start)). The language features listed below describe the language design; check the [feature documentation](docs/index.md) for what the current parser accepts.
+>>>>>>> origin/main
+
+## Language Capabilities
 
 ### **Multi-Omic Integration**
 
@@ -41,6 +56,7 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 - **📋 Rule-Based Logic**: Complex biological constraint expression
 - **🎭 Simulation Framework**: What-if analysis and hypothesis testing
 
+<<<<<<< HEAD
 ### **Structural Bio-AI, Consensus & Borderline Rescue**
 
 - **⚗️ De Novo Catalytic Motif & Enzyme Design (AlphaProtein Novo Synergy)**: Observational syntactic contracts for active-site catalytic triad geometry (`SER:OG`, `HIS:NE2`, `ASP:OD1`), transition-state substrate containers, and spatial distance tolerances ($\le 3.5\text{ \AA}$) strictly preserving GFL's observational boundary while enabling GeneForge's kinetic and scaffolding engines
@@ -86,9 +102,16 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 - **ClinVar & Known Variant Tracks**: Pathogenicity classification badges (Pathogenic, Likely Pathogenic, VUS, Benign), HGVS nomenclature, molecular consequences, and direct jump-to-mutation controls.
 - **Epigenomics (5hmC) & CRISPR PAM Scanner**: Methylated CpG dinucleotide overlays and automated SpCas9 PAM window scanning (`NGG` motif with 20-nt guide alignment and -3 nt cleavage marker).
 - **Zero-Dependency Portable HTML5/SVG Export**: Self-contained single-file HTML applications (~40 KB) that run offline in any modern browser without CDN, NPM, or external runtime requirements.
+=======
+### **Local Execution**
 
-## Key Features
+- **🛡️ Data stays local**: the library parses and validates workflows on your machine; it sends no data to a cloud service.
+>>>>>>> origin/main
 
+## 🌐 Open-Source and Universal
+GeneForgeLang is an **open-source project** dedicated to the entire scientific community. While it serves as the foundation for the GeneForge platform, its design and evolution are governed by universal biological principles, not by any specific commercial or execution environment.
+
+<<<<<<< HEAD
 - **Declarative Genetic Syntax**: Clean, readable, mathematically sound YAML-based biological workflow definitions with strict 2-space indentation.
 - **Sovereign Biological AI & Air-Gapped Compliance**: Native on-premise execution with FineDNA-14B and Carbon-X 14.8B on local workstations (Apple Silicon Mac Studio / NVIDIA GPUs), strictly rejecting public cloud egress when `air_gapped: true`.
 - **Closed-Loop RLVR Verification & Proofs**: Interactive compiler self-correction emitting deterministic reward scores and cryptographic SHA-256 verification tokens.
@@ -99,9 +122,31 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 - **Multimodal Protein & Residue Tokenization**: ProTok unified 1D sequence, 3D Cartesian geometry, and functional ontology codebooks with Central Dogma causal propagation.
 - **Interactive Multi-Omic Visualizer (`GF-HelixView`)**: Real-time dynamic B-DNA 2.5D helix scanner with 3-frame translation, frameshift alerts, ClinVar variant tracks, and CRISPR PAM detection (`gfl view dna`).
 - **Extensible Plugin Ecosystem**: Interoperable plugins for BioPython, BLAST, GATK, Samtools, and custom analytical pipelines.
+=======
+*   **Universal Semantic Authority**: GFL defines the biological world independently of how it is executed.
+*   **Open to Everyone**: Anyone can implement a GFL-compatible runtime or contribute to the language specifications.
+*   **Decoupled Architecture**: Formal separation between Language Specification, Semantic Validation, and Execution Runtimes.
 
-## 🧪 **Scientific Validation - BRCA1 gRNA Discovery**
+## 📜 Formal Specifications
+To ensure consistency across the ecosystem, GFL maintains a set of formal specifications:
+*   **[Architectural Directive](docs/architecture/ARCHITECTURAL_DIRECTIVE.md)**: The foundational decoupling mandate.
+*   **[RFC Process](docs/rfc/README.md)**: Formal procedure for language evolution.
+*   [Causal Semantics](docs/spec/causal_semantics.md): Rules for biological transformations.
+*   [Biological State Space](docs/spec/state_space.md): Structural definition of the biological world.
+*   [Instruction Set](docs/spec/instruction_set.md): Primitive biological operations.
+*   [Execution Contract](docs/spec/execution_contract.md): Boundary between language and runtimes.
+*   [Versioning Policy](docs/spec/versioning_policy.md): How the language evolves.
+- **Type Safety**: Strong typing system with comprehensive validation
+- **Plugin Architecture**: Extensible system for custom tools and algorithms
+- **Web Interface**: Modern web UI for workflow creation and management
+- **CLI Tools**: Comprehensive command-line interface for automation
+- **API Integration**: RESTful API for programmatic access
+- **Container Execution**: Reproducible execution using Docker containers
+>>>>>>> origin/main
 
+## 🧪 Example: BRCA1 gRNA Discovery (Illustrative simulation)
+
+<<<<<<< HEAD
 GFL has been validated through a comprehensive experiment discovering optimal gRNA candidates for CRISPR gene editing:
 
 ### **Results Summary**
@@ -119,30 +164,32 @@ GFL has been validated through a comprehensive experiment discovering optimal gR
 - **Reproducibility**: Complete workflow documented and open-source
 
 Scientific manuscript available in the examples directory.
+=======
+The [GFL Genesis example](examples/real_project/README.md) shows how a guided-discovery workflow for CRISPR gRNA candidates against BRCA1 is written in GFL. Its execution script draws every on-target and off-target score from `np.random.beta`: the numbers in its outputs are random scores, not a validation, and say nothing about real guide efficiency or safety. The accompanying [draft manuscript](examples/real_project/Manuscript_GeneForge_v2_Beta.md) is labelled the same way.
+>>>>>>> origin/main
 
 ## Quick Start
 
 ### Installation
 
+GeneForgeLang is not yet published on PyPI. Install it from source:
+
+```bash
+git clone https://github.com/Fundacion-de-Neurociencias/GeneForgeLang.git
+cd GeneForgeLang
+pip install -e .
+
+# Optional extras: web, cli, ml, containers, staging, lsp, dev
+pip install -e ".[cli]"
 ```
-# Basic installation
-pip install geneforgelang
 
-# With web interface
-pip install geneforgelang[web]
-
-# With CLI tools
-pip install geneforgelang[cli]
-
-# With container support
-pip install geneforgelang[containers]
-
-# Full installation
-pip install geneforgelang[all]
-```
+The core library runs on Python 3.9 or newer. The `web`, `ml` and `dev` extras pin releases with security fixes (`torch`, `transformers`, `fastapi`, `starlette`, `aiohttp`, `black`), and those releases need Python 3.10 or newer: on Python 3.9 these extras install none of them.
 
 ### Basic Usage - Protein Design and Optimization
 
+This is the target Python API. The top-level import below does not work in this version; feature F010 adds it. The workflow text itself parses and validates with the current parser.
+
+<!-- does not run yet: F010 -->
 ```python
 from geneforgelang import parse, validate, execute
 
@@ -187,23 +234,14 @@ if not errors:
 
     # Execute workflow
     result = execute(ast)
-    #print(result)
-    print(f"Done!: {result['design']['count']} proteins generated")
-"""
-
-# Parse and validate
-ast = parse(workflow)
-errors = validate(ast)
-
-if not errors:
-    # Execute workflow
-    result = execute(ast)
-    print(f"Editing efficiency: {result['efficiency']:.2%}")
+    print(f"Done: {result['design']['count']} proteins generated")
 ```
 
 ### Command Line Interface
 
-```
+The `gfl` command does not start in this version (feature F015 tracks the fix). These are the intended commands:
+
+```bash
 # Parse a workflow
 gfl parse workflow.gfl
 
@@ -231,7 +269,11 @@ gfl -h
 
 ### CRISPR Gene Editing
 
+<<<<<<< HEAD
 ```yaml
+=======
+```gfl
+>>>>>>> origin/main
 experiment:
   tool: CRISPR_cas9
   type: gene_editing
@@ -317,26 +359,39 @@ bioc_reference:
 
 ### Protein Design
 
+<<<<<<< HEAD
 ```yaml
+=======
+```gfl
+>>>>>>> origin/main
 design:
   entity: ProteinSequence
+  model: ProteinVAEGenerator
   objective:
     maximize: stability
-    target: therapeutic_protein
   constraints:
-    - length: [50, 150]
-    - synthesizability: ">0.8"
+    - length(50, 150)
+    - synthesizability > 0.8
   count: 10
+  output: designed_proteins
 
 optimize:
   search_space:
-    temperature: [25, 42]
-    ph: [6.5, 8.0]
-  strategy: bayesian_optimization
+    temperature: "range(25, 42)"
+    ph: "range(6.5, 8.0)"
+  strategy:
+    name: BayesianOptimization
   objective:
     maximize: expression_level
   budget:
     max_experiments: 50
+  run:
+    experiment:
+      tool: protein_assay
+      type: expression_measurement
+      params:
+        temp: "${temperature}"
+        ph: "${ph}"
 ```
 
 ## 🧬 Interactive DNA Helix Explorer (`GF-HelixView`)
@@ -411,7 +466,7 @@ Explore the compiled human *DMD* reference visualization in [`visualizations/dmd
 
 GFL follows a modular, capability-driven compiler architecture:
 
-```
+```text
 src/geneforgelang/
 ├── core/                       # Core language and specialized domain engines
 │   ├── parser.py               # YAML/GFL AST parser
@@ -438,29 +493,40 @@ src/geneforgelang/
 
 ## Plugin System
 
+<<<<<<< HEAD
 GFL supports custom plugins for extending functionality:
+=======
+A plugin subclasses `BaseGFLPlugin` and implements `process`:
+>>>>>>> origin/main
 
-```
-from geneforgelang.plugins import BasePlugin
+```python
+from typing import Any
 
-class CustomAnalysisPlugin(BasePlugin):
-    name = "custom_analysis"
-    version = "1.0.0"
+from geneforgelang.plugins.base import BaseGFLPlugin
 
-    def execute(self, params: dict) -> dict:
+
+class CustomAnalysisPlugin(BaseGFLPlugin):
+    def __init__(self) -> None:
+        super().__init__()
+        self.name = "custom_analysis"
+        self.description = "Example analysis plugin"
+
+    def process(self, data: dict[str, Any]) -> dict[str, Any]:
         # Custom analysis logic
-        return {"result": "analysis_complete"}
+        return {"result": "analysis_complete", "input_keys": sorted(data)}
 
-# Register plugin
-from geneforgelang.plugins import register_plugin
-register_plugin(CustomAnalysisPlugin())
+
+plugin = CustomAnalysisPlugin()
+print(plugin.process({"sequence": "MKTAYIAKQR"}))
 ```
+
+Registering a plugin with `geneforgelang.plugins.plugin_registry.register_plugin` does not work in an installed package in this version: the registry module imports `src.geneforgelang`, which only resolves from a source checkout. Feature F010 fixes this.
 
 ## Web Interface (Not working!)
 
 Launch the web interface for interactive workflow development:
 
-```
+```bash
 gfl web --host 0.0.0.0 --port 8080
 ```
 
@@ -480,11 +546,17 @@ Features:
 - `execute(ast: Dict) -> Dict`: Execute workflow
 - `infer(model, ast: Dict) -> Dict`: Run ML inference
 
+### Public API contract
+
+Clients may rely on the surface declared in [`docs/spec/public_contract.json`](docs/spec/public_contract.json): the functions of `geneforgelang.core.api`, the error types and codes, the grammar version and an evidence label per function (`execute` and the `infer` functions are labelled `simulated`). It is generated from the code, versioned with SemVer, and checked in CI. See [`docs/spec/API_CONTRACT.md`](docs/spec/API_CONTRACT.md).
+
+Every plugin and connector shipped in this package is simulated or a stub (random or canned output). Their results carry a `provenance` label, they warn on first use, and `execute()` refuses them unless you pass `allow_simulated=True`. `OpenMedConnector` gives no privacy guarantee. `geneforgelang.provenance.list_simulated_components()` lists them.
+
 ## Development
 
 ### Setup Development Environment
 
-```
+```bash
 # Clone repository
 git clone <repository-url>
 cd <repository-directory>
@@ -501,8 +573,13 @@ pytest
 
 ### Project Structure
 
+<<<<<<< HEAD
 ```
 GFL/
+=======
+```text
+GeneForgeLang/
+>>>>>>> origin/main
 ├── src/geneforgelang/    # Source code
 ├── tests/                # Test suite
 ├── docs/                 # Documentation
@@ -510,6 +587,16 @@ GFL/
 ├── resources/            # Dev tools, scripts, ...
 └── pyproject.toml        # Project configuration
 ```
+
+### Conformance suite
+
+`tests/conformance_suite/` holds `.gfl` cases with an `expected.json` each. Run them against the real parser and validator from the repository root:
+
+```bash
+python -m geneforgelang.conformance tests/conformance_suite
+```
+
+Today 9 of 36 cases pass and 27 are listed as known failures, because the validator does not implement those constructs yet. See [tests/conformance_suite/README.md](tests/conformance_suite/README.md).
 
 ### Contributing
 
@@ -550,13 +637,13 @@ GFL/
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [license](license) file for details.
 
 ## Citation
 
 If you use GFL in your research, please cite:
 
-```
+```bibtex
 @software{geneforgelang2025,
   title={GFL: A Professional DSL for Genomic Workflows},
   author={GFL Development Team},
@@ -567,9 +654,14 @@ If you use GFL in your research, please cite:
 
 ## Support
 
+<<<<<<< HEAD
 - GitHub Issues - Bug reports and feature requests
 - Discussions - Community support
 - [Documentation](https://geneforgelang.readthedocs.io) - Comprehensive guides
+=======
+- [GitHub Issues](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues) - Bug reports, questions and feature requests
+- [Documentation](docs/index.md) - Guides and reference in this repository
+>>>>>>> origin/main
 
 ---
 

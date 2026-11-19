@@ -115,10 +115,10 @@ staging = [
 
 ```bash
 # Basic installation (includes requests)
-pip install geneforgelang
+pip install -e .  # from a source checkout; not yet on PyPI
 
 # With Google Cloud Storage support
-pip install geneforgelang[staging]
+pip install -e ".[staging]"
 ```
 
 ## Testing

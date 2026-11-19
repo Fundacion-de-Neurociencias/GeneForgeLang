@@ -78,7 +78,8 @@ design:
         print("✓ Validation passed")
 
         # Execute
-        result = execute(ast, registry)
+        # The shipped example plugins are simulated: opt in knowingly.
+        result = execute(ast, registry, allow_simulated=True)
         print("✓ Design block executed successfully")
 
         # Check results
