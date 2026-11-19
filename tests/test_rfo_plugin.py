@@ -6,6 +6,8 @@ import sys
 sys.path.insert(0, os.path.abspath("src"))
 sys.path.insert(0, os.path.abspath("gfl-plugin-rfo"))
 
+from gfl_plugin_rfo.plugin import RescueAttemptResult, RFOptimizationPlugin
+
 from geneforgelang.core.gftypes import (
     CandidateStatus,
     ConsensusModel,
@@ -13,7 +15,6 @@ from geneforgelang.core.gftypes import (
     RescuePolicy,
 )
 from geneforgelang.plugins.interfaces import DesignCandidate
-from gfl_plugin_rfo.plugin import RFOptimizationPlugin, RescueAttemptResult
 
 
 def test_consensus_model_and_candidate_status_enums():

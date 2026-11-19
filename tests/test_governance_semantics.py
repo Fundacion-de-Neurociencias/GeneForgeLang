@@ -9,27 +9,28 @@ Verifies:
 """
 
 from datetime import datetime
-import pytest
 
-from geneforgelang.governance.policy import (
-    GovernancePolicy,
-    PolicyEnvelope,
-    ProvenanceScope,
-    ConsentScope,
-    PopulationScope,
-)
-from geneforgelang.semantic.evidence.contract import (
-    EvidenceContract,
-    ScaleAnchor,
-    ObservabilityProfile,
-    CompressibilityProfile,
-    TemporalValidity,
-    ContradictionState,
-    Provenance,
-    InvalidationDependency,
-)
+import pytest
 from gfl_plugin_causal_evidence.causal_triangulation import CausalEvidencePlugin
 from gfl_plugin_clawbio._clawbio_runner import ClawBioRunResult
+
+from geneforgelang.governance.policy import (
+    ConsentScope,
+    GovernancePolicy,
+    PolicyEnvelope,
+    PopulationScope,
+    ProvenanceScope,
+)
+from geneforgelang.semantic.evidence.contract import (
+    CompressibilityProfile,
+    ContradictionState,
+    EvidenceContract,
+    InvalidationDependency,
+    ObservabilityProfile,
+    Provenance,
+    ScaleAnchor,
+    TemporalValidity,
+)
 
 
 def test_governance_policy_defaults():

@@ -7,9 +7,11 @@ across the Central Dogma (Proteins, mRNA, and Coding DNA).
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import yaml
+
 from geneforgelang.core.gftypes import (
     GFLAST,
     BiosecurityWatermarkContract,
@@ -27,6 +29,11 @@ from geneforgelang.core.watermark_engine import (
     WatermarkEngine,
     calculate_cai,
     translate_dna,
+)
+
+# Fake keys live in the gitleaks-allowlisted fixture directory (tests/fixtures/secrets/).
+_TEST_KEYS: dict[str, str] = json.loads(
+    (Path(__file__).resolve().parents[1] / "fixtures" / "secrets" / "watermark_test_keys.json").read_text(encoding="utf-8")
 )
 
 
@@ -115,7 +122,7 @@ def test_gfl_ast_roundtrip_with_biosecurity_watermark() -> None:
 
 def test_synthid_protein_watermarking_embedding_and_detection() -> None:
     """Test DeepMind SynthID Bio protein sequence watermarking and g-value detection."""
-    watermarker = SynthIDProteinWatermarker(key="deepmind_synthid_test_key_2026", kmer_size=3, gamma=0.50)
+    watermarker = SynthIDProteinWatermarker(key=_TEST_KEYS["synthid_protein"], kmer_size=3, gamma=0.50)
 
     # Standard therapeutic nanobody sequence (115 amino acids)
     nanobody = (
@@ -142,7 +149,7 @@ def test_synthid_protein_watermarking_embedding_and_detection() -> None:
 
 def test_synonymous_codon_watermarking_exact_phenotypic_invariance() -> None:
     """Verify coding DNA watermarking achieves 100% amino acid identity (zero mutation)."""
-    codon_wm = SynonymousCodonWatermarker(key="fneurociencias_codon_key_2026")
+    codon_wm = SynonymousCodonWatermarker(key=_TEST_KEYS["codon_fneurociencias"])
 
     # Coding DNA sequence (90 codons = 270 bp)
     dna = (
@@ -178,7 +185,7 @@ def test_synonymous_codon_watermarking_exact_phenotypic_invariance() -> None:
 
 def test_mrna_watermarking_and_ribo_detection() -> None:
     """Verify mRNA watermarking preserves translation and operates with uracil bases."""
-    codon_wm = SynonymousCodonWatermarker(key="mrna_therapeutic_key_2026")
+    codon_wm = SynonymousCodonWatermarker(key=_TEST_KEYS["codon_mrna"])
 
     mrna = (
         "AUGCAAGUGCAACUGGUGGAGUCUGGGGGAGGCUUGGUACAGCCUGGGGGGUCCCUGAGACUCUCCUGUGCAGCCUCU"

@@ -1,4 +1,5 @@
 import pytest
+
 from geneforgelang.semantic.evidence.contract import ContractStateTransitionMatrix, ContradictionState
 
 

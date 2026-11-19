@@ -10,6 +10,7 @@ Tests cover:
 from typing import Any
 
 import pytest
+
 from geneforgelang.core.gftypes import (
     GFLAST,
     Analysis,
@@ -529,7 +530,8 @@ class TestBioTensorContracts:
 
     def test_pairwise_distances_and_contact_map(self):
         """Verify 3D coordinate distance and contact matrix computation."""
-        import numpy as np
+        np = pytest.importorskip("numpy")  # numpy ships with the `ml` extra
+
         from geneforgelang.core.api import compute_contact_map, compute_pairwise_distances
 
         # 3 residues in a line spaced by 3.8 Angstroms (typical C-alpha spacing)
@@ -549,7 +551,8 @@ class TestBioTensorContracts:
 
     def test_backbone_frames_construction(self):
         """Verify SE(3) rigid frame reconstruction and local point transformation."""
-        import numpy as np
+        np = pytest.importorskip("numpy")  # numpy ships with the `ml` extra
+
         from geneforgelang.core.api import (
             construct_backbone_frames,
             transform_points_to_local_frames,

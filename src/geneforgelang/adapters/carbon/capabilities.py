@@ -1,4 +1,4 @@
-from typing import Any, Tuple
+from typing import Any
 
 from geneforgelang.semantic.capabilities import VariantSpec
 

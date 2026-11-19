@@ -8,7 +8,6 @@ or ambiguity in meets and joins.
 """
 
 import itertools
-from typing import Dict, List, Set, Tuple
 
 from geneforgelang.semantic.lattice import (
     ContradictionLoad,

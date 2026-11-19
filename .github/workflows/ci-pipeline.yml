@@ -122,8 +122,12 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e .
+          # First-party plugins live in gfl-plugin-*/ and are exercised by the root suite
+          for plugin in gfl-plugin-*/; do pip install -e "./${plugin}"; done
+          # numpy belongs to the `ml` extra; the tensor-geometry tests need it without pulling torch
+          pip install numpy
           pip install pytest
-          pip install pytest-asyncio  # Si se usan pruebas asíncronas
+          pip install pytest-asyncio
 
       # Paso clave: Ejecutar suite de pruebas con reporte detallado
       - name: Run pytest

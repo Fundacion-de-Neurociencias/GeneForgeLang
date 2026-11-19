@@ -101,11 +101,8 @@ class DepMapPlugin(GeneratorPlugin):
             tuple(sorted(["RAMP1", "CALCRL"])): (0.84, 1.0e-20),
         }
 
-        if cache_key in known_pairs:
-            corr, p_val = known_pairs[cache_key]
-        else:
-            # Baseline neutral correlation
-            corr, p_val = 0.02, 0.75
+        # Unknown pairs fall back to a baseline neutral correlation.
+        corr, p_val = known_pairs.get(cache_key, (0.02, 0.75))
 
         res = DepMapCoDependency(
             gene_a=g_a,

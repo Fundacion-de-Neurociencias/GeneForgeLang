@@ -1,6 +1,6 @@
 # GeneForgeLang (GFL) v2.0 - Clinical Trial Endpoint Fast Calibrated Gating
 # Demonstrates BioDecision-4B integration as System 1 decision engine
-# Sub-50ms deterministic latency budget, calibrated empirical ECE <= 0.08
+# Sub-50ms latency budget and a calibration bound of ECE <= 0.08 that a real model must meet
 metadata:
   experiment_name: "Phase III Oncology Primary Endpoint Gating"
   version: "2.0.0"

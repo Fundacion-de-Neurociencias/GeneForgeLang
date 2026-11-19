@@ -41,14 +41,12 @@ def audit_directory(target_dir, manifest):
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
-                    if alias.name.startswith("geneforgelang."):
-                        if alias.name not in public_modules:
-                            print(
-                                f"[ERROR] {py_file.name}:{node.lineno} - Prohibited import of internal module: '{alias.name}'"
-                            )
-                            errors += 1
-            elif isinstance(node, ast.ImportFrom):
-                if node.module and node.module.startswith("geneforgelang."):
+                    if alias.name.startswith("geneforgelang.") and alias.name not in public_modules:
+                        print(
+                            f"[ERROR] {py_file.name}:{node.lineno} - Prohibited import of internal module: '{alias.name}'"
+                        )
+                        errors += 1
+            elif isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("geneforgelang."):
                     if node.module not in public_modules:
                         print(
                             f"[ERROR] {py_file.name}:{node.lineno} - Prohibited import from internal module: '{node.module}'"

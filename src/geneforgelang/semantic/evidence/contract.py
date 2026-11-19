@@ -13,7 +13,7 @@ validity, contradiction state, and scale anchor.
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum, auto
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class ContradictionState(Enum):
@@ -130,15 +130,19 @@ class EvidenceContract:
             raise ValueError("EvidenceContract.uncertainty must be in range [0.0, 1.0]")
 
         # Temporal logic validation
-        if self.contradiction_state == ContradictionState.SUPPORTED and self.temporal_validity.valid_until:
-            if self.temporal_validity.valid_until < datetime.now():
-                raise ValueError("Evidence contract is SUPPORTED but temporal validity window has expired.")
+        if (
+            self.contradiction_state == ContradictionState.SUPPORTED
+            and self.temporal_validity.valid_until
+            and self.temporal_validity.valid_until < datetime.now()
+        ):
+            raise ValueError("Evidence contract is SUPPORTED but temporal validity window has expired.")
 
-        if self.contradiction_state in {ContradictionState.INVALIDATED, ContradictionState.RETRACTED}:
-            if self.temporal_validity.valid_until is None or self.temporal_validity.valid_until > datetime.now():
-                raise ValueError(
-                    f"Evidence contract is {self.contradiction_state.name} but temporal validity window remains open."
-                )
+        if self.contradiction_state in {ContradictionState.INVALIDATED, ContradictionState.RETRACTED} and (
+            self.temporal_validity.valid_until is None or self.temporal_validity.valid_until > datetime.now()
+        ):
+            raise ValueError(
+                f"Evidence contract is {self.contradiction_state.name} but temporal validity window remains open."
+            )
 
         # Cross-semantic contradiction validation
         if self.compressibility.lossless and self.observability.identifiability < 0.1:

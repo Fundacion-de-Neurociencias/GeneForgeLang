@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pytest
+
 from geneforgelang.semantic.evidence.contract import (
     CompressibilityProfile,
     ContradictionState,

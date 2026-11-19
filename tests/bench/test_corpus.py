@@ -1,6 +1,7 @@
 import glob
 
 import pytest
+
 from geneforgelang.utils.grammar_parser import AdvancedGFLParser
 
 parser = AdvancedGFLParser()

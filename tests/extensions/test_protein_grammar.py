@@ -1,4 +1,5 @@
 import pytest
+
 from geneforgelang.extensions.protein_evidence.ast_nodes import (
     EmbeddingReferenceNode,
     EvidenceScoreNode,

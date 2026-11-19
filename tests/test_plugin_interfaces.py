@@ -7,6 +7,7 @@ blocks, ensuring they provide proper contracts for external tool integration.
 from typing import Any
 
 import pytest
+
 from geneforgelang.plugins.interfaces import (
     BayesianOptimizerPlugin,
     DesignCandidate,

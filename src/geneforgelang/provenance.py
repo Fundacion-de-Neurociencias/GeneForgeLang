@@ -126,6 +126,8 @@ _lock = threading.Lock()
 # Modules that register components when imported. ``list_simulated_components``
 # imports them so the answer does not depend on what the caller imported first.
 _COMPONENT_MODULES = (
+    "geneforgelang.core.alphagenome2_engine",
+    "geneforgelang.plugins.biodecision_plugin",
     "geneforgelang.plugins.builtin.protein_generator",
     "geneforgelang.plugins.builtin.simple_optimizer",
     "geneforgelang.plugins.alpha_genome",

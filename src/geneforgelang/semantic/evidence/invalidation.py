@@ -10,7 +10,6 @@ downstream dependents undergo mandatory epistemic recalibration in accordance
 with the ContractStateTransitionMatrix.
 """
 
-from typing import Dict, List, Set
 
 from geneforgelang.semantic.evidence.contract import ContractStateTransitionMatrix, ContradictionState, EvidenceContract
 
@@ -38,7 +37,7 @@ class EvidenceGraph:
     def __init__(self):
         # Maps contract_id -> EvidenceContract
         self._nodes: dict[str, EvidenceContract] = {}
-        # Maps upstream_contract_id -> List[downstream_contract_ids]
+        # Maps upstream_contract_id -> list[downstream_contract_ids]
         self._downstream_edges: dict[str, list[str]] = {}
 
     def add_contract(self, contract: EvidenceContract):

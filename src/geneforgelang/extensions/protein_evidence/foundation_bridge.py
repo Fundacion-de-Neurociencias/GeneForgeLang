@@ -66,9 +66,10 @@ def validate_foundation_payload(payload: Mapping[str, Any]) -> bool:
         raise FoundationBridgeValidationError("Foundation payload requires embedding or embedding_ref")
 
     embedding = payload.get("embedding")
-    if embedding is not None:
-        if not isinstance(embedding, list) or not all(_is_number(value) for value in embedding):
-            raise FoundationBridgeValidationError("embedding must be a list of numbers")
+    if embedding is not None and (
+        not isinstance(embedding, list) or not all(_is_number(value) for value in embedding)
+    ):
+        raise FoundationBridgeValidationError("embedding must be a list of numbers")
 
     for score_key in ("model_structure_confidence", "embedding_score"):
         if score_key in payload:

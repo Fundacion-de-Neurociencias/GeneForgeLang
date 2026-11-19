@@ -2,10 +2,13 @@
 
 import os
 import sys
+
 import pytest
 
 sys.path.insert(0, os.path.abspath("src"))
 sys.path.insert(0, os.path.abspath("gfl-plugin-depmap"))
+
+from gfl_plugin_depmap.plugin import DepMapEvaluationResult, DepMapPlugin
 
 from geneforgelang.core.gftypes import (
     CausalLevel,
@@ -13,7 +16,6 @@ from geneforgelang.core.gftypes import (
     CoDependencyTier,
     DepMapCoDependency,
 )
-from gfl_plugin_depmap.plugin import DepMapEvaluationResult, DepMapPlugin
 
 
 def test_depmap_codependency_dataclass():

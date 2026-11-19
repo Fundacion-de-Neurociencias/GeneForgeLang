@@ -3,6 +3,7 @@ import logging
 from typing import Any, Optional
 
 import yaml
+
 from geneforgelang.core.performance import cached, get_monitor
 
 logger = logging.getLogger(__name__)

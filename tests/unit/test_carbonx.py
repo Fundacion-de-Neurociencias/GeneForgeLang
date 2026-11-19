@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pytest
 import yaml
+
 from geneforgelang.core.carbonx_engine import (
     MAX_CARBONX_CONTEXT_TOKENS,
     MAX_CONTIGUOUS_DNA_BP,

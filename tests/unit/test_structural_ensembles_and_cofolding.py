@@ -10,6 +10,7 @@ Validates the integration of:
 """
 
 import pytest
+
 from geneforgelang.core.gftypes import (
     ConsensusModel,
     ExperimentalRestraintsContract,

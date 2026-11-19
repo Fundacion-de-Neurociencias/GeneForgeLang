@@ -12,7 +12,6 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
 
 
 class ArchitecturalAudit:
@@ -100,17 +99,16 @@ class ArchitecturalAudit:
                 if isinstance(node, ast.Import):
                     for alias in node.names:
                         self.import_graph[module_name].add(alias.name)
-                elif isinstance(node, ast.ImportFrom):
-                    if node.module:
-                        # Handle relative imports inside geneforgelang packages
-                        target_module = node.module
-                        if node.level > 0:
-                            # Relative import, resolve base module name
-                            parts = module_name.split(".")
-                            # node.level of 1 means parent directory of current file, etc.
-                            base_parts = parts[: -node.level]
-                            target_module = ".".join(base_parts + [node.module])
-                        self.import_graph[module_name].add(target_module)
+                elif isinstance(node, ast.ImportFrom) and node.module:
+                    # Handle relative imports inside geneforgelang packages
+                    target_module = node.module
+                    if node.level > 0:
+                        # Relative import, resolve base module name
+                        parts = module_name.split(".")
+                        # node.level of 1 means parent directory of current file, etc.
+                        base_parts = parts[: -node.level]
+                        target_module = ".".join(base_parts + [node.module])
+                    self.import_graph[module_name].add(target_module)
 
     def _find_path(self, start: str, predicate) -> list[str]:
         """Finds a path in the import graph from start to any module satisfying predicate."""
@@ -147,7 +145,7 @@ class ArchitecturalAudit:
             if module.startswith("geneforgelang.extensions"):
                 for forbidden in forbidden_cores:
 
-                    def is_forbidden_match(mod: str):
+                    def is_forbidden_match(mod: str, forbidden: str = forbidden) -> bool:
                         return mod == forbidden or mod.startswith(forbidden + ".")
 
                     path = self._find_path(module, is_forbidden_match)

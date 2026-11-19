@@ -1,28 +1,8 @@
-<<<<<<< HEAD
-# 🧬 GFL v2.0 Beta
-=======
 # 🧬 GeneForgeLang
->>>>>>> origin/main
 
 > **The Symbolic Language for Biological Reasoning**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-<<<<<<< HEAD
-[![Version](https://img.shields.io/badge/version-2.0.0--beta-blue.svg)](.)
-[![PyPI](https://img.shields.io/pypi/v/geneforgelang.svg)](https://pypi.org/project/geneforgelang/)
-
-## **GFL v2.0 Beta - Multi-Omic Reasoning Language**
-
-**Open-source domain-specific language for computational biology** that integrates multi-omic data with spatial genomic reasoning for biological discovery and design.
-
-## What is GFL v2.0?
-
-GFL v2.0 is a **next-generation domain-specific language** for computational biology that enables researchers to reason across multiple omics layers while maintaining spatial genomic context. Building on declarative workflow capabilities, v2.0 introduces comprehensive multi-omic integration, spatial genomic reasoning, and guided discovery frameworks.
-
-> ⚡ **Fundamental Bio-Thermodynamic Pillar**:
-> *"Metabolism is the global thermodynamic tax that the organism pays for its local order."*
-> In GFL, metabolic cost and global entropic dissipation are first-order constraints against any local entropy reduction or biological order synthesis.
-=======
 
 > **Notice.** Research software. Not a medical device, not for clinical use, and not legal or regulatory advice.
 
@@ -31,7 +11,6 @@ GFL v2.0 is a **next-generation domain-specific language** for computational bio
 GeneForgeLang (GFL) is a domain-specific language for describing biological design workflows. A GFL document is YAML with typed blocks (`design`, `optimize`, `experiment`, `analyze`, ...). The Python library parses and validates these documents and offers a plugin system for tools that act on them.
 
 **Status.** GFL is under active development and has no published release yet. The documented public API and the `gfl` command-line tool do not work from an installed package in this version (see [Quick Start](#quick-start)). The language features listed below describe the language design; check the [feature documentation](docs/index.md) for what the current parser accepts.
->>>>>>> origin/main
 
 ## Language Capabilities
 
@@ -56,73 +35,21 @@ GeneForgeLang (GFL) is a domain-specific language for describing biological desi
 - **📋 Rule-Based Logic**: Complex biological constraint expression
 - **🎭 Simulation Framework**: What-if analysis and hypothesis testing
 
-<<<<<<< HEAD
-### **Structural Bio-AI, Consensus & Borderline Rescue**
+### **Domain Extensions (experimental)**
 
-- **⚗️ De Novo Catalytic Motif & Enzyme Design (AlphaProtein Novo Synergy)**: Observational syntactic contracts for active-site catalytic triad geometry (`SER:OG`, `HIS:NE2`, `ASP:OD1`), transition-state substrate containers, and spatial distance tolerances ($\le 3.5\text{ \AA}$) strictly preserving GFL's observational boundary while enabling GeneForge's kinetic and scaffolding engines
-- **🔁 Deterministic Replay & Retroelement Mining (Anti-Stochasticity Gates)**: Cryptographic verification contracts ($seed \times checksum$) and continuous base-level sequence coverage ($100\%$ sliding window) guaranteeing reproducible re-discovery of Array-associated Reverse Transcriptases (ART) and mobile elements across autonomous agent swarms (overcoming the Anthropic Mythos stochasticity trap)
-- **🧬 Non-Coding Regulatory Variant Interpretation (ClinVar + AlphaGenome)**: Tissue-specific regulatory triage resolving non-coding Variants of Uncertain Significance (VUS) across target vs. control tissue ontologies (e.g. Brain cortex vs Liver) with AVI scores and epigenomic disruption tracks
-- **⚡ Jev & AnyJev Fast Decision Pre-Screening**: Training-free, permutation-invariant discrete option selection and calibrated confidence gating (Neural System 1) before escalating to formal biological arbitrament (System 2)
-- **🔬 BGC & Megasynthase Assembly Lines**: Multi-domain modular enzyme complex validation (PKS, NRPS, hybrid megasynthases, ~2,500+ AA) to explore non-natural chemical space (e.g. $\delta$-valerolactam nylon precursors) inspired by gLM2
-- **🎯 RFOptimization & Near-Miss Rescue**: Classification of borderline candidates (`NEAR_MISS`) and alternating gradient-guided simulated MCMC mutations + discrete resampling
-- **⚖️ 5-Model Consensus Screening & Runs N' Poses Gate**: Cross-model validation across AlphaFold 3, RoseTTAFold 3, Boltz-1, Chai-1, and Protenix with pose gating ($iPAE < 2.5, iPTM > 0.8$, RMSD $\le 2.0\text{ \AA}$) to prevent co-folding hallucinations
-- **🧲 Measurement-Guided Ensembles & Physics Refinement**: Steers generative diffusion models via empirical sparse restraints (NMR NOE, Cryo-EM, SAXS) and resolves steric clashes in complex receptors (GPCRs) via OpenMM force field energy minimization
-- **🔍 Ligand-Conditioned Cryptic Pockets**: Dynamic modeling of allosteric and cryptic pockets transitioning from collapsed apo states to open holo states upon probe binding
-- **📐 BioTorch Tensor Contracts**: Formal geometry and tensor representations with coordinate frames ($SE(3)$, $SO(3)$, `local_residue_frame`) and invariant dimensions
-- **🛑 DepMap CRISPR Stop-Gates**: Empirical epistemic stopping gates based on Broad DepMap Public co-dependency and statistical significance
-- **🔬 Google DeepMind AlphaGenome**: 18-modality unified variant impact scoring (AVI Score) and regulatory motif disruption analysis
-- **🍊 Tangermeme Cis-Regulatory Logic & Seqlet Syntax (Nature Methods)**: Decoupled sequence-to-function interpretation, recursive variable-length seqlet calling, and context-bound claims preserving formal conditions ($\text{Claim}, \text{ContextState}, \text{Provenance}$). Empowers researchers and AI agents to decipher why and under what exact conditions a DNA sequence functions, eliminating generic assertions in favor of contextualized, falsifiable hypotheses.
-- **🧠 Distributed Biological Reasoning & Perturbation Atlas (Sun et al. / Shi et al. / OpenAI / Scripps)**: High-throughput whole-brain in vivo Perturb-seq screen contracts (`perturbation_atlas:`, 7.7M cells, 1,947 disease genes) with unary agent swarm allocation, paralog phenotypic dissonance detection (*Grin2a* vs *Grin2b* opposition), causal disease transition synthesis, and `ReasoningAtlasCompiler` for epistemic causality graph generation.
-- **🛡️ Multi-Modal Biosecurity Watermarking & AI Provenance (SynthID Bio / Nature 2026 / DeepMind)**: Cross-dogma function-preserving biological watermarking (`biosecurity_watermark:`, `synth_provenance:`) spanning proteins ($k$-mer context hashing, green-list logit biasing, $g$-value and $z$-score detection with $p < 10^{-5}$), coding DNA (100% synonymous wobble-base watermarking with zero phenotypic alteration, human Codon Adaptation Index $\text{CAI} \ge 0.80$, and cryptic splice motif avoidance), and stable mRNA therapeutics. Protects biological intellectual property and prevents AI slop database contamination.
-- **🧬 Carbon-X Frontier Genomic Foundation LLM (`HuggingFaceBio/Carbon-X`)**: Deep whole-genome DNA understanding and locus-level reasoning (`genomic_llm:`, `carbonx:`) powered by 14.8B parameters, hybrid 6-mer DNA tokenization (5,515 vocab entries), and a 40,960 token context window ($\approx 245\text{ kb}$ of contiguous DNA). Enables interactive "Chat with DNA", regulatory motif discovery, variant consequence explanation, and synthetic promoter design with local, privacy-preserving execution on Apple Silicon (M4 Max Metal GPU acceleration).
-- **✨ ProTok Unified Multimodal Protein & Genomic Tokenizer (Harvard / Rajpurkar Lab / arXiv:2610.18481)**: Unifies protein sequence (1D), backbone 3D spatial geometry (direct PDB/AlphaFold Cartesian coordinate quantization), and functional ontologies (Enzyme Commission EC, Gene Ontology GO, CATH) into a single discrete residue vocabulary (`protok:`, `unified_protein_stream:`). Powered by Multi-Codebook Vector Quantization ($3.14\times 10^6$ composite states) and Codebook Group Dropout ($0.939$ lDDT on CATH 4.2, $0.695$ zero-shot EC level 1 precision, $52\%$ de novo backbone designability), plus structural biosecurity watermarking with exact binomial $p$-value detection. Includes **4 Bidirectional GFL–ProTok Cross-Synergies**: (1) `GenTokTokenizer` ($16,384$ trimodal DNA $\times$ 3D Chromatin Topology $\times$ Epigenetic states), (2) Central Dogma causal variant propagation (`DNA codon` $\rightarrow$ `ProTok conformation` $\rightarrow$ `clinical decision`), (3) Grammar-Constrained Decoding Masks ($>99.999\%$ search-space pruning), and (4) Isomorphic 3-Axis Diagnostic Projection ([Feature Guide](docs/geneforgelang/features/protok_unified_residue_stream.md)).
-- **🗺️ Graphify Static Knowledge Graph & Grammar Indexing (Graphify-Labs / Tree-sitter AST)**: Deterministic, queryable knowledge graph spanning all Python compiler internals, AST contracts, and user-facing `.gfl` genetic programs (`graph.json`, `graph.html`, `GRAPH_REPORT.md`). Reduces agent context window consumption by **>240x (99.6% token reduction)**, unifies 6,459 nodes and 11,198 edges, maps architectural God Nodes (`EnhancedSemanticValidator`), and provides automated static grammar auditing (`scripts/audit_gfl_grammar_graph.py`, `scripts/gfl_ast_to_graphify.py`) ([Feature Guide](docs/geneforgelang/features/graphify_static_grammar_index.md)).
-- **🌊 Mesoscopic DNA Breathing & Transcription Factor Coupling (USC / Rohs Lab / Bioinformatics Advances 2026)**: Transient base-pair thermal unpairing dynamics and opening bubble profiling (`dna_dynamics:`, `breathing:`) powered by an analytical Peyrard-Bishop-Dauxois (PBD) statistical mechanics solver coupled with canonical pentamer DNA shape parameters (MGW, Roll, HelT, ProT). Models the physical code of gene regulation, distinguishing between `RIGID_SHAPE_DOMINATED` factors (where breathing disrupts major groove recognition) and `BREATHING_ASSISTED` pioneer factors (where thermal opening lowers the free energy barrier for TBP/Cas9/intercalation), enabling quantitative non-coding VUS binding delta predictions ($\Delta\Delta G_{\text{binding}}$) ([Feature Guide](docs/geneforgelang/features/dna_breathing_mesoscopic_dynamics.md)).
-- **🔬 Single-Cell Immune Regulation & Dynamic Cell States (TenK10K Paradigm / Garvan / Nature 2026)**: Population-scale single-cell functional genomics (`single_cell_regulation:`, `sc_regulation:`, `cellular_context:`) grounded in Phase 1 of TenK10K (Cuomo, Spenceley, Tanudisastro et al., Powell & MacArthur; 1,925 individuals, >5M cells, 28 PBMC lineages). Elevates GFL beyond static bulk eQTLs to: (1) **Cell-Type Specificity** across 28 Cell Ontology (`CL:`) immune lineages (50% of eQTLs are cell-type specific, enriched in distal enhancers $>20\text{ kb}$ from TSS); (2) **Continuous Cell-State Interaction Kinetics** ($\beta_{\text{eff}}(s) = \beta_0 + \gamma \cdot s$) modeling activation/cytotoxicity gradients; (3) **Cell Abundance QTLs (`caQTLs`)** modulating sublineage differentiation under simplex conservation; and (4) **Bayesian Colocalization Gating** ($PP_4 \ge 0.80$) matching GWAS autoimmune/neurological loci to causal single-cell transcripts ([Feature Guide](docs/geneforgelang/features/single_cell_immune_regulation_tenk10k.md)).
-- **🤖 Autonomous Wet-Lab Protocol Execution & Synthesizability Engine (AutoDNA / Nature 2026 Synergy)**: Bridges declarative genetic programming with physical in vitro execution (`autonomous_execution:`, `wet_lab_dispatch:`, `laboratory_protocol:`) grounded in AutoDNA (*Nature*, 2026; Ledford, Chen, Wu et al.; DOI: `10.1038/d41586-026-03552-8`). Unifies 4 core pillars: (1) **SiLA 2 & AutoDNA Multi-Instrument Compilation** across synthesizers, thermocyclers, liquid handlers, and sequencers; (2) **Biophysical Synthesizability Gates** enforcing enzymatic TdT homopolymer limits ($\le 4\text{ bp}$), GC composition ($40\%\text{--}60\%$), and secondary hairpin free energy ($\Delta G_{\text{hairpin}} > -8.0\text{ kcal/mol}$); (3) **Biosecurity Air-Gap & Cryptographic Dispatch Tokens** (automated select agent toxin screening and SHA-256 execution authorization signatures); and (4) **Closed-Loop Telemetry & Causal Epistemic Refinement** reconciling physical NGS sequencing reads and step-wise yields ($\ge 97.7\%$) to promote in silico hypotheses to `EMPIRICAL_VERIFIED` ([Feature Guide](docs/geneforgelang/features/autonomous_wet_lab_autodna_synergy.md)).
-- **🧊 Cloud-Native Biological Lakehouse & Frozen Annotations (`bioc-on-ice` / Sean Davis 2026)**: Language-agnostic, zero-download biological lakehouse integration (`bioc_reference:`, `lakehouse_reference:`, `bioc_on_ice:`) grounded in Bioconductor on Ice (*`bioc-on-ice`*, Sean Davis 2026; 100 GB, ~4B rows, 81 tables across 7 schemas: `annotation`, `clinical`, `ontology`, `reference`, `provenance`, `raw`, `resource`). Unifies: (1) **Epistemic Release Pinning** (binding GFL protocols to frozen snapshots e.g. `2026-11-08` or `latest` with SHA-256 table integrity audits); (2) **Zero-Download HTTP Range Pushdown Execution** via DuckDB HTTPFS (`read_parquet('https://...')`) and PyArrow streaming dataset readers without multi-gigabyte monolithic downloads; (3) **Lakehouse Ground Truth Resolution** for Ensembl/NCBI genes (*GZMB*, *KRAS*, *TP53*, *TREM2*, *IL2RA*), transcripts, and ontology CURIE validation (`CL:`, `GO:`, `HP:`, `DOID:`, `UBERON:`); and (4) **Dual-Mode Offline Fallback** with local manifest caching (`~/.cache/geneforgelang/bioc_on_ice/`) and curated reference registry ([Feature Guide](docs/geneforgelang/features/bioc_on_ice_lakehouse_reference.md)).
-- **🎯 AlphaGenome 2 Dedicated 1 Mb Cell-Specific Gene Regulation & Epigenetic Imputation (Google DeepMind 2026)**: Cell-type-specific locus-scale programming (`alphagenome2:`, `ag2_locus:`, `cellular_regulation_1mb:`) grounded in AlphaGenome 2 (Gayoso, Mottram et al., DeepMind, November 2026). Unifies: (1) **Dedicated 1 Mb Sequence Context** focusing 100% of transformer capacity on a single cellular state rather than diluting over thousands of bulk tissues; (2) **Zero-Shot Generalization via Scarce scRNA-seq** (from just 50–100 cells without retraining); (3) **Cross-Modality Imputation** predicting chromatin accessibility (ATAC/DNase), histone marks (H3K27ac), and single-cell **5mC DNA methylation** without wet-lab assay costs; (4) **SOTA Distal Enhancer-to-Gene Mapping** across up to 1 Mb with distance-decay contact modeling; and (5) **Pre-Flight Compilation Gating** protecting client API quotas and Google Cloud budgets ([Feature Guide](docs/geneforgelang/features/alphagenome2_cellular_regulation_1mb.md)).
-- **🧬 FineDNA Sovereign Biocomputing & Closed-Loop RLVR Compiler (FineDNA / Qwen3-14B Synergy 2026)**: On-premise frontier biological reasoning and interactive RLVR code generation (`finedna:`, `finedna_circuit:`, `finedna_task:`) grounded in FineDNA (514B biological mid-training tokens, 200k SFT conversations, 100k RL tasks for environments, reaching **GPT-Sol 6.1 performance** on open weights). Unifies: (1) **100% Sovereign Air-Gapped Execution** running locally on Apple Silicon Mac Studio or private GPU clusters with strict compile-time protection against external IP leakage (`air_gapped: true`); (2) **Closed-Loop Interactive RLVR Compilation** using GFL as the deterministic reward oracle to catch syntax/thermodynamic errors and self-correct with SHA-256 cryptographic proof tokens; (3) **Zero Marginal Token Cost** eliminating recurring cloud API fees for biopharma screening; and (4) **RLVR Benchmark Dataset Exporter** allowing enterprise clients to format proprietary assays into FineDNA training environments ([Feature Guide](docs/geneforgelang/features/finedna_sovereign_biocomputing.md)).
-- **🔍 Permutation Baseline Gate (`shuffled_control` / Phylo Benchmark 2026)**: Falsifiable sequence-signal auditing (`permutation_baseline:`, `sequence_signal_audit:`) grounded in Xinming Tu & Leo Chen (Phylo, November 2026). Evaluates whether any bio-foundation model encodes genuine evolutionary sequence grammar on unstudied proteins rather than literature memorization or compositional bias, computing $\text{Permutation Gap} = \text{Acc}_{\text{native}} - \text{Acc}_{\text{shuffled}}$ against seeded Fisher-Yates or exact Altschul-Erickson 2-mer-preserving Eulerian shuffles ([Feature Guide](docs/geneforgelang/features/permutation_baseline_gate.md)).
+The parser also accepts domain blocks for regulatory genomics, protein structure, single-cell regulation, biosecurity watermarking, lakehouse references and wet-lab dispatch (for example `alphagenome2:`, `protok:`, `single_cell_regulation:`, `biosecurity_watermark:`, `bioc_on_ice:` and `autonomous_execution:`). Each block is described in its [feature guide](#feature-guides--technical-specifications). These guides describe the block schema and the validation GFL performs; they are not benchmarks of the external models or services they name. Components that return simulated or stub output are listed by `geneforgelang.provenance.list_simulated_components()` and warn on first use.
 
-### **Privacy-Preserving Bio-Skills & Governance**
+### **Interactive DNA Helix Viewer (`GF-HelixView`)**
 
-- **🧬 Local Bioinformatics**: High-precision analysis running 100% locally
-- **✅ Scientific Reproducibility**: Automatic generation of Reproducibility Packages (hashes, timestamps, versions)
-- **🧠 Clinical Neuro-Skills**: Specialized skills for PharmGx, Geriatric Risk, and NutriGx
-- **🛡️ Data Sovereignty & Biosecurity**: Provenance, Consent, Jurisdiction, and Population equity tracking as first-class language semantics
-- **🔒 Security Policy & Continuous AI Scanning**: Coordinated vulnerability reporting via [SECURITY.md](SECURITY.md) with support for automated AI security auditing (Anthropic OSS Scanner) and Bandit static analysis gates
+`geneforgelang.visualization.dna_helix_viewer` renders a self-contained HTML/SVG view of a DNA locus with codon translation, exon boundaries, known-variant tracks and SpCas9 PAM sites ([feature guide](docs/geneforgelang/features/dna_helix_viewer.md)).
 
-### **🧬 Interactive Visualization & Dynamic DNA Helix Explorer (`GF-HelixView`)**
-
-- **Dynamic B-DNA Double Helix (SVG 2.5D)**: Physical geometry rendering of the right-handed B-DNA double helix (10 base pairs per turn, pitch 3.4 nm, rise 0.34 nm, major groove 2.2 nm, minor groove 1.2 nm) with explicit sugar-phosphate backbones and Watson-Crick hydrogen bonding ($A=T$ with 2 H-bonds vs $G\equiv C$ with 3 H-bonds).
-- **Reading Head & Interactive Scrubber**: Dynamic scanning across loci (1 to $N$ bp) with speed controls ($0.5\times$ to $5\times$), keyboard navigation (`ArrowLeft`, `ArrowRight`, `Space`), and real-time physical metrics.
-- **Dynamic Codon Translation & Frameshift Disruption Alerts**: Real-time 3-frame translation from nucleotide triplets to amino acids, with live detection and alerting of open reading frame disruptions and premature termination codons (PTC).
-- **Exon & Splicing Architecture Overlays**: Canonical donor (`GT`, 5' ss) and acceptor (`AG`, 3' ss) boundary identification, reading phase tracking (Phase 0, 1, 2), and quick-jump navigation across exons.
-- **ClinVar & Known Variant Tracks**: Pathogenicity classification badges (Pathogenic, Likely Pathogenic, VUS, Benign), HGVS nomenclature, molecular consequences, and direct jump-to-mutation controls.
-- **Epigenomics (5hmC) & CRISPR PAM Scanner**: Methylated CpG dinucleotide overlays and automated SpCas9 PAM window scanning (`NGG` motif with 20-nt guide alignment and -3 nt cleavage marker).
-- **Zero-Dependency Portable HTML5/SVG Export**: Self-contained single-file HTML applications (~40 KB) that run offline in any modern browser without CDN, NPM, or external runtime requirements.
-=======
 ### **Local Execution**
 
-- **🛡️ Data stays local**: the library parses and validates workflows on your machine; it sends no data to a cloud service.
->>>>>>> origin/main
+- **🛡️ Data stays local by default**: the parser and validator run on your machine and send no data to a cloud service. Optional engines that reach a remote service (for example the `bioc_on_ice` lakehouse reader or a remote model endpoint) only do so when a workflow asks for them; their feature guides say so.
 
 ## 🌐 Open-Source and Universal
 GeneForgeLang is an **open-source project** dedicated to the entire scientific community. While it serves as the foundation for the GeneForge platform, its design and evolution are governed by universal biological principles, not by any specific commercial or execution environment.
 
-<<<<<<< HEAD
-- **Declarative Genetic Syntax**: Clean, readable, mathematically sound YAML-based biological workflow definitions with strict 2-space indentation.
-- **Sovereign Biological AI & Air-Gapped Compliance**: Native on-premise execution with FineDNA-14B and Carbon-X 14.8B on local workstations (Apple Silicon Mac Studio / NVIDIA GPUs), strictly rejecting public cloud egress when `air_gapped: true`.
-- **Closed-Loop RLVR Verification & Proofs**: Interactive compiler self-correction emitting deterministic reward scores and cryptographic SHA-256 verification tokens.
-- **Dedicated Locus-Scale (1 Mb) Regulation**: AlphaGenome 2 integration dedicating 100% of transformer context to a single cell state, cross-modal 5mC methylation imputation, and distal enhancer-promoter contact modeling.
-- **Cloud-Native Biological Lakehouse**: Bioconductor on Ice (`bioc-on-ice`) integration querying 81 frozen Parquet tables (~4B rows, 100 GB) via DuckDB HTTPFS pushdown without multi-gigabyte local downloads.
-- **Physical DNA Mechanics & Breathing**: Mesoscopic Peyrard-Bishop-Dauxois (PBD) thermal bubble opening dynamics and pioneer transcription factor binding prediction.
-- **Autonomous Wet-Lab Dispatch & Synthesizability Gates**: AutoDNA SiLA 2 multi-instrument compilation, automated enzymatic TdT homopolymer checks, and biosecurity screening.
-- **Multimodal Protein & Residue Tokenization**: ProTok unified 1D sequence, 3D Cartesian geometry, and functional ontology codebooks with Central Dogma causal propagation.
-- **Interactive Multi-Omic Visualizer (`GF-HelixView`)**: Real-time dynamic B-DNA 2.5D helix scanner with 3-frame translation, frameshift alerts, ClinVar variant tracks, and CRISPR PAM detection (`gfl view dna`).
-- **Extensible Plugin Ecosystem**: Interoperable plugins for BioPython, BLAST, GATK, Samtools, and custom analytical pipelines.
-=======
 *   **Universal Semantic Authority**: GFL defines the biological world independently of how it is executed.
 *   **Open to Everyone**: Anyone can implement a GFL-compatible runtime or contribute to the language specifications.
 *   **Decoupled Architecture**: Formal separation between Language Specification, Semantic Validation, and Execution Runtimes.
@@ -142,31 +69,10 @@ To ensure consistency across the ecosystem, GFL maintains a set of formal specif
 - **CLI Tools**: Comprehensive command-line interface for automation
 - **API Integration**: RESTful API for programmatic access
 - **Container Execution**: Reproducible execution using Docker containers
->>>>>>> origin/main
 
 ## 🧪 Example: BRCA1 gRNA Discovery (Illustrative simulation)
 
-<<<<<<< HEAD
-GFL has been validated through a comprehensive experiment discovering optimal gRNA candidates for CRISPR gene editing:
-
-### **Results Summary**
-
-- **🏆 Best Candidate**: BRCA1_gRNA_4_02
-- **📈 Combined Score**: 89.7% efficiency
-- **🎯 On-Target**: 84.8% efficiency with only 3.0% off-target risk
-- **⚡ Discovery Time**: 24 seconds for 50 candidates across 5 cycles
-
-### **Scientific Impact**
-
-- **Clinical Relevance**: BRCA1 is critical for cancer research
-- **Safety Focus**: <30% off-target risk across all top candidates
-- **Efficiency**: >80% on-target activity for top 10 candidates
-- **Reproducibility**: Complete workflow documented and open-source
-
-Scientific manuscript available in the examples directory.
-=======
 The [GFL Genesis example](examples/real_project/README.md) shows how a guided-discovery workflow for CRISPR gRNA candidates against BRCA1 is written in GFL. Its execution script draws every on-target and off-target score from `np.random.beta`: the numbers in its outputs are random scores, not a validation, and say nothing about real guide efficiency or safety. The accompanying [draft manuscript](examples/real_project/Manuscript_GeneForge_v2_Beta.md) is labelled the same way.
->>>>>>> origin/main
 
 ## Quick Start
 
@@ -269,11 +175,7 @@ gfl -h
 
 ### CRISPR Gene Editing
 
-<<<<<<< HEAD
-```yaml
-=======
 ```gfl
->>>>>>> origin/main
 experiment:
   tool: CRISPR_cas9
   type: gene_editing
@@ -359,11 +261,7 @@ bioc_reference:
 
 ### Protein Design
 
-<<<<<<< HEAD
-```yaml
-=======
 ```gfl
->>>>>>> origin/main
 design:
   entity: ProteinSequence
   model: ProteinVAEGenerator
@@ -493,11 +391,7 @@ src/geneforgelang/
 
 ## Plugin System
 
-<<<<<<< HEAD
-GFL supports custom plugins for extending functionality:
-=======
 A plugin subclasses `BaseGFLPlugin` and implements `process`:
->>>>>>> origin/main
 
 ```python
 from typing import Any
@@ -573,13 +467,8 @@ pytest
 
 ### Project Structure
 
-<<<<<<< HEAD
-```
-GFL/
-=======
 ```text
 GeneForgeLang/
->>>>>>> origin/main
 ├── src/geneforgelang/    # Source code
 ├── tests/                # Test suite
 ├── docs/                 # Documentation
@@ -654,14 +543,8 @@ If you use GFL in your research, please cite:
 
 ## Support
 
-<<<<<<< HEAD
-- GitHub Issues - Bug reports and feature requests
-- Discussions - Community support
-- [Documentation](https://geneforgelang.readthedocs.io) - Comprehensive guides
-=======
 - [GitHub Issues](https://github.com/Fundacion-de-Neurociencias/GeneForgeLang/issues) - Bug reports, questions and feature requests
 - [Documentation](docs/index.md) - Guides and reference in this repository
->>>>>>> origin/main
 
 ---
 

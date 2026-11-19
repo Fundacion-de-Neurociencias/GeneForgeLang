@@ -1,7 +1,6 @@
 import json
 import os
 import tempfile
-from typing import Tuple
 
 import google.generativeai as genai
 import gradio as gr

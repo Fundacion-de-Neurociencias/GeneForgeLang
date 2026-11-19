@@ -11,6 +11,7 @@ Tests:
 from __future__ import annotations
 
 import pytest
+
 from geneforgelang.core.alphagenome2_engine import (
     AlphaGenome2Engine,
 )

@@ -8,18 +8,19 @@ Verifies the GFL Hypothesis:
 """
 
 from datetime import datetime
+
 import pytest
 
 from geneforgelang.semantic.evidence.algebra import ContractAlgebra
 from geneforgelang.semantic.evidence.contract import (
-    EvidenceContract,
-    ScaleAnchor,
-    ObservabilityProfile,
     CompressibilityProfile,
-    TemporalValidity,
     ContradictionState,
-    Provenance,
+    EvidenceContract,
     InvalidationDependency,
+    ObservabilityProfile,
+    Provenance,
+    ScaleAnchor,
+    TemporalValidity,
 )
 
 

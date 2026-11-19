@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Restored a green `main` after the v0.3.0 consolidation merge: resolved the merge-conflict markers left in `README.md`, cleared the Ruff findings, moved the fake biosecurity-watermark test keys into `tests/fixtures/secrets/`, and made CI install the first-party `gfl-plugin-*` packages and `numpy` that the root suite imports.
+- `gfl-plugin-clawbio` required `geneforgelang>=2.0.0`, a version that does not exist; it now requires `geneforgelang>=1.0.0`.
+- `AlphaGenome2Engine` imputations and `BioDecisionPlugin` pseudo-logits are now registered as simulated components (listed by `list_simulated_components()`, warn on first use) instead of being allowlisted as cache keys. `BioDecisionPlugin` no longer pads latency to 38.5 ms or reports a fixed ECE of 0.068; it reports the measured latency and `ece=None`, and an unmeasured ECE never passes the calibration gate.
+- Removed `scripts/conformance_runner.py` (it printed a pass for every case without running the validator; the real runner is `python -m geneforgelang.conformance`) and `docs/END_TO_END_TRUTH_AUDIT.md`, both re-added by the consolidation merge after they had been removed.
+- Replaced developer home-directory paths in feature guides and scripts with repository-relative paths.
+
 ### Changed
 - Contract 1.2.0: exposed geometric primitives (pairwise distances, contact maps, backbone frames, rigid transformations) with computed evidence labels.
 - Contract 1.1.0: provenance contract for simulated output:
@@ -30,20 +37,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Implemented analytical projection of repeat tract distributions with DNA mismatch repair (MMR) modifier scaling (`msh3_genotype`, `mlh1_expression`) and catastrophic toxicity cliff probability calculation ($P(\text{Repeat} \ge \text{cliff}))$.
   - Integrated `protocol` and `somatic_instability` top-level blocks in `GFLAST` and `EnhancedSemanticValidator` supporting discrete System 1 gating (`SUB_THRESHOLD_LATENT` vs `CLIFF_COLLAPSE_IMMINENT`).
   - Added canonical example in `examples/features/huntington_somatic_instability_cliff.gfl` and documentation in `docs/geneforgelang/features/somatic_instability_repeat_cliff.md`.
-  - Added unit test suite in `tests/unit/test_somatic_instability_cliff.py` (100% passing).
+  - Added unit test suite in `tests/unit/test_somatic_instability_cliff.py`.
 - **Regulatory Genomics Dual-Head Contracts (BPNet, AtacWorks & MIT 6.874)**:
   - Formalized `RegulatoryProfileContract` decoupling global count magnitude (`CountHeadContract`) from base-resolution spatial distribution (`ProfileHeadContract`), solving the spatial information collapse when reducing genomic signal to scalars.
   - Implemented exact Multinomial Profile negative log-likelihood (NLL) and Jensen-Shannon Divergence (JSD) analytical loss functions matching MIT 6.874 Lecture 7 empirical values ($NLL_{P1} \approx 22.3$, $NLL_{P2} \approx 160.9$).
   - Added `SignalModality` distinguishing de novo sequence prediction (`DE_NOVO_SEQUENCE_DIRECT`) from experimental signal denoising (`SIGNAL_DENOISED_ENRICHED` e.g. AtacWorks) and raw empirical assays.
   - Enforced the Epistemic Barrier invariant in `EnhancedSemanticValidator`: prohibits asserting `VALIDATED_MECHANISM` without confirmed orthogonal empirical validation (`orthogonal_validation_confirmed: true`).
   - Added canonical example in `examples/features/regulatory_genomics_dual_head_profile.gfl` and documentation in `docs/geneforgelang/features/regulatory_genomics_dual_head_contracts.md`.
-  - Added unit test suite in `tests/unit/test_regulatory_genomics_contracts.py` (100% passing).
+  - Added unit test suite in `tests/unit/test_regulatory_genomics_contracts.py`.
 - **Viral Interactome Complexes & AlphaGenome Locus Linking (AlphaFold DB Pandemic Portal & DeepMind 2026)**:
   - Added `ViralInteractomeComplexContract` and `ViralInteractomeType` enum formalizing quaternary viral-host and intra-viral complexes across 2,812 proteomes (8,028 high-confidence all-vs-all dimeric interactions).
   - Added `AlphaGenomeLocusLink` bridging quaternary viral complex interfaces with host receptor genomic variants (1-based `chr:pos:ref>alt` AlphaGenome Atlas format).
   - Enhanced `EnhancedSemanticValidator` with semantic validation for `complexes` blocks (subunits validation, `iplddt_threshold`, `iptm_threshold`, and strict AlphaGenome variant format checking).
   - Added canonical example in `examples/features/viral_interactome_pandemic_complexes.gfl` and documentation in `docs/geneforgelang/features/viral_interactome_complexes.md`.
-  - Added unit test suite in `tests/unit/test_viral_interactome_complexes.py` (100% passing).
+  - Added unit test suite in `tests/unit/test_viral_interactome_complexes.py`.
 - **Prompteina Text-Conditioned All-Atom Protein & Binder Design (Baker Lab / IPD & Ai2 2026)**:
 
   - Formalized `NaturalLanguageConditioningContract` capturing macro-topology, active-site interaction coordinates, negative design constraints, and classifier-free guidance scales.
@@ -51,20 +58,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Registered `"prompteina"` and `"Prompteina"` as authorized generative design models and tools in `EnhancedSemanticValidator`.
   - Added `_validate_prompt_conditioning` semantic rules enforcing positive guidance scale and inference step budgets.
   - Added canonical example in `examples/features/prompteina_gm2a_binder_design.gfl` for GM2A neurodegenerative disease binder design.
-  - Added feature documentation in `docs/geneforgelang/features/prompteina_text_conditioned_design.md` and unit tests in `tests/unit/test_prompteina_design.py` (100% passing).
+  - Added feature documentation in `docs/geneforgelang/features/prompteina_text_conditioned_design.md` and unit tests in `tests/unit/test_prompteina_design.py`.
 - **Epigenetic Deconvolution & cfDNA Fragmentomics Foundation Contracts (Pleiades Architecture)**:
 
   - Formalized `EpigeneticDeconvolutionContract` and `FragmentomicsModality` enum for whole-epigenome foundation model deconvolution from liquid biopsy plasma cfDNA.
   - Expanded `DecisionContract` to natively accept `target_tissue` and `cfdna_methylation_profile` parameters for fast calibrated System 1 gating.
   - Registered `"pleiades"`, `"pleiades-biodecision"`, and `"pleiades-7b"` in `EnhancedSemanticValidator` tool catalog, and authorized `"epigenetic_deconvolution"` and `"fragmentomics"` analysis strategies.
   - Added canonical example in `examples/features/epigenetic_deconvolution_cfdna.gfl` and documentation in `docs/geneforgelang/features/epigenetic_deconvolution_cfdna.md`.
-  - Added unit test suite in `tests/unit/test_epigenetic_deconvolution_cfdna.py` (100% passing).
+  - Added unit test suite in `tests/unit/test_epigenetic_deconvolution_cfdna.py`.
 - **AlphaEvolve Program Evolution & Autonomous Protocol Foundry (DeepMind / Google Cloud 2026)**:
 
   - Added `ProgramEvolutionContract` formalizing evolutionary optimization of code representations, liquid-handler pipetting schedules, and heuristic algorithms via LLM mutation engines guided by deterministic fitness evaluators.
   - Added `AlphaEvolve` and `ProgramEvolution` strategies to `EnhancedSemanticValidator` with strict domain constraints (`population_size > 0`, `generations > 0`, `0.0 <= elitism_rate <= 1.0`, non-empty `seed_program`).
   - Added canonical example in `examples/features/alphaevolve_protocol_optimization.gfl` and documentation in `docs/geneforgelang/features/alphaevolve_program_optimization.md`.
-  - Added unit test suite in `tests/unit/test_alphaevolve_program_optimization.py` (100% passing).
+  - Added unit test suite in `tests/unit/test_alphaevolve_program_optimization.py`.
 - **DNA Typewriter Continuous Cellular Lineage Recording (Science 2026 - Yu et al.)**:
 
   - Implemented `tape_recorder` first-class AST construct and `TapeRecorderContract` based on *Science* 2026 (DOI: 10.1126/science.ael0508).
@@ -74,10 +81,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `LineageNode` phylogenetic representation tracking embryonic cellular generations, sequential tape state barcodes, and temporal commitment points.
   - Registered `dna_typewriter` and `targeted_amplicon_dna_seq` in `EnhancedSemanticValidator` tool catalog and compatibility matrix.
   - Added canonical example in `examples/features/dna_typewriter_embryo_lineage.gfl` and documentation in `docs/geneforgelang/features/dna_typewriter_lineage_recording.md`.
-  - Added comprehensive unit test suite in `tests/unit/test_tape_recorder_lineage.py` (100% passing).
+  - Added comprehensive unit test suite in `tests/unit/test_tape_recorder_lineage.py`.
 - **BioDecision-4B & System 1 Fast Calibrated Gating Engine (Qwen3.5-4B + LoRA Tev1 Recipe)**:
   - Added first-class support for `BioDecision-4B` as the canonical biomedical System 1 decision engine.
-  - Implemented `DecisionContract` formal IO contract with deterministic latency budgets (`latency_budget_ms <= 50.0`) and empirical calibration bounds (`calibration_error_max <= 0.08`, benchmarked at $ECE = 0.068$).
+  - Implemented `DecisionContract` formal IO contract with deterministic latency budgets (`latency_budget_ms <= 50.0`) and calibration bounds (`calibration_error_max <= 0.08`). No model weights ship with the package: `BioDecisionPlugin` produces simulated pseudo-logits unless the caller supplies real logits, and it reports no ECE until one is measured.
   - Added `DecisionStrategy.SYSTEM_1_CALIBRATED`, `DecisionStrategy.BIODECISION_SINGLE_FORWARD`, and `DecisionStrategy.SYSTEM_1_FAST`.
   - Added `DecisionMode` (`CHOICE`, `BINARY`, `SCORE`) for discrete multi-class selection, binary gates, and continuous probability alignment.
   - Added `DecisionOutcome` tracking top predictions, ambiguity detection margins, empirical ECE, latency, and automated escalation triggers.
@@ -85,7 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Registered `biodecision-4b` as an authorized tool and analysis engine in `EnhancedSemanticValidator`.
   - Implemented `BioDecisionPlugin` in `src/geneforgelang/plugins/biodecision_plugin.py` with temperature-scaled softmax, ECE verification, and sub-50ms execution profiles.
   - Added canonical example in `examples/features/biodecision_clinical_trial_gating.gfl` and documentation in `docs/geneforgelang/features/biodecision_system1_gating.md`.
-  - Added unit test suite in `tests/unit/test_biodecision_system1_gating.py` (100% passing).
+  - Added unit test suite in `tests/unit/test_biodecision_system1_gating.py`.
 - **Measurement-Consistent Structural Ensembles, 5-Model Co-folding Consensus & Physics Refinement (Nature Methods / Nature Biotechnology 2026)**:
   - Expanded `ConsensusModel` to include `CHAI_1 = "chai1"` and `PROTENIX = "protenix"` alongside AlphaFold3, RoseTTAFold3, and Boltz-1.
   - Implemented 5-model cross-validation in `MultiModelConsensus` with strict confidence gating.
@@ -104,9 +111,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added core plugin adapter in `src/geneforgelang/plugins/tangermeme_plugin.py` and decoupled amputatable satellite plugin `gfl-plugin-tangermeme`.
   - Registered `tangermeme` as an authorized analysis tool in `EnhancedSemanticValidator`.
   - Added canonical example in `examples/features/tangermeme_cis_regulatory_logic.gfl` and comprehensive documentation in `docs/geneforgelang/features/tangermeme_cis_regulatory_logic.md`.
-- **Security Policy & Automated AI Vulnerability Auditing (Anthropic OSS Scanner Integration)**:
+- **Security Policy**:
   - Added comprehensive security policy (`SECURITY.md`) outlining supported versions, coordinated disclosure SLAs, and GitHub Private Vulnerability Reporting channels.
-  - Formally authorized opt-in AI security scanner integrations including Anthropic OSS Scanner (Claude 3.5 Sonnet / Opus) with automated empirical proof-of-concept (PoC) validation and direct remediation PRs.
 - **De Novo Catalytic Motif & Enzyme Design Layer (AlphaProtein Novo Synergy - ADR-ARCH-001)**:
   - Added `CatalyticResidueRole` enum (`NUCLEOPHILE`, `GENERAL_ACID`, `GENERAL_BASE`, `TRANSITION_STATE_STABILIZER`, `OXYANION_HOLE`, `ELECTROPHILE`, `COFACTOR_COORDINATOR`).
   - Added `CatalyticResidue` dataclass specifying residue identity, chain, target interaction atom (e.g., `OG`, `NE2`, `OD1`), and ideal coordinates.
@@ -118,7 +124,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `RetroelementType` enum (`ARRAY_ASSOCIATED_RT`, `RETRON`, `GROUP_II_INTRON`, `DGR`, `CRISPR_ASSOCIATED_RT`, `VIRAL_RT`).
   - Added `RetroelementArchitecture` dataclass formalizing reverse transcriptase domain ranges, catalytic triad verification (`YADD`, `YMDD`, `LGDD`), and flanking repeat arrays.
   - Added `ExhaustiveCoverageContract` enforcing 100% continuous base scanning across sequence contigs to prevent LLM agent context-window drift.
-  - Added `DeterministicReplayContract` binding agent discoveries to cryptographic verification hashes ($seed \times candidate \times checksum$), guaranteeing 100% reproducible re-discovery across independent agent runs (overcoming the stochastic discovery loss observed in Anthropic Mythos ART experiments).
+  - Added `DeterministicReplayContract` binding agent discoveries to cryptographic verification hashes ($seed \times candidate \times checksum$), so that independent agent runs can check that they re-discovered the same candidate.
 - **Non-Coding Regulatory Variant Interpretation & ClinVar Resolution (`gfl-plugin-alphagenome`)**:
   - Added `ClinVarSignificance` enum (`PATHOGENIC`, `LIKELY_PATHOGENIC`, `UNCERTAIN_SIGNIFICANCE`, `BENIGN`, etc.) with `is_vus` helper.
   - Added `TissueRegulatoryEffect` dataclass capturing tissue-specific epigenomic delta tracks (DNase, RNA-seq, H3K27ac, contact maps) and disrupted transcription factors.

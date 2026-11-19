@@ -17,13 +17,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pytest
-
-# Ensure GFL and plugin are importable
-PLUGIN_ROOT = Path(__file__).parent.parent.parent
-ECOSYSTEM_ROOT = PLUGIN_ROOT.parent
-GFL_SRC = ECOSYSTEM_ROOT / "GeneForgeLang" / "src"
-if GFL_SRC.exists() and str(GFL_SRC) not in sys.path:
-    sys.path.insert(0, str(GFL_SRC))
+from gfl_plugin_clawbio import GwasLookupPlugin, RnaseqDEPlugin
 
 try:
     import clawbio
@@ -33,8 +27,6 @@ except ImportError:
     HAS_CLAWBIO = False
 
 pytestmark = pytest.mark.skipif(not HAS_CLAWBIO, reason="ClawBio is not installed")
-
-from gfl_plugin_clawbio import GwasLookupPlugin, RnaseqDEPlugin
 
 
 @pytest.mark.integration

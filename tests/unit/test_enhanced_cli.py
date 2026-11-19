@@ -4,6 +4,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
+
 from geneforgelang.cli.enhanced import EnhancedCLI, OutputFormatter
 from geneforgelang.cli.utils import collect_files, process_file_batch
 

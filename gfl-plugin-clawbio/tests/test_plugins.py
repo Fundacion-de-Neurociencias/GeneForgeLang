@@ -19,21 +19,16 @@ import sys
 from pathlib import Path
 
 import pytest
-
-# Add parent repo src to path for geneforgelang
-PLUGIN_ROOT = Path(__file__).parent.parent
-ECOSYSTEM_ROOT = PLUGIN_ROOT.parent
-GFL_SRC = ECOSYSTEM_ROOT / "GeneForgeLang" / "src"
-if GFL_SRC.exists():
-    sys.path.insert(0, str(GFL_SRC))
-
-from geneforgelang.plugins.interfaces import DesignCandidate, EntityType, GeneratorPlugin
 from gfl_plugin_clawbio import (
     CrisprScreenPlugin,
     GwasLookupPlugin,
     PharmGxPlugin,
     RnaseqDEPlugin,
 )
+
+from geneforgelang.plugins.interfaces import DesignCandidate, EntityType, GeneratorPlugin
+
+PLUGIN_ROOT = Path(__file__).parent.parent
 
 # ── Interface compliance tests ────────────────────────────────────────────────
 
@@ -120,9 +115,8 @@ def _extract_imports(source_file: Path) -> list[str]:
         if isinstance(node, ast.Import):
             for alias in node.names:
                 imports.append(alias.name)
-        elif isinstance(node, ast.ImportFrom):
-            if node.module:
-                imports.append(node.module)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            imports.append(node.module)
     return imports
 
 

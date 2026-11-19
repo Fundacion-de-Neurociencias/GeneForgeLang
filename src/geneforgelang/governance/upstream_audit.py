@@ -31,7 +31,7 @@ def audit_upstream():
             continue
 
         # 1. Check for missing symbols (declared but not present)
-        for symbol_name, symbol_info in exports.items():
+        for symbol_name, _symbol_info in exports.items():
             if not hasattr(module, symbol_name):
                 errors.append(
                     f"[ERROR] Symbol '{symbol_name}' is declared in manifest for '{module_name}' but missing in code."

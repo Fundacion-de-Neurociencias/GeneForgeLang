@@ -1,6 +1,7 @@
 """Tests for the advanced grammar-based GFL parser."""
 
 import pytest
+
 from geneforgelang.core.errors import ErrorCategory, ErrorSeverity
 from geneforgelang.utils.grammar_parser import (
     create_lexer,

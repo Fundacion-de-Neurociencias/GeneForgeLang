@@ -6,6 +6,8 @@ import sys
 sys.path.insert(0, os.path.abspath("src"))
 sys.path.insert(0, os.path.abspath("gfl-plugin-jev"))
 
+from gfl_plugin_jev.plugin import JevDecisionPlugin
+
 from geneforgelang.core.gftypes import (
     DecisionContract,
     DecisionOption,
@@ -13,7 +15,6 @@ from geneforgelang.core.gftypes import (
     DecisionStrategy,
 )
 from geneforgelang.plugins.interfaces import DesignCandidate
-from gfl_plugin_jev.plugin import JevDecisionPlugin
 
 
 def test_decision_enums_and_contracts():

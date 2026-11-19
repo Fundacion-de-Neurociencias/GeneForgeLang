@@ -9,7 +9,7 @@ Traditional Large Language Model calls for scientific gating suffer from two fun
 
 BioDecision-4B resolves this by operating as a biological **System 1 reflex**:
 - Reads query, evidence, and allowed answer candidates in a **single forward pass** (~40 ms).
-- Outputs mathematically calibrated probabilities with Expected Calibration Error $ECE \le 0.08$ (empirically $0.068$ on HaluBench/PubMedQA).
+- Declares a calibration bound (Expected Calibration Error $ECE \le 0.08$) that a real model must meet; `compute_ece` measures it against labelled outcomes. No model weights ship with this package: without caller-supplied logits, `BioDecisionPlugin` produces simulated pseudo-logits, reports `ece=None`, and does not pass the calibration gate.
 - Enables deterministic branching and escalation.
 
 ---

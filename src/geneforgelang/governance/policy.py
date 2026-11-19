@@ -42,7 +42,7 @@ class PopulationScope(Enum):
 @dataclass(frozen=True)
 class GovernancePolicy:
     """Genomic Governance & Data Sovereignty Policy (Corpas et al. 2026).
-    
+
     Represents institutional usage policy, consent parameters, jurisdiction boundaries,
     and biosecurity/privacy risk assessments.
     """

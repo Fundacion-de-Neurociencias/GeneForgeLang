@@ -26,7 +26,7 @@ classifiers = [
 # ClawBio is an OPTIONAL runtime dependency — not required for the plugin to load
 # If clawbio is not installed, plugins degrade gracefully with a descriptive error
 dependencies = [
-    "geneforgelang>=2.0.0",
+    "geneforgelang>=1.0.0",
 ]
 
 [project.optional-dependencies]

@@ -32,7 +32,7 @@ DEFAULT_LAYA_SCIENCE_ENDPOINT = "http://127.0.0.1:8009"
 
 class JevDecisionPlugin(GeneratorPlugin):
     """Fast discrete decision model and pre-screening gate (System 1).
-    
+
     Connects to local Laya-Science endpoint on Mac Studio (127.0.0.1:8009) or uses
     in-process calibrated permutation-invariant softmax evaluation as zero-fallback.
     """
@@ -77,7 +77,7 @@ class JevDecisionPlugin(GeneratorPlugin):
     def _softmax(self, logits: list[float], temperature: float = 1.0) -> list[float]:
         """Temperature-scaled softmax calibration."""
         temp = max(temperature, 1e-4)
-        scaled = [l / temp for l in logits]
+        scaled = [logit / temp for logit in logits]
         max_l = max(scaled)
         exps = [math.exp(s - max_l) for s in scaled]
         sum_exp = sum(exps)

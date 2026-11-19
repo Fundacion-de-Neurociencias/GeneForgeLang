@@ -6,7 +6,6 @@ Epistemic Product Lattice in GeneForgeLang. It explicitly integrates the ecologi
 and causal context alignment to prevent blind supersession by instrumental resolution alone.
 """
 
-from typing import List, Tuple
 
 from geneforgelang.semantic.lattice import EpistemicState
 
@@ -34,10 +33,7 @@ class SemanticAlgebraAudit:
         Proof that applying the same state composition twice has no further effect:
         A meet A == A, A join A == A
         """
-        for s in self.states:
-            if s.meet(s) != s or s.join(s) != s:
-                return False
-        return True
+        return all(not (s.meet(s) != s or s.join(s) != s) for s in self.states)
 
     def verify_commutative_properties(self) -> bool:
         """

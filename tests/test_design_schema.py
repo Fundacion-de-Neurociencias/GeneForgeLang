@@ -4,6 +4,7 @@ Test the design block JSON schema validation.
 """
 
 import pytest
+
 from geneforgelang.core.api import parse
 from geneforgelang.utils.schema_validator import comprehensive_validate
 
