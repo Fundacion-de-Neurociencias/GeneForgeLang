@@ -64,12 +64,13 @@ To ensure consistency across the ecosystem, GFL maintains a set of formal specif
 *   [Instruction Set](docs/spec/instruction_set.md): Primitive biological operations.
 *   [Execution Contract](docs/spec/execution_contract.md): Boundary between language and runtimes.
 *   [Versioning Policy](docs/spec/versioning_policy.md): How the language evolves.
-- **Type Safety**: Strong typing system with comprehensive validation
-- **Plugin Architecture**: Extensible system for custom tools and algorithms
-- **Web Interface**: Modern web UI for workflow creation and management
-- **CLI Tools**: Comprehensive command-line interface for automation
-- **API Integration**: RESTful API for programmatic access
-- **Container Execution**: Reproducible execution using Docker containers
+
+## Key Features
+
+- **Type Safety**: typed AST and semantic validation of GFL documents
+- **Plugin Architecture**: plugins subclass `BaseGFLPlugin` (see [Plugin System](#plugin-system))
+- **Service API**: a FastAPI service (`src/geneforgelang/api/gfl_service.py`, `web` extra) exposes parsing and validation over HTTP
+- **CLI and Web Interface**: in progress; the `gfl` command and the web UI do not work in this version (see [Command Line Interface](#command-line-interface) and [Web Interface](#web-interface-not-working))
 
 ## 🧪 Example: BRCA1 gRNA Discovery (Illustrative simulation)
 

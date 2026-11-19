@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `gfl-plugin-clawbio` required `geneforgelang>=2.0.0`, a version that does not exist; it now requires `geneforgelang>=1.0.0`.
 - `AlphaGenome2Engine` imputations and `BioDecisionPlugin` pseudo-logits are now registered as simulated components (listed by `list_simulated_components()`, warn on first use) instead of being allowlisted as cache keys. `BioDecisionPlugin` no longer pads latency to 38.5 ms or reports a fixed ECE of 0.068; it reports the measured latency and `ece=None`, and an unmeasured ECE never passes the calibration gate.
 - Removed `scripts/conformance_runner.py` (it printed a pass for every case without running the validator; the real runner is `python -m geneforgelang.conformance`) and `docs/END_TO_END_TRUTH_AUDIT.md`, both re-added by the consolidation merge after they had been removed, and restored the strict public-claims guard for the latter.
-- Replaced developer home-directory paths in feature guides and scripts with repository-relative paths.
+- `upstream_watchdog` suggested a security-gate script that does not exist in this repository; it now suggests `bandit -r src/geneforgelang -q`.
+- README: the feature list under "Key Features" no longer advertises a working web UI, CLI or container execution.
 - The CI Ruff gate runs `ruff check .` instead of `ruff check . --fix`, so fixable findings fail the build instead of being fixed silently in the runner.
 
 ### Changed
