@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `AlphaGenome2Engine` imputations and `BioDecisionPlugin` pseudo-logits are now registered as simulated components (listed by `list_simulated_components()`, warn on first use) instead of being allowlisted as cache keys. `BioDecisionPlugin` no longer pads latency to 38.5 ms or reports a fixed ECE of 0.068; it reports the measured latency and `ece=None`, and an unmeasured ECE never passes the calibration gate.
 - Removed `scripts/conformance_runner.py` (it printed a pass for every case without running the validator; the real runner is `python -m geneforgelang.conformance`) and `docs/END_TO_END_TRUTH_AUDIT.md`, both re-added by the consolidation merge after they had been removed.
 - Replaced developer home-directory paths in feature guides and scripts with repository-relative paths.
+- The CI Ruff gate runs `ruff check .` instead of `ruff check . --fix`, so fixable findings fail the build instead of being fixed silently in the runner.
 
 ### Changed
 - Contract 1.2.0: exposed geometric primitives (pairwise distances, contact maps, backbone frames, rigid transformations) with computed evidence labels.

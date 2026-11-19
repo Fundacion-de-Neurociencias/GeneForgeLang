@@ -90,7 +90,7 @@ jobs:
 
       # Paso clave: Ejecutar análisis de sintaxis y calidad del código
       - name: Run ruff check
-        run: ruff check . --fix
+        run: ruff check .
         continue-on-error: false  # Fallar inmediatamente si hay problemas de lint
 
 
