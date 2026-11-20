@@ -382,6 +382,7 @@ src/geneforgelang/
 │   ├── single_cell_engine.py   # TenK10K continuous cell-state kinetics & caQTLs
 │   ├── watermark_engine.py     # SynthID Bio biological watermarking engine
 │   ├── permutation_baseline.py # Phylo shuffled-sequence signal auditor
+│   ├── numeric_provenance.py   # Strict by-reference provenance & citation reconciliation
 │   └── api.py                  # Public programmatic Python API
 ├── visualization/              # Interactive visualization instruments (GF-HelixView)
 │   └── dna_helix_viewer.py
@@ -522,6 +523,7 @@ Today 9 of 36 cases pass and 27 are listed as known failures, because the valida
 | **Wet-Lab & Biosecurity** | Autonomous Wet-Lab Protocol Execution (AutoDNA) | [`autonomous_wet_lab_autodna_synergy.md`](docs/geneforgelang/features/autonomous_wet_lab_autodna_synergy.md) |
 | | Verifiable DNA Computation & RLVR Oracles | [`verifiable_dna_computation.md`](docs/geneforgelang/features/verifiable_dna_computation.md) |
 | | Permutation Baseline Gate (`shuffled_control`) | [`permutation_baseline_gate.md`](docs/geneforgelang/features/permutation_baseline_gate.md) |
+| | Strict By-Reference Provenance & Numeric Reconciliation | [`numeric_provenance_reconciliation.md`](docs/geneforgelang/features/numeric_provenance_reconciliation.md) |
 | | Multi-Modal SynthID Bio Watermarking | [`biosecurity_watermark.md`](docs/geneforgelang/features/biosecurity_watermark.md) |
 | **Tooling & Visualization** | GF-HelixView Dynamic 2.5D DNA Helix Explorer | [`dna_helix_viewer.md`](docs/geneforgelang/features/dna_helix_viewer.md) |
 | | Graphify Static AST & Grammar Knowledge Graph | [`graphify_static_grammar_index.md`](docs/geneforgelang/features/graphify_static_grammar_index.md) |
