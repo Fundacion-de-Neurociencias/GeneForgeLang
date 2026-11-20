@@ -176,6 +176,8 @@ class EnhancedSemanticValidator:
             "finedna_circuit",
             "permutation_baseline",
             "sequence_signal_audit",
+            "numeric_provenance",
+            "reconciled_report",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -290,6 +292,8 @@ class EnhancedSemanticValidator:
                 self._validate_finedna_block(block_content)
             elif block_name in ("permutation_baseline", "sequence_signal_audit"):
                 self._validate_permutation_baseline_block(block_content)
+            elif block_name in ("numeric_provenance", "reconciled_report"):
+                self._validate_numeric_provenance_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -3034,6 +3038,55 @@ class EnhancedSemanticValidator:
                 self.result.add_error("seed must be an integer", ErrorCodes.SEMANTIC_INVALID_PARAMETER)
 
         self._store_block_contract("permutation_baseline", block)
+
+    def _validate_numeric_provenance_block(self, block: Any) -> None:
+        """Validate numeric_provenance / reconciled_report block (AtlasAI no-retype & reconciliation)."""
+        from geneforgelang.core.gftypes import NumericReconciliationContract, ProvenanceBindingMode
+        from geneforgelang.core.numeric_provenance import NumericProvenanceAuditor
+
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "numeric_provenance block must be a dictionary or NumericReconciliationContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix("Format numeric_provenance as a dictionary with contract_id, source_records, and cited_claims")
+            return
+
+        contract_id = block.get("contract_id", block.get("name"))
+        if not contract_id or not str(contract_id).strip():
+            self.result.add_error(
+                "numeric_provenance block must define a non-empty 'contract_id'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide a unique identifier string for contract_id")
+
+        raw_mode = block.get("provenance_binding")
+        if raw_mode is not None:
+            valid_modes = {m.value for m in ProvenanceBindingMode}
+            mode_str = str(raw_mode.value if hasattr(raw_mode, "value") else raw_mode).strip().lower()
+            if mode_str not in valid_modes:
+                self.result.add_error(
+                    f"Invalid provenance_binding '{raw_mode}'. Must be one of {sorted(valid_modes)}",
+                    ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+                ).add_fix("Use 'strict_reference' or 'standard'")
+
+        contract = NumericReconciliationContract.from_dict(block)
+        report = NumericProvenanceAuditor.reconcile(contract)
+
+        for violation in report.retype_violations:
+            self.result.add_error(
+                violation,
+                ErrorCodes.SEMANTIC_CONTRACT_MISMATCH,
+            ).add_fix("Bind every numeric claim via a valid ArtifactRef or '${step.output}' handle")
+
+        for mismatch in report.mismatches:
+            self.result.add_error(
+                mismatch,
+                ErrorCodes.SEMANTIC_CONTRACT_MISMATCH,
+            ).add_fix("Ensure declared numeric values match the cited source_records within tolerance")
+
+        self._store_block_contract("numeric_provenance", block)
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""

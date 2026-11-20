@@ -365,6 +365,7 @@ class GFLAST:
     alphagenome2: Any | None = None
     finedna: Any | None = None
     permutation_baseline: Any | None = None
+    numeric_provenance: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -483,6 +484,12 @@ class GFLAST:
                 self.permutation_baseline.to_dict()
                 if hasattr(self.permutation_baseline, "to_dict")
                 else self.permutation_baseline
+            )
+        if self.numeric_provenance is not None:
+            result["numeric_provenance"] = (
+                self.numeric_provenance.to_dict()
+                if hasattr(self.numeric_provenance, "to_dict")
+                else self.numeric_provenance
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -893,6 +900,19 @@ class GFLAST:
                 ast.permutation_baseline = pb_data
             elif isinstance(pb_data, dict):
                 ast.permutation_baseline = SequencePermutationBaselineContract.from_dict(pb_data)
+
+        if "numeric_provenance" in data:
+            np_data = data["numeric_provenance"]
+            if isinstance(np_data, NumericReconciliationContract):
+                ast.numeric_provenance = np_data
+            elif isinstance(np_data, dict):
+                ast.numeric_provenance = NumericReconciliationContract.from_dict(np_data)
+        elif "reconciled_report" in data:
+            np_data = data["reconciled_report"]
+            if isinstance(np_data, NumericReconciliationContract):
+                ast.numeric_provenance = np_data
+            elif isinstance(np_data, dict):
+                ast.numeric_provenance = NumericReconciliationContract.from_dict(np_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -6936,6 +6956,101 @@ class FineDNAContract:
         )
 
 
+# ============================================================================
+# Strict By-Reference Provenance & Numeric Reconciliation Contracts
+# Inspired by Human Protein Atlas v26 / AtlasAI (no-retype + citation gating)
+# ============================================================================
+
+
+class ProvenanceBindingMode(str, Enum):
+    """Binding discipline for quantitative inputs and claims in GFL."""
+
+    STANDARD = "standard"
+    STRICT_REFERENCE = "strict_reference"
+
+    def __str__(self) -> str:
+        """Return the string value."""
+        return self.value
+
+
+@dataclass
+class ArtifactRef:
+    """Typed reference handle pointing to an upstream step output or source record."""
+
+    step_id: str
+    output_key: str
+    artifact_hash: str = ""
+    source_record_id: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "step_id": self.step_id,
+            "output_key": self.output_key,
+            "artifact_hash": self.artifact_hash,
+            "source_record_id": self.source_record_id,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ArtifactRef:
+        """Create from dictionary representation."""
+        return cls(
+            step_id=str(data.get("step_id", "")),
+            output_key=str(data.get("output_key", "")),
+            artifact_hash=str(data.get("artifact_hash", "")),
+            source_record_id=str(data.get("source_record_id", "")),
+        )
+
+
+@dataclass
+class NumericReconciliationContract:
+    """Formal contract enforcing by-reference grounding and citation-to-record reconciliation.
+
+    Rejects reports or analytical claims whose numeric values lack an ArtifactRef
+    in strict_reference mode or fail to match cited source_records within tolerance.
+    """
+
+    contract_id: str
+    provenance_binding: ProvenanceBindingMode = ProvenanceBindingMode.STRICT_REFERENCE
+    source_records: dict[str, dict[str, Any]] = field(default_factory=dict)
+    cited_claims: list[dict[str, Any]] = field(default_factory=list)
+    require_reconciliation: bool = True
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "contract_id": self.contract_id,
+            "provenance_binding": str(self.provenance_binding),
+            "source_records": {k: dict(v) for k, v in self.source_records.items()},
+            "cited_claims": [dict(c) for c in self.cited_claims],
+            "require_reconciliation": self.require_reconciliation,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> NumericReconciliationContract:
+        """Create from dictionary representation."""
+        raw_mode = data.get("provenance_binding", ProvenanceBindingMode.STRICT_REFERENCE)
+        mode = (
+            ProvenanceBindingMode(raw_mode)
+            if raw_mode in ProvenanceBindingMode._value2member_map_
+            else ProvenanceBindingMode.STRICT_REFERENCE
+        )
+        raw_records = data.get("source_records", {})
+        records = {str(k): dict(v) for k, v in raw_records.items()} if isinstance(raw_records, dict) else {}
+        raw_claims = data.get("cited_claims", [])
+        claims = [dict(c) for c in raw_claims if isinstance(c, dict)] if isinstance(raw_claims, list) else []
+        return cls(
+            contract_id=str(data.get("contract_id", data.get("name", "numeric_reconciliation_01"))),
+            provenance_binding=mode,
+            source_records=records,
+            cited_claims=claims,
+            require_reconciliation=bool(data.get("require_reconciliation", True)),
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -7115,6 +7230,9 @@ __all__ = [
     "FineDNAContract",
     "PermutationControlMode",
     "SequencePermutationBaselineContract",
+    "ProvenanceBindingMode",
+    "ArtifactRef",
+    "NumericReconciliationContract",
     # Validation types
     "ValidationError",
     "ValidationResult",
