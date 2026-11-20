@@ -76,9 +76,8 @@ class NumericProvenanceAuditor:
             declared_raw = claim.get("declared_value")
             tolerance = float(claim.get("tolerance", 1e-6))
 
-            if (
-                contract.provenance_binding == ProvenanceBindingMode.STRICT_REFERENCE
-                and not cls.is_valid_reference(claim.get("artifact_ref"))
+            if contract.provenance_binding == ProvenanceBindingMode.STRICT_REFERENCE and not cls.is_valid_reference(
+                claim.get("artifact_ref")
             ):
                 retype_violations.append(
                     f"Claim '{claim_id}' violates strict_reference binding: "
