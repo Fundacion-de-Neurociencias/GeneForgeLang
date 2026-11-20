@@ -18,7 +18,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from geneforgelang.core import api
 from geneforgelang.core.execution import (
     GFLExecutionEngine,
@@ -279,6 +278,7 @@ HASH_KEY_ALLOWLIST = {
     "core/bioc_ice_engine.py": "sha256 placeholder gene ID in a record labelled unindexed_fallback",
     "core/finedna_engine.py": "sha256 verification hash of task and candidate response",
     "core/gftypes.py": "sha256 proof token for verifiable reward contracts",
+    "core/numeric_provenance.py": "sha256 verification hash of numeric reconciliation report",
     "core/permutation_baseline.py": "seeded Fisher-Yates and Altschul-Erickson shuffles",
     "core/protok_engine.py": "discrete codebook hash and pseudo-random multi-codebook dropout",
     "core/watermark_engine.py": "cryptographic watermark key and PRNG sequence carrier",
