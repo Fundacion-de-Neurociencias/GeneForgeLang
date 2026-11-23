@@ -178,6 +178,8 @@ class EnhancedSemanticValidator:
             "sequence_signal_audit",
             "numeric_provenance",
             "reconciled_report",
+            "latent_discovery",
+            "biomarker_discovery_gate",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -294,6 +296,8 @@ class EnhancedSemanticValidator:
                 self._validate_permutation_baseline_block(block_content)
             elif block_name in ("numeric_provenance", "reconciled_report"):
                 self._validate_numeric_provenance_block(block_content)
+            elif block_name in ("latent_discovery", "biomarker_discovery_gate"):
+                self._validate_latent_discovery_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -3087,6 +3091,52 @@ class EnhancedSemanticValidator:
             ).add_fix("Ensure declared numeric values match the cited source_records within tolerance")
 
         self._store_block_contract("numeric_provenance", block)
+
+    def _validate_latent_discovery_block(self, block: Any) -> None:
+        """Validate latent_discovery / biomarker_discovery_gate block (Glyph-inspired SAE discovery gate)."""
+        from geneforgelang.core.gftypes import LatentDiscoveryContract
+        from geneforgelang.core.latent_discovery import LatentDiscoveryAuditor
+
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "latent_discovery block must be a dictionary or LatentDiscoveryContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix(
+                "Format latent_discovery as a dictionary with contract_id, sae_probe, "
+                "confounder_adjustment, external_replication, literature_triage, and findings"
+            )
+            return
+
+        contract_id = block.get("contract_id", block.get("name"))
+        if not contract_id or not str(contract_id).strip():
+            self.result.add_error(
+                "latent_discovery block must define a non-empty 'contract_id'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide a unique identifier string for contract_id")
+
+        if "sae_probe" not in block or not isinstance(block.get("sae_probe"), dict):
+            self.result.add_error(
+                "latent_discovery block must define a 'sae_probe' dictionary",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Add sae_probe with foundation_model, target_layer, dictionary_size, and sparsity_l0")
+            return
+
+        contract = LatentDiscoveryContract.from_dict(block)
+        report = LatentDiscoveryAuditor.audit(contract)
+
+        for violation in report.violations:
+            self.result.add_error(
+                violation,
+                ErrorCodes.SEMANTIC_CONTRACT_MISMATCH,
+            ).add_fix(
+                "Ensure SAE probe parameters, confounder adjustment, external replication cohorts, "
+                "and literature novelty triage satisfy all contract invariants"
+            )
+
+        self._store_block_contract("latent_discovery", block)
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
