@@ -366,6 +366,7 @@ class GFLAST:
     finedna: Any | None = None
     permutation_baseline: Any | None = None
     numeric_provenance: Any | None = None
+    latent_discovery: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -490,6 +491,10 @@ class GFLAST:
                 self.numeric_provenance.to_dict()
                 if hasattr(self.numeric_provenance, "to_dict")
                 else self.numeric_provenance
+            )
+        if self.latent_discovery is not None:
+            result["latent_discovery"] = (
+                self.latent_discovery.to_dict() if hasattr(self.latent_discovery, "to_dict") else self.latent_discovery
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -913,6 +918,19 @@ class GFLAST:
                 ast.numeric_provenance = np_data
             elif isinstance(np_data, dict):
                 ast.numeric_provenance = NumericReconciliationContract.from_dict(np_data)
+
+        if "latent_discovery" in data:
+            ld_data = data["latent_discovery"]
+            if isinstance(ld_data, LatentDiscoveryContract):
+                ast.latent_discovery = ld_data
+            elif isinstance(ld_data, dict):
+                ast.latent_discovery = LatentDiscoveryContract.from_dict(ld_data)
+        elif "biomarker_discovery_gate" in data:
+            ld_data = data["biomarker_discovery_gate"]
+            if isinstance(ld_data, LatentDiscoveryContract):
+                ast.latent_discovery = ld_data
+            elif isinstance(ld_data, dict):
+                ast.latent_discovery = LatentDiscoveryContract.from_dict(ld_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -7051,6 +7069,210 @@ class NumericReconciliationContract:
         )
 
 
+# Latent Discovery & Biomarker Replication Gate (Glyph-inspired)
+class DiscoveryNoveltyStatus(str, Enum):
+    """Triage status of a discovered foundation-model latent feature."""
+
+    REDISCOVERED_POSITIVE_CONTROL = "rediscovered_positive_control"
+    NOVEL_CANDIDATE = "novel_candidate"
+    CONFOUNDED_ARTIFACT = "confounded_artifact"
+    UNREPLICATED = "unreplicated"
+
+
+@dataclass
+class SAEProbeSpec:
+    """Sparse Autoencoder (SAE) probe specification over foundation-model activations."""
+
+    foundation_model: str
+    target_layer: str
+    dictionary_size: int = 16384
+    sparsity_l0: int = 32
+    multiple_testing_correction: str = "fdr_bh"
+    fdr_threshold: float = 0.05
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "foundation_model": self.foundation_model,
+            "target_layer": self.target_layer,
+            "dictionary_size": self.dictionary_size,
+            "sparsity_l0": self.sparsity_l0,
+            "multiple_testing_correction": self.multiple_testing_correction,
+            "fdr_threshold": self.fdr_threshold,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> SAEProbeSpec:
+        """Create SAEProbeSpec from dictionary."""
+        return cls(
+            foundation_model=str(data.get("foundation_model", "")),
+            target_layer=str(data.get("target_layer", "")),
+            dictionary_size=int(data.get("dictionary_size", 16384)),
+            sparsity_l0=int(data.get("sparsity_l0", 32)),
+            multiple_testing_correction=str(data.get("multiple_testing_correction", "fdr_bh")),
+            fdr_threshold=float(data.get("fdr_threshold", 0.05)),
+        )
+
+
+@dataclass
+class ConfounderAdjustmentContract:
+    """Contract requiring explicit confounder adjustment and residual significance."""
+
+    confounders: list[str] = field(default_factory=list)
+    adjustment_method: str = "multivariable_regression"
+    require_residual_significance: bool = True
+    max_adjusted_p_value: float = 0.05
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "confounders": list(self.confounders),
+            "adjustment_method": self.adjustment_method,
+            "require_residual_significance": self.require_residual_significance,
+            "max_adjusted_p_value": self.max_adjusted_p_value,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ConfounderAdjustmentContract:
+        """Create ConfounderAdjustmentContract from dictionary."""
+        return cls(
+            confounders=[str(c) for c in data.get("confounders", [])],
+            adjustment_method=str(data.get("adjustment_method", "multivariable_regression")),
+            require_residual_significance=bool(data.get("require_residual_significance", True)),
+            max_adjusted_p_value=float(data.get("max_adjusted_p_value", 0.05)),
+        )
+
+
+@dataclass
+class ExternalReplicationContract:
+    """Contract requiring independent multi-cohort replication and incremental gain."""
+
+    min_external_cohorts: int = 2
+    cohort_ids: list[str] = field(default_factory=list)
+    min_delta_auc: float = 0.01
+    observed_delta_auc: float | None = None
+    require_direction_concordance: bool = True
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        result: dict[str, Any] = {
+            "min_external_cohorts": self.min_external_cohorts,
+            "cohort_ids": list(self.cohort_ids),
+            "min_delta_auc": self.min_delta_auc,
+            "require_direction_concordance": self.require_direction_concordance,
+        }
+        if self.observed_delta_auc is not None:
+            result["observed_delta_auc"] = self.observed_delta_auc
+        return result
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ExternalReplicationContract:
+        """Create ExternalReplicationContract from dictionary."""
+        raw_obs = data.get("observed_delta_auc")
+        return cls(
+            min_external_cohorts=int(data.get("min_external_cohorts", 2)),
+            cohort_ids=[str(c) for c in data.get("cohort_ids", [])],
+            min_delta_auc=float(data.get("min_delta_auc", 0.01)),
+            observed_delta_auc=float(raw_obs) if raw_obs is not None else None,
+            require_direction_concordance=bool(data.get("require_direction_concordance", True)),
+        )
+
+
+@dataclass
+class LiteratureNoveltyTriageContract:
+    """Contract separating rediscovered positive controls from novel candidates."""
+
+    corpus_scope: str = "pubmed"
+    min_corpus_size: int = 1000
+    require_positive_controls: bool = True
+    query_hash: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "corpus_scope": self.corpus_scope,
+            "min_corpus_size": self.min_corpus_size,
+            "require_positive_controls": self.require_positive_controls,
+            "query_hash": self.query_hash,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> LiteratureNoveltyTriageContract:
+        """Create LiteratureNoveltyTriageContract from dictionary."""
+        return cls(
+            corpus_scope=str(data.get("corpus_scope", "pubmed")),
+            min_corpus_size=int(data.get("min_corpus_size", 1000)),
+            require_positive_controls=bool(data.get("require_positive_controls", True)),
+            query_hash=str(data.get("query_hash", "")),
+        )
+
+
+@dataclass
+class LatentDiscoveryContract:
+    """Declarative contract for SAE latent discovery, confounder adjustment, and replication."""
+
+    contract_id: str
+    sae_probe: SAEProbeSpec
+    confounder_adjustment: ConfounderAdjustmentContract = field(default_factory=ConfounderAdjustmentContract)
+    external_replication: ExternalReplicationContract = field(default_factory=ExternalReplicationContract)
+    literature_triage: LiteratureNoveltyTriageContract = field(default_factory=LiteratureNoveltyTriageContract)
+    findings: list[dict[str, Any]] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "contract_id": self.contract_id,
+            "sae_probe": self.sae_probe.to_dict(),
+            "confounder_adjustment": self.confounder_adjustment.to_dict(),
+            "external_replication": self.external_replication.to_dict(),
+            "literature_triage": self.literature_triage.to_dict(),
+            "findings": [dict(f) for f in self.findings],
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> LatentDiscoveryContract:
+        """Create LatentDiscoveryContract from dictionary."""
+        raw_probe = data.get("sae_probe", {})
+        probe = (
+            raw_probe
+            if isinstance(raw_probe, SAEProbeSpec)
+            else SAEProbeSpec.from_dict(raw_probe if isinstance(raw_probe, dict) else {})
+        )
+
+        raw_conf = data.get("confounder_adjustment", {})
+        conf = (
+            raw_conf
+            if isinstance(raw_conf, ConfounderAdjustmentContract)
+            else ConfounderAdjustmentContract.from_dict(raw_conf if isinstance(raw_conf, dict) else {})
+        )
+
+        raw_rep = data.get("external_replication", {})
+        rep = (
+            raw_rep
+            if isinstance(raw_rep, ExternalReplicationContract)
+            else ExternalReplicationContract.from_dict(raw_rep if isinstance(raw_rep, dict) else {})
+        )
+
+        raw_lit = data.get("literature_triage", {})
+        lit = (
+            raw_lit
+            if isinstance(raw_lit, LiteratureNoveltyTriageContract)
+            else LiteratureNoveltyTriageContract.from_dict(raw_lit if isinstance(raw_lit, dict) else {})
+        )
+
+        return cls(
+            contract_id=str(data.get("contract_id", data.get("name", ""))),
+            sae_probe=probe,
+            confounder_adjustment=conf,
+            external_replication=rep,
+            literature_triage=lit,
+            findings=[dict(f) for f in data.get("findings", []) if isinstance(f, dict)],
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -7233,6 +7455,12 @@ __all__ = [
     "ProvenanceBindingMode",
     "ArtifactRef",
     "NumericReconciliationContract",
+    "DiscoveryNoveltyStatus",
+    "SAEProbeSpec",
+    "ConfounderAdjustmentContract",
+    "ExternalReplicationContract",
+    "LiteratureNoveltyTriageContract",
+    "LatentDiscoveryContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

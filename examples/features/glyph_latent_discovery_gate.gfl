@@ -1,0 +1,60 @@
+# Glyph-Inspired Latent Discovery & Biomarker Replication Gate
+# Demonstrates SAE probing, confounder adjustment, multi-cohort replication,
+# and literature novelty triage with by-reference artifact handles.
+
+latent_discovery:
+  contract_id: "glyph_multimodal_sae_screen_01"
+  sae_probe:
+    foundation_model: "multimodal_ehr_fm_v2"
+    target_layer: "blocks.12.resid_post"
+    dictionary_size: 32768
+    sparsity_l0: 32
+    multiple_testing_correction: "fdr_bh"
+    fdr_threshold: 0.05
+  confounder_adjustment:
+    confounders:
+      - "age_at_index"
+      - "sex"
+      - "site_id"
+      - "baseline_comorbidity_index"
+    adjustment_method: "multivariable_regression"
+    require_residual_significance: true
+    max_adjusted_p_value: 0.05
+  external_replication:
+    min_external_cohorts: 3
+    cohort_ids:
+      - "hospital_a_external"
+      - "hospital_b_external"
+      - "hospital_c_external"
+    min_delta_auc: 0.015
+    observed_delta_auc: 0.028
+    require_direction_concordance: true
+  literature_triage:
+    corpus_scope: "pubmed"
+    min_corpus_size: 340000
+    require_positive_controls: true
+    query_hash: "sha256:9f86d081884c7d659a2feaa0c55ad015"
+  findings:
+    - latent_id: "sae_feat_04112"
+      outcome: "incident_heart_failure"
+      novelty_status: "rediscovered_positive_control"
+      residual_p_value: 0.0004
+      replicated_cohorts:
+        - "hospital_a_external"
+        - "hospital_b_external"
+        - "hospital_c_external"
+      direction_concordant: true
+      citation_evidence:
+        - "PMID:29420193"
+      artifact_ref: "${sae_screen.feat_04112_stats}"
+    - latent_id: "sae_feat_19804"
+      outcome: "neurodegenerative_progression"
+      novelty_status: "novel_candidate"
+      residual_p_value: 0.0012
+      replicated_cohorts:
+        - "hospital_a_external"
+        - "hospital_b_external"
+        - "hospital_c_external"
+      direction_concordant: true
+      citation_evidence: []
+      artifact_ref: "${sae_screen.feat_19804_stats}"
