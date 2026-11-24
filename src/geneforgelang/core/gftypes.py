@@ -367,6 +367,7 @@ class GFLAST:
     permutation_baseline: Any | None = None
     numeric_provenance: Any | None = None
     latent_discovery: Any | None = None
+    sample_metadata: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -495,6 +496,10 @@ class GFLAST:
         if self.latent_discovery is not None:
             result["latent_discovery"] = (
                 self.latent_discovery.to_dict() if hasattr(self.latent_discovery, "to_dict") else self.latent_discovery
+            )
+        if self.sample_metadata is not None:
+            result["sample_metadata"] = (
+                self.sample_metadata.to_dict() if hasattr(self.sample_metadata, "to_dict") else self.sample_metadata
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -931,6 +936,19 @@ class GFLAST:
                 ast.latent_discovery = ld_data
             elif isinstance(ld_data, dict):
                 ast.latent_discovery = LatentDiscoveryContract.from_dict(ld_data)
+
+        if "sample_metadata" in data:
+            sm_data = data["sample_metadata"]
+            if isinstance(sm_data, SDRFMetadataContract):
+                ast.sample_metadata = sm_data
+            elif isinstance(sm_data, dict):
+                ast.sample_metadata = SDRFMetadataContract.from_dict(sm_data)
+        elif "sdrf_contract" in data:
+            sm_data = data["sdrf_contract"]
+            if isinstance(sm_data, SDRFMetadataContract):
+                ast.sample_metadata = sm_data
+            elif isinstance(sm_data, dict):
+                ast.sample_metadata = SDRFMetadataContract.from_dict(sm_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -7273,6 +7291,121 @@ class LatentDiscoveryContract:
         )
 
 
+# SDRF Sample Metadata Contract (PRIDE / iProX / MassIVE)
+class ProteomicsRepository(str, Enum):
+    """Supported public proteomics repositories for SDRF metadata contracts."""
+
+    PRIDE = "pride"
+    IPROX = "iprox"
+    MASSIVE = "massive"
+    PROTEOME_XCHANGE = "proteomexchange"
+
+
+@dataclass
+class SDRFSampleEntry:
+    """Single sample-to-raw-file mapping in an SDRF metadata contract."""
+
+    source_name: str
+    organism: str
+    assay_name: str
+    data_file: str
+    tissue: str = ""
+    cell_type: str = ""
+    disease: str = ""
+    artifact_ref: ArtifactRef | dict[str, Any] | str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        result: dict[str, Any] = {
+            "source_name": self.source_name,
+            "organism": self.organism,
+            "assay_name": self.assay_name,
+            "data_file": self.data_file,
+        }
+        if self.tissue:
+            result["tissue"] = self.tissue
+        if self.cell_type:
+            result["cell_type"] = self.cell_type
+        if self.disease:
+            result["disease"] = self.disease
+        if self.artifact_ref is not None:
+            result["artifact_ref"] = (
+                self.artifact_ref.to_dict() if hasattr(self.artifact_ref, "to_dict") else self.artifact_ref
+            )
+        return result
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> SDRFSampleEntry:
+        """Create SDRFSampleEntry from dictionary."""
+        raw_ref = data.get("artifact_ref")
+        ref: ArtifactRef | dict[str, Any] | str | None = (
+            ArtifactRef.from_dict(raw_ref) if isinstance(raw_ref, dict) else raw_ref
+        )
+        return cls(
+            source_name=str(data.get("source_name", "")),
+            organism=str(data.get("organism", "")),
+            assay_name=str(data.get("assay_name", "")),
+            data_file=str(data.get("data_file", "")),
+            tissue=str(data.get("tissue", "")),
+            cell_type=str(data.get("cell_type", "")),
+            disease=str(data.get("disease", "")),
+            artifact_ref=ref,
+        )
+
+
+@dataclass
+class SDRFMetadataContract:
+    """Declarative SDRF-Proteomics sample metadata contract with source-citation enforcement."""
+
+    contract_id: str
+    accession: str
+    repository: ProteomicsRepository | str = ProteomicsRepository.PRIDE
+    sdrf_version: str = "1.0"
+    source_citations: list[str] = field(default_factory=list)
+    samples: list[SDRFSampleEntry] = field(default_factory=list)
+    require_source_citations: bool = True
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        repo_val = self.repository.value if isinstance(self.repository, ProteomicsRepository) else self.repository
+        return {
+            "contract_id": self.contract_id,
+            "accession": self.accession,
+            "repository": repo_val,
+            "sdrf_version": self.sdrf_version,
+            "source_citations": list(self.source_citations),
+            "samples": [s.to_dict() for s in self.samples],
+            "require_source_citations": self.require_source_citations,
+            "metadata": dict(self.metadata),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> SDRFMetadataContract:
+        """Create SDRFMetadataContract from dictionary."""
+        raw_repo = str(data.get("repository", ProteomicsRepository.PRIDE.value)).strip().lower()
+        try:
+            repo: ProteomicsRepository | str = ProteomicsRepository(raw_repo)
+        except ValueError:
+            repo = raw_repo
+
+        samples = [
+            s if isinstance(s, SDRFSampleEntry) else SDRFSampleEntry.from_dict(s)
+            for s in data.get("samples", [])
+            if isinstance(s, (dict, SDRFSampleEntry))
+        ]
+        return cls(
+            contract_id=str(data.get("contract_id", data.get("name", ""))),
+            accession=str(data.get("accession", "")).strip(),
+            repository=repo,
+            sdrf_version=str(data.get("sdrf_version", "1.0")),
+            source_citations=[str(c).strip() for c in data.get("source_citations", []) if str(c).strip()],
+            samples=samples,
+            require_source_citations=bool(data.get("require_source_citations", True)),
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -7461,6 +7594,9 @@ __all__ = [
     "ExternalReplicationContract",
     "LiteratureNoveltyTriageContract",
     "LatentDiscoveryContract",
+    "ProteomicsRepository",
+    "SDRFSampleEntry",
+    "SDRFMetadataContract",
     # Validation types
     "ValidationError",
     "ValidationResult",

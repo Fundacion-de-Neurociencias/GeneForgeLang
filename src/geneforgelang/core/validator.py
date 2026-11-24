@@ -180,6 +180,8 @@ class EnhancedSemanticValidator:
             "reconciled_report",
             "latent_discovery",
             "biomarker_discovery_gate",
+            "sample_metadata",
+            "sdrf_contract",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -298,6 +300,8 @@ class EnhancedSemanticValidator:
                 self._validate_numeric_provenance_block(block_content)
             elif block_name in ("latent_discovery", "biomarker_discovery_gate"):
                 self._validate_latent_discovery_block(block_content)
+            elif block_name in ("sample_metadata", "sdrf_contract"):
+                self._validate_sample_metadata_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -3137,6 +3141,42 @@ class EnhancedSemanticValidator:
             )
 
         self._store_block_contract("latent_discovery", block)
+
+    def _validate_sample_metadata_block(self, block: Any) -> None:
+        """Validate sample_metadata / sdrf_contract block (SDRF-Proteomics metadata gate)."""
+        from geneforgelang.core.gftypes import SDRFMetadataContract
+        from geneforgelang.core.sample_metadata import SampleMetadataAuditor
+
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "sample_metadata block must be a dictionary or SDRFMetadataContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix(
+                "Format sample_metadata as a dictionary with contract_id, accession, "
+                "repository, source_citations, and samples"
+            )
+            return
+
+        contract_id = block.get("contract_id", block.get("name"))
+        if not contract_id or not str(contract_id).strip():
+            self.result.add_error(
+                "sample_metadata block must define a non-empty 'contract_id'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide a unique identifier string for contract_id")
+
+        contract = SDRFMetadataContract.from_dict(block)
+        report = SampleMetadataAuditor.audit(contract)
+
+        for violation in report.violations:
+            self.result.add_error(
+                violation,
+                ErrorCodes.SEMANTIC_CONTRACT_MISMATCH,
+            ).add_fix("Provide a valid ProteomeXchange accession, source_citations, and real SDRF sample entries")
+
+        self._store_block_contract("sample_metadata", block)
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
