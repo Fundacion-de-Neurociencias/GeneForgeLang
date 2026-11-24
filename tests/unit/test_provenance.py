@@ -277,6 +277,7 @@ HASH_KEY_ALLOWLIST = {
     "ir/fase4/cache_layer.py": "md5 of queries as cache keys",
     "ir/fase4/async_retrieval.py": "md5 of a query as a cache key",
     "core/bioc_ice_engine.py": "sha256 placeholder gene ID in a record labelled unindexed_fallback",
+    "core/cell_alignment.py": "sha256 verification hash of cross-modal cell alignment audit report",
     "core/finedna_engine.py": "sha256 verification hash of task and candidate response",
     "core/gftypes.py": "sha256 proof token for verifiable reward contracts",
     "core/latent_discovery.py": "sha256 verification hash of latent discovery audit report",

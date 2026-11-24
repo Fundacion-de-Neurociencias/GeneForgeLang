@@ -1,0 +1,44 @@
+# Bloom-Inspired Cross-Modal Cell Alignment Contract
+# Connects scRNA-seq and Patch-seq electrophysiology studies into a shared taxonomy.
+
+cell_alignment:
+  contract_id: "bloom_mouse_cortex_bridge_01"
+  bridge_model: "bloom_multiome_bridge_v1"
+  bridge_species: "Mus musculus"
+  bridge_modalities:
+    - "scrna_seq"
+    - "scatac_seq"
+  reference_taxonomy: "allen_brain_cell_atlas"
+  min_mapping_confidence: 0.75
+  max_unmapped_fraction: 0.15
+  observed_unmapped_fraction: 0.06
+  allow_cross_species_transfer: false
+  anchor_cell_types:
+    - "CL:0000127"
+    - "L5_IT_CTX"
+  studies:
+    - study_id: "study_scrna_cortex"
+      modality: "scrna_seq"
+      species: "Mus musculus"
+      cell_count: 18500
+    - study_id: "study_ephys_patch"
+      modality: "electrophysiology"
+      species: "Mus musculus"
+      cell_count: 1420
+  mappings:
+    - source_study_id: "study_ephys_patch"
+      target_study_id: "study_scrna_cortex"
+      source_label: "fast_spiking_basket"
+      target_label: "Pvalb_Gaba"
+      taxonomy_curie: "CL:0000127"
+      mapping_confidence: 0.91
+      is_anchor: true
+      artifact_ref: "${bloom_align.pvalb_transfer}"
+    - source_study_id: "study_ephys_patch"
+      target_study_id: "study_scrna_cortex"
+      source_label: "thick_tufted_pyramidal"
+      target_label: "L5_IT_CTX"
+      taxonomy_curie: "CL:0000679"
+      mapping_confidence: 0.84
+      is_anchor: false
+      artifact_ref: "${bloom_align.l5_it_transfer}"

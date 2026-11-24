@@ -182,6 +182,8 @@ class EnhancedSemanticValidator:
             "biomarker_discovery_gate",
             "sample_metadata",
             "sdrf_contract",
+            "cell_alignment",
+            "cross_modal_cell_bridge",
         }
         found_blocks = set(ast.keys()) & main_blocks
 
@@ -302,6 +304,8 @@ class EnhancedSemanticValidator:
                 self._validate_latent_discovery_block(block_content)
             elif block_name in ("sample_metadata", "sdrf_contract"):
                 self._validate_sample_metadata_block(block_content)
+            elif block_name in ("cell_alignment", "cross_modal_cell_bridge"):
+                self._validate_cell_alignment_block(block_content)
             elif block_name == "pathways":
                 # Pathways are validated during collection
                 pass
@@ -3177,6 +3181,45 @@ class EnhancedSemanticValidator:
             ).add_fix("Provide a valid ProteomeXchange accession, source_citations, and real SDRF sample entries")
 
         self._store_block_contract("sample_metadata", block)
+
+    def _validate_cell_alignment_block(self, block: Any) -> None:
+        """Validate cell_alignment / cross_modal_cell_bridge block (Bloom-inspired alignment)."""
+        from geneforgelang.core.cell_alignment import CellAlignmentAuditor
+        from geneforgelang.core.gftypes import CellAlignmentContract
+
+        if hasattr(block, "to_dict"):
+            block = block.to_dict()
+
+        if not isinstance(block, dict):
+            self.result.add_error(
+                "cell_alignment block must be a dictionary or CellAlignmentContract",
+                ErrorCodes.SEMANTIC_INVALID_FIELD_TYPE,
+            ).add_fix(
+                "Format cell_alignment as a dictionary with contract_id, bridge_model, "
+                "bridge_species, bridge_modalities, studies, and anchor_cell_types"
+            )
+            return
+
+        contract_id = block.get("contract_id", block.get("name"))
+        if not contract_id or not str(contract_id).strip():
+            self.result.add_error(
+                "cell_alignment block must define a non-empty 'contract_id'",
+                ErrorCodes.SEMANTIC_MISSING_REQUIRED_FIELD,
+            ).add_fix("Provide a unique identifier string for contract_id")
+
+        contract = CellAlignmentContract.from_dict(block)
+        report = CellAlignmentAuditor.audit(contract)
+
+        for violation in report.violations:
+            self.result.add_error(
+                violation,
+                ErrorCodes.SEMANTIC_CONTRACT_MISMATCH,
+            ).add_fix(
+                "Ensure bridge_modalities, species transfer guards, reference_taxonomy, "
+                "and anchor_cell_types satisfy all cross-modal alignment invariants"
+            )
+
+        self._store_block_contract("cell_alignment", block)
 
     def _store_block_contract(self, block_name: str, contract: dict[str, Any]) -> None:
         """Store block contract in symbol table for compatibility checking."""
