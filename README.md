@@ -385,6 +385,7 @@ src/geneforgelang/
 │   ├── numeric_provenance.py   # Strict by-reference provenance & citation reconciliation
 │   ├── latent_discovery.py     # Glyph SAE latent discovery & replication gate
 │   ├── sample_metadata.py      # SDRF-Proteomics sample metadata & anti-invention gate
+│   ├── cell_alignment.py       # Cross-modal cell identity & taxonomy alignment gate
 │   └── api.py                  # Public programmatic Python API
 ├── visualization/              # Interactive visualization instruments (GF-HelixView)
 │   └── dna_helix_viewer.py
@@ -528,6 +529,7 @@ Today 9 of 36 cases pass and 27 are listed as known failures, because the valida
 | | Strict By-Reference Provenance & Numeric Reconciliation | [`numeric_provenance_reconciliation.md`](docs/geneforgelang/features/numeric_provenance_reconciliation.md) |
 | | Latent Discovery & Biomarker Replication Gate (`latent_discovery`) | [`latent_discovery_gate.md`](docs/geneforgelang/features/latent_discovery_gate.md) |
 | | SDRF Sample Metadata Contract (`sample_metadata`) | [`sample_metadata_sdrf.md`](docs/geneforgelang/features/sample_metadata_sdrf.md) |
+| | Cross-Modal Cell Alignment Contract (`cell_alignment`) | [`cross_modal_cell_alignment.md`](docs/geneforgelang/features/cross_modal_cell_alignment.md) |
 | | Multi-Modal SynthID Bio Watermarking | [`biosecurity_watermark.md`](docs/geneforgelang/features/biosecurity_watermark.md) |
 | **Tooling & Visualization** | GF-HelixView Dynamic 2.5D DNA Helix Explorer | [`dna_helix_viewer.md`](docs/geneforgelang/features/dna_helix_viewer.md) |
 | | Graphify Static AST & Grammar Knowledge Graph | [`graphify_static_grammar_index.md`](docs/geneforgelang/features/graphify_static_grammar_index.md) |

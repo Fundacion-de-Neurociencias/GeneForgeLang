@@ -368,6 +368,7 @@ class GFLAST:
     numeric_provenance: Any | None = None
     latent_discovery: Any | None = None
     sample_metadata: Any | None = None
+    cell_alignment: Any | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -500,6 +501,10 @@ class GFLAST:
         if self.sample_metadata is not None:
             result["sample_metadata"] = (
                 self.sample_metadata.to_dict() if hasattr(self.sample_metadata, "to_dict") else self.sample_metadata
+            )
+        if self.cell_alignment is not None:
+            result["cell_alignment"] = (
+                self.cell_alignment.to_dict() if hasattr(self.cell_alignment, "to_dict") else self.cell_alignment
             )
         if self.metadata:
             result["metadata"] = self.metadata
@@ -949,6 +954,19 @@ class GFLAST:
                 ast.sample_metadata = sm_data
             elif isinstance(sm_data, dict):
                 ast.sample_metadata = SDRFMetadataContract.from_dict(sm_data)
+
+        if "cell_alignment" in data:
+            ca_data = data["cell_alignment"]
+            if isinstance(ca_data, CellAlignmentContract):
+                ast.cell_alignment = ca_data
+            elif isinstance(ca_data, dict):
+                ast.cell_alignment = CellAlignmentContract.from_dict(ca_data)
+        elif "cross_modal_cell_bridge" in data:
+            ca_data = data["cross_modal_cell_bridge"]
+            if isinstance(ca_data, CellAlignmentContract):
+                ast.cell_alignment = ca_data
+            elif isinstance(ca_data, dict):
+                ast.cell_alignment = CellAlignmentContract.from_dict(ca_data)
 
         if "metadata" in data:
             ast.metadata = dict(data["metadata"])
@@ -7406,6 +7424,184 @@ class SDRFMetadataContract:
         )
 
 
+# Cross-Modal Cell Alignment Contract (Bloom-inspired)
+class CellModality(str, Enum):
+    """Cellular measurement modalities supported in cross-modal alignment."""
+
+    SCRNA_SEQ = "scrna_seq"
+    SNRNA_SEQ = "snrna_seq"
+    SCATAC_SEQ = "scatac_seq"
+    MULTIOME_DNA_RNA = "multiome_dna_rna"
+    PATCH_SEQ = "patch_seq"
+    ELECTROPHYSIOLOGY = "electrophysiology"
+    MORPHOLOGY = "morphology"
+    SPATIAL_TRANSCRIPTOMICS = "spatial_transcriptomics"
+
+
+@dataclass
+class CellStudySlice:
+    """Description of one fragmented cellular study participating in alignment."""
+
+    study_id: str
+    modality: CellModality | str
+    species: str
+    cell_count: int = 0
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        mod_val = self.modality.value if isinstance(self.modality, CellModality) else self.modality
+        return {
+            "study_id": self.study_id,
+            "modality": mod_val,
+            "species": self.species,
+            "cell_count": self.cell_count,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> CellStudySlice:
+        """Create CellStudySlice from dictionary."""
+        raw_mod = str(data.get("modality", "")).strip().lower()
+        try:
+            mod: CellModality | str = CellModality(raw_mod)
+        except ValueError:
+            mod = raw_mod
+        return cls(
+            study_id=str(data.get("study_id", "")).strip(),
+            modality=mod,
+            species=str(data.get("species", "")).strip(),
+            cell_count=int(data.get("cell_count", 0)),
+        )
+
+
+@dataclass
+class CellAlignmentMapping:
+    """Single cross-modal cell identity mapping grounded to a reference taxonomy."""
+
+    source_study_id: str
+    target_study_id: str
+    source_label: str
+    target_label: str
+    taxonomy_curie: str
+    mapping_confidence: float
+    is_anchor: bool = False
+    artifact_ref: ArtifactRef | dict[str, Any] | str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        result: dict[str, Any] = {
+            "source_study_id": self.source_study_id,
+            "target_study_id": self.target_study_id,
+            "source_label": self.source_label,
+            "target_label": self.target_label,
+            "taxonomy_curie": self.taxonomy_curie,
+            "mapping_confidence": self.mapping_confidence,
+            "is_anchor": self.is_anchor,
+        }
+        if self.artifact_ref is not None:
+            result["artifact_ref"] = (
+                self.artifact_ref.to_dict() if hasattr(self.artifact_ref, "to_dict") else self.artifact_ref
+            )
+        return result
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> CellAlignmentMapping:
+        """Create CellAlignmentMapping from dictionary."""
+        raw_ref = data.get("artifact_ref")
+        ref: ArtifactRef | dict[str, Any] | str | None = (
+            ArtifactRef.from_dict(raw_ref) if isinstance(raw_ref, dict) else raw_ref
+        )
+        return cls(
+            source_study_id=str(data.get("source_study_id", "")).strip(),
+            target_study_id=str(data.get("target_study_id", "")).strip(),
+            source_label=str(data.get("source_label", "")).strip(),
+            target_label=str(data.get("target_label", "")).strip(),
+            taxonomy_curie=str(data.get("taxonomy_curie", "")).strip(),
+            mapping_confidence=float(data.get("mapping_confidence", 0.0)),
+            is_anchor=bool(data.get("is_anchor", False)),
+            artifact_ref=ref,
+        )
+
+
+@dataclass
+class CellAlignmentContract:
+    """Declarative contract for cross-modal cell identity and taxonomy alignment."""
+
+    contract_id: str
+    bridge_model: str
+    bridge_species: str
+    bridge_modalities: list[CellModality | str] = field(default_factory=list)
+    reference_taxonomy: str = "cell_ontology"
+    studies: list[CellStudySlice] = field(default_factory=list)
+    mappings: list[CellAlignmentMapping] = field(default_factory=list)
+    anchor_cell_types: list[str] = field(default_factory=list)
+    min_mapping_confidence: float = 0.75
+    max_unmapped_fraction: float = 0.15
+    observed_unmapped_fraction: float | None = None
+    allow_cross_species_transfer: bool = False
+    ortholog_anchors: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        result: dict[str, Any] = {
+            "contract_id": self.contract_id,
+            "bridge_model": self.bridge_model,
+            "bridge_species": self.bridge_species,
+            "bridge_modalities": [m.value if isinstance(m, CellModality) else str(m) for m in self.bridge_modalities],
+            "reference_taxonomy": self.reference_taxonomy,
+            "studies": [s.to_dict() for s in self.studies],
+            "mappings": [m.to_dict() for m in self.mappings],
+            "anchor_cell_types": list(self.anchor_cell_types),
+            "min_mapping_confidence": self.min_mapping_confidence,
+            "max_unmapped_fraction": self.max_unmapped_fraction,
+            "allow_cross_species_transfer": self.allow_cross_species_transfer,
+            "ortholog_anchors": list(self.ortholog_anchors),
+            "metadata": dict(self.metadata),
+        }
+        if self.observed_unmapped_fraction is not None:
+            result["observed_unmapped_fraction"] = self.observed_unmapped_fraction
+        return result
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> CellAlignmentContract:
+        """Create CellAlignmentContract from dictionary."""
+        bridge_mods: list[CellModality | str] = []
+        for raw_m in data.get("bridge_modalities", []):
+            m_str = str(raw_m).strip().lower()
+            try:
+                bridge_mods.append(CellModality(m_str))
+            except ValueError:
+                bridge_mods.append(m_str)
+
+        studies = [
+            s if isinstance(s, CellStudySlice) else CellStudySlice.from_dict(s)
+            for s in data.get("studies", [])
+            if isinstance(s, (dict, CellStudySlice))
+        ]
+        mappings = [
+            m if isinstance(m, CellAlignmentMapping) else CellAlignmentMapping.from_dict(m)
+            for m in data.get("mappings", [])
+            if isinstance(m, (dict, CellAlignmentMapping))
+        ]
+        raw_unmapped = data.get("observed_unmapped_fraction")
+        return cls(
+            contract_id=str(data.get("contract_id", data.get("name", ""))).strip(),
+            bridge_model=str(data.get("bridge_model", "")).strip(),
+            bridge_species=str(data.get("bridge_species", "")).strip(),
+            bridge_modalities=bridge_mods,
+            reference_taxonomy=str(data.get("reference_taxonomy", "cell_ontology")).strip(),
+            studies=studies,
+            mappings=mappings,
+            anchor_cell_types=[str(a).strip() for a in data.get("anchor_cell_types", []) if str(a).strip()],
+            min_mapping_confidence=float(data.get("min_mapping_confidence", 0.75)),
+            max_unmapped_fraction=float(data.get("max_unmapped_fraction", 0.15)),
+            observed_unmapped_fraction=float(raw_unmapped) if raw_unmapped is not None else None,
+            allow_cross_species_transfer=bool(data.get("allow_cross_species_transfer", False)),
+            ortholog_anchors=[str(o).strip() for o in data.get("ortholog_anchors", []) if str(o).strip()],
+            metadata=dict(data.get("metadata", {})),
+        )
+
+
 # Export all public types
 __all__ = [
     # Enums
@@ -7597,6 +7793,10 @@ __all__ = [
     "ProteomicsRepository",
     "SDRFSampleEntry",
     "SDRFMetadataContract",
+    "CellModality",
+    "CellStudySlice",
+    "CellAlignmentMapping",
+    "CellAlignmentContract",
     # Validation types
     "ValidationError",
     "ValidationResult",
