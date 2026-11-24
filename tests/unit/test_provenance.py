@@ -282,6 +282,7 @@ HASH_KEY_ALLOWLIST = {
     "core/latent_discovery.py": "sha256 verification hash of latent discovery audit report",
     "core/numeric_provenance.py": "sha256 verification hash of numeric reconciliation report",
     "core/permutation_baseline.py": "seeded Fisher-Yates and Altschul-Erickson shuffles",
+    "core/sample_metadata.py": "sha256 verification hash of SDRF sample metadata audit report",
     "core/protok_engine.py": "discrete codebook hash and pseudo-random multi-codebook dropout",
     "core/watermark_engine.py": "cryptographic watermark key and PRNG sequence carrier",
     "core/wet_lab_engine.py": "sha256 hash of synthesizability protocol and BioCompute object",

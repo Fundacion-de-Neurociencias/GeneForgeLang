@@ -1,0 +1,23 @@
+# SDRF-Proteomics Sample Metadata Contract
+# Enforces ProteomeXchange accession format, source citations, and real sample-to-raw-file mappings.
+
+sample_metadata:
+  contract_id: "pride_pxd000001_sdrf_01"
+  accession: "PXD000001"
+  repository: "pride"
+  sdrf_version: "1.0"
+  require_source_citations: true
+  source_citations:
+    - "PMID:23626761"
+    - "PXD000001"
+  samples:
+    - source_name: "Erwinia_carotovora_sample_1"
+      organism: "Pectobacterium atrosepticum"
+      assay_name: "run_01"
+      data_file: "TMT_Erwinia_1uLSike_Top10HCD_f01.raw"
+      artifact_ref: "${pride_ingest.run_01_raw}"
+    - source_name: "Erwinia_carotovora_sample_2"
+      organism: "Pectobacterium atrosepticum"
+      assay_name: "run_02"
+      data_file: "TMT_Erwinia_1uLSike_Top10HCD_f02.raw"
+      artifact_ref: "${pride_ingest.run_02_raw}"
