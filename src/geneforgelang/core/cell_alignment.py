@@ -32,6 +32,7 @@ class CellAlignmentAuditReport:
     study_count: int
     mapping_count: int
     anchor_mapping_count: int
+    gene_peak_link_count: int = 0
     violations: list[str] = field(default_factory=list)
     verification_hash: str = ""
     evidence_status: str = "CELL_ALIGNMENT_VERIFIED"
@@ -44,6 +45,7 @@ class CellAlignmentAuditReport:
             "study_count": self.study_count,
             "mapping_count": self.mapping_count,
             "anchor_mapping_count": self.anchor_mapping_count,
+            "gene_peak_link_count": self.gene_peak_link_count,
             "violations": list(self.violations),
             "verification_hash": self.verification_hash,
             "evidence_status": self.evidence_status,
@@ -76,6 +78,10 @@ class CellAlignmentAuditor:
                 f"observed_unmapped_fraction ({contract.observed_unmapped_fraction}) exceeds "
                 f"max_unmapped_fraction ({contract.max_unmapped_fraction})."
             )
+        if contract.min_genes_per_cell is not None and contract.min_genes_per_cell <= 0:
+            violations.append("min_genes_per_cell must be > 0 when specified.")
+        if not (0.0 <= contract.min_gene_peak_attention <= 1.0):
+            violations.append("min_gene_peak_attention must be in [0.0, 1.0].")
 
         bridge_mods = [
             m.value if isinstance(m, CellModality) else str(m).strip().lower() for m in contract.bridge_modalities
@@ -114,6 +120,16 @@ class CellAlignmentAuditor:
                 violations.append(f"Study '{sid}' must declare a non-empty species.")
             else:
                 study_species.add(study.species.strip())
+
+            if (
+                contract.min_genes_per_cell is not None
+                and study.observed_median_genes is not None
+                and study.observed_median_genes < contract.min_genes_per_cell
+            ):
+                violations.append(
+                    f"Study '{sid}' observed_median_genes ({study.observed_median_genes}) is below "
+                    f"min_genes_per_cell ({contract.min_genes_per_cell})."
+                )
 
         if len(study_modalities) > 1 and not bridge_mods:
             violations.append(
@@ -167,6 +183,29 @@ class CellAlignmentAuditor:
         if contract.mappings and anchor_mapping_count < 1:
             violations.append("At least one mapping must have is_anchor=True verifying known anchor_cell_types.")
 
+        for idx, link in enumerate(contract.gene_peak_links):
+            link_label = f"{link.gene_symbol or idx}@{link.peak_region or idx}"
+            if not link.gene_symbol.strip():
+                violations.append(f"Gene-peak link at index {idx} must declare a non-empty gene_symbol.")
+            if not link.peak_region.strip():
+                violations.append(f"Gene-peak link '{link_label}' must declare a non-empty peak_region.")
+            if not link.target_cell_type.strip():
+                violations.append(f"Gene-peak link '{link_label}' must declare a non-empty target_cell_type.")
+            if not (0.0 <= link.attention_weight <= 1.0):
+                violations.append(
+                    f"Gene-peak link '{link_label}' attention_weight ({link.attention_weight}) must be in [0.0, 1.0]."
+                )
+            elif link.selective_access_candidate and link.attention_weight < contract.min_gene_peak_attention:
+                violations.append(
+                    f"Gene-peak link '{link_label}' attention_weight ({link.attention_weight}) is below "
+                    f"min_gene_peak_attention ({contract.min_gene_peak_attention})."
+                )
+            if link.artifact_ref is not None and not NumericProvenanceAuditor.is_valid_reference(link.artifact_ref):
+                violations.append(
+                    f"Gene-peak link '{link_label}' has invalid artifact_ref; "
+                    "expected ArtifactRef or '${step.output}' handle."
+                )
+
         passed = len(violations) == 0
         payload = json.dumps(
             {
@@ -175,6 +214,7 @@ class CellAlignmentAuditor:
                 "study_count": len(contract.studies),
                 "mapping_count": len(contract.mappings),
                 "anchor_mapping_count": anchor_mapping_count,
+                "gene_peak_link_count": len(contract.gene_peak_links),
                 "violations": violations,
                 "passed": passed,
             },
@@ -188,6 +228,7 @@ class CellAlignmentAuditor:
             study_count=len(contract.studies),
             mapping_count=len(contract.mappings),
             anchor_mapping_count=anchor_mapping_count,
+            gene_peak_link_count=len(contract.gene_peak_links),
             violations=violations,
             verification_hash=verification_hash,
             evidence_status="CELL_ALIGNMENT_VERIFIED" if passed else "CELL_ALIGNMENT_REJECTED",
