@@ -11,6 +11,7 @@ from geneforgelang.core.gftypes import (
     CellAlignmentMapping,
     CellModality,
     CellStudySlice,
+    GenePeakAccessLink,
 )
 from geneforgelang.core.parser import parse_gfl
 from geneforgelang.core.validator import EnhancedSemanticValidator
@@ -124,6 +125,37 @@ class TestCellAlignmentAuditor:
         report = CellAlignmentAuditor.audit(contract)
         assert report.passed is False
         assert any("invalid artifact_ref" in v for v in report.violations)
+
+    def test_rejects_under_covered_study_below_min_genes_per_cell(self) -> None:
+        contract = _build_valid_contract()
+        contract.min_genes_per_cell = 1000
+        contract.studies[1].observed_median_genes = 450
+        report = CellAlignmentAuditor.audit(contract)
+        assert report.passed is False
+        assert any("min_genes_per_cell" in v for v in report.violations)
+
+    def test_valid_and_invalid_gene_peak_links(self) -> None:
+        contract = _build_valid_contract()
+        contract.min_gene_peak_attention = 0.4
+        contract.gene_peak_links = [
+            GenePeakAccessLink(
+                gene_symbol="PVALB",
+                peak_region="chr22:36801200-36801950",
+                target_cell_type="CL:0000127",
+                attention_weight=0.78,
+                selective_access_candidate=True,
+                ag2_link_ref="ag2_pvalb_enhancer_01",
+                artifact_ref="${bloom_align.pvalb_enhancer}",
+            )
+        ]
+        ok_report = CellAlignmentAuditor.audit(contract)
+        assert ok_report.passed is True
+        assert ok_report.gene_peak_link_count == 1
+
+        contract.gene_peak_links[0].attention_weight = 0.2
+        bad_report = CellAlignmentAuditor.audit(contract)
+        assert bad_report.passed is False
+        assert any("min_gene_peak_attention" in v for v in bad_report.violations)
 
 
 class TestCellAlignmentValidator:

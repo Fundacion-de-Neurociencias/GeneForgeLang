@@ -7446,16 +7446,20 @@ class CellStudySlice:
     modality: CellModality | str
     species: str
     cell_count: int = 0
+    observed_median_genes: int | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
         mod_val = self.modality.value if isinstance(self.modality, CellModality) else self.modality
-        return {
+        result: dict[str, Any] = {
             "study_id": self.study_id,
             "modality": mod_val,
             "species": self.species,
             "cell_count": self.cell_count,
         }
+        if self.observed_median_genes is not None:
+            result["observed_median_genes"] = self.observed_median_genes
+        return result
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> CellStudySlice:
@@ -7465,11 +7469,13 @@ class CellStudySlice:
             mod: CellModality | str = CellModality(raw_mod)
         except ValueError:
             mod = raw_mod
+        raw_med = data.get("observed_median_genes")
         return cls(
             study_id=str(data.get("study_id", "")).strip(),
             modality=mod,
             species=str(data.get("species", "")).strip(),
             cell_count=int(data.get("cell_count", 0)),
+            observed_median_genes=int(raw_med) if raw_med is not None else None,
         )
 
 
@@ -7523,6 +7529,53 @@ class CellAlignmentMapping:
 
 
 @dataclass
+class GenePeakAccessLink:
+    """Declarative gene-to-chromatin-peak pair for selective cell-type access hypotheses."""
+
+    gene_symbol: str
+    peak_region: str
+    target_cell_type: str
+    attention_weight: float
+    selective_access_candidate: bool = True
+    ag2_link_ref: str = ""
+    artifact_ref: ArtifactRef | dict[str, Any] | str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+        result: dict[str, Any] = {
+            "gene_symbol": self.gene_symbol,
+            "peak_region": self.peak_region,
+            "target_cell_type": self.target_cell_type,
+            "attention_weight": self.attention_weight,
+            "selective_access_candidate": self.selective_access_candidate,
+        }
+        if self.ag2_link_ref:
+            result["ag2_link_ref"] = self.ag2_link_ref
+        if self.artifact_ref is not None:
+            result["artifact_ref"] = (
+                self.artifact_ref.to_dict() if hasattr(self.artifact_ref, "to_dict") else self.artifact_ref
+            )
+        return result
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> GenePeakAccessLink:
+        """Create GenePeakAccessLink from dictionary."""
+        raw_ref = data.get("artifact_ref")
+        ref: ArtifactRef | dict[str, Any] | str | None = (
+            ArtifactRef.from_dict(raw_ref) if isinstance(raw_ref, dict) else raw_ref
+        )
+        return cls(
+            gene_symbol=str(data.get("gene_symbol", "")).strip(),
+            peak_region=str(data.get("peak_region", "")).strip(),
+            target_cell_type=str(data.get("target_cell_type", "")).strip(),
+            attention_weight=float(data.get("attention_weight", 0.0)),
+            selective_access_candidate=bool(data.get("selective_access_candidate", True)),
+            ag2_link_ref=str(data.get("ag2_link_ref", "")).strip(),
+            artifact_ref=ref,
+        )
+
+
+@dataclass
 class CellAlignmentContract:
     """Declarative contract for cross-modal cell identity and taxonomy alignment."""
 
@@ -7537,6 +7590,9 @@ class CellAlignmentContract:
     min_mapping_confidence: float = 0.75
     max_unmapped_fraction: float = 0.15
     observed_unmapped_fraction: float | None = None
+    min_genes_per_cell: int | None = None
+    min_gene_peak_attention: float = 0.0
+    gene_peak_links: list[GenePeakAccessLink] = field(default_factory=list)
     allow_cross_species_transfer: bool = False
     ortholog_anchors: list[str] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
@@ -7554,12 +7610,16 @@ class CellAlignmentContract:
             "anchor_cell_types": list(self.anchor_cell_types),
             "min_mapping_confidence": self.min_mapping_confidence,
             "max_unmapped_fraction": self.max_unmapped_fraction,
+            "min_gene_peak_attention": self.min_gene_peak_attention,
+            "gene_peak_links": [g.to_dict() for g in self.gene_peak_links],
             "allow_cross_species_transfer": self.allow_cross_species_transfer,
             "ortholog_anchors": list(self.ortholog_anchors),
             "metadata": dict(self.metadata),
         }
         if self.observed_unmapped_fraction is not None:
             result["observed_unmapped_fraction"] = self.observed_unmapped_fraction
+        if self.min_genes_per_cell is not None:
+            result["min_genes_per_cell"] = self.min_genes_per_cell
         return result
 
     @classmethod
@@ -7583,7 +7643,13 @@ class CellAlignmentContract:
             for m in data.get("mappings", [])
             if isinstance(m, (dict, CellAlignmentMapping))
         ]
+        gene_peak_links = [
+            g if isinstance(g, GenePeakAccessLink) else GenePeakAccessLink.from_dict(g)
+            for g in data.get("gene_peak_links", [])
+            if isinstance(g, (dict, GenePeakAccessLink))
+        ]
         raw_unmapped = data.get("observed_unmapped_fraction")
+        raw_min_genes = data.get("min_genes_per_cell")
         return cls(
             contract_id=str(data.get("contract_id", data.get("name", ""))).strip(),
             bridge_model=str(data.get("bridge_model", "")).strip(),
@@ -7596,6 +7662,9 @@ class CellAlignmentContract:
             min_mapping_confidence=float(data.get("min_mapping_confidence", 0.75)),
             max_unmapped_fraction=float(data.get("max_unmapped_fraction", 0.15)),
             observed_unmapped_fraction=float(raw_unmapped) if raw_unmapped is not None else None,
+            min_genes_per_cell=int(raw_min_genes) if raw_min_genes is not None else None,
+            min_gene_peak_attention=float(data.get("min_gene_peak_attention", 0.0)),
+            gene_peak_links=gene_peak_links,
             allow_cross_species_transfer=bool(data.get("allow_cross_species_transfer", False)),
             ortholog_anchors=[str(o).strip() for o in data.get("ortholog_anchors", []) if str(o).strip()],
             metadata=dict(data.get("metadata", {})),
@@ -7796,6 +7865,7 @@ __all__ = [
     "CellModality",
     "CellStudySlice",
     "CellAlignmentMapping",
+    "GenePeakAccessLink",
     "CellAlignmentContract",
     # Validation types
     "ValidationError",

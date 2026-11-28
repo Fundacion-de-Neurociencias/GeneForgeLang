@@ -12,6 +12,8 @@ cell_alignment:
   min_mapping_confidence: 0.75
   max_unmapped_fraction: 0.15
   observed_unmapped_fraction: 0.06
+  min_genes_per_cell: 800
+  min_gene_peak_attention: 0.35
   allow_cross_species_transfer: false
   anchor_cell_types:
     - "CL:0000127"
@@ -21,10 +23,12 @@ cell_alignment:
       modality: "scrna_seq"
       species: "Mus musculus"
       cell_count: 18500
+      observed_median_genes: 2400
     - study_id: "study_ephys_patch"
       modality: "electrophysiology"
       species: "Mus musculus"
       cell_count: 1420
+      observed_median_genes: 1150
   mappings:
     - source_study_id: "study_ephys_patch"
       target_study_id: "study_scrna_cortex"
@@ -42,3 +46,11 @@ cell_alignment:
       mapping_confidence: 0.84
       is_anchor: false
       artifact_ref: "${bloom_align.l5_it_transfer}"
+  gene_peak_links:
+    - gene_symbol: "PVALB"
+      peak_region: "chr22:36801200-36801950"
+      target_cell_type: "CL:0000127"
+      attention_weight: 0.78
+      selective_access_candidate: true
+      ag2_link_ref: "ag2_pvalb_enhancer_01"
+      artifact_ref: "${bloom_align.pvalb_enhancer_attn}"
